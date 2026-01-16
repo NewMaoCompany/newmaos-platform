@@ -83,7 +83,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
         let emailSent = false;
         try {
             await resend.emails.send({
-                from: 'NewMaoS <noreply@send.newmaos.com>',
+                from: 'NewMaoS <noreply@newmaos.com>',
                 to: email,
                 subject: 'Verify Your Email - NewMaoS',
                 html: `
@@ -326,7 +326,7 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
 
         try {
             await resend.emails.send({
-                from: 'NewMaoS <noreply@send.newmaos.com>',
+                from: 'NewMaoS <noreply@newmaos.com>',
                 to: email,
                 subject: 'Verify Your Email - NewMaoS',
                 html: `
