@@ -33,7 +33,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 
         // 1. Generate 6-digit verification code
         const code = generateCode();
-        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
         // 2. Store registration data + verification code in DB (user NOT created yet)
         // Password is stored temporarily - will be used to create user after verification
@@ -266,7 +266,7 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
         const userName = found?.user_metadata?.name || email.split('@')[0];
 
         const code = generateCode();
-        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
         await supabaseAdmin
             .from('verification_codes')

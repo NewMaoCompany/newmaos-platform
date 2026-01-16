@@ -102,6 +102,28 @@ export const Signup = () => {
     const [step, setStep] = useState<'details' | 'verify' | 'success'>('details');
     const [error, setError] = useState('');
 
+    // Password validation
+    const passwordChecks = {
+        minLength: password.length >= 8,
+        hasUppercase: /[A-Z]/.test(password),
+        hasLowercase: /[a-z]/.test(password),
+        hasNumber: /[0-9]/.test(password)
+    };
+    const isPasswordValid = Object.values(passwordChecks).every(Boolean);
+
+    // Username validation (basic profanity filter)
+    const profanityList = ['fuck', 'shit', 'ass', 'damn', 'bitch', 'crap', 'dick', 'pussy', 'cock', 'cunt'];
+    const isUsernameClean = !profanityList.some(word => name.toLowerCase().includes(word));
+    const isUsernameValid = name.length >= 2 && name.length <= 20 && /^[a-zA-Z0-9_]+$/.test(name) && isUsernameClean;
+
+    const usernameChecks = {
+        validLength: name.length >= 2 && name.length <= 20,
+        validChars: /^[a-zA-Z0-9_]*$/.test(name) || name.length === 0,
+        noProf: isUsernameClean
+    };
+
+    const canSubmit = isPasswordValid && isUsernameValid && email.includes('@');
+
     const handleSignupSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -219,6 +241,22 @@ export const Signup = () => {
                                     className="block w-full rounded-xl border-neutral-200 bg-white px-4 py-3.5 text-base text-[#1c1a0d] placeholder:text-neutral-400 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-200 dark:bg-black/20 dark:border-neutral-700 dark:text-white dark:focus:border-primary"
                                     required
                                 />
+                                {name.length > 0 && (
+                                    <div className="mt-2 space-y-1 text-xs">
+                                        <div className={`flex items-center gap-1.5 ${usernameChecks.validLength ? 'text-green-600' : 'text-gray-400'}`}>
+                                            <span className="material-symbols-outlined text-sm">{usernameChecks.validLength ? 'check_circle' : 'circle'}</span>
+                                            2-20 characters
+                                        </div>
+                                        <div className={`flex items-center gap-1.5 ${usernameChecks.validChars ? 'text-green-600' : 'text-red-500'}`}>
+                                            <span className="material-symbols-outlined text-sm">{usernameChecks.validChars ? 'check_circle' : 'cancel'}</span>
+                                            Letters, numbers, underscore only
+                                        </div>
+                                        <div className={`flex items-center gap-1.5 ${usernameChecks.noProf ? 'text-green-600' : 'text-red-500'}`}>
+                                            <span className="material-symbols-outlined text-sm">{usernameChecks.noProf ? 'check_circle' : 'cancel'}</span>
+                                            Appropriate language
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="space-y-1.5">
@@ -249,13 +287,33 @@ export const Signup = () => {
                                     className="block w-full rounded-xl border-neutral-200 bg-white px-4 py-3.5 text-base text-[#1c1a0d] placeholder:text-neutral-400 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-200 dark:bg-black/20 dark:border-neutral-700 dark:text-white dark:focus:border-primary"
                                     required
                                 />
+                                {password.length > 0 && (
+                                    <div className="mt-2 grid grid-cols-2 gap-1 text-xs">
+                                        <div className={`flex items-center gap-1.5 ${passwordChecks.minLength ? 'text-green-600' : 'text-gray-400'}`}>
+                                            <span className="material-symbols-outlined text-sm">{passwordChecks.minLength ? 'check_circle' : 'circle'}</span>
+                                            8+ characters
+                                        </div>
+                                        <div className={`flex items-center gap-1.5 ${passwordChecks.hasUppercase ? 'text-green-600' : 'text-gray-400'}`}>
+                                            <span className="material-symbols-outlined text-sm">{passwordChecks.hasUppercase ? 'check_circle' : 'circle'}</span>
+                                            Uppercase
+                                        </div>
+                                        <div className={`flex items-center gap-1.5 ${passwordChecks.hasLowercase ? 'text-green-600' : 'text-gray-400'}`}>
+                                            <span className="material-symbols-outlined text-sm">{passwordChecks.hasLowercase ? 'check_circle' : 'circle'}</span>
+                                            Lowercase
+                                        </div>
+                                        <div className={`flex items-center gap-1.5 ${passwordChecks.hasNumber ? 'text-green-600' : 'text-gray-400'}`}>
+                                            <span className="material-symbols-outlined text-sm">{passwordChecks.hasNumber ? 'check_circle' : 'circle'}</span>
+                                            Number
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="pt-2">
                                 <button
                                     type="submit"
-                                    disabled={isLoading}
-                                    className="relative w-full overflow-hidden rounded-xl bg-black dark:bg-white px-5 py-3.5 text-base font-bold text-white dark:text-black shadow-sm transition-all duration-200 hover:opacity-90 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                                    disabled={isLoading || !canSubmit}
+                                    className="relative w-full overflow-hidden rounded-xl bg-black dark:bg-white px-5 py-3.5 text-base font-bold text-white dark:text-black shadow-sm transition-all duration-200 hover:opacity-90 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                                 >
                                     {isLoading ? (
                                         <>
@@ -272,6 +330,13 @@ export const Signup = () => {
                                 <span>Already have an account?</span>
                                 <Link to="/login" className="font-bold text-[#1c1a0d] dark:text-primary hover:underline underline-offset-4 decoration-2 decoration-primary/50 transition-all">Sign In</Link>
                             </div>
+                            <button
+                                type="button"
+                                onClick={() => navigate('/dashboard')}
+                                className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                            >
+                                Create Account Later →
+                            </button>
                         </div>
                     </>
                 )}
@@ -291,8 +356,12 @@ export const Signup = () => {
                         </div>
 
                         <h2 className="text-xl font-black text-[#1c1a0d] dark:text-white mb-2">Enter Verification Code</h2>
-                        <p className="text-sm text-gray-500 mb-6">
+                        <p className="text-sm text-gray-500 mb-2">
                             We've sent a 6-digit code to <span className="font-bold text-text-main dark:text-white">{email}</span>
+                        </p>
+                        <p className="text-xs text-amber-600 dark:text-amber-400 mb-6 flex items-center justify-center gap-1">
+                            <span className="material-symbols-outlined text-sm">schedule</span>
+                            Code expires in 10 minutes
                         </p>
 
                         {error && (
