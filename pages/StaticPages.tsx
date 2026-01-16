@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../AppContext';
+import { authApi } from '../src/services/api';
 
 const SimpleLayout = ({ title, children, showNavbar = true }: { title: string, children: React.ReactNode, showNavbar?: boolean }) => {
     const navigate = useNavigate();
@@ -96,7 +97,8 @@ export const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [verificationCode, setVerificationCode] = useState('');
+    // Verification state
+    const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
     const [step, setStep] = useState<'details' | 'verify' | 'success'>('details');
     const [error, setError] = useState('');
 
@@ -106,23 +108,10 @@ export const Signup = () => {
         setError('');
 
         try {
-            // Import API dynamically to avoid circular dependency
-            const { authApi } = await import('../src/services/api');
-
-            // Call real registration API
+            // Call registration API
             const response = await authApi.register(email, password, name);
-
-            // Supabase may require email confirmation
-            if (response.user && !response.session) {
-                // Email confirmation required
-                setStep('verify');
-                alert(`Verification email sent to ${email}. Please check your inbox!`);
-            } else if (response.session) {
-                // Auto-login if email confirmation not required
-                localStorage.setItem('auth_token', response.session.access_token);
-                login(name);
-                navigate('/dashboard');
-            }
+            // Always move to verify step for new registration flow
+            setStep('verify');
         } catch (err: any) {
             setError(err.message || 'Registration failed. Please try again.');
         } finally {
@@ -130,19 +119,60 @@ export const Signup = () => {
         }
     };
 
+    const handleCodeChange = (index: number, value: string) => {
+        if (value.length > 1) return; // Allow only 1 char
+        const newCode = [...verificationCode];
+        newCode[index] = value;
+        setVerificationCode(newCode);
+
+        // Auto-focus next input
+        if (value && index < 5) {
+            const nextInput = document.getElementById(`code-${index + 1}`);
+            nextInput?.focus();
+        }
+    };
+
+    const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+        if (e.key === 'Backspace' && !verificationCode[index] && index > 0) {
+            const prevInput = document.getElementById(`code-${index - 1}`);
+            prevInput?.focus();
+        }
+    };
+
     const handleVerify = async (e: React.FormEvent) => {
         e.preventDefault();
+        const code = verificationCode.join('');
+        if (code.length !== 6) {
+            setError('Please enter the complete 6-digit code');
+            return;
+        }
+
         setIsLoading(true);
         setError('');
 
-        // Note: Supabase handles email verification via link, not code
-        // This is a placeholder for custom verification if needed
         try {
-            // After email verification, user can login
-            alert('Email verified! You can now login.');
-            navigate('/login');
+            await authApi.verifyEmail(email, code);
+
+            // After verification, we need to login to get the session
+            // Since backend verify doesn't return session, we do a silent login
+            // OR we ask user to login. 
+            // Let's try auto-login if we have password in state (we do!)
+            try {
+                const loginRes = await authApi.login(email, password);
+                if (loginRes.session) {
+                    localStorage.setItem('auth_token', loginRes.session.access_token);
+                    login(email, name);
+                    navigate('/dashboard');
+                } else {
+                    navigate('/login');
+                }
+            } catch {
+                // If auto-login fails, send to login page
+                alert('Verification successful! Please sign in.');
+                navigate('/login');
+            }
         } catch (err: any) {
-            setError(err.message || 'Verification failed.');
+            setError(err.message || 'Verification failed. Please check the code.');
         } finally {
             setIsLoading(false);
         }
@@ -150,7 +180,6 @@ export const Signup = () => {
 
     return (
         <div className="relative flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden bg-background-light dark:bg-background-dark">
-            {/* Reuse background from Login */}
             <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
                 <div className="absolute -top-[10%] -left-[5%] w-[600px] h-[600px] rounded-full bg-primary/5 blur-[100px] dark:bg-primary/10"></div>
                 <div className="absolute -bottom-[10%] -right-[5%] w-[500px] h-[500px] rounded-full bg-blue-200/20 blur-[100px] dark:bg-blue-900/10"></div>
@@ -170,7 +199,6 @@ export const Signup = () => {
                             </div>
                         </div>
 
-                        {/* Error Message */}
                         {error && (
                             <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400 mb-4">
                                 {error}
@@ -249,54 +277,88 @@ export const Signup = () => {
                 )}
 
                 {step === 'verify' && (
-                    <div className="animate-fade-in">
+                    <div className="animate-fade-in text-center">
                         <button
                             onClick={() => setStep('details')}
-                            className="flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white mb-6 transition-colors"
+                            className="absolute top-6 left-6 flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white transition-colors"
                         >
                             <span className="material-symbols-outlined text-sm">arrow_back</span>
                             Back
                         </button>
 
-                        <div className="mb-8 text-center">
-                            <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-500 rounded-xl flex items-center justify-center mb-4 mx-auto">
-                                <span className="material-symbols-outlined text-2xl">mark_email_read</span>
-                            </div>
-                            <h2 className="text-xl font-black text-[#1c1a0d] dark:text-white">Verify Email</h2>
-                            <p className="text-sm text-gray-500 mt-1">Enter the code sent to <span className="font-bold text-text-main dark:text-gray-300">{email}</span></p>
+                        <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 mx-auto mt-4">
+                            <span className="material-symbols-outlined text-3xl">lock</span>
                         </div>
 
-                        <form onSubmit={handleVerify} className="flex flex-col gap-6">
-                            <div className="space-y-1.5">
-                                <label className="block text-sm font-semibold text-[#1c1a0d] dark:text-neutral-200 ml-1 text-center" htmlFor="code">
-                                    Verification Code
-                                </label>
-                                <input
-                                    id="code"
-                                    type="text"
-                                    value={verificationCode}
-                                    onChange={(e) => setVerificationCode(e.target.value)}
-                                    placeholder="885231"
-                                    maxLength={6}
-                                    className="block w-full rounded-xl border-neutral-200 bg-white px-4 py-3.5 text-center text-2xl tracking-[0.5em] font-mono text-[#1c1a0d] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white"
-                                    required
-                                    autoFocus
-                                />
+                        <h2 className="text-xl font-black text-[#1c1a0d] dark:text-white mb-2">Enter Verification Code</h2>
+                        <p className="text-sm text-gray-500 mb-6">
+                            We've sent a 6-digit code to <span className="font-bold text-text-main dark:text-white">{email}</span>
+                        </p>
+
+                        {error && (
+                            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400 mb-6 mx-auto">
+                                {error}
                             </div>
-                            <button
-                                type="submit"
-                                disabled={isLoading}
-                                className="w-full rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-[#1c1a0d] shadow-sm hover:brightness-105 active:scale-[0.99] transition-all flex justify-center items-center gap-2"
-                            >
-                                {isLoading ? <span className="material-symbols-outlined animate-spin">progress_activity</span> : 'Complete Signup'}
-                            </button>
+                        )}
+
+                        <form onSubmit={handleVerify}>
+                            <div className="flex justify-center gap-2 mb-8">
+                                {verificationCode.map((digit, index) => (
+                                    <input
+                                        key={index}
+                                        id={`code-${index}`}
+                                        type="text"
+                                        maxLength={1}
+                                        value={digit}
+                                        onChange={(e) => handleCodeChange(index, e.target.value)}
+                                        onKeyDown={(e) => handleKeyDown(index, e)}
+                                        className="w-12 h-14 text-center text-2xl font-bold rounded-xl border-2 border-neutral-100 bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white"
+                                    />
+                                ))}
+                            </div>
+
+                            <div className="flex flex-col gap-3">
+                                <button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="w-full rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-[#1c1a0d] shadow-sm hover:brightness-105 active:scale-[0.99] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                                            Verifying...
+                                        </>
+                                    ) : (
+                                        "Verify Account"
+                                    )}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={async () => {
+                                        setIsLoading(true);
+                                        try {
+                                            await authApi.resendVerification(email);
+                                            alert('New code sent!');
+                                        } catch (err: any) {
+                                            setError(err.message || 'Failed to resend code.');
+                                        } finally {
+                                            setIsLoading(false);
+                                        }
+                                    }}
+                                    disabled={isLoading}
+                                    className="w-full rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 px-5 py-3.5 text-base font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+                                >
+                                    Resend Code
+                                </button>
+                            </div>
                         </form>
                     </div>
                 )}
 
             </div>
 
-            <footer className="mt-12 text-center">
+            <footer className="mt-12 text-center relative z-10">
                 <p className="text-xs font-medium text-neutral-400 dark:text-neutral-600">
                     © 2026 NewMaoS. Designed for Excellence.
                 </p>

@@ -94,6 +94,20 @@ export const authApi = {
             body: JSON.stringify({ password, userId }),
         });
     },
+
+    async verifyEmail(email: string, code: string) {
+        return apiRequest<{ success: boolean; message: string }>('/auth/verify-email', {
+            method: 'POST',
+            body: JSON.stringify({ email, code }),
+        });
+    },
+
+    async resendVerification(email: string) {
+        return apiRequest<{ message: string }>('/auth/resend-verification', {
+            method: 'POST',
+            body: JSON.stringify({ email }),
+        });
+    },
 };
 
 // =====================================
