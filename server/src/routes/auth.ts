@@ -18,65 +18,42 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        // 0. Check if user already exists
-        const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
-        let existingUser = users.find(u => u.email === email);
-        let user = existingUser;
+        // 0. Check if user already exists in auth
+        const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
+        const existingUser = users.find(u => u.email === email);
 
         if (existingUser) {
-            // Case A: User exists and is confirmed -> Login required
             if (existingUser.email_confirmed_at) {
                 res.status(400).json({ error: 'A user with this email address has already been registered. Please login.' });
                 return;
             }
-            // Case B: User exists but NOT confirmed -> Resend OTP (Allow them to proceed to verification)
-            // Optional: Update metadata if name changed
-            if (existingUser.user_metadata.name !== name) {
-                await supabaseAdmin.auth.admin.updateUserById(existingUser.id, { user_metadata: { name } });
-            }
-        } else {
-            // Case C: User does NOT exist -> Create new user using admin API
-            // This bypasses Supabase's built-in email confirmation (which has rate limits)
-            // We use our own Resend OTP flow for email verification
-            const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-                email,
-                password,
-                email_confirm: false, // Don't auto-confirm, we'll verify via OTP
-                user_metadata: { name }
-            });
-
-            if (authError) {
-                console.error('Supabase CreateUser Error:', authError);
-                res.status(400).json({ error: authError.message });
-                return;
-            }
-            user = authData.user || undefined;
+            // User exists but not confirmed - delete the incomplete user so they can re-register
+            await supabaseAdmin.auth.admin.deleteUser(existingUser.id);
         }
 
-        if (!user) {
-            res.status(500).json({ error: 'User creation failed' });
-            return;
-        }
-
-        // 2. Generate 6-digit verification code
+        // 1. Generate 6-digit verification code
         const code = generateCode();
-        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes for OTP
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
-        // 3. Store verification code in DB
+        // 2. Store registration data + verification code in DB (user NOT created yet)
+        // Password is stored temporarily - will be used to create user after verification
         const { error: dbError } = await supabaseAdmin
             .from('verification_codes')
             .upsert({
                 email,
                 code,
-                expires_at: expiresAt.toISOString()
+                expires_at: expiresAt.toISOString(),
+                // Store registration data for later user creation
+                metadata: JSON.stringify({ name, password })
             });
 
         if (dbError) {
             console.error('Error saving verification code:', dbError);
+            res.status(500).json({ error: 'Failed to initiate registration' });
+            return;
         }
 
-        // 4. Send 6-digit OTP Email via Resend
-        let emailSent = false;
+        // 3. Send 6-digit OTP Email via Resend
         try {
             await resend.emails.send({
                 from: 'NewMaoS <noreply@newmaos.com>',
@@ -128,20 +105,16 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 </html>
                 `
             });
-            emailSent = true;
             console.log(`✅ Verification code sent to ${email}: ${code}`);
         } catch (emailError: any) {
             console.error('❌ Resend Error:', emailError?.message || emailError);
             console.log(`📧 [DEV FALLBACK] Verification code for ${email}: ${code}`);
         }
 
-        // NOTE: Profile creation is now done in verify-email endpoint
-        // Only auth user and verification code are created here
-
+        // NOTE: No user is created yet - only after OTP verification
         res.status(201).json({
-            message: 'Registration successful. Please check your email for the verification code.',
-            user: { id: user.id, email: user.email },
-            session: null // No session yet
+            message: 'Verification code sent. Please check your email.',
+            email: email
         });
 
     } catch (error: any) {
@@ -182,92 +155,95 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
             return;
         }
 
-        // 2. Confirm User
-        const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
-        const found = users.find(u => u.email === email);
-
-        if (!found) {
-            res.status(404).json({ error: 'User not found' });
-            return;
-        }
-
-        const targetUserId = found.id;
-        const userName = found.user_metadata?.name || email.split('@')[0];
-
-        const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
-            targetUserId,
-            { email_confirm: true }
-        );
-
-        if (updateError) {
-            res.status(400).json({ error: updateError.message });
-            return;
-        }
-
-        // 3. Create user profile NOW (after successful verification)
-
-        const { data: existingProfile } = await supabaseAdmin
-            .from('user_profiles')
-            .select('id')
-            .eq('id', targetUserId)
-            .single();
-
-        if (!existingProfile) {
-            // Create user profile
-            await supabaseAdmin.from('user_profiles').insert({
-                id: targetUserId,
-                name: userName,
-                avatar_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=f9d406&color=1c1a0d&bold=true`,
-                current_course: 'AB',
-                problems_solved: 0,
-                study_hours: [0, 0, 0, 0, 0, 0, 0],
-                streak_days: 0,
-                percentile: 0
-            });
-
-            // Initialize topic mastery
-            const topics = ['Limits', 'Derivatives', 'Composite', 'Contextual Applications',
-                'Analytical Applications', 'Integration', 'Diff Eq', 'App of Int',
-                'Parametric/Polar', 'Series'];
-
-            for (const topic of topics) {
-                await supabaseAdmin.from('topic_mastery').insert({
-                    user_id: targetUserId,
-                    subject: topic,
-                    mastery_score: 0,
-                    full_mark: 100
-                });
+        // 2. Get registration data from stored metadata
+        let registrationData: { name: string; password: string };
+        try {
+            registrationData = JSON.parse(record.metadata || '{}');
+            if (!registrationData.name || !registrationData.password) {
+                throw new Error('Missing registration data');
             }
+        } catch (e) {
+            res.status(400).json({ error: 'Invalid registration data. Please register again.' });
+            return;
+        }
 
-            // Welcome notification
-            await supabaseAdmin.from('notifications').insert({
+        // 3. Create auth user NOW (after OTP verification)
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+            email,
+            password: registrationData.password,
+            email_confirm: true, // Already verified via OTP
+            user_metadata: { name: registrationData.name }
+        });
+
+        if (authError) {
+            console.error('Supabase CreateUser Error:', authError);
+            res.status(400).json({ error: authError.message });
+            return;
+        }
+
+        const user = authData.user;
+        if (!user) {
+            res.status(500).json({ error: 'User creation failed' });
+            return;
+        }
+
+        const targetUserId = user.id;
+        const userName = registrationData.name;
+
+        // 4. Create user profile
+        await supabaseAdmin.from('user_profiles').insert({
+            id: targetUserId,
+            name: userName,
+            avatar_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=f9d406&color=1c1a0d&bold=true`,
+            current_course: 'AB',
+            problems_solved: 0,
+            study_hours: [0, 0, 0, 0, 0, 0, 0],
+            streak_days: 0,
+            percentile: 0
+        });
+
+        // 5. Initialize topic mastery
+        const topics = ['Limits', 'Derivatives', 'Composite', 'Contextual Applications',
+            'Analytical Applications', 'Integration', 'Diff Eq', 'App of Int',
+            'Parametric/Polar', 'Series'];
+
+        for (const topic of topics) {
+            await supabaseAdmin.from('topic_mastery').insert({
                 user_id: targetUserId,
-                text: 'Welcome to NewMaoS! Start your first session.',
-                link: '/practice',
-                unread: true
+                subject: topic,
+                mastery_score: 0,
+                full_mark: 100
             });
-
-            // Initialize course progress
-            for (const courseId of ['AB', 'BC']) {
-                await supabaseAdmin.from('course_progress').insert({
-                    user_id: targetUserId,
-                    course_id: courseId,
-                    status: 'Not Started',
-                    current_module_index: 0,
-                    modules: courseId === 'AB'
-                        ? [{ id: 'm1', title: 'Limits & Continuity', progress: 0, status: 'active' },
-                        { id: 'm2', title: 'Differentiation', progress: 0, status: 'locked' }]
-                        : [{ id: 'm1', title: 'Infinite Sequences and Series', progress: 0, status: 'active' },
-                        { id: 'm2', title: 'Parametric Equations', progress: 0, status: 'locked' }]
-                });
-            }
-
-            console.log(`✅ Profile created for user: ${email}`);
         }
 
-        // 4. Cleanup verification code
+        // 6. Welcome notification
+        await supabaseAdmin.from('notifications').insert({
+            user_id: targetUserId,
+            text: 'Welcome to NewMaoS! Start your first session.',
+            link: '/practice',
+            unread: true
+        });
+
+        // 7. Initialize course progress
+        for (const courseId of ['AB', 'BC']) {
+            await supabaseAdmin.from('course_progress').insert({
+                user_id: targetUserId,
+                course_id: courseId,
+                status: 'Not Started',
+                current_module_index: 0,
+                modules: courseId === 'AB'
+                    ? [{ id: 'm1', title: 'Limits & Continuity', progress: 0, status: 'active' },
+                    { id: 'm2', title: 'Differentiation', progress: 0, status: 'locked' }]
+                    : [{ id: 'm1', title: 'Infinite Sequences and Series', progress: 0, status: 'active' },
+                    { id: 'm2', title: 'Parametric Equations', progress: 0, status: 'locked' }]
+            });
+        }
+
+        console.log(`✅ User and profile created for: ${email}`);
+
+        // 8. Cleanup verification code
         await supabaseAdmin.from('verification_codes').delete().eq('email', email);
-        res.json({ success: true, message: 'Email verified successfully' });
+        res.json({ success: true, message: 'Email verified and account created successfully!' });
 
     } catch (error: any) {
         console.error('Verify error:', error);
