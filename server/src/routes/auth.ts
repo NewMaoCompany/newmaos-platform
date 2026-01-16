@@ -58,11 +58,11 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        // 2. Generate verification token (using the code as token)
+        // 2. Generate 6-digit verification code
         const code = generateCode();
-        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours for link
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes for OTP
 
-        // 3. Store verification token in DB
+        // 3. Store verification code in DB
         const { error: dbError } = await supabaseAdmin
             .from('verification_codes')
             .upsert({
@@ -75,17 +75,13 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
             console.error('Error saving verification code:', dbError);
         }
 
-        // 4. Build verification link
-        const frontendUrl = process.env.FRONTEND_URL || 'https://newmaos.com';
-        const verifyLink = `${frontendUrl}/#/verify-email?email=${encodeURIComponent(email)}&code=${code}`;
-
-        // 5. Send Beautiful Email via Resend
+        // 4. Send 6-digit OTP Email via Resend
         let emailSent = false;
         try {
             await resend.emails.send({
                 from: 'NewMaoS <noreply@newmaos.com>',
                 to: email,
-                subject: 'Verify Your Email - NewMaoS',
+                subject: 'Your Verification Code - NewMaoS',
                 html: `
 <!DOCTYPE html>
 <html>
@@ -98,48 +94,29 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
         <tr>
             <td align="center" style="padding: 40px 20px;">
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
-                    <!-- Header -->
                     <tr>
                         <td style="padding: 40px 40px 24px; text-align: center;">
                             <div style="display: inline-block; background: #f9d406; width: 56px; height: 56px; border-radius: 14px; line-height: 56px; font-size: 28px; font-weight: 900; color: #1c1a0d;">∫</div>
-                            <h1 style="margin: 20px 0 0; font-size: 24px; font-weight: 800; color: #1c1a0d;">Welcome to NewMaoS!</h1>
+                            <h1 style="margin: 20px 0 0; font-size: 24px; font-weight: 800; color: #1c1a0d;">Your Verification Code</h1>
                         </td>
                     </tr>
-                    <!-- Body -->
                     <tr>
                         <td style="padding: 0 40px 32px;">
                             <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #4a4a4a; text-align: center;">
-                                Hi <strong>${name}</strong>, thanks for signing up! Click the button below to verify your email and start mastering AP Calculus.
+                                Hi <strong>${name}</strong>, use this code to verify your email:
                             </p>
-                            <!-- CTA Button -->
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td align="center">
-                                        <a href="${verifyLink}" style="display: inline-block; padding: 16px 40px; background-color: #f9d406; color: #1c1a0d; text-decoration: none; font-size: 16px; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 12px rgba(249, 212, 6, 0.4);">
-                                            Verify Email & Get Started
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
-                            <p style="margin: 24px 0 0; font-size: 13px; color: #888; text-align: center;">
-                                This link expires in 24 hours.
+                            <div style="background: #f5f5f5; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
+                                <span style="font-size: 36px; font-weight: 900; letter-spacing: 8px; color: #1c1a0d;">${code}</span>
+                            </div>
+                            <p style="margin: 0; font-size: 13px; color: #888; text-align: center;">
+                                This code expires in 15 minutes.
                             </p>
                         </td>
                     </tr>
-                    <!-- Divider -->
                     <tr>
-                        <td style="padding: 0 40px;">
-                            <hr style="border: none; border-top: 1px solid #eee; margin: 0;">
-                        </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding: 24px 40px 32px; text-align: center;">
-                            <p style="margin: 0 0 8px; font-size: 12px; color: #aaa;">
-                                If you didn't create an account, you can safely ignore this email.
-                            </p>
+                        <td style="padding: 24px 40px 32px; text-align: center; border-top: 1px solid #eee;">
                             <p style="margin: 0; font-size: 12px; color: #aaa;">
-                                © 2026 NewMaoS · AP Calculus Mastery
+                                If you didn't request this code, you can ignore this email.
                             </p>
                         </td>
                     </tr>
@@ -152,18 +129,17 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
                 `
             });
             emailSent = true;
-            console.log(`✅ Verification email sent to ${email}`);
+            console.log(`✅ Verification code sent to ${email}: ${code}`);
         } catch (emailError: any) {
             console.error('❌ Resend Error:', emailError?.message || emailError);
-            // In development, log the verification link to console for testing
-            console.log(`📧 [DEV FALLBACK] Verification link for ${email}: ${verifyLink}`);
+            console.log(`📧 [DEV FALLBACK] Verification code for ${email}: ${code}`);
         }
 
         // NOTE: Profile creation is now done in verify-email endpoint
         // Only auth user and verification code are created here
 
         res.status(201).json({
-            message: 'Registration successful. Please check your email for the verification link.',
+            message: 'Registration successful. Please check your email for the verification code.',
             user: { id: user.id, email: user.email },
             session: null // No session yet
         });
@@ -314,21 +290,17 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
         const userName = found?.user_metadata?.name || email.split('@')[0];
 
         const code = generateCode();
-        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
         await supabaseAdmin
             .from('verification_codes')
             .upsert({ email, code, expires_at: expiresAt.toISOString() });
 
-        // Build verification link
-        const frontendUrl = process.env.FRONTEND_URL || 'https://newmaos.com';
-        const verifyLink = `${frontendUrl}/#/verify-email?email=${encodeURIComponent(email)}&code=${code}`;
-
         try {
             await resend.emails.send({
                 from: 'NewMaoS <noreply@newmaos.com>',
                 to: email,
-                subject: 'Verify Your Email - NewMaoS',
+                subject: 'Your Verification Code - NewMaoS',
                 html: `
 <!DOCTYPE html>
 <html>
@@ -344,32 +316,26 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
                     <tr>
                         <td style="padding: 40px 40px 24px; text-align: center;">
                             <div style="display: inline-block; background: #f9d406; width: 56px; height: 56px; border-radius: 14px; line-height: 56px; font-size: 28px; font-weight: 900; color: #1c1a0d;">∫</div>
-                            <h1 style="margin: 20px 0 0; font-size: 24px; font-weight: 800; color: #1c1a0d;">Verify Your Email</h1>
+                            <h1 style="margin: 20px 0 0; font-size: 24px; font-weight: 800; color: #1c1a0d;">Your Verification Code</h1>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding: 0 40px 32px;">
                             <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #4a4a4a; text-align: center;">
-                                Hi <strong>${userName}</strong>, click the button below to verify your email and get started.
+                                Hi <strong>${userName}</strong>, use this code to verify your email:
                             </p>
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td align="center">
-                                        <a href="${verifyLink}" style="display: inline-block; padding: 16px 40px; background-color: #f9d406; color: #1c1a0d; text-decoration: none; font-size: 16px; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 12px rgba(249, 212, 6, 0.4);">
-                                            Verify Email & Get Started
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
-                            <p style="margin: 24px 0 0; font-size: 13px; color: #888; text-align: center;">
-                                This link expires in 24 hours.
+                            <div style="background: #f5f5f5; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
+                                <span style="font-size: 36px; font-weight: 900; letter-spacing: 8px; color: #1c1a0d;">${code}</span>
+                            </div>
+                            <p style="margin: 0; font-size: 13px; color: #888; text-align: center;">
+                                This code expires in 15 minutes.
                             </p>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding: 24px 40px 32px; text-align: center; border-top: 1px solid #eee;">
                             <p style="margin: 0; font-size: 12px; color: #aaa;">
-                                © 2026 NewMaoS · AP Calculus Mastery
+                                If you didn't request this code, you can ignore this email.
                             </p>
                         </td>
                     </tr>
@@ -381,13 +347,13 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
 </html>
                 `
             });
-            console.log(`✅ Verification email resent to ${email}`);
+            console.log(`✅ Verification code resent to ${email}: ${code}`);
         } catch (emailError: any) {
             console.error('❌ Resend Error:', emailError?.message || emailError);
-            console.log(`📧 [DEV FALLBACK] Verification link for ${email}: ${verifyLink}`);
+            console.log(`📧 [DEV FALLBACK] Verification code for ${email}: ${code}`);
         }
 
-        res.json({ message: 'Verification email sent successfully' });
+        res.json({ message: 'Verification code sent successfully' });
     } catch (error: any) {
         console.error('Resend error:', error);
         res.status(500).json({ error: 'Failed to resend' });
