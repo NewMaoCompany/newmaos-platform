@@ -10,6 +10,7 @@ import { Settings } from './pages/Settings';
 import { ProfileSettings, SecuritySettings, BillingSettings } from './pages/SettingsSubpages';
 import { Privacy, Terms, Support, Signup } from './pages/StaticPages';
 import { ResetPassword } from './pages/ResetPassword';
+import { VerifyEmail } from './pages/VerifyEmail';
 import { TopicDetail } from './pages/TopicDetail';
 import { QuestionCreator } from './pages/QuestionCreator';
 
@@ -27,6 +28,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
 
       {/* Main Pages - Accessible to Guests now */}
       <Route path="/dashboard" element={<Dashboard />} />

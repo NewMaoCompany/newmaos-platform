@@ -278,81 +278,64 @@ export const Signup = () => {
 
                 {step === 'verify' && (
                     <div className="animate-fade-in text-center">
-                        <button
-                            onClick={() => setStep('details')}
-                            className="absolute top-6 left-6 flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white transition-colors"
-                        >
-                            <span className="material-symbols-outlined text-sm">arrow_back</span>
-                            Back
-                        </button>
-
-                        <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 mx-auto mt-4">
-                            <span className="material-symbols-outlined text-3xl">lock</span>
+                        <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <span className="material-symbols-outlined text-5xl text-green-600 dark:text-green-400">
+                                mark_email_read
+                            </span>
                         </div>
 
-                        <h2 className="text-xl font-black text-[#1c1a0d] dark:text-white mb-2">Enter Verification Code</h2>
-                        <p className="text-sm text-gray-500 mb-6">
-                            We've sent a 6-digit code to <span className="font-bold text-text-main dark:text-white">{email}</span>
+                        <h2 className="text-2xl font-black text-[#1c1a0d] dark:text-white mb-3">Check Your Email!</h2>
+                        <p className="text-gray-500 dark:text-gray-400 mb-2">
+                            We've sent a verification link to:
+                        </p>
+                        <p className="text-lg font-bold text-text-main dark:text-white mb-6">
+                            {email}
                         </p>
 
-                        {error && (
-                            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400 mb-6 mx-auto">
-                                {error}
-                            </div>
-                        )}
+                        <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4 mb-6">
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                Click the button in the email to verify your account and get started with NewMaoS.
+                            </p>
+                        </div>
 
-                        <form onSubmit={handleVerify}>
-                            <div className="flex justify-center gap-2 mb-8">
-                                {verificationCode.map((digit, index) => (
-                                    <input
-                                        key={index}
-                                        id={`code-${index}`}
-                                        type="text"
-                                        maxLength={1}
-                                        value={digit}
-                                        onChange={(e) => handleCodeChange(index, e.target.value)}
-                                        onKeyDown={(e) => handleKeyDown(index, e)}
-                                        className="w-12 h-14 text-center text-2xl font-bold rounded-xl border-2 border-neutral-100 bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white"
-                                    />
-                                ))}
-                            </div>
+                        <div className="flex flex-col gap-3">
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    setIsLoading(true);
+                                    try {
+                                        await authApi.resendVerification(email);
+                                        alert('New verification email sent!');
+                                    } catch (err: any) {
+                                        setError(err.message || 'Failed to resend email.');
+                                    } finally {
+                                        setIsLoading(false);
+                                    }
+                                }}
+                                disabled={isLoading}
+                                className="w-full rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 px-5 py-3.5 text-base font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all flex justify-center items-center gap-2"
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                                        Sending...
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="material-symbols-outlined text-sm">refresh</span>
+                                        Resend Email
+                                    </>
+                                )}
+                            </button>
 
-                            <div className="flex flex-col gap-3">
-                                <button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="w-full rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-[#1c1a0d] shadow-sm hover:brightness-105 active:scale-[0.99] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
-                                >
-                                    {isLoading ? (
-                                        <>
-                                            <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                                            Verifying...
-                                        </>
-                                    ) : (
-                                        "Verify Account"
-                                    )}
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={async () => {
-                                        setIsLoading(true);
-                                        try {
-                                            await authApi.resendVerification(email);
-                                            alert('New code sent!');
-                                        } catch (err: any) {
-                                            setError(err.message || 'Failed to resend code.');
-                                        } finally {
-                                            setIsLoading(false);
-                                        }
-                                    }}
-                                    disabled={isLoading}
-                                    className="w-full rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 px-5 py-3.5 text-base font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-                                >
-                                    Resend Code
-                                </button>
-                            </div>
-                        </form>
+                            <button
+                                type="button"
+                                onClick={() => setStep('details')}
+                                className="text-sm text-gray-500 hover:text-text-main dark:hover:text-white transition-colors"
+                            >
+                                ← Use a different email
+                            </button>
+                        </div>
                     </div>
                 )}
 

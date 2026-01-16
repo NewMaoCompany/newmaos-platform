@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../AppContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { authApi } from '../src/services/api';
 
 export const Login = () => {
     const { login } = useApp();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     // Login State
     const [email, setEmail] = useState('');
@@ -13,6 +14,16 @@ export const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [needsVerification, setNeedsVerification] = useState(false); // Email not verified
+    const [showVerifiedBanner, setShowVerifiedBanner] = useState(false);
+
+    // Check for verified=true parameter from email verification
+    useEffect(() => {
+        if (searchParams.get('verified') === 'true') {
+            setShowVerifiedBanner(true);
+            // Clear the URL parameter
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+    }, [searchParams]);
 
     // Forgot Password Flow State
     const [view, setView] = useState<'login' | 'forgot-email' | 'forgot-reset'>('login');
@@ -130,6 +141,17 @@ export const Login = () => {
                                 <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">AP Calculus Mastery</p>
                             </div>
                         </div>
+
+                        {/* Verified Success Banner */}
+                        {showVerifiedBanner && (
+                            <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl text-sm text-green-700 dark:text-green-400 mb-4 flex items-center gap-3">
+                                <span className="material-symbols-outlined text-xl">check_circle</span>
+                                <div>
+                                    <p className="font-bold">Email verified successfully!</p>
+                                    <p className="text-green-600 dark:text-green-500 text-xs">You can now sign in to your account.</p>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Error Message */}
                         {error && (
