@@ -159,64 +159,12 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
             console.log(`📧 [DEV FALLBACK] Verification link for ${email}: ${verifyLink}`);
         }
 
-        // 6. Ensure Profile Exists (Idempotent)
-        const { data: existingProfile } = await supabaseAdmin
-            .from('user_profiles')
-            .select('id')
-            .eq('id', user.id)
-            .single();
-
-        if (!existingProfile) {
-            await supabaseAdmin.from('user_profiles').insert({
-                id: user.id,
-                name,
-                avatar_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f9d406&color=1c1a0d&bold=true`,
-                current_course: 'AB',
-                problems_solved: 0,
-                study_hours: [0, 0, 0, 0, 0, 0, 0],
-                streak_days: 0,
-                percentile: 0
-            });
-
-            // Initialize topic mastery
-            const topics = ['Limits', 'Derivatives', 'Composite', 'Contextual Applications',
-                'Analytical Applications', 'Integration', 'Diff Eq', 'App of Int',
-                'Parametric/Polar', 'Series'];
-
-            for (const topic of topics) {
-                await supabaseAdmin.from('topic_mastery').insert({
-                    user_id: user.id,
-                    subject: topic,
-                    mastery_score: 0,
-                    full_mark: 100
-                });
-            }
-
-            await supabaseAdmin.from('notifications').insert({
-                user_id: user.id,
-                text: 'Welcome to NewMaoS! Start your first session.',
-                link: '/practice',
-                unread: true
-            });
-
-            for (const courseId of ['AB', 'BC']) {
-                await supabaseAdmin.from('course_progress').insert({
-                    user_id: user.id,
-                    course_id: courseId,
-                    status: 'Not Started',
-                    current_module_index: 0,
-                    modules: courseId === 'AB'
-                        ? [{ id: 'm1', title: 'Limits & Continuity', progress: 0, status: 'active' },
-                        { id: 'm2', title: 'Differentiation', progress: 0, status: 'locked' }]
-                        : [{ id: 'm1', title: 'Infinite Sequences and Series', progress: 0, status: 'active' },
-                        { id: 'm2', title: 'Parametric Equations', progress: 0, status: 'locked' }]
-                });
-            }
-        }
+        // NOTE: Profile creation is now done in verify-email endpoint
+        // Only auth user and verification code are created here
 
         res.status(201).json({
-            message: 'Registration successful. Please check your email for the verification code.',
-            user: user,
+            message: 'Registration successful. Please check your email for the verification link.',
+            user: { id: user.id, email: user.email },
             session: null // No session yet
         });
 
@@ -259,15 +207,16 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
         }
 
         // 2. Confirm User
-        let targetUserId;
         const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
         const found = users.find(u => u.email === email);
-        if (found) targetUserId = found.id;
 
-        if (!targetUserId) {
+        if (!found) {
             res.status(404).json({ error: 'User not found' });
             return;
         }
+
+        const targetUserId = found.id;
+        const userName = found.user_metadata?.name || email.split('@')[0];
 
         const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
             targetUserId,
@@ -279,6 +228,68 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
             return;
         }
 
+        // 3. Create user profile NOW (after successful verification)
+
+        const { data: existingProfile } = await supabaseAdmin
+            .from('user_profiles')
+            .select('id')
+            .eq('id', targetUserId)
+            .single();
+
+        if (!existingProfile) {
+            // Create user profile
+            await supabaseAdmin.from('user_profiles').insert({
+                id: targetUserId,
+                name: userName,
+                avatar_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=f9d406&color=1c1a0d&bold=true`,
+                current_course: 'AB',
+                problems_solved: 0,
+                study_hours: [0, 0, 0, 0, 0, 0, 0],
+                streak_days: 0,
+                percentile: 0
+            });
+
+            // Initialize topic mastery
+            const topics = ['Limits', 'Derivatives', 'Composite', 'Contextual Applications',
+                'Analytical Applications', 'Integration', 'Diff Eq', 'App of Int',
+                'Parametric/Polar', 'Series'];
+
+            for (const topic of topics) {
+                await supabaseAdmin.from('topic_mastery').insert({
+                    user_id: targetUserId,
+                    subject: topic,
+                    mastery_score: 0,
+                    full_mark: 100
+                });
+            }
+
+            // Welcome notification
+            await supabaseAdmin.from('notifications').insert({
+                user_id: targetUserId,
+                text: 'Welcome to NewMaoS! Start your first session.',
+                link: '/practice',
+                unread: true
+            });
+
+            // Initialize course progress
+            for (const courseId of ['AB', 'BC']) {
+                await supabaseAdmin.from('course_progress').insert({
+                    user_id: targetUserId,
+                    course_id: courseId,
+                    status: 'Not Started',
+                    current_module_index: 0,
+                    modules: courseId === 'AB'
+                        ? [{ id: 'm1', title: 'Limits & Continuity', progress: 0, status: 'active' },
+                        { id: 'm2', title: 'Differentiation', progress: 0, status: 'locked' }]
+                        : [{ id: 'm1', title: 'Infinite Sequences and Series', progress: 0, status: 'active' },
+                        { id: 'm2', title: 'Parametric Equations', progress: 0, status: 'locked' }]
+                });
+            }
+
+            console.log(`✅ Profile created for user: ${email}`);
+        }
+
+        // 4. Cleanup verification code
         await supabaseAdmin.from('verification_codes').delete().eq('email', email);
         res.json({ success: true, message: 'Email verified successfully' });
 
@@ -297,30 +308,86 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
             return;
         }
 
+        // Get user name from auth
+        const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
+        const found = users.find(u => u.email === email);
+        const userName = found?.user_metadata?.name || email.split('@')[0];
+
         const code = generateCode();
-        const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
         await supabaseAdmin
             .from('verification_codes')
             .upsert({ email, code, expires_at: expiresAt.toISOString() });
 
+        // Build verification link
+        const frontendUrl = process.env.FRONTEND_URL || 'https://newmaos.com';
+        const verifyLink = `${frontendUrl}/#/verify-email?email=${encodeURIComponent(email)}&code=${code}`;
+
         try {
             await resend.emails.send({
                 from: 'NewMaoS <noreply@send.newmaos.com>',
                 to: email,
-                subject: 'New Verification Code - NewMaoS',
+                subject: 'Verify Your Email - NewMaoS',
                 html: `
-                    <p>Your new verification code is:</p>
-                    <h2 style="letter-spacing: 5px; background: #f4f4f5; padding: 10px; display: inline-block;">${code}</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="min-width: 100%; background-color: #f5f5f5;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+                    <tr>
+                        <td style="padding: 40px 40px 24px; text-align: center;">
+                            <div style="display: inline-block; background: #f9d406; width: 56px; height: 56px; border-radius: 14px; line-height: 56px; font-size: 28px; font-weight: 900; color: #1c1a0d;">∫</div>
+                            <h1 style="margin: 20px 0 0; font-size: 24px; font-weight: 800; color: #1c1a0d;">Verify Your Email</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0 40px 32px;">
+                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #4a4a4a; text-align: center;">
+                                Hi <strong>${userName}</strong>, click the button below to verify your email and get started.
+                            </p>
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td align="center">
+                                        <a href="${verifyLink}" style="display: inline-block; padding: 16px 40px; background-color: #f9d406; color: #1c1a0d; text-decoration: none; font-size: 16px; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 12px rgba(249, 212, 6, 0.4);">
+                                            Verify Email & Get Started
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="margin: 24px 0 0; font-size: 13px; color: #888; text-align: center;">
+                                This link expires in 24 hours.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 24px 40px 32px; text-align: center; border-top: 1px solid #eee;">
+                            <p style="margin: 0; font-size: 12px; color: #aaa;">
+                                © 2026 NewMaoS · AP Calculus Mastery
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
                 `
             });
             console.log(`✅ Verification email resent to ${email}`);
         } catch (emailError: any) {
             console.error('❌ Resend Error:', emailError?.message || emailError);
-            console.log(`📧 [DEV FALLBACK] New verification code for ${email}: ${code}`);
+            console.log(`📧 [DEV FALLBACK] Verification link for ${email}: ${verifyLink}`);
         }
 
-        res.json({ message: 'Code resent successfully' });
+        res.json({ message: 'Verification email sent successfully' });
     } catch (error: any) {
         console.error('Resend error:', error);
         res.status(500).json({ error: 'Failed to resend' });
