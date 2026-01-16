@@ -3,7 +3,9 @@
  * Handles all communication with the backend server
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+// In production (when VITE_API_URL is not set), use relative /api path
+// This allows Vercel rewrites to route requests to api.newmaos.com
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Helper to get auth token from Supabase session
 const getAuthToken = (): string | null => {
