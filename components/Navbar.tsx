@@ -32,7 +32,7 @@ export const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/dashboard');
   };
 
   const handleNotificationClick = (id: number, link: string) => {
