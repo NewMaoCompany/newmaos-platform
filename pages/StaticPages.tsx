@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../AppContext';
@@ -6,6 +6,12 @@ import { authApi } from '../src/services/api';
 
 const SimpleLayout = ({ title, children, showNavbar = true }: { title: string, children: React.ReactNode, showNavbar?: boolean }) => {
     const navigate = useNavigate();
+
+    // Scroll to top when page loads
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 flex flex-col">
             {showNavbar && <Navbar />}
