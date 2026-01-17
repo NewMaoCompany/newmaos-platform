@@ -28,10 +28,19 @@ export const Login = () => {
     }, [searchParams]);
 
     // Forgot Password Flow State
-    const [view, setView] = useState<'login' | 'forgot-email' | 'forgot-reset'>('login');
+    const [view, setView] = useState<'login' | 'forgot-email' | 'forgot-verify' | 'forgot-update'>('login');
     const [resetEmail, setResetEmail] = useState('');
     const [resetCode, setResetCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
+
+    // Password Validation
+    const passwordChecks = {
+        minLength: newPassword.length >= 8,
+        hasUppercase: /[A-Z]/.test(newPassword),
+        hasLowercase: /[a-z]/.test(newPassword),
+        hasNumber: /[0-9]/.test(newPassword)
+    };
+    const isPasswordValid = Object.values(passwordChecks).every(Boolean);
 
     // --- Handlers ---
 
@@ -93,10 +102,25 @@ export const Login = () => {
 
         try {
             await authApi.forgotPassword(resetEmail);
-            showToast(`Password reset email sent to ${resetEmail}. Check your inbox!`, 'success');
-            setView('forgot-reset');
+            showToast(`Verification code sent to ${resetEmail}`, 'success');
+            setView('forgot-verify');
         } catch (err: any) {
-            setError(err.message || 'Failed to send reset email.');
+            setError(err.message || 'Failed to send verification code.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleVerifyCode = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError('');
+
+        try {
+            await authApi.verifyResetCode(resetEmail, resetCode);
+            setView('forgot-update');
+        } catch (err: any) {
+            setError(err.message || 'Invalid code. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -104,17 +128,29 @@ export const Login = () => {
 
     const handleResetPassword = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!isPasswordValid) return;
+
         setIsLoading(true);
         setError('');
 
         try {
-            await authApi.resetPassword(newPassword, resetCode);
-            showToast('Password successfully reset! Please sign in.', 'success');
-            setEmail(resetEmail);
-            setPassword('');
-            setView('login');
+            const response = await authApi.resetPassword(resetEmail, resetCode, newPassword);
+
+            // Auto-login handling
+            if (response.session) {
+                localStorage.setItem('auth_token', response.session.access_token);
+                // Use profile name if available, otherwise email prefix
+                const name = response.profile?.name || response.user?.user_metadata?.name || resetEmail.split('@')[0];
+                login(resetEmail, name); // Determine name from response if possible
+                showToast('Password updated! Logging you in...', 'success');
+                navigate('/dashboard');
+            } else {
+                showToast('Password updated! Please sign in.', 'success');
+                setView('login');
+                setPassword('');
+            }
         } catch (err: any) {
-            setError(err.message || 'Failed to reset password.');
+            setError(err.message || 'Failed to update password.');
         } finally {
             setIsLoading(false);
         }
@@ -312,29 +348,117 @@ export const Login = () => {
                     </div>
                 )}
 
-                {/* --- VIEW: FORGOT PASSWORD (STEP 2: RESET) --- */}
-                {view === 'forgot-reset' && (
+                {/* --- VIEW: FORGOT PASSWORD (STEP 2: VERIFY CODE) --- */}
+                {view === 'forgot-verify' && (
                     <div className="animate-fade-in">
-                        <div className="mb-8 text-center">
-                            <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-500 rounded-xl flex items-center justify-center mb-4 mx-auto">
-                                <span className="material-symbols-outlined text-2xl">mark_email_read</span>
+                        <button
+                            onClick={() => setView('forgot-email')}
+                            className="flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white mb-6 transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-sm">arrow_back</span>
+                            Back to Email
+                        </button>
+
+                        <div className="mb-8">
+                            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-500 rounded-xl flex items-center justify-center mb-4">
+                                <span className="material-symbols-outlined text-2xl">verified_user</span>
                             </div>
-                            <h2 className="text-xl font-black text-[#1c1a0d] dark:text-white">Check Your Email</h2>
-                            <p className="text-sm text-gray-500 mt-2">
-                                We sent a password reset link to <span className="font-bold text-text-main dark:text-gray-300">{resetEmail}</span>.
-                            </p>
-                            <p className="text-sm text-gray-400 mt-4">
-                                Click the link in the email to set a new password.
-                            </p>
+                            <h2 className="text-2xl font-black text-[#1c1a0d] dark:text-white">Verify Code</h2>
+                            <p className="text-sm text-gray-500 mt-2">Enter the 6-digit code sent to <span className="font-bold">{resetEmail}</span>.</p>
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={() => setView('login')}
-                            className="w-full rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-[#1c1a0d] shadow-sm hover:brightness-105 active:scale-[0.99] transition-all"
-                        >
-                            Return to Sign In
-                        </button>
+                        <form onSubmit={handleVerifyCode} className="flex flex-col gap-6">
+                            <div className="space-y-1.5">
+                                <label className="block text-sm font-semibold text-[#1c1a0d] dark:text-neutral-200 ml-1" htmlFor="resetCode">
+                                    Verification Code
+                                </label>
+                                <div className="relative group">
+                                    <input
+                                        id="resetCode"
+                                        type="text"
+                                        value={resetCode}
+                                        onChange={(e) => setResetCode(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
+                                        placeholder="123456"
+                                        className="block w-full rounded-xl border-neutral-200 bg-white pl-11 pr-4 py-3.5 text-base text-[#1c1a0d] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white tracking-widest font-mono"
+                                        required
+                                        autoFocus
+                                    />
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-primary">
+                                        <span className="material-symbols-outlined text-[20px]">key</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={isLoading || resetCode.length !== 6}
+                                className="w-full rounded-xl bg-black dark:bg-white px-5 py-3.5 text-base font-bold text-white dark:text-black shadow-sm hover:opacity-90 active:scale-[0.99] transition-all flex justify-center items-center gap-2"
+                            >
+                                {isLoading ? <span className="material-symbols-outlined animate-spin">progress_activity</span> : 'Verify Code'}
+                            </button>
+                        </form>
+                    </div>
+                )}
+
+                {/* --- VIEW: FORGOT PASSWORD (STEP 3: UPDATE PASSWORD) --- */}
+                {view === 'forgot-update' && (
+                    <div className="animate-fade-in">
+                        <div className="mb-8">
+                            <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-500 rounded-xl flex items-center justify-center mb-4">
+                                <span className="material-symbols-outlined text-2xl">lock_reset</span>
+                            </div>
+                            <h2 className="text-2xl font-black text-[#1c1a0d] dark:text-white">New Password</h2>
+                            <p className="text-sm text-gray-500 mt-2">Create a new secure password for your account.</p>
+                        </div>
+
+                        <form onSubmit={handleResetPassword} className="flex flex-col gap-6">
+                            <div className="space-y-1.5">
+                                <label className="block text-sm font-semibold text-[#1c1a0d] dark:text-neutral-200 ml-1" htmlFor="newPassword">
+                                    New Password
+                                </label>
+                                <div className="relative group">
+                                    <input
+                                        id="newPassword"
+                                        type="password"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        placeholder="Enter new password"
+                                        className="block w-full rounded-xl border-neutral-200 bg-white pl-11 pr-4 py-3.5 text-base text-[#1c1a0d] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white"
+                                        required
+                                        autoFocus
+                                    />
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-primary">
+                                        <span className="material-symbols-outlined text-[20px]">lock</span>
+                                    </div>
+                                </div>
+                                {newPassword.length > 0 && (
+                                    <div className="mt-2 grid grid-cols-2 gap-1 text-xs">
+                                        <div className={`flex items-center gap-1.5 ${passwordChecks.minLength ? 'text-green-600' : 'text-gray-400'}`}>
+                                            <span className="material-symbols-outlined text-sm">{passwordChecks.minLength ? 'check_circle' : 'circle'}</span>
+                                            8+ characters
+                                        </div>
+                                        <div className={`flex items-center gap-1.5 ${passwordChecks.hasUppercase ? 'text-green-600' : 'text-gray-400'}`}>
+                                            <span className="material-symbols-outlined text-sm">{passwordChecks.hasUppercase ? 'check_circle' : 'circle'}</span>
+                                            Uppercase
+                                        </div>
+                                        <div className={`flex items-center gap-1.5 ${passwordChecks.hasLowercase ? 'text-green-600' : 'text-gray-400'}`}>
+                                            <span className="material-symbols-outlined text-sm">{passwordChecks.hasLowercase ? 'check_circle' : 'circle'}</span>
+                                            Lowercase
+                                        </div>
+                                        <div className={`flex items-center gap-1.5 ${passwordChecks.hasNumber ? 'text-green-600' : 'text-gray-400'}`}>
+                                            <span className="material-symbols-outlined text-sm">{passwordChecks.hasNumber ? 'check_circle' : 'circle'}</span>
+                                            Number
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={isLoading || !isPasswordValid}
+                                className="w-full rounded-xl bg-black dark:bg-white px-5 py-3.5 text-base font-bold text-white dark:text-black shadow-sm hover:opacity-90 active:scale-[0.99] transition-all flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                                {isLoading ? <span className="material-symbols-outlined animate-spin">progress_activity</span> : 'Update Password'}
+                            </button>
+                        </form>
                     </div>
                 )}
 

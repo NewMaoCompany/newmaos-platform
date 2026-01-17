@@ -392,39 +392,161 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
             return;
         }
 
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password`
-        });
+        // 1. Check if user exists
+        const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
+        const user = users.find(u => u.email === email);
 
-        if (error) {
-            res.status(400).json({ error: error.message });
+        if (!user) {
+            res.status(404).json({ error: 'No account found with this email. Please sign up.' });
             return;
         }
 
-        res.json({ message: 'Password reset email sent' });
-    } catch (error) {
+        // 2. Generate 6-digit code
+        const code = generateCode();
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+        // 3. Store code in DB
+        const { error: dbError } = await supabaseAdmin
+            .from('verification_codes')
+            .upsert({
+                email,
+                code,
+                expires_at: expiresAt.toISOString(),
+                metadata: JSON.stringify({ type: 'password_reset' })
+            });
+
+        if (dbError) {
+            console.error('DB Error:', dbError);
+            res.status(500).json({ error: 'Failed to generate code' });
+            return;
+        }
+
+        // 4. Send Email via Resend
+        try {
+            await resend.emails.send({
+                from: 'NewMaoS <noreply@newmaos.com>',
+                to: email,
+                subject: 'Reset Your Password - NewMaoS',
+                html: `
+<!DOCTYPE html>
+<html>
+<body style="font-family: sans-serif; background-color: #f5f5f5; padding: 40px;">
+    <div style="max-width: 480px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; text-align: center;">
+        <h1 style="color: #1c1a0d; margin-bottom: 20px;">Reset Password</h1>
+        <p style="color: #4a4a4a; font-size: 16px;">Use the code below to reset your password:</p>
+        <div style="background: #f5f5f5; padding: 20px; border-radius: 12px; margin: 24px 0;">
+            <span style="font-size: 32px; font-weight: 900; letter-spacing: 6px; color: #1c1a0d;">${code}</span>
+        </div>
+        <p style="color: #888; font-size: 13px;">Expires in 15 minutes.</p>
+    </div>
+</body>
+</html>
+                `
+            });
+            console.log(`✅ Reset code sent to ${email}: ${code}`);
+        } catch (emailError: any) {
+            console.error('Resend Error:', emailError);
+            console.log(`📧 [DEV] Reset code for ${email}: ${code}`);
+        }
+
+        res.json({ message: 'Verification code sent' });
+    } catch (error: any) {
         console.error('Forgot password error:', error);
-        res.status(500).json({ error: 'Failed to send reset email' });
+        res.status(500).json({ error: 'Failed to process request' });
+    }
+});
+
+// POST /api/auth/verify-reset-code
+router.post('/verify-reset-code', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { email, code } = req.body;
+
+        const { data: record } = await supabaseAdmin
+            .from('verification_codes')
+            .select('*')
+            .eq('email', email)
+            .single();
+
+        if (!record || record.code !== code) {
+            res.status(400).json({ error: 'Invalid code' });
+            return;
+        }
+
+        if (new Date(record.expires_at) < new Date()) {
+            res.status(400).json({ error: 'Code expired' });
+            return;
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Verification failed' });
     }
 });
 
 // POST /api/auth/reset-password
 router.post('/reset-password', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { password, token } = req.body;
-        if (!password || !token) {
-            res.status(400).json({ error: 'Password and token are required' });
+        const { email, code, password } = req.body;
+
+        // 1. Verify Code Again
+        const { data: record } = await supabaseAdmin
+            .from('verification_codes')
+            .select('*')
+            .eq('email', email)
+            .single();
+
+        if (!record || record.code !== code || new Date(record.expires_at) < new Date()) {
+            res.status(400).json({ error: 'Invalid or expired code' });
             return;
         }
 
-        const { error } = await supabase.auth.updateUser({ password });
-
-        if (error) {
-            res.status(400).json({ error: error.message });
+        // 2. Get User ID
+        const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
+        const user = users.find(u => u.email === email);
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
             return;
         }
 
-        res.json({ message: 'Password updated successfully' });
+        // 3. Update Password
+        const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
+            password: password
+        });
+
+        if (updateError) {
+            res.status(400).json({ error: updateError.message });
+            return;
+        }
+
+        // 4. Auto Login
+        const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (loginError || !loginData.user || !loginData.session) {
+            // Fallback if auto-login fails, just return success message
+            res.json({ message: 'Password updated. Please sign in.' });
+            return;
+        }
+
+        // 5. Get Profile
+        const { data: profile } = await supabaseAdmin
+            .from('user_profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+        // 6. Delete code
+        await supabaseAdmin.from('verification_codes').delete().eq('email', email);
+
+        res.json({
+            message: 'Password updated successfully',
+            user: loginData.user,
+            session: loginData.session,
+            profile
+        });
+
     } catch (error) {
         console.error('Reset password error:', error);
         res.status(500).json({ error: 'Failed to reset password' });

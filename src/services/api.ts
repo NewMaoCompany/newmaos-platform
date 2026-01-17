@@ -83,10 +83,17 @@ export const authApi = {
         });
     },
 
-    async resetPassword(password: string, token: string) {
-        return apiRequest<{ message: string }>('/auth/reset-password', {
+    async verifyResetCode(email: string, code: string) {
+        return apiRequest<{ success: boolean }>('/auth/verify-reset-code', {
             method: 'POST',
-            body: JSON.stringify({ password, token }),
+            body: JSON.stringify({ email, code }),
+        });
+    },
+
+    async resetPassword(email: string, code: string, password: string) {
+        return apiRequest<{ message: string; session?: any; user?: any; profile?: any }>('/auth/reset-password', {
+            method: 'POST',
+            body: JSON.stringify({ email, code, password }),
         });
     },
 
