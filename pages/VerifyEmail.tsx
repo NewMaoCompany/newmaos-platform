@@ -83,7 +83,7 @@ export const VerifyEmail = () => {
                             Email Verified!
                         </h1>
                         <p className="text-gray-500 dark:text-gray-400 mb-6">
-                            Your email has been verified successfully. Redirecting to login...
+                            Your email has been verified successfully. Redirecting to sign in...
                         </p>
                         <div className="flex items-center justify-center gap-2 text-sm text-primary font-medium">
                             <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>

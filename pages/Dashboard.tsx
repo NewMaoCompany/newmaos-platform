@@ -296,7 +296,7 @@ export const Dashboard = () => {
               <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-text-main shadow-glow mb-6 rotate-3">
                 <span className="material-symbols-outlined text-4xl">lock</span>
               </div>
-              <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">Login Required</h3>
+              <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">Sign In Required</h3>
               <p className="text-gray-500 dark:text-gray-400 mb-8">
                 Save your progress, track your mastery, and get personalized AI recommendations.
               </p>

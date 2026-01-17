@@ -109,7 +109,7 @@ export const Login = () => {
 
         try {
             await authApi.resetPassword(newPassword, resetCode);
-            showToast('Password successfully reset! Please login.', 'success');
+            showToast('Password successfully reset! Please sign in.', 'success');
             setEmail(resetEmail);
             setPassword('');
             setView('login');
@@ -269,7 +269,7 @@ export const Login = () => {
                             className="flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white mb-6 transition-colors"
                         >
                             <span className="material-symbols-outlined text-sm">arrow_back</span>
-                            Back to Login
+                            Back to Sign In
                         </button>
 
                         <div className="mb-8">
