@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, CourseType, Activity, TopicMastery, CourseState, Recommendation, SessionMode, Question, AppNotification, UnitContent, SubTopic } from './types';
 import { INITIAL_USER, INITIAL_ACTIVITIES, INITIAL_RADAR_DATA, INITIAL_LINE_DATA, INITIAL_COURSES, PRACTICE_QUESTIONS, INITIAL_NOTIFICATIONS, COURSE_CONTENT_DATA } from './constants';
+import { supabase } from './src/services/supabaseClient';
 
 interface AppContextType {
     user: User;
@@ -107,6 +108,41 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         // Return average
         return Math.round(totalScore / relevantTopics.length);
     };
+
+    // Effect: Check for existing Supabase session on app start (persistent login)
+    useEffect(() => {
+        const restoreSession = async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user) {
+                    const email = session.user.email || '';
+                    const name = session.user.user_metadata?.name || email.split('@')[0];
+                    setIsAuthenticated(true);
+                    setUser(prev => ({
+                        ...prev,
+                        name: name.charAt(0).toUpperCase() + name.slice(1),
+                        email: email,
+                        avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f9d406&color=1c1a0d&bold=true`
+                    }));
+                    console.log('✅ Session restored for:', email);
+                }
+            } catch (error) {
+                console.log('No existing session found');
+            }
+        };
+
+        restoreSession();
+
+        // Listen for auth state changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_OUT') {
+                setIsAuthenticated(false);
+                setUser(INITIAL_USER);
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
 
     // Effect: Update recommendation when course changes
     useEffect(() => {
