@@ -900,7 +900,7 @@ export const QuestionCreator = () => {
                             {/* Prompt Section */}
                             <section className="mb-8">
                                 <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-sm font-bold uppercase text-gray-400 tracking-wider">Question Prompt</h3>
+                                    <h3 className="text-sm font-bold uppercase text-gray-400 tracking-wider">Question Prompt (Text / Image)</h3>
                                     <InputTypeToggle
                                         type={formData.promptType}
                                         onChange={(t) => setFormData({ ...formData, promptType: t, prompt: '' })}
