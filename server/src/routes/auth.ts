@@ -619,4 +619,56 @@ router.post('/verify-creator', async (req: Request, res: Response): Promise<void
     }
 });
 
+// POST /api/auth/verify-change-email
+router.post('/verify-change-email', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { email, code, userId } = req.body;
+
+        if (!email || !code || !userId) {
+            res.status(400).json({ error: 'Missing requirements' });
+            return;
+        }
+
+        // 1. Verify Code
+        const { data: record } = await supabaseAdmin
+            .from('verification_codes')
+            .select('*')
+            .eq('email', email)
+            .single();
+
+        if (!record || record.code !== code || new Date(record.expires_at) < new Date()) {
+            res.status(400).json({ error: 'Invalid or expired verification code' });
+            return;
+        }
+
+        // 2. Check if email is already taken
+        const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
+        const existing = users.find(u => u.email === email);
+        if (existing) {
+            res.status(400).json({ error: 'Email is already in use by another account.' });
+            return;
+        }
+
+        // 3. Update User Email via Admin
+        const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+            email: email,
+            email_confirm: true
+        });
+
+        if (updateError) {
+            res.status(400).json({ error: updateError.message });
+            return;
+        }
+
+        // 4. Cleanup
+        await supabaseAdmin.from('verification_codes').delete().eq('email', email);
+
+        res.json({ success: true, message: 'Email updated successfully' });
+
+    } catch (error: any) {
+        console.error('Verify change email error:', error);
+        res.status(500).json({ error: 'Failed to update email' });
+    }
+});
+
 export default router;

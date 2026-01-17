@@ -117,6 +117,13 @@ export const authApi = {
             body: JSON.stringify({ email }),
         });
     },
+
+    async verifyChangeEmail(email: string, code: string, userId: string) {
+        return apiRequest<{ success: boolean; message: string }>('/auth/verify-change-email', {
+            method: 'POST',
+            body: JSON.stringify({ email, code, userId }),
+        });
+    },
 };
 
 // =====================================

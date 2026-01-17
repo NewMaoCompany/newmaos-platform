@@ -214,7 +214,15 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     };
 
     const updateUser = (updates: Partial<User>) => {
-        setUser(prev => ({ ...prev, ...updates }));
+        setUser(prev => {
+            const newState = { ...prev, ...updates };
+            // If name is being updated, regenerate avatar
+            if (updates.name) {
+                const displayName = updates.name;
+                newState.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=f9d406&color=1c1a0d&bold=true`;
+            }
+            return newState;
+        });
     };
 
     const setSessionMode = (mode: SessionMode) => {
