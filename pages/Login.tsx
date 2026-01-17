@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../AppContext';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { authApi } from '../src/services/api';
+import { supabase } from '../src/services/supabaseClient';
 import { useToast } from '../components/Toast';
 
 export const Login = () => {
@@ -71,10 +72,9 @@ export const Login = () => {
             const response = await authApi.login(email, password);
 
             if (response.session) {
-                // Store token for API calls
-                // The instruction implies removing this line, but the provided snippet is malformed.
-                // Assuming the intent was to remove the localStorage line if it's handled elsewhere.
-                // For now, keeping it as the instruction's snippet is not a valid replacement for login.
+                // Set session in Supabase client to enable persistence and auto-refresh
+                await supabase.auth.setSession(response.session);
+                // Keep this for legacy fallback in api.ts
                 localStorage.setItem('auth_token', response.session.access_token);
             }
 
@@ -154,6 +154,8 @@ export const Login = () => {
 
             // Auto-login handling
             if (response.session) {
+                // Set session in Supabase client
+                await supabase.auth.setSession(response.session);
                 localStorage.setItem('auth_token', response.session.access_token);
                 // Use profile name if available, otherwise email prefix
                 const name = response.profile?.name || response.user?.user_metadata?.name || resetEmail.split('@')[0];

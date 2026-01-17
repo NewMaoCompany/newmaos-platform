@@ -3,6 +3,7 @@ import { Navbar } from '../components/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../AppContext';
 import { authApi } from '../src/services/api';
+import { supabase } from '../src/services/supabaseClient';
 
 const SimpleLayout = ({ title, children, showNavbar = true }: { title: string, children: React.ReactNode, showNavbar?: boolean }) => {
     const navigate = useNavigate();
@@ -352,6 +353,7 @@ export const Signup = () => {
             try {
                 const loginRes = await authApi.login(email, password);
                 if (loginRes.session) {
+                    await supabase.auth.setSession(loginRes.session);
                     localStorage.setItem('auth_token', loginRes.session.access_token);
                     login(email, name);
                     navigate('/dashboard');
