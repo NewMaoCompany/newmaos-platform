@@ -389,9 +389,11 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             // Update local state with the returned question
             setQuestions(prev => [...prev, newQuestion]);
             console.log('✅ Question created and synced to Supabase:', newQuestion.id);
+            return true;
         } catch (error) {
             console.error('Failed to create question:', error);
             alert('Failed to save question. Please try again.');
+            return false;
         }
     };
 
@@ -408,9 +410,11 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 supportingSkillIds: (updatedQ as any).supportingSkillIds || [],
             });
             console.log('✅ Question updated and synced to Supabase:', updatedQ.id);
+            return true;
         } catch (error) {
             console.error('Failed to update question:', error);
-            // Could revert optimistic update here if needed
+            alert('Failed to update question. Please try again.');
+            return false;
         }
     };
 
@@ -421,9 +425,13 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
             // Call backend API to delete from Supabase
             await questionsApi.deleteQuestion(id);
+            await questionsApi.deleteQuestion(id);
             console.log('✅ Question deleted from Supabase:', id);
+            return true;
         } catch (error) {
             console.error('Failed to delete question:', error);
+            alert('Failed to delete question. Please check connection.');
+            return false;
         }
     };
 

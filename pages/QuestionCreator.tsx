@@ -234,7 +234,8 @@ const TopicSettings = ({
     const [localHasPractice, setLocalHasPractice] = useState(true);
     const [isTimeFocused, setIsTimeFocused] = useState(false); // Track focus for styling
     const [isSaving, setIsSaving] = useState(false);
-    const [isSaved, setIsSaved] = useState(false);
+    const [isSaved, setIsSaved] = useState(false); // Success indicator for main form
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     useEffect(() => {
         if (content) {
@@ -523,7 +524,7 @@ export const QuestionCreator = () => {
         setIsEditing(true);
     };
 
-    const performSave = (): boolean => {
+    const performSave = async (): Promise<boolean> => {
         // Strong validation
         const errors: string[] = [];
         if (!formData.prompt) errors.push('题干 (Prompt)');
@@ -558,20 +559,37 @@ export const QuestionCreator = () => {
             supportingSkillIds: formData.supportingSkillIds
         } as Question;
 
+        let success = false;
         if (formData.id) {
-            updateQuestion(payload);
+            success = await updateQuestion(payload);
         } else {
-            addQuestion({ ...formData, correctOptionId: formData.correctOptionLabel });
+            success = await addQuestion({ ...formData, correctOptionId: formData.correctOptionLabel });
         }
-        return true;
+        return success;
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         setIsSaving(true);
-        setTimeout(() => {
-            if (performSave()) { }
+        try {
+            const success = await performSave();
+            if (success) {
+                // Show success state briefly
+                // Note: We don't have a separate state for "success toast" yet, but we can reuse a button effect or just rely on the fact that isSaving stops.
+                // For now, let's create a local success state for the button.
+                setIsEditing(false); // Close editor on success? Or maybe just show success. 
+                // Let's keep it open but show feedback.
+                // Actually, previous behavior was keeping it open?
+                // Step 2957 code: `if (performSave()) { }` - it did nothing on success except stop spinning.
+
+                // Let's improve: Show success and maybe close if it was a create? 
+                // For now, just stop spinning.
+                alert('Saved successfully!'); // Explicit feedback
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
             setIsSaving(false);
-        }, 500);
+        }
     };
 
     const handleCancel = () => {
@@ -604,19 +622,22 @@ export const QuestionCreator = () => {
         }
     };
 
-    const confirmNavigationAndSave = () => {
+    const confirmNavigationAndSave = async () => {
         setIsSaving(true);
-        setTimeout(() => {
-            performSave();
-            setIsSaving(false);
-            if (pendingNavTarget) {
-                setSelectedUnitId(pendingNavTarget.unitId);
-                setSelectedSubTopicId(pendingNavTarget.subTopicId);
+        try {
+            const success = await performSave();
+            if (success) {
+                if (pendingNavTarget) {
+                    setSelectedUnitId(pendingNavTarget.unitId);
+                    setSelectedSubTopicId(pendingNavTarget.subTopicId);
+                }
+                setIsEditing(false);
+                setShowNavConfirm(false);
+                setPendingNavTarget(null);
             }
-            setIsEditing(false);
-            setShowNavConfirm(false);
-            setPendingNavTarget(null);
-        }, 500);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const toggleTag = (arrayName: 'skillTags', value: string) => {
