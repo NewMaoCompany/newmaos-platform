@@ -540,6 +540,17 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
             return;
         }
 
+        // 2b. Check if new password is same as old password
+        const { error: checkError } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (!checkError) {
+            res.status(400).json({ error: 'New password cannot be the same as the old password.' });
+            return;
+        }
+
         // 3. Update Password
         const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
             password: password
