@@ -671,4 +671,87 @@ router.post('/verify-change-email', async (req: Request, res: Response): Promise
     }
 });
 
+// POST /api/auth/initiate-change-email
+router.post('/initiate-change-email', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            res.status(400).json({ error: 'Email is required' });
+            return;
+        }
+
+        // 1. Check if email is already taken
+        const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
+        const existing = users.find(u => u.email === email);
+        if (existing) {
+            res.status(400).json({ error: 'This email is already associated with another account.' });
+            return;
+        }
+
+        // 2. Generate and Send Code (Same logic as resend)
+        const code = generateCode();
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+        await supabaseAdmin
+            .from('verification_codes')
+            .upsert({ email, code, expires_at: expiresAt.toISOString() });
+
+        try {
+            await resend.emails.send({
+                from: 'NewMaoS <noreply@newmaos.com>',
+                to: email,
+                subject: 'Verify Your New Email - NewMaoS',
+                html: `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="min-width: 100%; background-color: #f5f5f5;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+                    <tr>
+                        <td style="padding: 40px 40px 24px; text-align: center;">
+                            <div style="display: inline-block; background: #f9d406; width: 56px; height: 56px; border-radius: 14px; line-height: 56px; font-size: 28px; font-weight: 900; color: #1c1a0d;">∫</div>
+                            <h1 style="margin: 20px 0 0; font-size: 24px; font-weight: 800; color: #1c1a0d;">Verify New Email</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0 40px 32px;">
+                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #4a4a4a; text-align: center;">
+                                Use this code to verify your new email address:
+                            </p>
+                            <div style="background: #f5f5f5; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
+                                <span style="font-size: 36px; font-weight: 900; letter-spacing: 8px; color: #1c1a0d;">${code}</span>
+                            </div>
+                            <p style="margin: 0; font-size: 13px; color: #888; text-align: center;">
+                                This code expires in 10 minutes.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+                `
+            });
+            console.log(`✅ Change Email code sent to ${email}: ${code}`);
+        } catch (emailError: any) {
+            console.error('❌ Resend Error:', emailError?.message || emailError);
+            console.log(`📧 [DEV FALLBACK] Code for ${email}: ${code}`);
+        }
+
+        res.json({ message: 'Verification code sent to new email' });
+
+    } catch (error: any) {
+        console.error('Initiate change email error:', error);
+        res.status(500).json({ error: 'Failed to initiate email change' });
+    }
+});
+
 export default router;

@@ -64,10 +64,10 @@ export const ProfileSettings = () => {
 
       // 2. Handle Email Change
       if (email !== user.email) {
-        // Trigger Verification
+        // Trigger Verification START - Checks if email is taken first
         setPendingEmail(email);
-        // Send code to NEW email
-        const res = await authApi.resendVerification(email);
+        // Send code to NEW email (will throw 400 if taken)
+        const res = await authApi.initiateChangeEmail(email);
         setShowVerifyModal(true);
         // We wait for verification to complete before updating local state/showing success for email
         setIsSaving(false);
