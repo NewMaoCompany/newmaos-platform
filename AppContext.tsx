@@ -192,8 +192,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
         setIsAuthenticated(false);
         setIsCreatorAuthenticated(false); // Reset creator access on logout
-        setHasDismissedLoginPrompt(false); // Reset prompt state on logout so next user sees it
-        sessionStorage.removeItem('hasDismissedLoginPrompt'); // Also clear from sessionStorage
+        setHasDismissedLoginPrompt(true); // Don't show popup immediately after logout
+        sessionStorage.setItem('hasDismissedLoginPrompt', 'true'); // Persist dismissed state for this session
         localStorage.removeItem('auth_token'); // Clear auth token
         setUser(INITIAL_USER); // Reset to empty on logout
     };
