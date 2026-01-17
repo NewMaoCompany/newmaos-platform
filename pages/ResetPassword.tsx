@@ -82,25 +82,35 @@ export const ResetPassword = () => {
                 <form onSubmit={handleUpdatePassword} className="space-y-4">
                     <div className="space-y-1.5">
                         <label className="block text-sm font-semibold ml-1">New Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="block w-full rounded-xl border-neutral-200 bg-white px-4 py-3 placeholder-neutral-400 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all dark:bg-black/20 dark:border-neutral-700"
-                            placeholder="Enter new password"
-                            required
-                        />
+                        <div className="relative group">
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="block w-full rounded-xl border-neutral-200 bg-white pl-11 pr-4 py-3 placeholder-neutral-400 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white"
+                                placeholder="Enter new password"
+                                required
+                            />
+                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-primary">
+                                <span className="material-symbols-outlined text-[20px]">lock</span>
+                            </div>
+                        </div>
                     </div>
                     <div className="space-y-1.5">
                         <label className="block text-sm font-semibold ml-1">Confirm Password</label>
-                        <input
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="block w-full rounded-xl border-neutral-200 bg-white px-4 py-3 placeholder-neutral-400 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all dark:bg-black/20 dark:border-neutral-700"
-                            placeholder="Confirm new password"
-                            required
-                        />
+                        <div className="relative group">
+                            <input
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className="block w-full rounded-xl border-neutral-200 bg-white pl-11 pr-4 py-3 placeholder-neutral-400 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white"
+                                placeholder="Confirm new password"
+                                required
+                            />
+                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-primary">
+                                <span className="material-symbols-outlined text-[20px]">lock</span>
+                            </div>
+                        </div>
                     </div>
 
                     <button
