@@ -22,7 +22,29 @@ interface FormState extends Omit<Question, 'id' | 'options' | 'correctOptionId' 
     topicId: string;  // FK to topic_content.id
     primarySkillId: string;  // Required primary skill
     supportingSkillIds: string[];  // Optional supporting skills
+    promptType: 'text' | 'image';
 }
+
+const InputTypeToggle = ({ type, onChange }: { type: 'text' | 'image', onChange: (t: 'text' | 'image') => void }) => (
+    <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-lg shrink-0">
+        <button
+            type="button"
+            onClick={() => onChange('text')}
+            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1 ${type === 'text' ? 'bg-white dark:bg-gray-700 shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+        >
+            <span className="material-symbols-outlined text-[14px]">text_fields</span>
+            Text
+        </button>
+        <button
+            type="button"
+            onClick={() => onChange('image')}
+            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1 ${type === 'image' ? 'bg-white dark:bg-gray-700 shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+        >
+            <span className="material-symbols-outlined text-[14px]">image</span>
+            Image
+        </button>
+    </div>
+);
 
 // --- Custom Components ---
 
@@ -405,6 +427,7 @@ export const QuestionCreator = () => {
         skillTags: [],
         errorTags: [],
         prompt: '',
+        promptType: 'text',
         latex: '',
         options: [
             { label: 'A', value: '', errorTagId: '', type: 'text', explanation: '' },
@@ -494,7 +517,8 @@ export const QuestionCreator = () => {
                 ...o,
                 errorTagId: o.errorTagId || '',
                 type: (o.value.startsWith('data:image') || o.value.startsWith('http')) ? 'image' : 'text'
-            }))
+            })),
+            promptType: (q.prompt.startsWith('data:image') || q.prompt.startsWith('http')) ? 'image' : 'text'
         });
         setIsEditing(true);
     };
@@ -753,20 +777,6 @@ export const QuestionCreator = () => {
                                             ]}
                                         />
                                     </div>
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500">Difficulty (1-5)</label>
-                                        <CustomSelect
-                                            value={String(formData.difficulty)}
-                                            onChange={(val: any) => setFormData({ ...formData, difficulty: Number(val) as DifficultyLevel })}
-                                            options={[
-                                                { value: "1", label: "1 - Easy" },
-                                                { value: "2", label: "2 - Below Average" },
-                                                { value: "3", label: "3 - Medium" },
-                                                { value: "4", label: "4 - Above Average" },
-                                                { value: "5", label: "5 - Hard" }
-                                            ]}
-                                        />
-                                    </div>
                                 </div>
 
                                 {/* NEW: Topic, Chapter, and Skills Section */}
@@ -870,13 +880,28 @@ export const QuestionCreator = () => {
 
                             {/* Prompt Section */}
                             <section className="mb-8">
-                                <h3 className="text-sm font-bold uppercase text-gray-400 mb-4 tracking-wider">Question Prompt</h3>
-                                <textarea
-                                    value={formData.prompt}
-                                    onChange={(e) => setFormData({ ...formData, prompt: e.target.value })}
-                                    placeholder="Enter the question prompt here..."
-                                    className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl text-sm min-h-[120px] outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/20 transition-all"
-                                />
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-sm font-bold uppercase text-gray-400 tracking-wider">Question Prompt</h3>
+                                    <InputTypeToggle
+                                        type={formData.promptType}
+                                        onChange={(t) => setFormData({ ...formData, promptType: t, prompt: '' })}
+                                    />
+                                </div>
+                                {formData.promptType === 'image' ? (
+                                    <ImageUploader
+                                        value={formData.prompt}
+                                        onChange={(val) => setFormData({ ...formData, prompt: val })}
+                                        placeholder="Upload Question Image"
+                                        heightClass="h-64"
+                                    />
+                                ) : (
+                                    <textarea
+                                        value={formData.prompt}
+                                        onChange={(e) => setFormData({ ...formData, prompt: e.target.value })}
+                                        placeholder="Enter the question prompt here..."
+                                        className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl text-sm min-h-[120px] outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/20 transition-all font-medium"
+                                    />
+                                )}
                             </section>
 
                             <section className="mb-8">
@@ -884,27 +909,55 @@ export const QuestionCreator = () => {
                                 <div className="space-y-4">
                                     {formData.options.map((opt, idx) => (
                                         <div key={idx} className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-gray-700">
-                                            <div className="flex items-center gap-3 mb-3">
+                                            <div className="flex items-start gap-3 mb-3">
                                                 <button
                                                     type="button"
                                                     onClick={() => setFormData({ ...formData, correctOptionLabel: opt.label })}
-                                                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-black transition-all shrink-0 ${formData.correctOptionLabel === opt.label ? 'bg-green-500 text-white ring-2 ring-green-300' : 'bg-gray-100 dark:bg-white/10 text-gray-500'}`}
+                                                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-black transition-all shrink-0 mt-1 ${formData.correctOptionLabel === opt.label ? 'bg-green-500 text-white ring-2 ring-green-300' : 'bg-gray-100 dark:bg-white/10 text-gray-500'}`}
                                                 >
                                                     {opt.label}
                                                 </button>
-                                                <input
-                                                    type="text"
-                                                    value={opt.value}
-                                                    onChange={(e) => {
-                                                        const newOptions = [...formData.options];
-                                                        newOptions[idx] = { ...newOptions[idx], value: e.target.value };
-                                                        setFormData({ ...formData, options: newOptions });
-                                                    }}
-                                                    placeholder={`Option ${opt.label} content...`}
-                                                    className="flex-grow p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-600 rounded-lg text-sm outline-none focus:border-yellow-400/50 focus:ring-1 focus:ring-yellow-400/20 transition-all"
-                                                />
+
+                                                <div className="flex-grow space-y-2">
+                                                    <div className="flex justify-end">
+                                                        <InputTypeToggle
+                                                            type={opt.type}
+                                                            onChange={(t) => {
+                                                                const newOptions = [...formData.options];
+                                                                newOptions[idx] = { ...newOptions[idx], type: t, value: '' };
+                                                                setFormData({ ...formData, options: newOptions });
+                                                            }}
+                                                        />
+                                                    </div>
+
+                                                    {opt.type === 'image' ? (
+                                                        <ImageUploader
+                                                            value={opt.value}
+                                                            onChange={(val) => {
+                                                                const newOptions = [...formData.options];
+                                                                newOptions[idx] = { ...newOptions[idx], value: val };
+                                                                setFormData({ ...formData, options: newOptions });
+                                                            }}
+                                                            placeholder={`Upload Image for Option ${opt.label}`}
+                                                            heightClass="h-40"
+                                                        />
+                                                    ) : (
+                                                        <input
+                                                            type="text"
+                                                            value={opt.value}
+                                                            onChange={(e) => {
+                                                                const newOptions = [...formData.options];
+                                                                newOptions[idx] = { ...newOptions[idx], value: e.target.value };
+                                                                setFormData({ ...formData, options: newOptions });
+                                                            }}
+                                                            placeholder={`Option ${opt.label} content...`}
+                                                            className="w-full p-3 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-600 rounded-lg text-sm outline-none focus:border-yellow-400/50 focus:ring-1 focus:ring-yellow-400/20 transition-all font-medium"
+                                                        />
+                                                    )}
+                                                </div>
+
                                                 {formData.correctOptionLabel === opt.label && (
-                                                    <span className="text-green-500 text-xs font-bold">✓ Correct</span>
+                                                    <span className="text-green-500 text-xs font-bold mt-3 shrink-0">✓ Correct</span>
                                                 )}
                                             </div>
                                             <div className="ml-13">
