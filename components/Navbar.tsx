@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../AppContext';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useToast } from './Toast';
 
 export const Navbar = () => {
   const { user, logout, isAuthenticated, notifications, markAllNotificationsRead, markNotificationRead } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
@@ -30,8 +32,9 @@ export const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
+    showToast('Signed out successfully', 'success');
     navigate('/dashboard');
   };
 
