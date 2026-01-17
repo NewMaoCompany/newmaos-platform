@@ -30,7 +30,7 @@ export const Login = () => {
     // Forgot Password Flow State
     const [view, setView] = useState<'login' | 'forgot-email' | 'forgot-verify' | 'forgot-update'>('login');
     const [resetEmail, setResetEmail] = useState('');
-    const [resetCode, setResetCode] = useState('');
+    const [resetCode, setResetCode] = useState(['', '', '', '', '', '']);
     const [newPassword, setNewPassword] = useState('');
 
     // Password Validation
@@ -43,6 +43,22 @@ export const Login = () => {
     const isPasswordValid = Object.values(passwordChecks).every(Boolean);
 
     // --- Handlers ---
+
+    const handleResetCodeChange = (index: number, value: string) => {
+        if (value.length > 1) return;
+        const newCode = [...resetCode];
+        newCode[index] = value;
+        setResetCode(newCode);
+        if (value && index < 5) {
+            document.getElementById(`reset-code-${index + 1}`)?.focus();
+        }
+    };
+
+    const handleResetKeyDown = (index: number, e: React.KeyboardEvent) => {
+        if (e.key === 'Backspace' && !resetCode[index] && index > 0) {
+            document.getElementById(`reset-code-${index - 1}`)?.focus();
+        }
+    };
 
     const handleLoginSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -117,7 +133,7 @@ export const Login = () => {
         setError('');
 
         try {
-            await authApi.verifyResetCode(resetEmail, resetCode);
+            await authApi.verifyResetCode(resetEmail, resetCode.join(''));
             setView('forgot-update');
         } catch (err: any) {
             setError(err.message || 'Invalid code. Please try again.');
@@ -134,7 +150,7 @@ export const Login = () => {
         setError('');
 
         try {
-            const response = await authApi.resetPassword(resetEmail, resetCode, newPassword);
+            const response = await authApi.resetPassword(resetEmail, resetCode.join(''), newPassword);
 
             // Auto-login handling
             if (response.session) {
@@ -350,51 +366,86 @@ export const Login = () => {
 
                 {/* --- VIEW: FORGOT PASSWORD (STEP 2: VERIFY CODE) --- */}
                 {view === 'forgot-verify' && (
-                    <div className="animate-fade-in">
+                    <div className="animate-fade-in text-center">
                         <button
                             onClick={() => setView('forgot-email')}
-                            className="flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white mb-6 transition-colors"
+                            className="absolute top-8 left-8 flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white transition-colors"
                         >
                             <span className="material-symbols-outlined text-sm">arrow_back</span>
-                            Back to Email
+                            Back
                         </button>
 
-                        <div className="mb-8">
-                            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-500 rounded-xl flex items-center justify-center mb-4">
-                                <span className="material-symbols-outlined text-2xl">verified_user</span>
-                            </div>
-                            <h2 className="text-2xl font-black text-[#1c1a0d] dark:text-white">Verify Code</h2>
-                            <p className="text-sm text-gray-500 mt-2">Enter the 6-digit code sent to <span className="font-bold">{resetEmail}</span>.</p>
+                        <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 mx-auto mt-4">
+                            <span className="material-symbols-outlined text-3xl">lock</span>
                         </div>
 
-                        <form onSubmit={handleVerifyCode} className="flex flex-col gap-6">
-                            <div className="space-y-1.5">
-                                <label className="block text-sm font-semibold text-[#1c1a0d] dark:text-neutral-200 ml-1" htmlFor="resetCode">
-                                    Verification Code
-                                </label>
-                                <div className="relative group">
-                                    <input
-                                        id="resetCode"
-                                        type="text"
-                                        value={resetCode}
-                                        onChange={(e) => setResetCode(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
-                                        placeholder="Enter 6-digit code"
-                                        className="block w-full rounded-xl border-neutral-200 bg-white pl-11 pr-4 py-3.5 text-base text-[#1c1a0d] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white tracking-widest font-mono placeholder:font-sans placeholder:tracking-normal placeholder:text-neutral-400"
-                                        required
-                                        autoFocus
-                                    />
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-primary">
-                                        <span className="material-symbols-outlined text-[20px]">key</span>
-                                    </div>
-                                </div>
+                        <h2 className="text-xl font-black text-[#1c1a0d] dark:text-white mb-2">Enter Verification Code</h2>
+                        <p className="text-sm text-gray-500 mb-2">
+                            We've sent a 6-digit code to <span className="font-bold text-[#1c1a0d] dark:text-white">{resetEmail}</span>
+                        </p>
+                        <p className="text-xs text-amber-600 dark:text-amber-400 mb-6 flex items-center justify-center gap-1">
+                            <span className="material-symbols-outlined text-sm">schedule</span>
+                            Code expires in 10 minutes
+                        </p>
+
+                        {error && (
+                            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400 mb-6 mx-auto">
+                                {error}
                             </div>
-                            <button
-                                type="submit"
-                                disabled={isLoading || resetCode.length !== 6}
-                                className="w-full rounded-xl bg-black dark:bg-white px-5 py-3.5 text-base font-bold text-white dark:text-black shadow-sm hover:opacity-90 active:scale-[0.99] transition-all flex justify-center items-center gap-2"
-                            >
-                                {isLoading ? <span className="material-symbols-outlined animate-spin">progress_activity</span> : 'Verify Code'}
-                            </button>
+                        )}
+
+                        <form onSubmit={handleVerifyCode}>
+                            <div className="flex justify-center gap-2 mb-8">
+                                {resetCode.map((digit, index) => (
+                                    <input
+                                        key={index}
+                                        id={`reset-code-${index}`}
+                                        type="text"
+                                        maxLength={1}
+                                        value={digit}
+                                        onChange={(e) => handleResetCodeChange(index, e.target.value)}
+                                        onKeyDown={(e) => handleResetKeyDown(index, e)}
+                                        className="w-12 h-14 text-center text-2xl font-bold rounded-xl border-2 border-neutral-100 bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white"
+                                    />
+                                ))}
+                            </div>
+
+                            <div className="flex flex-col gap-3">
+                                <button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="w-full rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-[#1c1a0d] shadow-sm hover:brightness-105 active:scale-[0.99] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                                            Verifying...
+                                        </>
+                                    ) : (
+                                        "Verify Code"
+                                    )}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={async () => {
+                                        setIsLoading(true);
+                                        setError('');
+                                        try {
+                                            await authApi.forgotPassword(resetEmail);
+                                            showToast(`Resent code to ${resetEmail}`, 'success');
+                                        } catch (err: any) {
+                                            setError(err.message || 'Failed to resend code.');
+                                        } finally {
+                                            setIsLoading(false);
+                                        }
+                                    }}
+                                    disabled={isLoading}
+                                    className="w-full rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 px-5 py-3.5 text-base font-bold text-[#1c1a0d] dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+                                >
+                                    Resend Code
+                                </button>
+                            </div>
                         </form>
                     </div>
                 )}
