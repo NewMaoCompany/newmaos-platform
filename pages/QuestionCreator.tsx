@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useApp } from '../AppContext';
 import { Navbar } from '../components/Navbar';
 import { Question, CourseType, DifficultyLevel, QuestionCourseType } from '../types';
-import { COURSE_TOPICS, SKILL_TAGS, ERROR_TAGS } from '../constants';
+import { COURSE_TOPICS, SKILL_TAGS, ERROR_TAGS, COURSE_CONTENT_DATA } from '../constants';
 
 // --- Types for Form State ---
 interface FormOptionState {
@@ -11,6 +11,7 @@ interface FormOptionState {
     value: string;
     errorTagId?: string;
     type: 'text' | 'image';
+    explanation: string;  // Per-option explanation
 }
 
 interface FormState extends Omit<Question, 'id' | 'options' | 'correctOptionId' | 'course'> {
@@ -18,6 +19,9 @@ interface FormState extends Omit<Question, 'id' | 'options' | 'correctOptionId' 
     course: QuestionCourseType;
     options: FormOptionState[];
     correctOptionLabel: string;
+    topicId: string;  // FK to topic_content.id
+    primarySkillId: string;  // Required primary skill
+    supportingSkillIds: string[];  // Optional supporting skills
 }
 
 // --- Custom Components ---
@@ -113,7 +117,7 @@ const CustomSelect = ({ value, onChange, options, placeholder = "Select...", cla
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full text-left p-2 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-bold outline-none focus:border-primary flex items-center justify-between transition-all ${isOpen ? 'ring-2 ring-primary/50 border-primary' : ''}`}
+                className={`w-full text-left p-2 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-bold outline-none flex items-center justify-between transition-all ${isOpen ? 'ring-2 ring-yellow-400/50 border-yellow-400' : 'focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20'}`}
             >
                 <span className={`truncate ${!selectedOption ? 'text-gray-400' : 'text-text-main dark:text-white'}`}>
                     {selectedOption ? selectedOption.label : placeholder}
@@ -129,7 +133,7 @@ const CustomSelect = ({ value, onChange, options, placeholder = "Select...", cla
                             key={opt.value}
                             type="button"
                             onClick={() => { onChange(opt.value); setIsOpen(false); }}
-                            className={`w-full text-left px-3 py-2.5 text-xs font-bold hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2 transition-colors border-b border-gray-50 dark:border-white/5 last:border-0 ${opt.value === value ? 'text-primary bg-primary/5' : 'text-text-main dark:text-gray-300'}`}
+                            className={`w-full text-left px-3 py-2.5 text-xs font-bold hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2 transition-colors border-b border-gray-50 dark:border-white/5 last:border-0 ${opt.value === value ? 'text-yellow-600 bg-yellow-50 dark:bg-yellow-400/10 dark:text-yellow-400' : 'text-text-main dark:text-gray-300'}`}
                         >
                             <span className="w-4 flex items-center justify-center">
                                 {opt.value === value && <span className="material-symbols-outlined text-[14px]">check</span>}
@@ -173,8 +177,11 @@ const TopicSettings = ({
         // Check if ID is the Unit itself
         if (id === unitId) return unit;
 
-        // Check if ID is a SubTopic
-        return unit.subTopics.find(s => s.id === id);
+        // Check if ID is a SubTopic - use COURSE_CONTENT_DATA as fallback when DB is empty
+        const subTopics = unit.subTopics?.length > 0
+            ? unit.subTopics
+            : COURSE_CONTENT_DATA[unitId]?.subTopics || [];
+        return subTopics.find((s: any) => s.id === id);
     }, [topicContent, unitId, id]);
 
     const [localTitle, setLocalTitle] = useState('');
@@ -183,6 +190,7 @@ const TopicSettings = ({
     const [localTime, setLocalTime] = useState<number | string>(0);
     const [localHasLesson, setLocalHasLesson] = useState(true);
     const [localHasPractice, setLocalHasPractice] = useState(true);
+    const [isTimeFocused, setIsTimeFocused] = useState(false); // Track focus for styling
 
     const [isSaved, setIsSaved] = useState(false);
 
@@ -234,6 +242,18 @@ const TopicSettings = ({
 
     return (
         <div className="max-w-4xl mx-auto p-8 animate-fade-in">
+            {/* Inline style to hide number spinners */}
+            <style>{`
+                input[type=number]::-webkit-inner-spin-button, 
+                input[type=number]::-webkit-outer-spin-button { 
+                    -webkit-appearance: none; 
+                    margin: 0; 
+                }
+                input[type=number] {
+                    -moz-appearance: textfield;
+                }
+            `}</style>
+
             <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 bg-black dark:bg-white text-white dark:text-black rounded-2xl flex items-center justify-center shadow-lg">
                     <span className="material-symbols-outlined text-2xl">settings_applications</span>
@@ -246,14 +266,14 @@ const TopicSettings = ({
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-3xl p-8 shadow-sm space-y-6">
+            <div className="bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 rounded-3xl p-8 shadow-sm space-y-6">
                 <div className="space-y-2">
                     <label className="text-xs font-bold uppercase text-gray-400 tracking-wider">Title</label>
                     <input
                         type="text"
                         value={localTitle}
                         onChange={(e) => setLocalTitle(e.target.value)}
-                        className="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5 outline-none focus:ring-2 focus:ring-primary/50 text-lg font-bold"
+                        className="w-full p-4 rounded-xl border border-transparent bg-gray-50 dark:bg-white/5 outline-none focus:bg-white dark:focus:bg-black/20 focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 text-lg font-bold transition-all shadow-sm"
                     />
                 </div>
                 <div className="space-y-2">
@@ -261,7 +281,7 @@ const TopicSettings = ({
                     <textarea
                         value={localDesc}
                         onChange={(e) => setLocalDesc(e.target.value)}
-                        className="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5 outline-none focus:ring-2 focus:ring-primary/50 text-sm font-medium h-32 resize-none"
+                        className="w-full p-4 rounded-xl border border-transparent bg-gray-50 dark:bg-white/5 outline-none focus:bg-white dark:focus:bg-black/20 focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 text-sm font-medium h-32 resize-none transition-all shadow-sm"
                     />
                 </div>
 
@@ -270,12 +290,14 @@ const TopicSettings = ({
                         {/* Time Input - Manual only, strictly controlled to match screenshot style */}
                         <div className={`space-y-2 ${!showAvailabilitySettings ? 'md:col-span-2' : ''}`}>
                             <label className="text-xs font-bold uppercase text-gray-400 tracking-wider">Estimated Time (Min)</label>
-                            <div className={`border border-primary/50 ring-2 ring-primary/10 rounded-xl overflow-hidden`}>
+                            <div className={`border-2 transition-all duration-300 rounded-xl overflow-hidden bg-white dark:bg-black/20 ${isTimeFocused || localTime ? 'border-yellow-400 ring-4 ring-yellow-400/10' : 'border-transparent bg-gray-50'}`}>
                                 <input
                                     type="number"
                                     value={localTime}
+                                    onFocus={() => setIsTimeFocused(true)}
+                                    onBlur={() => setIsTimeFocused(false)}
                                     onChange={(e) => setLocalTime(e.target.value === '' ? '' : parseInt(e.target.value))}
-                                    className="w-full p-4 bg-gray-50 dark:bg-white/5 outline-none text-sm font-bold appearance-none m-0"
+                                    className="w-full p-4 bg-transparent outline-none border-none focus:border-none focus:ring-0 shadow-none text-sm font-bold appearance-none m-0 text-gray-900 dark:text-white placeholder-gray-400"
                                     placeholder="Enter minutes (e.g. 45)"
                                 />
                             </div>
@@ -285,13 +307,19 @@ const TopicSettings = ({
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase text-gray-400 tracking-wider">Availability</label>
                                 <div className="flex gap-4">
-                                    <label className={`flex-1 p-4 rounded-xl border cursor-pointer flex items-center justify-between transition-colors ${localHasLesson ? 'border-primary bg-primary/5' : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5'}`}>
-                                        <span className="text-sm font-bold">Lesson</span>
-                                        <input type="checkbox" checked={localHasLesson} onChange={e => setLocalHasLesson(e.target.checked)} className="w-5 h-5 accent-primary" />
+                                    <label className={`flex-1 p-4 rounded-xl border-2 cursor-pointer flex items-center justify-between transition-all shadow-sm group hover:scale-[1.02] ${localHasLesson ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-400/10 shadow-yellow-100 dark:shadow-none' : 'border-transparent bg-gray-50 dark:bg-white/5'}`}>
+                                        <span className={`text-sm font-bold ${localHasLesson ? 'text-gray-900 dark:text-yellow-100' : 'text-gray-500'}`}>Lesson</span>
+                                        <div className={`w-6 h-6 rounded flex items-center justify-center transition-colors ${localHasLesson ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700 group-hover:bg-gray-300'}`}>
+                                            {localHasLesson && <span className="material-symbols-outlined text-white text-[16px] font-bold">check</span>}
+                                        </div>
+                                        <input type="checkbox" checked={localHasLesson} onChange={e => setLocalHasLesson(e.target.checked)} className="hidden" />
                                     </label>
-                                    <label className={`flex-1 p-4 rounded-xl border cursor-pointer flex items-center justify-between transition-colors ${localHasPractice ? 'border-primary bg-primary/5' : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5'}`}>
-                                        <span className="text-sm font-bold">Practice</span>
-                                        <input type="checkbox" checked={localHasPractice} onChange={e => setLocalHasPractice(e.target.checked)} className="w-5 h-5 accent-primary" />
+                                    <label className={`flex-1 p-4 rounded-xl border-2 cursor-pointer flex items-center justify-between transition-all shadow-sm group hover:scale-[1.02] ${localHasPractice ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-400/10 shadow-yellow-100 dark:shadow-none' : 'border-transparent bg-gray-50 dark:bg-white/5'}`}>
+                                        <span className={`text-sm font-bold ${localHasPractice ? 'text-gray-900 dark:text-yellow-100' : 'text-gray-500'}`}>Practice</span>
+                                        <div className={`w-6 h-6 rounded flex items-center justify-center transition-colors ${localHasPractice ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700 group-hover:bg-gray-300'}`}>
+                                            {localHasPractice && <span className="material-symbols-outlined text-white text-[16px] font-bold">check</span>}
+                                        </div>
+                                        <input type="checkbox" checked={localHasPractice} onChange={e => setLocalHasPractice(e.target.checked)} className="hidden" />
                                     </label>
                                 </div>
                             </div>
@@ -302,14 +330,14 @@ const TopicSettings = ({
                 <div className="flex gap-4 pt-4">
                     <button
                         onClick={handleSave}
-                        className="flex-1 py-4 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-text-main dark:text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+                        className="flex-1 py-4 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-text-main dark:text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 border border-transparent active:scale-[0.98]"
                     >
-                        {isSaved ? <span className="material-symbols-outlined">check</span> : <span className="material-symbols-outlined">save</span>}
+                        {isSaved ? <span className="material-symbols-outlined text-green-500">check_circle</span> : <span className="material-symbols-outlined">save</span>}
                         {isSaved ? 'Saved' : 'Save Settings'}
                     </button>
                     <button
                         onClick={onAddQuestion}
-                        className="flex-[2] py-4 bg-primary text-text-main rounded-xl font-bold shadow-lg hover:brightness-105 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                        className="flex-[2] py-4 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 rounded-xl font-bold shadow-xl hover:shadow-2xl active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                     >
                         <span className="material-symbols-outlined">add_circle</span>
                         Create Question for this Section
@@ -321,7 +349,7 @@ const TopicSettings = ({
 };
 
 export const QuestionCreator = () => {
-    const { questions, addQuestion, updateQuestion, deleteQuestion, topicContent } = useApp();
+    const { questions, addQuestion, updateQuestion, deleteQuestion, topicContent, skills } = useApp();
 
     // --- Layout State ---
     const [selectedCourse, setSelectedCourse] = useState<CourseType>('AB');
@@ -343,6 +371,7 @@ export const QuestionCreator = () => {
     const defaultForm: FormState = {
         course: 'Both',
         topic: '',
+        topicId: '',
         subTopicId: '',
         type: 'MCQ',
         calculatorAllowed: false,
@@ -354,15 +383,17 @@ export const QuestionCreator = () => {
         prompt: '',
         latex: '',
         options: [
-            { label: 'A', value: '', errorTagId: '', type: 'text' },
-            { label: 'B', value: '', errorTagId: '', type: 'text' },
-            { label: 'C', value: '', errorTagId: '', type: 'text' },
-            { label: 'D', value: '', errorTagId: '', type: 'text' },
+            { label: 'A', value: '', errorTagId: '', type: 'text', explanation: '' },
+            { label: 'B', value: '', errorTagId: '', type: 'text', explanation: '' },
+            { label: 'C', value: '', errorTagId: '', type: 'text', explanation: '' },
+            { label: 'D', value: '', errorTagId: '', type: 'text', explanation: '' },
         ],
         correctOptionLabel: 'A',
         explanation: '',
         microExplanations: {},
-        recommendationReasons: []
+        recommendationReasons: [],
+        primarySkillId: '',
+        supportingSkillIds: []
     };
 
     const [formData, setFormData] = useState<FormState>(defaultForm);
@@ -445,10 +476,19 @@ export const QuestionCreator = () => {
     };
 
     const performSave = (): boolean => {
-        if (!formData.prompt || !formData.topic) {
-            alert("Cannot save: Missing required fields (Prompt Image, Topic).");
+        // Strong validation
+        const errors: string[] = [];
+        if (!formData.prompt) errors.push('题干 (Prompt)');
+        if (!formData.topicId) errors.push('Topic (单元)');
+        if (!formData.subTopicId) errors.push('Chapter (小节)');
+        if (!formData.primarySkillId) errors.push('Primary Skill (主技能)');
+        if (!formData.correctOptionLabel) errors.push('Correct Option (正确答案)');
+
+        if (errors.length > 0) {
+            alert(`Cannot save: Missing required fields:\n• ${errors.join('\n• ')}`);
             return false;
         }
+
         let finalCorrectId = formData.correctOptionLabel;
         if (formData.type === 'MCQ') {
             const match = formData.options.find(o => o.label === formData.correctOptionLabel);
@@ -464,7 +504,10 @@ export const QuestionCreator = () => {
             ...formData,
             id: formData.id,
             options: cleanOptions as any,
-            correctOptionId: finalCorrectId
+            correctOptionId: finalCorrectId,
+            topicId: formData.topicId,
+            primarySkillId: formData.primarySkillId,
+            supportingSkillIds: formData.supportingSkillIds
         } as Question;
 
         if (formData.id) {
@@ -572,7 +615,8 @@ export const QuestionCreator = () => {
                                             <div onClick={() => requestNavigation(selectedUnitId, 'unit_test')} className={`p-2 rounded text-[11px] cursor-pointer transition-all leading-tight flex items-center gap-2 ${selectedSubTopicId === 'unit_test' ? 'bg-black text-white dark:bg-white dark:text-black font-bold shadow-sm' : 'text-gray-500 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'}`}>
                                                 <span className="material-symbols-outlined text-[14px]">quiz</span>Unit Test
                                             </div>
-                                            {content.subTopics.map(sub => (
+                                            {/* Use COURSE_CONTENT_DATA as fallback when DB subTopics is empty */}
+                                            {(content.subTopics && content.subTopics.length > 0 ? content.subTopics : COURSE_CONTENT_DATA[unit.id]?.subTopics || []).map(sub => (
                                                 <div key={sub.id} onClick={() => requestNavigation(selectedUnitId, selectedSubTopicId === sub.id ? null : sub.id)} className={`p-2 rounded text-[11px] cursor-pointer transition-all leading-tight ${selectedSubTopicId === sub.id ? 'bg-black text-white dark:bg-white dark:text-black font-bold shadow-sm' : 'text-gray-500 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'}`}>
                                                     {sub.title}
                                                 </div>
@@ -597,7 +641,7 @@ export const QuestionCreator = () => {
                                 placeholder="Deep search prompts, content, options..."
                                 value={filterSearch}
                                 onChange={(e) => setFilterSearch(e.target.value)}
-                                className="w-full p-2 pl-8 bg-gray-100 dark:bg-white/5 rounded-lg text-xs outline-none border border-transparent focus:border-primary/50 transition-all"
+                                className="w-full p-2 pl-8 bg-gray-100 dark:bg-white/5 rounded-lg text-xs outline-none border border-transparent focus:border-yellow-400 transition-all"
                             />
                             <span className="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-[16px] text-gray-400">search</span>
                         </div>
@@ -700,6 +744,104 @@ export const QuestionCreator = () => {
                                         />
                                     </div>
                                 </div>
+
+                                {/* NEW: Topic, Chapter, and Skills Section */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500">Topic (Unit) <span className="text-red-500">*</span></label>
+                                        <CustomSelect
+                                            value={formData.topicId}
+                                            onChange={(val: any) => {
+                                                setFormData({ ...formData, topicId: val, subTopicId: '' });
+                                            }}
+                                            placeholder="Select Topic..."
+                                            options={Object.entries(topicContent).map(([id, unit]: [string, any]) => ({
+                                                value: id,
+                                                label: unit.title
+                                            }))}
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500">Chapter (Section) <span className="text-red-500">*</span></label>
+                                        <CustomSelect
+                                            value={formData.subTopicId}
+                                            onChange={(val: any) => setFormData({ ...formData, subTopicId: val })}
+                                            placeholder="Select Chapter..."
+                                            options={
+                                                formData.topicId
+                                                    ? ((topicContent[formData.topicId]?.subTopics?.length > 0
+                                                        ? topicContent[formData.topicId].subTopics
+                                                        : COURSE_CONTENT_DATA[formData.topicId]?.subTopics) || []).map((sub: any) => ({
+                                                            value: sub.id,
+                                                            label: sub.title || sub.id
+                                                        }))
+                                                    : []
+                                            }
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500">Difficulty (1-5)</label>
+                                        <CustomSelect
+                                            value={String(formData.difficulty)}
+                                            onChange={(val: any) => setFormData({ ...formData, difficulty: Number(val) as DifficultyLevel })}
+                                            options={[
+                                                { value: "1", label: "1 - Easy" },
+                                                { value: "2", label: "2 - Below Average" },
+                                                { value: "3", label: "3 - Medium" },
+                                                { value: "4", label: "4 - Above Average" },
+                                                { value: "5", label: "5 - Hard" }
+                                            ]}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Skills Section */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500">Primary Skill <span className="text-red-500">*</span></label>
+                                        <CustomSelect
+                                            value={formData.primarySkillId}
+                                            onChange={(val: any) => setFormData({ ...formData, primarySkillId: val })}
+                                            placeholder="Select Primary Skill..."
+                                            options={skills.map(s => ({
+                                                value: s.id,
+                                                label: `${s.unit} - ${s.name}`
+                                            }))}
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500">Supporting Skills (Optional)</label>
+                                        <div className="flex flex-wrap gap-2 p-2 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl min-h-[40px]">
+                                            {formData.supportingSkillIds.map(skillId => {
+                                                const skill = skills.find(s => s.id === skillId);
+                                                return skill ? (
+                                                    <span key={skillId} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                                                        {skill.name}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setFormData({ ...formData, supportingSkillIds: formData.supportingSkillIds.filter(id => id !== skillId) })}
+                                                            className="hover:text-red-500"
+                                                        >×</button>
+                                                    </span>
+                                                ) : null;
+                                            })}
+                                            <select
+                                                value=""
+                                                onChange={(e) => {
+                                                    if (e.target.value && !formData.supportingSkillIds.includes(e.target.value) && e.target.value !== formData.primarySkillId) {
+                                                        setFormData({ ...formData, supportingSkillIds: [...formData.supportingSkillIds, e.target.value] });
+                                                    }
+                                                }}
+                                                className="flex-grow min-w-[150px] bg-transparent text-xs outline-none"
+                                            >
+                                                <option value="">+ Add supporting skill...</option>
+                                                {skills.filter(s => s.id !== formData.primarySkillId && !formData.supportingSkillIds.includes(s.id)).map(s => (
+                                                    <option key={s.id} value={s.id}>{s.unit} - {s.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </section>
 
                             {/* Prompt Section */}
@@ -709,21 +851,20 @@ export const QuestionCreator = () => {
                                     value={formData.prompt}
                                     onChange={(e) => setFormData({ ...formData, prompt: e.target.value })}
                                     placeholder="Enter the question prompt here..."
-                                    className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl text-sm min-h-[120px] outline-none focus:border-primary transition-all"
+                                    className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl text-sm min-h-[120px] outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/20 transition-all"
                                 />
                             </section>
 
-                            {/* Options Section for MCQ */}
-                            {formData.type === 'MCQ' && (
-                                <section className="mb-8">
-                                    <h3 className="text-sm font-bold uppercase text-gray-400 mb-4 tracking-wider">Answer Options</h3>
-                                    <div className="space-y-3">
-                                        {formData.options.map((opt, idx) => (
-                                            <div key={idx} className="flex items-center gap-3">
+                            <section className="mb-8">
+                                <h3 className="text-sm font-bold uppercase text-gray-400 mb-4 tracking-wider">Answer Options</h3>
+                                <div className="space-y-4">
+                                    {formData.options.map((opt, idx) => (
+                                        <div key={idx} className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-gray-700">
+                                            <div className="flex items-center gap-3 mb-3">
                                                 <button
                                                     type="button"
                                                     onClick={() => setFormData({ ...formData, correctOptionLabel: opt.label })}
-                                                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all ${formData.correctOptionLabel === opt.label ? 'bg-green-500 text-white' : 'bg-gray-100 dark:bg-white/10 text-gray-500'}`}
+                                                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-black transition-all shrink-0 ${formData.correctOptionLabel === opt.label ? 'bg-green-500 text-white ring-2 ring-green-300' : 'bg-gray-100 dark:bg-white/10 text-gray-500'}`}
                                                 >
                                                     {opt.label}
                                                 </button>
@@ -735,14 +876,30 @@ export const QuestionCreator = () => {
                                                         newOptions[idx] = { ...newOptions[idx], value: e.target.value };
                                                         setFormData({ ...formData, options: newOptions });
                                                     }}
-                                                    placeholder={`Option ${opt.label}`}
-                                                    className="flex-grow p-2 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm outline-none focus:border-primary transition-all"
+                                                    placeholder={`Option ${opt.label} content...`}
+                                                    className="flex-grow p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-600 rounded-lg text-sm outline-none focus:border-yellow-400/50 focus:ring-1 focus:ring-yellow-400/20 transition-all"
+                                                />
+                                                {formData.correctOptionLabel === opt.label && (
+                                                    <span className="text-green-500 text-xs font-bold">✓ Correct</span>
+                                                )}
+                                            </div>
+                                            <div className="ml-13">
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Explanation for {opt.label}</label>
+                                                <textarea
+                                                    value={opt.explanation || ''}
+                                                    onChange={(e) => {
+                                                        const newOptions = [...formData.options];
+                                                        newOptions[idx] = { ...newOptions[idx], explanation: e.target.value };
+                                                        setFormData({ ...formData, options: newOptions });
+                                                    }}
+                                                    placeholder={formData.correctOptionLabel === opt.label ? 'Explain why this is the correct answer...' : 'Explain why this option is incorrect...'}
+                                                    className="w-full p-2 bg-white dark:bg-black/20 border border-gray-200 dark:border-gray-600 rounded-lg text-xs min-h-[60px] outline-none focus:border-yellow-400/50 focus:ring-1 focus:ring-yellow-400/20 transition-all"
                                                 />
                                             </div>
-                                        ))}
-                                    </div>
-                                </section>
-                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
 
                             {/* Explanation Section */}
                             <section className="mb-8">
@@ -751,7 +908,7 @@ export const QuestionCreator = () => {
                                     value={formData.explanation}
                                     onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
                                     placeholder="Explain the solution step by step..."
-                                    className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl text-sm min-h-[100px] outline-none focus:border-primary transition-all"
+                                    className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl text-sm min-h-[100px] outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/20 transition-all"
                                 />
                             </section>
                         </div>

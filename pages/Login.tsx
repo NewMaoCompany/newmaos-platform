@@ -80,7 +80,7 @@ export const Login = () => {
 
             // Update local state - use profile name if available, otherwise use email
             const username = response.profile?.name || response.user?.user_metadata?.name;
-            login(email, username);
+            login(email, username, response.session?.user?.id);
             navigate('/dashboard');
         } catch (err: any) {
             const errorMessage = err.message || '';
@@ -159,7 +159,7 @@ export const Login = () => {
                 localStorage.setItem('auth_token', response.session.access_token);
                 // Use profile name if available, otherwise email prefix
                 const name = response.profile?.name || response.user?.user_metadata?.name || resetEmail.split('@')[0];
-                login(resetEmail, name); // Determine name from response if possible
+                login(resetEmail, name, response.session.user.id); // Determine name from response if possible
                 showToast('Password updated! Logging you in...', 'success');
                 navigate('/dashboard');
             } else {

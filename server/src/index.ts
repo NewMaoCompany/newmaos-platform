@@ -13,6 +13,10 @@ import practiceRoutes from './routes/practice';
 import progressRoutes from './routes/progress';
 import contentRoutes from './routes/content';
 import notificationsRoutes from './routes/notifications';
+import { initEmailScheduler } from './services/emailScheduler';
+
+// Initialize Cron Jobs
+initEmailScheduler();
 
 const app = express();
 const PORT = process.env.PORT || 4000;

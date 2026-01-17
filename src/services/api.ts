@@ -284,6 +284,10 @@ export const contentApi = {
             method: 'POST',
         });
     },
+
+    async getSkills() {
+        return apiRequest<{ id: string; name: string; unit: string; prerequisites: string[] }[]>('/content/skills');
+    },
 };
 
 // =====================================

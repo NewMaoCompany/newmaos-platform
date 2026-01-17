@@ -355,7 +355,7 @@ export const Signup = () => {
                 if (loginRes.session) {
                     await supabase.auth.setSession(loginRes.session);
                     localStorage.setItem('auth_token', loginRes.session.access_token);
-                    login(email, name);
+                    login(email, name, loginRes.session.user.id);
                     navigate('/dashboard');
                 } else {
                     navigate('/login');

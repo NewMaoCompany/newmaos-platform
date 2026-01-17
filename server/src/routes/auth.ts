@@ -596,25 +596,61 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
     }
 });
 
-// POST /api/auth/verify-creator
-router.post('/verify-creator', async (req: Request, res: Response): Promise<void> => {
+// POST /api/auth/verify-access-code
+router.post('/verify-access-code', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { password, userId } = req.body;
-        if (password !== 'CzLjc6120') {
-            res.status(403).json({ error: 'Access denied' });
+        const { code, userId } = req.body;
+
+        if (!code || !userId) {
+            res.status(400).json({ error: 'Code and User ID are required' });
             return;
         }
 
-        if (userId) {
-            await supabaseAdmin
-                .from('user_profiles')
-                .update({ is_creator: true })
-                .eq('id', userId);
+        // 1. Verify Code exists and is valid
+        const { data: record, error: fetchError } = await supabaseAdmin
+            .from('access_codes')
+            .select('*')
+            .eq('code', code)
+            .single();
+
+        if (fetchError || !record) {
+            res.status(400).json({ error: 'Invalid access code' });
+            return;
         }
 
-        res.json({ success: true, message: 'Creator access granted' });
+        if (record.is_used) {
+            res.status(400).json({ error: 'This access code has already been used' });
+            return;
+        }
+
+        // Check expiry if applicable
+        if (record.expires_at && new Date(record.expires_at) < new Date()) {
+            res.status(400).json({ error: 'This access code has expired' });
+            return;
+        }
+
+        // 2. Grant Access (Update Profile)
+        const { error: updateError } = await supabaseAdmin
+            .from('user_profiles')
+            .update({ is_creator: true })
+            .eq('id', userId);
+
+        if (updateError) {
+            console.error('Update profile error:', updateError);
+            res.status(500).json({ error: 'Failed to grant access' });
+            return;
+        }
+
+        // 3. Mark Code as Used
+        await supabaseAdmin
+            .from('access_codes')
+            .update({ is_used: true })
+            .eq('id', record.id);
+
+        res.json({ success: true, message: 'Creator access granted successfully' });
+
     } catch (error) {
-        console.error('Verify creator error:', error);
+        console.error('Verify access code error:', error);
         res.status(500).json({ error: 'Verification failed' });
     }
 });

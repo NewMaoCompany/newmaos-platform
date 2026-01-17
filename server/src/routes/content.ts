@@ -142,16 +142,26 @@ router.put('/topics/:unitId/subtopics/:subTopicId', authMiddleware, async (req: 
             return;
         }
 
-        // Update subtopic in the array
-        const subTopics = current.sub_topics || [];
+        // Update or insert subtopic in the array (upsert)
+        let subTopics = current.sub_topics || [];
         const subTopicIndex = subTopics.findIndex((s: any) => s.id === subTopicId);
 
         if (subTopicIndex === -1) {
-            res.status(404).json({ error: 'Subtopic not found' });
-            return;
+            // Subtopic doesn't exist - create it with the update data
+            const newSubTopic = {
+                id: subTopicId,
+                title: updateData.title || subTopicId,
+                description: updateData.description || '',
+                estimatedMinutes: updateData.estimatedMinutes || 15,
+                hasLesson: updateData.hasLesson !== false,
+                hasPractice: updateData.hasPractice !== false,
+                ...updateData
+            };
+            subTopics = [...subTopics, newSubTopic];
+        } else {
+            // Subtopic exists - update it
+            subTopics[subTopicIndex] = { ...subTopics[subTopicIndex], ...updateData };
         }
-
-        subTopics[subTopicIndex] = { ...subTopics[subTopicIndex], ...updateData };
 
         const { data, error } = await supabaseAdmin
             .from('topic_content')
@@ -225,6 +235,26 @@ router.post('/seed', async (req: Request, res: Response): Promise<void> => {
     } catch (error) {
         console.error('Seed error:', error);
         res.status(500).json({ error: 'Failed to seed content' });
+    }
+});
+
+// GET /api/content/skills - Get all skills for Question Editor
+router.get('/skills', optionalAuthMiddleware, async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('skills')
+            .select('*')
+            .order('unit', { ascending: true });
+
+        if (error) {
+            res.status(400).json({ error: error.message });
+            return;
+        }
+
+        res.json(data || []);
+    } catch (error) {
+        console.error('Get skills error:', error);
+        res.status(500).json({ error: 'Failed to get skills' });
     }
 });
 

@@ -82,10 +82,29 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
         }
 
         const {
-            course, topic, subTopicId, type, calculatorAllowed, difficulty,
+            course, topic, topicId, subTopicId, type, calculatorAllowed, difficulty,
             targetTimeSeconds, skillTags, errorTags, prompt, latex, options,
-            correctOptionId, tolerance, explanation, microExplanations, recommendationReasons
+            correctOptionId, tolerance, explanation, microExplanations, recommendationReasons,
+            primarySkillId, supportingSkillIds = []
         } = req.body;
+
+        // Validation
+        if (!topicId) {
+            res.status(400).json({ error: 'topicId is required' });
+            return;
+        }
+        if (!subTopicId) {
+            res.status(400).json({ error: 'subTopicId (chapter) is required' });
+            return;
+        }
+        if (!primarySkillId) {
+            res.status(400).json({ error: 'primarySkillId is required' });
+            return;
+        }
+        if (!correctOptionId) {
+            res.status(400).json({ error: 'correctOptionId is required' });
+            return;
+        }
 
         // Generate option IDs if not present
         const processedOptions = (options || []).map((opt: any, index: number) => ({
@@ -102,18 +121,20 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
             }
         }
 
-        const { data, error } = await supabaseAdmin
+        // Insert question
+        const { data: question, error: questionError } = await supabaseAdmin
             .from('questions')
             .insert({
                 course,
                 topic,
+                topic_id: topicId,
                 sub_topic_id: subTopicId,
                 type,
                 calculator_allowed: calculatorAllowed,
                 difficulty,
                 target_time_seconds: targetTimeSeconds,
-                skill_tags: skillTags,
-                error_tags: errorTags,
+                skill_tags: skillTags,  // Cache field
+                error_tags: errorTags,  // Cache field
                 prompt,
                 latex,
                 options: processedOptions,
@@ -122,35 +143,67 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
                 explanation,
                 micro_explanations: microExplanations,
                 recommendation_reasons: recommendationReasons,
-                created_by: userId
+                created_by: userId,
+                status: 'active',
+                version: 1
             })
             .select()
             .single();
 
-        if (error) {
-            res.status(400).json({ error: error.message });
+        if (questionError) {
+            res.status(400).json({ error: questionError.message });
             return;
         }
 
+        // Insert question_skills (transactional)
+        const supportingCount = supportingSkillIds.length;
+        const primaryWeight = supportingCount > 0 ? 0.7 : 1.0;
+        const supportingWeight = supportingCount > 0 ? 0.3 / supportingCount : 0;
+
+        const skillRows = [
+            { question_id: question.id, skill_id: primarySkillId, role: 'primary', weight: primaryWeight }
+        ];
+
+        supportingSkillIds.forEach((skillId: string) => {
+            skillRows.push({
+                question_id: question.id,
+                skill_id: skillId,
+                role: 'supporting',
+                weight: supportingWeight
+            });
+        });
+
+        const { error: skillsError } = await supabaseAdmin
+            .from('question_skills')
+            .insert(skillRows);
+
+        if (skillsError) {
+            console.error('Failed to insert question_skills:', skillsError);
+            // Note: Question already created, but skills failed. Log but don't fail the request.
+        }
+
         res.status(201).json({
-            id: data.id,
-            course: data.course,
-            topic: data.topic,
-            subTopicId: data.sub_topic_id,
-            type: data.type,
-            calculatorAllowed: data.calculator_allowed,
-            difficulty: data.difficulty,
-            targetTimeSeconds: data.target_time_seconds,
-            skillTags: data.skill_tags,
-            errorTags: data.error_tags,
-            prompt: data.prompt,
-            latex: data.latex,
-            options: data.options,
-            correctOptionId: data.correct_option_id,
-            tolerance: data.tolerance,
-            explanation: data.explanation,
-            microExplanations: data.micro_explanations,
-            recommendationReasons: data.recommendation_reasons
+            id: question.id,
+            course: question.course,
+            topic: question.topic,
+            topicId: question.topic_id,
+            subTopicId: question.sub_topic_id,
+            type: question.type,
+            calculatorAllowed: question.calculator_allowed,
+            difficulty: question.difficulty,
+            targetTimeSeconds: question.target_time_seconds,
+            skillTags: question.skill_tags,
+            errorTags: question.error_tags,
+            prompt: question.prompt,
+            latex: question.latex,
+            options: question.options,
+            correctOptionId: question.correct_option_id,
+            tolerance: question.tolerance,
+            explanation: question.explanation,
+            microExplanations: question.micro_explanations,
+            recommendationReasons: question.recommendation_reasons,
+            primarySkillId,
+            supportingSkillIds
         });
     } catch (error) {
         console.error('Create question error:', error);

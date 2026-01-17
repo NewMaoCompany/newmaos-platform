@@ -34,24 +34,42 @@ const RadialProgress = ({ percentage }: { percentage: number }) => {
 };
 
 export const Dashboard = () => {
-  const { user, courses, toggleCourse, startCourse, lineData, isAuthenticated, hasDismissedLoginPrompt, dismissLoginPrompt, getCourseMastery } = useApp();
+  const { user, courses, toggleCourse, startCourse, lineData, isAuthenticated, isAuthLoading, hasDismissedLoginPrompt, dismissLoginPrompt, getCourseMastery } = useApp();
   const navigate = useNavigate();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [todayIndex, setTodayIndex] = useState(0);
 
-  // Trigger login modal if not authenticated on mount and not previously dismissed
+  // Trigger login modal ONLY after auth loading completes and user is NOT authenticated
   useEffect(() => {
+    // Don't decide until loading is done
+    if (isAuthLoading) return;
+
     if (!isAuthenticated && !hasDismissedLoginPrompt) {
       // Small delay for smoother entrance
       const timer = setTimeout(() => setShowLoginPrompt(true), 500);
       return () => clearTimeout(timer);
+    } else {
+      // User is authenticated or has dismissed - ensure popup is hidden
+      setShowLoginPrompt(false);
     }
-  }, [isAuthenticated, hasDismissedLoginPrompt]);
+  }, [isAuthenticated, isAuthLoading, hasDismissedLoginPrompt]);
 
   // Determine current day of the week (0=Sun, 1=Mon... 6=Sat) on mount
   useEffect(() => {
     setTodayIndex(new Date().getDay());
   }, []);
+
+  // Show loading spinner while auth is being determined to prevent flash
+  if (isAuthLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-surface-light dark:bg-surface-dark">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-sm text-gray-500 font-medium">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   const handleDismissPrompt = () => {
     setShowLoginPrompt(false);

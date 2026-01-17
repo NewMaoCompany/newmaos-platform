@@ -66,6 +66,7 @@ export const ProfileSettings = () => {
       if (email !== user.email) {
         // Trigger Verification START - Checks if email is taken first
         setPendingEmail(email);
+        setVerifyCode(['', '', '', '', '', '']); // Ensure fresh start
         // Send code to NEW email (will throw 400 if taken)
         const res = await authApi.initiateChangeEmail(email);
         setShowVerifyModal(true);
@@ -94,6 +95,12 @@ export const ProfileSettings = () => {
     // Auto-focus next
     if (value && index < 5) {
       document.getElementById(`verify-input-${index + 1}`)?.focus();
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !verifyCode[index] && index > 0) {
+      document.getElementById(`verify-input-${index - 1}`)?.focus();
     }
   };
 
@@ -157,28 +164,36 @@ export const ProfileSettings = () => {
           {isSaving ? <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span> : 'Save Changes'}
         </button>
 
-        {/* Verification Modal */}
+        {/* Verification Modal - Styled to match Signup Flow */}
         {showVerifyModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-            <div className="bg-surface-light dark:bg-surface-dark w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-white/20 relative animate-fade-in-up">
+            <div className="bg-surface-light dark:bg-surface-dark w-full max-w-[420px] rounded-3xl p-8 sm:p-10 shadow-soft border border-neutral-100 dark:border-neutral-800 relative animate-fade-in-up text-center">
+
               <button
-                onClick={() => setShowVerifyModal(false)}
-                className="absolute top-4 right-4 p-1 text-gray-400 hover:text-text-main dark:hover:text-white transition-colors"
+                onClick={() => {
+                  setShowVerifyModal(false);
+                  setVerifyCode(['', '', '', '', '', '']); // Clear code on exit
+                }}
+                className="absolute top-6 left-6 flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white transition-colors"
               >
-                <span className="material-symbols-outlined">close</span>
+                <span className="material-symbols-outlined text-sm">arrow_back</span>
+                Back
               </button>
 
-              <div className="text-center mb-6">
-                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-text-main mx-auto mb-4 shadow-glow">
-                  <span className="material-symbols-outlined">mail</span>
-                </div>
-                <h3 className="text-xl font-black text-text-main dark:text-white">Verify New Email</h3>
-                <p className="text-sm text-gray-500 mt-2">
-                  Enter the code sent to <br /><span className="font-bold text-text-main dark:text-white">{pendingEmail}</span>
-                </p>
+              <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 mx-auto mt-4">
+                <span className="material-symbols-outlined text-3xl">lock</span>
               </div>
 
-              <div className="flex justify-between gap-2 mb-6">
+              <h3 className="text-xl font-black text-[#1c1a0d] dark:text-white mb-2">Verify New Email</h3>
+              <p className="text-sm text-gray-500 mb-2">
+                We've sent a 6-digit code to <br /><span className="font-bold text-text-main dark:text-white">{pendingEmail}</span>
+              </p>
+              <p className="text-xs text-amber-600 dark:text-amber-400 mb-6 flex items-center justify-center gap-1">
+                <span className="material-symbols-outlined text-sm">schedule</span>
+                Code expires in 10 minutes
+              </p>
+
+              <div className="flex justify-center gap-2 mb-8">
                 {verifyCode.map((digit, idx) => (
                   <input
                     key={idx}
@@ -187,7 +202,8 @@ export const ProfileSettings = () => {
                     maxLength={1}
                     value={digit}
                     onChange={(e) => handleCodeChange(idx, e.target.value)}
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-transparent text-center text-lg font-bold outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all"
+                    onKeyDown={(e) => handleKeyDown(idx, e)}
+                    className="w-12 h-14 text-center text-2xl font-bold rounded-xl border-2 border-neutral-100 bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white"
                   />
                 ))}
               </div>
@@ -195,9 +211,14 @@ export const ProfileSettings = () => {
               <button
                 onClick={handleVerify}
                 disabled={isVerifying}
-                className="w-full py-3 bg-primary rounded-xl font-bold text-text-main shadow-md hover:brightness-105 active:scale-95 transition-all flex items-center justify-center gap-2"
+                className="w-full rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-[#1c1a0d] shadow-sm hover:brightness-105 active:scale-[0.99] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
               >
-                {isVerifying ? <span className="material-symbols-outlined animate-spin">progress_activity</span> : 'Verify & Update'}
+                {isVerifying ? (
+                  <>
+                    <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                    Verifying...
+                  </>
+                ) : 'Verify & Update'}
               </button>
             </div>
           </div>

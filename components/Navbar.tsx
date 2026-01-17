@@ -10,6 +10,7 @@ export const Navbar = () => {
   const { showToast } = useToast();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [viewAll, setViewAll] = useState(false); // State for View All
 
   const notifRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -17,11 +18,15 @@ export const Navbar = () => {
   const isActive = (path: string) => location.pathname.startsWith(path);
   const unreadCount = notifications.filter(n => n.unread).length;
 
+  // Logic: Show 3 by default, or all if viewAll is true
+  const displayedNotifications = viewAll ? notifications : notifications.slice(0, 3);
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
+        setViewAll(false); // Reset view all on close
       }
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setShowProfileMenu(false);
@@ -38,9 +43,16 @@ export const Navbar = () => {
     navigate('/dashboard');
   };
 
+  const handleBellClick = () => {
+    const newState = !showNotifications;
+    setShowNotifications(newState);
+    if (newState && unreadCount > 0) {
+      // Clear red dot on open
+      markAllNotificationsRead();
+    }
+  };
+
   const handleNotificationClick = (id: number, link: string) => {
-    // Mark specific notification as read using global state
-    markNotificationRead(id);
     // Navigate
     navigate(link);
     setShowNotifications(false);
@@ -81,7 +93,7 @@ export const Navbar = () => {
               {/* Notifications */}
               <div className="relative" ref={notifRef}>
                 <button
-                  onClick={() => setShowNotifications(!showNotifications)}
+                  onClick={handleBellClick}
                   className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${showNotifications ? 'bg-primary/20 text-text-main' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10'}`}
                 >
                   <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>notifications</span>
@@ -95,18 +107,10 @@ export const Navbar = () => {
                   <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-fade-in origin-top-right">
                     <div className="p-3 border-b border-gray-100 dark:border-gray-800/50 flex justify-between items-center">
                       <span className="text-sm font-bold">Notifications</span>
-                      {unreadCount > 0 && (
-                        <button
-                          onClick={markAllNotificationsRead}
-                          className="text-[10px] text-primary font-bold hover:underline"
-                        >
-                          Mark all read
-                        </button>
-                      )}
                     </div>
                     <div className="max-h-[300px] overflow-y-auto">
                       {notifications.length > 0 ? (
-                        notifications.map(notif => (
+                        displayedNotifications.map(notif => (
                           <div
                             key={notif.id}
                             onClick={() => handleNotificationClick(notif.id, notif.link)}
@@ -127,9 +131,14 @@ export const Navbar = () => {
                         </div>
                       )}
                     </div>
-                    {notifications.length > 3 && (
+                    {notifications.length > 3 && !viewAll && (
                       <div className="p-2 text-center border-t border-gray-100 dark:border-gray-800/50">
-                        <button className="text-xs font-semibold text-gray-500 hover:text-text-main transition-colors">View All</button>
+                        <button
+                          onClick={() => setViewAll(true)}
+                          className="text-xs font-semibold text-gray-500 hover:text-text-main transition-colors"
+                        >
+                          View All
+                        </button>
                       </div>
                     )}
                   </div>
