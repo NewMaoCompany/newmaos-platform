@@ -93,8 +93,7 @@ const ImageUploader = ({
     }
 
     return (
-        <div
-            onClick={() => fileInputRef.current?.click()}
+        <label
             className={`flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl cursor-pointer hover:border-primary hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-gray-400 hover:text-primary group ${className} ${heightClass}`}
         >
             <div className="w-12 h-12 bg-gray-100 dark:bg-white/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
@@ -103,12 +102,11 @@ const ImageUploader = ({
             <span className="text-xs font-bold uppercase tracking-wider">{placeholder}</span>
             <input
                 type="file"
-                ref={fileInputRef}
-                className="hidden"
+                className="sr-only"
                 accept="image/*"
                 onChange={handleFile}
             />
-        </div>
+        </label>
     );
 };
 
