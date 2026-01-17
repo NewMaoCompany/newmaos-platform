@@ -31,13 +31,104 @@ const SimpleLayout = ({ title, children, showNavbar = true }: { title: string, c
 export const Privacy = () => (
     <SimpleLayout title="Privacy Policy">
         <div className="space-y-8">
+            <p className="text-sm text-gray-500">Last Updated: January 16, 2026</p>
+
             <section>
                 <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">1. Introduction</h2>
-                <p>Welcome to NewMaoS ("we," "our," or "us"). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our application.</p>
+                <p>NewMaoS Learning, Inc. ("NewMaoS," "we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our AP Calculus learning platform at newmaos.com (the "Service"). Please read this policy carefully. By using our Service, you consent to the data practices described in this policy.</p>
             </section>
+
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">2. Data Collection</h2>
-                <p>We may collect information about you in a variety of ways. The information we may collect via the Application depends on the content and materials you use, and includes: Personal Data and Usage Data.</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">2. Information We Collect</h2>
+                <h3 className="text-lg font-semibold mt-4 mb-2">2.1 Personal Information</h3>
+                <p>When you create an account, we collect:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Name or username</li>
+                    <li>Email address</li>
+                    <li>Password (encrypted)</li>
+                    <li>Course preferences (AP Calculus AB/BC)</li>
+                </ul>
+
+                <h3 className="text-lg font-semibold mt-4 mb-2">2.2 Usage Data</h3>
+                <p>We automatically collect information about how you interact with our Service:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Practice session data and performance metrics</li>
+                    <li>Learning progress and topic mastery scores</li>
+                    <li>Time spent on the platform</li>
+                    <li>Device information and browser type</li>
+                    <li>IP address and approximate location</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">3. How We Use Your Information</h2>
+                <p>We use the information we collect to:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Provide, maintain, and improve our educational services</li>
+                    <li>Personalize your learning experience and recommend content</li>
+                    <li>Track your progress and generate performance analytics</li>
+                    <li>Communicate with you about updates, features, and support</li>
+                    <li>Ensure account security and prevent fraud</li>
+                    <li>Comply with legal obligations</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">4. Cookies and Tracking Technologies</h2>
+                <p>We use cookies and similar technologies to enhance your experience. These include:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li><strong>Essential Cookies:</strong> Required for the Service to function properly</li>
+                    <li><strong>Analytics Cookies:</strong> Help us understand how users interact with our platform</li>
+                    <li><strong>Preference Cookies:</strong> Remember your settings and preferences</li>
+                </ul>
+                <p className="mt-2">You can control cookies through your browser settings, but disabling them may affect Service functionality.</p>
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">5. Data Sharing and Disclosure</h2>
+                <p>We do not sell your personal information. We may share your data with:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li><strong>Service Providers:</strong> Third parties that help us operate our platform (e.g., hosting, analytics)</li>
+                    <li><strong>Legal Requirements:</strong> When required by law or to protect our rights</li>
+                    <li><strong>Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">6. Children's Privacy</h2>
+                <p>Our Service is designed for students preparing for AP Calculus exams, who may include minors. We comply with the Children's Online Privacy Protection Act (COPPA). If you are under 13, you must have parental consent to use our Service. Parents may contact us at privacy@newmaos.com to review, delete, or manage their child's information.</p>
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">7. Data Security</h2>
+                <p>We implement industry-standard security measures to protect your information, including encryption, secure servers, and regular security audits. However, no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security.</p>
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">8. Your Rights</h2>
+                <p>Depending on your location, you may have the right to:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Access and receive a copy of your personal data</li>
+                    <li>Correct inaccurate or incomplete information</li>
+                    <li>Delete your account and associated data</li>
+                    <li>Opt out of marketing communications</li>
+                    <li>Data portability (receive your data in a structured format)</li>
+                </ul>
+                <p className="mt-2">To exercise these rights, contact us at privacy@newmaos.com.</p>
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">9. Changes to This Policy</h2>
+                <p>We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the "Last Updated" date. Your continued use of the Service after changes constitutes acceptance of the revised policy.</p>
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">10. Contact Us</h2>
+                <p>If you have questions about this Privacy Policy, please contact us:</p>
+                <ul className="list-none mt-2 space-y-1">
+                    <li><strong>Email:</strong> privacy@newmaos.com</li>
+                    <li><strong>Website:</strong> newmaos.com/support</li>
+                </ul>
             </section>
         </div>
     </SimpleLayout>
@@ -46,13 +137,46 @@ export const Privacy = () => (
 export const Terms = () => (
     <SimpleLayout title="Terms of Service">
         <div className="space-y-8">
+            <p className="text-sm text-gray-500">Last Updated: January 16, 2026</p>
             <section>
                 <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">1. Agreement to Terms</h2>
-                <p>These Terms of Use constitute a legally binding agreement made between you, whether personally or on behalf of an entity (“you”) and NewMaoS (“we,” “us” or “our”), concerning your access to and use of the NewMaoS application.</p>
+                <p>These Terms of Service constitute a legally binding agreement between you and NewMaoS Learning, Inc. By using our AP Calculus learning platform at newmaos.com, you agree to be bound by these Terms.</p>
             </section>
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">2. Intellectual Property Rights</h2>
-                <p>Unless otherwise indicated, the Site is our proprietary property and all source code, databases, functionality, software, website designs, audio, video, text, photographs, and graphics on the Site (collectively, the “Content”) and the trademarks, service marks, and logos contained therein (the “Marks”) are owned or controlled by us or licensed to us.</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">2. Eligibility</h2>
+                <p>You must be at least 13 years old to use this Service. If you are under 18, you represent that you have parental consent.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">3. Account Registration</h2>
+                <p>You agree to provide accurate information, maintain account security, and accept responsibility for all activities under your account.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">4. Intellectual Property</h2>
+                <p>The Service and all its contents are owned by NewMaoS and protected by copyright laws. You are granted a limited license for personal, non-commercial educational use only.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">5. Prohibited Activities</h2>
+                <p>You may not: copy or distribute the Service; reverse engineer the software; share credentials; use bots or scrapers; disrupt the Service; upload malware; harass users; or use the Service to cheat on exams.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">6. Disclaimer of Warranties</h2>
+                <p className="uppercase text-sm">THE SERVICE IS PROVIDED AS IS WITHOUT WARRANTIES. WE DO NOT GUARANTEE ANY SPECIFIC EXAM SCORES OR ACADEMIC OUTCOMES.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">7. Limitation of Liability</h2>
+                <p className="uppercase text-sm">NEWMAOS SHALL NOT BE LIABLE FOR ANY INDIRECT OR CONSEQUENTIAL DAMAGES ARISING FROM YOUR USE OF THE SERVICE.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">8. Termination</h2>
+                <p>We may terminate your account at any time for breach of these Terms. You may delete your account through Settings.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">9. Governing Law</h2>
+                <p>These Terms are governed by the laws of the State of Delaware, United States.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">10. Contact Us</h2>
+                <p>Questions? Contact us at legal@newmaos.com</p>
             </section>
         </div>
     </SimpleLayout>
@@ -61,30 +185,70 @@ export const Terms = () => (
 export const Support = () => (
     <SimpleLayout title="Support Center">
         <div className="space-y-8">
-            <p className="text-lg">Need help? Our support team is available 24/7 to assist you with any issues related to your AP Calculus prep.</p>
+            <p className="text-lg">Need help? Our support team is here to assist you with any questions about your AP Calculus learning journey.</p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 not-prose">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 not-prose">
                 <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-gray-200 dark:border-gray-800">
                     <span className="material-symbols-outlined text-4xl text-primary mb-4">mail</span>
-                    <h3 className="text-xl font-bold mb-2">Email Us</h3>
-                    <p className="text-gray-500 mb-4">Send us a detailed message and we'll get back to you within 24 hours.</p>
+                    <h3 className="text-xl font-bold mb-2">Email Support</h3>
+                    <p className="text-gray-500 mb-4">Send us a detailed message and we'll respond within 24 hours.</p>
                     <a href="mailto:support@newmaos.com" className="text-primary font-bold hover:underline">support@newmaos.com</a>
                 </div>
                 <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-gray-200 dark:border-gray-800">
-                    <span className="material-symbols-outlined text-4xl text-primary mb-4">chat</span>
-                    <h3 className="text-xl font-bold mb-2">Live Chat</h3>
-                    <p className="text-gray-500 mb-4">Chat with our AI assistant or a human agent for immediate help.</p>
-                    <button className="text-primary font-bold hover:underline">Start Chat</button>
+                    <span className="material-symbols-outlined text-4xl text-primary mb-4">bug_report</span>
+                    <h3 className="text-xl font-bold mb-2">Report a Bug</h3>
+                    <p className="text-gray-500 mb-4">Found an issue? Help us improve by reporting it.</p>
+                    <a href="mailto:bugs@newmaos.com" className="text-primary font-bold hover:underline">bugs@newmaos.com</a>
+                </div>
+                <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-gray-200 dark:border-gray-800">
+                    <span className="material-symbols-outlined text-4xl text-primary mb-4">lightbulb</span>
+                    <h3 className="text-xl font-bold mb-2">Feature Requests</h3>
+                    <p className="text-gray-500 mb-4">Have an idea to make NewMaoS better?</p>
+                    <a href="mailto:feedback@newmaos.com" className="text-primary font-bold hover:underline">feedback@newmaos.com</a>
                 </div>
             </div>
 
             <section className="mt-8">
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">Frequently Asked Questions</h2>
-                <ul className="list-disc pl-5 space-y-2">
-                    <li><strong>How do I reset my password?</strong> Go to the login page and click "Forgot Password".</li>
-                    <li><strong>Can I switch between AB and BC?</strong> Yes, you can toggle courses in the Settings or Dashboard.</li>
-                    <li><strong>Is my progress saved automatically?</strong> Yes, all practice sessions are auto-saved.</li>
-                </ul>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-6">Frequently Asked Questions</h2>
+                <div className="space-y-6">
+                    <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <h3 className="font-bold text-lg mb-2">How do I reset my password?</h3>
+                        <p className="text-gray-500">Go to the login page and click "Forgot Password." Enter your email address and we'll send you a link to reset your password.</p>
+                    </div>
+                    <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <h3 className="font-bold text-lg mb-2">Can I switch between AP Calculus AB and BC?</h3>
+                        <p className="text-gray-500">Yes! You can toggle between courses anytime in the Settings page or from your Dashboard. Your progress is saved separately for each course.</p>
+                    </div>
+                    <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <h3 className="font-bold text-lg mb-2">Is my progress saved automatically?</h3>
+                        <p className="text-gray-500">Yes, all your practice sessions, scores, and progress are automatically saved to your account. You can pick up right where you left off on any device.</p>
+                    </div>
+                    <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <h3 className="font-bold text-lg mb-2">How is my mastery score calculated?</h3>
+                        <p className="text-gray-500">Your mastery score is based on your accuracy and consistency across practice problems in each topic. The more you practice correctly, the higher your mastery.</p>
+                    </div>
+                    <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <h3 className="font-bold text-lg mb-2">Can I delete my account?</h3>
+                        <p className="text-gray-500">Yes, you can delete your account from the Settings page. Please note that this action is permanent and all your data will be removed.</p>
+                    </div>
+                    <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <h3 className="font-bold text-lg mb-2">Is NewMaoS free to use?</h3>
+                        <p className="text-gray-500">Yes, NewMaoS is currently free for all students. We believe quality AP Calculus prep should be accessible to everyone.</p>
+                    </div>
+                    <div className="pb-4">
+                        <h3 className="font-bold text-lg mb-2">What browsers are supported?</h3>
+                        <p className="text-gray-500">NewMaoS works best on modern browsers including Chrome, Firefox, Safari, and Edge. For the best experience, keep your browser updated to the latest version.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section className="mt-8 p-6 bg-primary/10 rounded-2xl">
+                <h2 className="text-xl font-bold text-text-main dark:text-white mb-2">Still need help?</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">Our team typically responds within 24 hours on business days.</p>
+                <a href="mailto:support@newmaos.com" className="inline-flex items-center gap-2 bg-primary text-black font-bold px-6 py-3 rounded-xl hover:opacity-90 transition-opacity">
+                    <span className="material-symbols-outlined">send</span>
+                    Contact Support
+                </a>
             </section>
         </div>
     </SimpleLayout>
