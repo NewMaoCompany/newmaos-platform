@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../AppContext';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { authApi } from '../src/services/api';
+import { useToast } from '../components/Toast';
 
 export const Login = () => {
     const { login } = useApp();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const { showToast } = useToast();
 
     // Login State
     const [email, setEmail] = useState('');
@@ -76,7 +78,7 @@ export const Login = () => {
         setIsLoading(true);
         try {
             await authApi.resendVerification(email);
-            alert('Verification email sent! Check your inbox.');
+            showToast('Verification email sent! Check your inbox.', 'success');
         } catch (err: any) {
             setError(err.message || 'Failed to resend verification email.');
         } finally {
@@ -91,7 +93,7 @@ export const Login = () => {
 
         try {
             await authApi.forgotPassword(resetEmail);
-            alert(`Password reset email sent to ${resetEmail}. Check your inbox!`);
+            showToast(`Password reset email sent to ${resetEmail}. Check your inbox!`, 'success');
             setView('forgot-reset');
         } catch (err: any) {
             setError(err.message || 'Failed to send reset email.');
@@ -107,7 +109,7 @@ export const Login = () => {
 
         try {
             await authApi.resetPassword(newPassword, resetCode);
-            alert('Password successfully reset! Please login.');
+            showToast('Password successfully reset! Please login.', 'success');
             setEmail(resetEmail);
             setPassword('');
             setView('login');
@@ -187,10 +189,10 @@ export const Login = () => {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="you@example.com"
-                                        className="block w-full rounded-xl border-neutral-200 bg-white px-4 py-3.5 text-base text-[#1c1a0d] placeholder:text-neutral-400 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-200 dark:bg-black/20 dark:border-neutral-700 dark:text-white dark:focus:border-primary"
+                                        className="block w-full rounded-xl border-neutral-200 bg-white pl-12 pr-4 py-3.5 text-base text-[#1c1a0d] placeholder:text-neutral-400 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-200 dark:bg-black/20 dark:border-neutral-700 dark:text-white dark:focus:border-primary"
                                         required
                                     />
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-primary">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-primary">
                                         <span className="material-symbols-outlined text-[20px]">mail</span>
                                     </div>
                                 </div>
@@ -209,10 +211,10 @@ export const Login = () => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="Enter your password"
-                                        className="block w-full rounded-xl border-neutral-200 bg-white px-4 py-3.5 text-base text-[#1c1a0d] placeholder:text-neutral-400 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-200 dark:bg-black/20 dark:border-neutral-700 dark:text-white dark:focus:border-primary"
+                                        className="block w-full rounded-xl border-neutral-200 bg-white pl-12 pr-4 py-3.5 text-base text-[#1c1a0d] placeholder:text-neutral-400 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-200 dark:bg-black/20 dark:border-neutral-700 dark:text-white dark:focus:border-primary"
                                         required
                                     />
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-primary">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-primary">
                                         <span className="material-symbols-outlined text-[20px]">lock</span>
                                     </div>
                                 </div>
@@ -267,7 +269,7 @@ export const Login = () => {
                             className="flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white mb-6 transition-colors"
                         >
                             <span className="material-symbols-outlined text-sm">arrow_back</span>
-                            Back to Login
+                            Back to Sign In
                         </button>
 
                         <div className="mb-8">
@@ -283,16 +285,21 @@ export const Login = () => {
                                 <label className="block text-sm font-semibold text-[#1c1a0d] dark:text-neutral-200 ml-1" htmlFor="resetEmail">
                                     Email Address
                                 </label>
-                                <input
-                                    id="resetEmail"
-                                    type="email"
-                                    value={resetEmail}
-                                    onChange={(e) => setResetEmail(e.target.value)}
-                                    placeholder="name@example.com"
-                                    className="block w-full rounded-xl border-neutral-200 bg-white px-4 py-3.5 text-base text-[#1c1a0d] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white"
-                                    required
-                                    autoFocus
-                                />
+                                <div className="relative group">
+                                    <input
+                                        id="resetEmail"
+                                        type="email"
+                                        value={resetEmail}
+                                        onChange={(e) => setResetEmail(e.target.value)}
+                                        placeholder="name@example.com"
+                                        className="block w-full rounded-xl border-neutral-200 bg-white pl-12 pr-4 py-3.5 text-base text-[#1c1a0d] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white"
+                                        required
+                                        autoFocus
+                                    />
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-primary">
+                                        <span className="material-symbols-outlined text-[20px]">mail</span>
+                                    </div>
+                                </div>
                             </div>
                             <button
                                 type="submit"

@@ -1,6 +1,7 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './AppContext';
+import { ToastProvider } from './components/Toast';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { PracticeHub } from './pages/PracticeHub';
@@ -57,11 +58,13 @@ const AppRoutes = () => {
 
 const App = () => {
   return (
-    <AppProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
-    </AppProvider>
+    <ToastProvider>
+      <AppProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </AppProvider>
+    </ToastProvider>
   );
 };
 
