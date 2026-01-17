@@ -18,7 +18,7 @@ interface AppContextType {
     topicContent: Record<string, UnitContent>; // Dynamic Content Data
 
     login: (email: string, username?: string) => void;
-    logout: () => void;
+    logout: () => Promise<void>;
     toggleCourse: (course: CourseType) => void;
     startCourse: (course: CourseType) => void;
     updateUser: (updates: Partial<User>) => void;
@@ -184,7 +184,12 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }));
     };
 
-    const logout = () => {
+    const logout = async () => {
+        try {
+            await supabase.auth.signOut();
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
         setIsAuthenticated(false);
         setIsCreatorAuthenticated(false); // Reset creator access on logout
         setHasDismissedLoginPrompt(false); // Reset prompt state on logout so next user sees it
