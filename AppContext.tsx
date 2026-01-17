@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { User, CourseType, Activity, TopicMastery, CourseState, Recommendation, SessionMode, Question, AppNotification, UnitContent, SubTopic } from './types';
 import { INITIAL_USER, INITIAL_ACTIVITIES, INITIAL_RADAR_DATA, INITIAL_LINE_DATA, INITIAL_COURSES, PRACTICE_QUESTIONS, INITIAL_NOTIFICATIONS, COURSE_CONTENT_DATA } from './constants';
 import { supabase } from './src/services/supabaseClient';
-import { notificationsApi, contentApi, questionsApi } from './src/services/api';
+import { notificationsApi, contentApi, questionsApi, sectionsApi } from './src/services/api';
 
 interface AppContextType {
     user: User;
@@ -18,6 +18,7 @@ interface AppContextType {
     isCreatorAuthenticated: boolean; // Creator Access State
     topicContent: Record<string, UnitContent>; // Dynamic Content Data
     skills: { id: string; name: string; unit: string; prerequisites: string[] }[]; // Skills for Question Editor
+    sections: Record<string, any[]>; // Sections by topic_id for Chapter Settings
 
     login: (email: string, username?: string, id?: string) => void;
     logout: () => Promise<void>;
@@ -33,6 +34,7 @@ interface AppContextType {
     updateQuestion: (q: Question) => void;
     deleteQuestion: (id: string) => void;
     updateTopic: (unitId: string, subTopicId: string | null, data: any) => void;
+    updateSection: (topicId: string, sectionId: string, data: any) => Promise<void>;
     verifyAccessCode: (code: string) => Promise<{ success: boolean; message?: string }>;
 
     // Notification Methods
@@ -41,6 +43,7 @@ interface AppContextType {
 
     // Helper for Dashboard
     getCourseMastery: (course: CourseType) => number;
+    getSectionsForTopic: (topicId: string) => any[];
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -85,6 +88,9 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     // Skills data for Question Editor
     const [skills, setSkills] = useState<{ id: string; name: string; unit: string; prerequisites: string[] }[]>([]);
 
+    // Sections data from database (keyed by topic_id)
+    const [sections, setSections] = useState<Record<string, any[]>>({});
+
     // Algorithmic Recommendation State - Initial State for New User
     const [recommendation, setRecommendation] = useState<Recommendation>({
         topic: 'Limits',
@@ -93,6 +99,60 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         targetMastery: 80,
         mode: 'Adaptive'
     });
+
+    // Fetch all sections from database
+    const fetchSections = async () => {
+        try {
+            console.log('🔄 Fetching sections...');
+            const data = await sectionsApi.getSections();
+            // Group by topic_id
+            const grouped: Record<string, any[]> = {};
+            data.forEach((section: any) => {
+                if (!grouped[section.topic_id]) {
+                    grouped[section.topic_id] = [];
+                }
+                grouped[section.topic_id].push(section);
+            });
+            setSections(grouped);
+            console.log(`✅ Loaded ${data.length} sections`);
+        } catch (error) {
+            console.error('Failed to fetch sections:', error);
+        }
+    };
+
+    // Update a section in the database
+    const updateSection = async (topicId: string, sectionId: string, data: any) => {
+        try {
+            // Optimistic update
+            setSections(prev => {
+                const updated = { ...prev };
+                if (updated[topicId]) {
+                    const idx = updated[topicId].findIndex(s => s.id === sectionId);
+                    if (idx !== -1) {
+                        updated[topicId] = [...updated[topicId]];
+                        updated[topicId][idx] = { ...updated[topicId][idx], ...data };
+                    }
+                }
+                return updated;
+            });
+
+            // Call API
+            await sectionsApi.updateSection(topicId, sectionId, data);
+            console.log(`✅ Section ${topicId}/${sectionId} saved to Supabase`);
+        } catch (error) {
+            console.error('Failed to update section:', error);
+            throw error;
+        }
+    };
+
+    // Helper to get sections for a topic (with fallback to COURSE_CONTENT_DATA)
+    const getSectionsForTopic = (topicId: string): any[] => {
+        if (sections[topicId] && sections[topicId].length > 0) {
+            return sections[topicId];
+        }
+        // Fallback to constants data
+        return COURSE_CONTENT_DATA[topicId]?.subTopics || [];
+    };
 
     const fetchNotifications = async () => {
         try {
@@ -216,6 +276,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     fetchNotifications(); // Fetch notifications on restore
                     fetchContent(); // Fetch dynamic content on restore
                     fetchSkills(); // Fetch skills for Question Editor
+                    fetchSections(); // Fetch sections for Chapter Settings
                 }
             } catch (error) {
                 console.log('No existing session found');
@@ -559,6 +620,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             isCreatorAuthenticated,
             topicContent,
             skills,
+            sections,
             login,
             logout,
             toggleCourse,
@@ -571,10 +633,12 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             updateQuestion,
             deleteQuestion,
             updateTopic,
+            updateSection,
             verifyAccessCode,
             markAllNotificationsRead,
             markNotificationRead,
-            getCourseMastery
+            getCourseMastery,
+            getSectionsForTopic
         }}>
             {children}
         </AppContext.Provider>

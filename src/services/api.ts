@@ -291,6 +291,35 @@ export const contentApi = {
 };
 
 // =====================================
+// Sections API
+// =====================================
+
+export const sectionsApi = {
+    async getSections(topicId?: string) {
+        const query = topicId ? `?topicId=${topicId}` : '';
+        return apiRequest<any[]>(`/sections${query}`);
+    },
+
+    async getSection(topicId: string, sectionId: string) {
+        return apiRequest<any>(`/sections/${topicId}/${sectionId}`);
+    },
+
+    async updateSection(topicId: string, sectionId: string, data: any) {
+        return apiRequest<any>(`/sections/${topicId}/${sectionId}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
+    },
+
+    async createSection(data: any) {
+        return apiRequest<any>('/sections', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+    },
+};
+
+// =====================================
 // Notifications API
 // =====================================
 

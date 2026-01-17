@@ -157,15 +157,26 @@ const TopicSettings = ({
     id: string;
     onAddQuestion: () => void;
 }) => {
-    const { topicContent, updateTopic } = useApp();
+    const { topicContent, updateSection, getSectionsForTopic } = useApp();
 
-    // Find content: Unit, SubTopic, or Unit Test
+    // Find content: Unit, SubTopic, or Unit Test (from sections table with fallback)
     const content = useMemo(() => {
         if (!unitId || !topicContent[unitId]) return null;
         const unit = topicContent[unitId];
 
         if (id === 'unit_test') {
-            // Construct a unified shape for the editor
+            // Look for unit_test in sections first
+            const sections = getSectionsForTopic(unitId);
+            const unitTestSection = sections.find((s: any) => s.id === 'unit_test');
+            if (unitTestSection) {
+                return {
+                    title: unitTestSection.title,
+                    description: unitTestSection.description,
+                    estimatedMinutes: unitTestSection.estimated_minutes || unitTestSection.estimatedMinutes || 45,
+                    isUnitTest: true
+                };
+            }
+            // Fallback to topicContent
             return {
                 title: unit.unitTest?.title || 'Unit Test',
                 description: unit.unitTest?.description || `Comprehensive assessment covering all topics in ${unit.title}.`,
@@ -177,12 +188,21 @@ const TopicSettings = ({
         // Check if ID is the Unit itself
         if (id === unitId) return unit;
 
-        // Check if ID is a SubTopic - use COURSE_CONTENT_DATA as fallback when DB is empty
-        const subTopics = unit.subTopics?.length > 0
-            ? unit.subTopics
-            : COURSE_CONTENT_DATA[unitId]?.subTopics || [];
-        return subTopics.find((s: any) => s.id === id);
-    }, [topicContent, unitId, id]);
+        // Check if ID is a SubTopic - use sections from DB with fallback
+        const sections = getSectionsForTopic(unitId);
+        const section = sections.find((s: any) => s.id === id);
+        if (section) {
+            return {
+                id: section.id,
+                title: section.title,
+                description: section.description,
+                estimatedMinutes: section.estimated_minutes || section.estimatedMinutes || 15,
+                hasLesson: section.has_lesson !== false,
+                hasPractice: section.has_practice !== false
+            };
+        }
+        return null;
+    }, [topicContent, unitId, id, getSectionsForTopic]);
 
     const [localTitle, setLocalTitle] = useState('');
     const [localDesc, setLocalDesc] = useState('');
@@ -191,7 +211,7 @@ const TopicSettings = ({
     const [localHasLesson, setLocalHasLesson] = useState(true);
     const [localHasPractice, setLocalHasPractice] = useState(true);
     const [isTimeFocused, setIsTimeFocused] = useState(false); // Track focus for styling
-
+    const [isSaving, setIsSaving] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
 
     useEffect(() => {
@@ -211,28 +231,32 @@ const TopicSettings = ({
         }
     }, [content, id]);
 
-    const handleSave = () => {
-        const updates: any = { title: localTitle, description: localDesc };
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            const updates: any = {
+                title: localTitle,
+                description: localDesc,
+                estimated_minutes: localTime === '' ? 0 : Number(localTime)
+            };
 
-        const isTimeRelevant = 'estimatedMinutes' in (content || {});
+            // Availability flags only relevant for SubTopics, not Unit Test or Unit itself
+            if (id !== 'unit_test' && id !== unitId) {
+                updates.has_lesson = localHasLesson;
+                updates.has_practice = localHasPractice;
+            }
 
-        if (isTimeRelevant) {
-            // Convert empty string back to 0
-            updates.estimatedMinutes = localTime === '' ? 0 : Number(localTime);
+            // Call the new updateSection API to persist to Supabase
+            await updateSection(unitId, id, updates);
+
+            setIsSaved(true);
+            setTimeout(() => setIsSaved(false), 2000);
+        } catch (error) {
+            console.error('Failed to save section:', error);
+            alert('Failed to save. Please try again.');
+        } finally {
+            setIsSaving(false);
         }
-
-        // Availability flags only relevant for SubTopics, not Unit Test or Unit itself
-        if (id !== 'unit_test' && id !== unitId && isTimeRelevant) {
-            updates.hasLesson = localHasLesson;
-            updates.hasPractice = localHasPractice;
-        }
-
-        // Use the updated updateTopic signature
-        const subId = (id === 'unit_test' || id !== unitId) ? id : null;
-        updateTopic(unitId, subId, updates);
-
-        setIsSaved(true);
-        setTimeout(() => setIsSaved(false), 2000);
     };
 
     if (!content) return <div>Topic not found</div>;

@@ -13,6 +13,7 @@ import practiceRoutes from './routes/practice';
 import progressRoutes from './routes/progress';
 import contentRoutes from './routes/content';
 import notificationsRoutes from './routes/notifications';
+import sectionsRoutes from './routes/sections';
 import { initEmailScheduler } from './services/emailScheduler';
 
 // Initialize Cron Jobs
@@ -48,6 +49,7 @@ app.use('/api/practice', practiceRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/notifications', notificationsRoutes);
+app.use('/api/sections', sectionsRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
