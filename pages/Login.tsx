@@ -378,8 +378,8 @@ export const Login = () => {
                                         type="text"
                                         value={resetCode}
                                         onChange={(e) => setResetCode(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
-                                        placeholder="123456"
-                                        className="block w-full rounded-xl border-neutral-200 bg-white pl-11 pr-4 py-3.5 text-base text-[#1c1a0d] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white tracking-widest font-mono"
+                                        placeholder="Enter 6-digit code"
+                                        className="block w-full rounded-xl border-neutral-200 bg-white pl-11 pr-4 py-3.5 text-base text-[#1c1a0d] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all dark:bg-black/20 dark:border-neutral-700 dark:text-white tracking-widest font-mono placeholder:font-sans placeholder:tracking-normal placeholder:text-neutral-400"
                                         required
                                         autoFocus
                                     />
