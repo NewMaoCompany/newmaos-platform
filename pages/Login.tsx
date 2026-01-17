@@ -334,6 +334,12 @@ export const Login = () => {
                             <p className="text-sm text-gray-500 mt-2">Enter your email address and we'll send you a code to reset your password.</p>
                         </div>
 
+                        {error && (
+                            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400 mb-6">
+                                {error}
+                            </div>
+                        )}
+
                         <form onSubmit={handleSendResetCode} className="flex flex-col gap-6">
                             <div className="space-y-1.5">
                                 <label className="block text-sm font-semibold text-[#1c1a0d] dark:text-neutral-200 ml-1" htmlFor="resetEmail">
@@ -462,6 +468,12 @@ export const Login = () => {
                             <h2 className="text-2xl font-black text-[#1c1a0d] dark:text-white">New Password</h2>
                             <p className="text-sm text-gray-500 mt-2">Create a new secure password for your account.</p>
                         </div>
+
+                        {error && (
+                            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400 mb-6">
+                                {error}
+                            </div>
+                        )}
 
                         <form onSubmit={handleResetPassword} className="flex flex-col gap-6">
                             <div className="space-y-1.5">
