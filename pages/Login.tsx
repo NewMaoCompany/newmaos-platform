@@ -461,6 +461,13 @@ export const Login = () => {
                 {/* --- VIEW: FORGOT PASSWORD (STEP 3: UPDATE PASSWORD) --- */}
                 {view === 'forgot-update' && (
                     <div className="animate-fade-in">
+                        <button
+                            onClick={() => setView('login')}
+                            className="absolute top-8 left-8 flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-sm">arrow_back</span>
+                            Back
+                        </button>
                         <div className="mb-8">
                             <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-500 rounded-xl flex items-center justify-center mb-4">
                                 <span className="material-symbols-outlined text-2xl">lock_reset</span>
