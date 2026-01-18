@@ -56,48 +56,57 @@ router.get('/:topicId/:sectionId', optionalAuthMiddleware, async (req: Request, 
     }
 });
 
-// PUT /api/sections/:topicId/:sectionId - Update section
+// PUT /api/sections/:topicId/:sectionId - Update or create section (upsert)
 router.put('/:topicId/:sectionId', authMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = req.user!.id;
         const { topicId, sectionId } = req.params;
         const updateData = req.body;
 
-        // Check if user is creator
+        // Check if user is creator (allow super admin bypass)
+        const SUPER_ADMIN_EMAIL = 'newmao6120@gmail.com';
         const { data: profile } = await supabaseAdmin
             .from('user_profiles')
-            .select('is_creator')
+            .select('is_creator, email')
             .eq('id', userId)
             .single();
 
-        if (!profile?.is_creator) {
+        const isSuperAdmin = profile?.email === SUPER_ADMIN_EMAIL;
+        if (!profile?.is_creator && !isSuperAdmin) {
             res.status(403).json({ error: 'Creator access required' });
             return;
         }
 
-        // Remove fields that shouldn't be updated
-        delete updateData.id;
-        delete updateData.topic_id;
-        delete updateData.created_at;
+        // Prepare data for upsert
+        const upsertData = {
+            id: sectionId,
+            topic_id: topicId,
+            title: updateData.title || `Section ${sectionId}`,
+            description: updateData.description || '',
+            estimated_minutes: updateData.estimated_minutes || 15,
+            has_lesson: updateData.has_lesson !== false,
+            has_practice: updateData.has_practice !== false,
+            sort_order: updateData.sort_order || 0,
+            updated_at: new Date().toISOString()
+        };
 
-        // Add updated_at timestamp
-        updateData.updated_at = new Date().toISOString();
-
+        // Use upsert - insert if not exists, update if exists
         const { data, error } = await supabaseAdmin
             .from('sections')
-            .update(updateData)
-            .eq('topic_id', topicId)
-            .eq('id', sectionId)
+            .upsert(upsertData, {
+                onConflict: 'id,topic_id',
+                ignoreDuplicates: false
+            })
             .select()
             .single();
 
         if (error) {
-            console.error('Update section error:', error);
+            console.error('Upsert section error:', error);
             res.status(400).json({ error: error.message });
             return;
         }
 
-        console.log(`✅ Section ${topicId}/${sectionId} updated`);
+        console.log(`✅ Section ${topicId}/${sectionId} upserted`);
         res.json(data);
     } catch (error) {
         console.error('Update section error:', error);
