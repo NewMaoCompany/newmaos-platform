@@ -61,25 +61,17 @@ export const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-gray-200/70 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface-light/60">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo Area */}
-        <Link to="/dashboard" className="flex items-center gap-2 group cursor-pointer">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        {/* Logo Area - Always Visible */}
+        <Link to="/dashboard" className="flex items-center gap-2 group cursor-pointer shrink-0">
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-text-main shadow-glow transition-transform group-hover:scale-105">
             <span className="material-symbols-outlined font-bold" style={{ fontSize: '20px' }}>function</span>
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-text-main dark:text-white hidden sm:block">NewMaoS</h1>
+          <h1 className="text-lg sm:text-xl font-bold tracking-tight text-text-main dark:text-white">NewMaoS</h1>
         </Link>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setShowMobileMenu(!showMobileMenu)}
-          className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-        >
-          <span className="material-symbols-outlined">{showMobileMenu ? 'close' : 'menu'}</span>
-        </button>
-
-        {/* Central Navigation */}
-        <div className="hidden md:flex items-center gap-8">
+        {/* Central Navigation - Hidden on mobile */}
+        <div className="hidden md:flex items-center gap-6 lg:gap-8">
           <Link to="/dashboard" className={`text-sm font-medium transition-colors ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white'}`}>
             Dashboard
           </Link>
@@ -94,8 +86,16 @@ export const Navbar = () => {
           </Link>
         </div>
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-4">
+        {/* Right Actions - Always Visible */}
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+
+          {/* Mobile Menu Button - Visible only on mobile */}
+          <button
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+          >
+            <span className="material-symbols-outlined">{showMobileMenu ? 'close' : 'menu'}</span>
+          </button>
 
           {isAuthenticated ? (
             <>
