@@ -245,6 +245,28 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
     };
 
+    // --- Questions Methods (fetch from DB) ---
+    const fetchQuestions = async () => {
+        try {
+            console.log('🔄 Fetching questions from database...');
+            const data = await questionsApi.getQuestions();
+            if (data && data.length > 0) {
+                // Merge with static questions, preferring DB versions for duplicates
+                setQuestions(prev => {
+                    const dbQuestionIds = new Set(data.map(q => q.id));
+                    const staticOnly = prev.filter(q => !dbQuestionIds.has(q.id));
+                    return [...data, ...staticOnly];
+                });
+                console.log('✅ Questions loaded from DB:', data.length);
+            } else {
+                console.log('ℹ️ No questions in DB, using static data');
+            }
+        } catch (error) {
+            console.error('Failed to fetch questions:', error);
+            // Keep static questions as fallback
+        }
+    };
+
     const markAllNotificationsRead = async () => {
         setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
         try {
@@ -321,6 +343,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     fetchContent(); // Fetch dynamic content on restore
                     fetchSkills(); // Fetch skills for Question Editor
                     fetchSections(); // Fetch sections for Chapter Settings
+                    fetchQuestions(); // Fetch questions from DB for Practice
                 }
             } catch (error) {
                 console.log('No existing session found');
