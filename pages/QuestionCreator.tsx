@@ -656,7 +656,7 @@ export const QuestionCreator = () => {
             <div className="flex-grow flex h-[calc(100vh-64px)] overflow-hidden">
 
                 {/* --- COL 1: COURSE STRUCTURE --- */}
-                <aside className="w-80 bg-white dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 flex flex-col shrink-0 z-20">
+                <aside className="hidden lg:flex w-80 bg-white dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 flex-col shrink-0 z-20">
                     <div className="p-4 border-b border-gray-200 dark:border-gray-800">
                         <h2 className="text-xs font-bold uppercase text-gray-400 mb-2">Select Course</h2>
                         <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-lg">
@@ -697,7 +697,7 @@ export const QuestionCreator = () => {
                 </aside>
 
                 {/* --- COL 2: QUESTION LIST --- */}
-                <div className="w-72 bg-gray-50 dark:bg-black/20 border-r border-gray-200 dark:border-gray-800 flex flex-col shrink-0 z-10">
+                <div className="hidden md:flex w-72 bg-gray-50 dark:bg-black/20 border-r border-gray-200 dark:border-gray-800 flex-col shrink-0 z-10">
                     <div className="p-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-surface-dark">
                         <div className="flex justify-between items-center mb-3">
                             <h3 className="font-bold text-sm">Questions</h3>
@@ -736,7 +736,7 @@ export const QuestionCreator = () => {
 
                     {/* VIEW: QUESTION EDITOR */}
                     {isEditing ? (
-                        <div className="max-w-4xl mx-auto p-8 pb-20">
+                        <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8 pb-20">
                             {/* ... (Existing Editor JSX, same as before) ... */}
                             <div className="flex justify-between items-start mb-8 pb-6 border-b border-gray-100 dark:border-gray-800">
                                 <div>
@@ -747,12 +747,12 @@ export const QuestionCreator = () => {
                                     </div>
                                     <h1 className="text-2xl font-black text-text-main dark:text-white">Question Editor</h1>
                                 </div>
-                                <div className="flex gap-3">
+                                <div className="flex flex-wrap gap-2 sm:gap-3">
                                     {formData.id && (
-                                        <button type="button" onClick={() => setShowDeleteConfirm(true)} className="px-4 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg text-sm font-bold">Delete</button>
+                                        <button type="button" onClick={() => setShowDeleteConfirm(true)} className="px-3 sm:px-4 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg text-xs sm:text-sm font-bold">Delete</button>
                                     )}
-                                    <button type="button" onClick={handleCancel} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-text-main dark:text-white rounded-lg text-sm font-bold transition-all">Cancel</button>
-                                    <button type="button" onClick={handleSave} disabled={isSaving} className="px-6 py-2 bg-primary hover:bg-primary-hover text-text-main rounded-lg text-sm font-bold shadow-md flex items-center gap-2">
+                                    <button type="button" onClick={handleCancel} className="px-3 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-text-main dark:text-white rounded-lg text-xs sm:text-sm font-bold transition-all">Cancel</button>
+                                    <button type="button" onClick={handleSave} disabled={isSaving} className="px-4 sm:px-6 py-2 bg-primary hover:bg-primary-hover text-text-main rounded-lg text-xs sm:text-sm font-bold shadow-md flex items-center gap-2">
                                         {isSaving && <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>} Save
                                     </button>
                                 </div>
@@ -760,7 +760,7 @@ export const QuestionCreator = () => {
 
                             <section className="mb-8">
                                 <h3 className="text-sm font-bold uppercase text-gray-400 mb-4 tracking-wider">Classification & Metadata</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4">
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-gray-500">Target Course(s)</label>
                                         <CustomSelect

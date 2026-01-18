@@ -10,6 +10,7 @@ export const Navbar = () => {
   const { showToast } = useToast();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [viewAll, setViewAll] = useState(false); // State for View All
 
   const notifRef = useRef<HTMLDivElement>(null);
@@ -66,8 +67,16 @@ export const Navbar = () => {
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-text-main shadow-glow transition-transform group-hover:scale-105">
             <span className="material-symbols-outlined font-bold" style={{ fontSize: '20px' }}>function</span>
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-text-main dark:text-white">NewMaoS</h1>
+          <h1 className="text-xl font-bold tracking-tight text-text-main dark:text-white hidden sm:block">NewMaoS</h1>
         </Link>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setShowMobileMenu(!showMobileMenu)}
+          className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+        >
+          <span className="material-symbols-outlined">{showMobileMenu ? 'close' : 'menu'}</span>
+        </button>
 
         {/* Central Navigation */}
         <div className="hidden md:flex items-center gap-8">
@@ -207,6 +216,49 @@ export const Navbar = () => {
             </div>
           )}
 
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {showMobileMenu && (
+        <div className="md:hidden fixed inset-0 top-16 bg-black/50 z-40" onClick={() => setShowMobileMenu(false)} />
+      )}
+
+      {/* Mobile Menu Panel */}
+      <div className={`md:hidden fixed top-16 left-0 right-0 bg-white dark:bg-surface-dark border-b border-gray-200 dark:border-gray-800 shadow-lg z-50 transform transition-transform duration-200 ${showMobileMenu ? 'translate-y-0' : '-translate-y-full pointer-events-none'}`}>
+        <div className="p-4 flex flex-col gap-2">
+          <Link
+            to="/dashboard"
+            onClick={() => setShowMobileMenu(false)}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${location.pathname === '/dashboard' ? 'bg-primary/10 text-text-main dark:text-white' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
+          >
+            <span className="material-symbols-outlined text-[20px]">dashboard</span>
+            Dashboard
+          </Link>
+          <Link
+            to="/practice"
+            onClick={() => setShowMobileMenu(false)}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/practice') ? 'bg-primary/10 text-text-main dark:text-white' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
+          >
+            <span className="material-symbols-outlined text-[20px]">school</span>
+            Practice
+          </Link>
+          <Link
+            to="/analysis"
+            onClick={() => setShowMobileMenu(false)}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/analysis') ? 'bg-primary/10 text-text-main dark:text-white' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
+          >
+            <span className="material-symbols-outlined text-[20px]">analytics</span>
+            Analysis
+          </Link>
+          <Link
+            to="/settings"
+            onClick={() => setShowMobileMenu(false)}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/settings') ? 'bg-primary/10 text-text-main dark:text-white' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
+          >
+            <span className="material-symbols-outlined text-[20px]">settings</span>
+            Settings
+          </Link>
         </div>
       </div>
     </nav>

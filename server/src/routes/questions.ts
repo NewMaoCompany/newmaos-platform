@@ -129,6 +129,7 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
                 topic,
                 topic_id: topicId,
                 sub_topic_id: subTopicId,
+                section_id: subTopicId,
                 type,
                 calculator_allowed: calculatorAllowed,
                 difficulty,
@@ -239,7 +240,10 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
 
         if (course !== undefined) updates.course = course;
         if (topic !== undefined) updates.topic = topic;
-        if (subTopicId !== undefined) updates.sub_topic_id = subTopicId;
+        if (subTopicId !== undefined) {
+            updates.sub_topic_id = subTopicId;
+            updates.section_id = subTopicId;
+        }
         if (type !== undefined) updates.type = type;
         if (calculatorAllowed !== undefined) updates.calculator_allowed = calculatorAllowed;
         if (difficulty !== undefined) updates.difficulty = difficulty;

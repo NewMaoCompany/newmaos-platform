@@ -116,7 +116,7 @@ export const Dashboard = () => {
     return (
       <div
         onClick={() => handleCardSelect(type)}
-        className={`group relative overflow-hidden bg-surface-light dark:bg-surface-dark rounded-[32px] p-8 border-2 transition-all duration-300 cursor-pointer flex flex-col justify-between h-full min-h-[340px]
+        className={`group relative overflow-hidden bg-surface-light dark:bg-surface-dark rounded-2xl sm:rounded-[32px] p-5 sm:p-8 border-2 transition-all duration-300 cursor-pointer flex flex-col justify-between min-h-[280px] sm:min-h-[340px]
             ${isActive ? 'border-primary shadow-soft scale-[1.01] z-10' : 'border-white dark:border-white/5 hover:border-gray-200 dark:hover:border-gray-700'}`}
       >
         {/* Background Icon */}
@@ -167,9 +167,9 @@ export const Dashboard = () => {
     <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans">
       <Navbar />
 
-      <main className="flex-grow max-w-7xl mx-auto px-6 py-10 flex flex-col gap-12 w-full animate-fade-in">
+      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-8 sm:gap-12 w-full animate-fade-in">
         <header className="flex flex-col gap-2">
-          <h2 className="text-4xl md:text-5xl font-black tracking-tight text-text-main dark:text-white">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-text-main dark:text-white">
             Hello, {user.name ? user.name.split(' ')[0] : 'Student'}
           </h2>
           <p className="text-xl text-text-secondary dark:text-gray-400 font-medium">
@@ -179,17 +179,17 @@ export const Dashboard = () => {
 
         <section className="flex flex-col gap-8">
           {/* Toggle - Visual only for quick switch context, actual switching happens on card click too */}
-          <div className="flex justify-start">
-            <div className="inline-flex bg-white dark:bg-white/5 p-1.5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+          <div className="flex justify-start overflow-x-auto pb-2 -mb-2">
+            <div className="inline-flex bg-white dark:bg-white/5 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm shrink-0">
               <button
                 onClick={() => handleCardSelect('AB')}
-                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ${user.currentCourse === 'AB' ? 'bg-gray-100 text-black dark:bg-white dark:text-black shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'}`}
+                className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 whitespace-nowrap ${user.currentCourse === 'AB' ? 'bg-gray-100 text-black dark:bg-white dark:text-black shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'}`}
               >
                 AP Calculus AB
               </button>
               <button
                 onClick={() => handleCardSelect('BC')}
-                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ${user.currentCourse === 'BC' ? 'bg-gray-100 text-black dark:bg-white dark:text-black shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'}`}
+                className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 whitespace-nowrap ${user.currentCourse === 'BC' ? 'bg-gray-100 text-black dark:bg-white dark:text-black shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'}`}
               >
                 AP Calculus BC
               </button>

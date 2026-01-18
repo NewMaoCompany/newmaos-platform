@@ -1,11 +1,12 @@
 {
+    "name": "newmaos-app",
     "buildCommand": "npm run build",
     "outputDirectory": "dist",
     "framework": "vite",
     "rewrites": [
         {
             "source": "/api/:path*",
-            "destination": "https://newmaos-api.vercel.app/api/:path*"
+            "destination": "https://cheerful-patience-production-206d.up.railway.app/api/:path*"
         }
     ],
     "headers": [
