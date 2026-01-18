@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../AppContext';
 import { Navbar } from '../components/Navbar';
-import { COURSE_TOPICS } from '../constants';
-import { SessionMode } from '../types';
+import { COURSE_TOPICS, COURSE_CONTENT_DATA } from '../constants';
+import { SessionMode, Question } from '../types';
 
 export const PracticeHub = () => {
-    const { user, activities, courses, recommendation, setSessionMode, radarData, topicContent } = useApp();
+    const { user, activities, courses, recommendation, setSessionMode, radarData, topicContent, questions, sections } = useApp();
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -261,6 +261,30 @@ export const PracticeHub = () => {
                             {topics.map((topic, idx) => {
                                 const progress = getTopicProgress(topic.id);
                                 const content = topicContent[topic.id]; // Get dynamic content
+                                const staticContent = COURSE_CONTENT_DATA[topic.id] || { subTopics: [] };
+
+                                // Calculate Dynamic Counts
+                                const topicQuestions = questions.filter((q: Question) => q.topic === topic.id && (q.status === 'published' || !q.status));
+                                const totalQuestions = topicQuestions.filter((q: Question) => !q.sectionId?.includes('unit_test')).length;
+
+                                // Count unique chapters (excluding 'unit_test' and 'overview' and 'undefined')
+                                const uniqueChapters = new Set();
+                                topicQuestions.forEach(q => {
+                                    if (q.sectionId && q.sectionId !== 'unit_test' && q.sectionId !== 'overview') {
+                                        uniqueChapters.add(q.sectionId);
+                                    }
+                                });
+                                // Also consider chapters from static content if no questions yet?
+                                // Better to count simply the number of chapters defined in structure
+                                // User requested "total number of chapters within that unit". 
+                                // This is usually better derived from static/dynamic structure than inferred from questions.
+                                const chapterCount = (staticContent.subTopics || []).length;
+
+                                // Calculate Total Estimated Time
+                                const topicSections = sections[topic.id] || [];
+                                const totalMinutes = topicSections.reduce((sum: number, sec: any) => sum + (Number(sec.estimated_minutes) || 0), 0);
+                                const totalHours = Math.floor(totalMinutes / 60);
+                                const remainingMinutes = totalMinutes % 60;
 
                                 return (
                                     <div
@@ -279,7 +303,22 @@ export const PracticeHub = () => {
                                                 </span>
                                             </div>
                                             <h4 className="font-bold text-lg mb-1">{content ? content.title : topic.subject}</h4>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{topic.count} questions available</p>
+
+                                            {/* Description Display */}
+                                            {content?.description && (
+                                                <p className="text-xs text-text-secondary dark:text-gray-500 mb-2 line-clamp-2">
+                                                    {content.description}
+                                                </p>
+                                            )}
+
+                                            <div className="flex flex-col gap-1">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    {totalQuestions} questions • {chapterCount} chapters
+                                                </p>
+                                                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+                                                    Est. Time: {totalHours > 0 ? `${totalHours}h ` : ''}{remainingMinutes}m
+                                                </p>
+                                            </div>
                                         </div>
 
                                         {/* Dynamic Progress Bar */}
@@ -346,7 +385,7 @@ export const PracticeHub = () => {
                         <Link to="/support" className="hover:text-text-main dark:hover:text-white transition-colors">Support</Link>
                     </div>
                 </footer>
-            </main>
-        </div>
+            </main >
+        </div >
     );
 };

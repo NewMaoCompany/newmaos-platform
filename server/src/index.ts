@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
-// Import routes
 import authRoutes from './routes/auth';
 import usersRoutes from './routes/users';
 import questionsRoutes from './routes/questions';
@@ -14,6 +13,7 @@ import progressRoutes from './routes/progress';
 import contentRoutes from './routes/content';
 import notificationsRoutes from './routes/notifications';
 import sectionsRoutes from './routes/sections';
+import uploadRoutes from './routes/upload';
 import { initEmailScheduler } from './services/emailScheduler';
 
 // Initialize Cron Jobs
@@ -56,6 +56,7 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/sections', sectionsRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

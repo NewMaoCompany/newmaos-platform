@@ -30,8 +30,8 @@ interface AppContextType {
     dismissLoginPrompt: () => void;
 
     // Creator Area Methods
-    addQuestion: (q: Omit<Question, 'id' | 'options'> & { options: { label: string; value: string }[] }) => void;
-    updateQuestion: (q: Question) => void;
+    addQuestion: (q: Partial<Question> & { options: any[] }) => Promise<boolean>;
+    updateQuestion: (q: Question) => Promise<boolean>;
     deleteQuestion: (id: string) => void;
     updateTopic: (unitId: string, subTopicId: string | null, data: any) => void;
     updateSection: (topicId: string, sectionId: string, data: any) => Promise<void>;
@@ -44,6 +44,7 @@ interface AppContextType {
     // Helper for Dashboard
     getCourseMastery: (course: CourseType) => number;
     getSectionsForTopic: (topicId: string) => any[];
+    fetchSections: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -100,11 +101,12 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         mode: 'Adaptive'
     });
 
-    // Fetch all sections from database
+    // Fetch all sections from database and merge into topicContent for Practice display
     const fetchSections = async () => {
         try {
             console.log('🔄 Fetching sections...');
             const data = await sectionsApi.getSections();
+
             // Group by topic_id
             const grouped: Record<string, any[]> = {};
             data.forEach((section: any) => {
@@ -114,7 +116,66 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 grouped[section.topic_id].push(section);
             });
             setSections(grouped);
-            console.log(`✅ Loaded ${data.length} sections`);
+
+            // Also update topicContent with sections data for Practice display
+            setTopicContent(prev => {
+                const updated = { ...prev };
+
+                Object.keys(grouped).forEach(topicId => {
+                    if (!updated[topicId]) return;
+
+                    const topicSections = grouped[topicId];
+
+                    // Find unit_test section and update unitTest config
+                    const unitTestSection = topicSections.find(s => s.id === 'unit_test');
+                    if (unitTestSection) {
+                        updated[topicId] = {
+                            ...updated[topicId],
+                            unitTest: {
+                                title: unitTestSection.title || 'Unit Test',
+                                description: unitTestSection.description || '',
+                                estimatedMinutes: unitTestSection.estimated_minutes || 45
+                            }
+                        };
+                    }
+
+                    // Find overview section (Unit Settings) and update topic config
+                    const overviewSection = topicSections.find(s => s.id === 'overview');
+                    if (overviewSection) {
+                        updated[topicId] = {
+                            ...updated[topicId],
+                            title: overviewSection.title,
+                            description: overviewSection.description
+                        };
+                    }
+
+                    // Update subTopics with section data (excluding unit_test)
+                    const subSections = topicSections.filter(s => s.id !== 'unit_test');
+                    if (subSections.length > 0 && updated[topicId].subTopics) {
+                        updated[topicId] = {
+                            ...updated[topicId],
+                            subTopics: updated[topicId].subTopics.map((sub: any) => {
+                                const dbSection = subSections.find(s => s.id === sub.id);
+                                if (dbSection) {
+                                    return {
+                                        ...sub,
+                                        title: dbSection.title || sub.title,
+                                        description: dbSection.description || sub.description,
+                                        estimatedMinutes: dbSection.estimated_minutes || sub.estimatedMinutes,
+                                        hasLesson: dbSection.has_lesson !== false,
+                                        hasPractice: dbSection.has_practice !== false
+                                    };
+                                }
+                                return sub;
+                            })
+                        };
+                    }
+                });
+
+                return updated;
+            });
+
+            console.log(`✅ Loaded ${data.length} sections and updated topicContent`);
         } catch (error) {
             console.error('Failed to fetch sections:', error);
         }
@@ -441,7 +502,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     };
 
     // Creator Area Logic - Syncs to Supabase via Backend API
-    const addQuestion = async (q: Omit<Question, 'id' | 'options'> & { options: { label: string; value: string }[] }) => {
+    const addQuestion = async (q: Partial<Question> & { options: any[] }) => {
         try {
             // Call backend API to create question in Supabase
             const newQuestion = await questionsApi.createQuestion({
@@ -459,8 +520,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             return true;
         } catch (error) {
             console.error('Failed to create question:', error);
-            alert('Failed to save question. Please try again.');
-            return false;
+            throw error; // Propagate to caller for handling
         }
     };
 
@@ -491,7 +551,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             setQuestions(prev => prev.filter(q => q.id !== id));
 
             // Call backend API to delete from Supabase
-            await questionsApi.deleteQuestion(id);
             await questionsApi.deleteQuestion(id);
             console.log('✅ Question deleted from Supabase:', id);
             return true;
@@ -713,7 +772,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             markAllNotificationsRead,
             markNotificationRead,
             getCourseMastery,
-            getSectionsForTopic
+            getSectionsForTopic,
+            fetchSections
         }}>
             {children}
         </AppContext.Provider>

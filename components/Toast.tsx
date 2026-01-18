@@ -79,21 +79,18 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
                 {toasts.map(toast => (
                     <div
                         key={toast.id}
-                        className={`
-                            pointer-events-auto
-                            flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg
-                            min-w-[280px] max-w-[400px]
-                            animate-slide-in-right
-                            ${getStyles(toast.type)}
-                        `}
+                        className="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border-2 shadow-lg min-w-[280px] max-w-[400px] animate-slide-in-right bg-white"
+                        style={{ borderColor: toast.type === 'success' ? '#22c55e' : toast.type === 'error' ? '#ef4444' : toast.type === 'warning' ? '#f59e0b' : '#3b82f6' }}
                     >
-                        <span className={`material-symbols-outlined text-xl ${getIconColor(toast.type)}`}>
-                            {getIcon(toast.type)}
-                        </span>
-                        <p className="flex-1 text-sm font-medium">{toast.message}</p>
+                        <div className={`p-2 rounded-full ${toast.type === 'success' ? 'bg-green-50' : toast.type === 'error' ? 'bg-red-50' : toast.type === 'warning' ? 'bg-amber-50' : 'bg-blue-50'}`}>
+                            <span className={`material-symbols-outlined text-xl ${getIconColor(toast.type)}`}>
+                                {getIcon(toast.type)}
+                            </span>
+                        </div>
+                        <p className="flex-1 text-sm font-medium text-gray-800">{toast.message}</p>
                         <button
                             onClick={() => dismissToast(toast.id)}
-                            className="opacity-60 hover:opacity-100 transition-opacity"
+                            className="text-gray-400 hover:text-gray-600 transition-colors"
                         >
                             <span className="material-symbols-outlined text-lg">close</span>
                         </button>
