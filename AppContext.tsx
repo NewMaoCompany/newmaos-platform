@@ -123,7 +123,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     // Update a section in the database
     const updateSection = async (topicId: string, sectionId: string, data: any) => {
         try {
-            // Optimistic update
+            // 1. Optimistic update to sections state
             setSections(prev => {
                 const updated = { ...prev };
                 if (updated[topicId]) {
@@ -136,7 +136,51 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 return updated;
             });
 
-            // Call API
+            // 2. Also update topicContent.subTopics so Practice area shows updated data
+            setTopicContent(prev => {
+                const unit = prev[topicId];
+                if (!unit) return prev;
+
+                // Handle unit_test separately
+                if (sectionId === 'unit_test') {
+                    return {
+                        ...prev,
+                        [topicId]: {
+                            ...unit,
+                            unitTest: {
+                                ...unit.unitTest,
+                                title: data.title ?? unit.unitTest?.title ?? 'Unit Test',
+                                description: data.description ?? unit.unitTest?.description,
+                                estimatedMinutes: data.estimated_minutes ?? unit.unitTest?.estimatedMinutes ?? 45
+                            }
+                        }
+                    };
+                }
+
+                // Handle subTopics
+                if (!unit.subTopics) return prev;
+
+                const updatedSubTopics = unit.subTopics.map(sub => {
+                    if (sub.id === sectionId) {
+                        return {
+                            ...sub,
+                            title: data.title ?? sub.title,
+                            description: data.description ?? sub.description,
+                            estimatedMinutes: data.estimated_minutes ?? sub.estimatedMinutes,
+                            hasLesson: data.has_lesson ?? sub.hasLesson,
+                            hasPractice: data.has_practice ?? sub.hasPractice
+                        };
+                    }
+                    return sub;
+                });
+
+                return {
+                    ...prev,
+                    [topicId]: { ...unit, subTopics: updatedSubTopics }
+                };
+            });
+
+            // 3. Call API to persist
             await sectionsApi.updateSection(topicId, sectionId, data);
             console.log(`✅ Section ${topicId}/${sectionId} saved to Supabase`);
         } catch (error) {
