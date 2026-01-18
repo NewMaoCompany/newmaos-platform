@@ -77,8 +77,8 @@ router.put('/:topicId/:sectionId', authMiddleware, async (req: Request, res: Res
             return;
         }
 
-        // Prepare data for upsert
-        const upsertData = {
+        // Prepare data
+        const sectionData = {
             id: sectionId,
             topic_id: topicId,
             title: updateData.title || `Section ${sectionId}`,
@@ -90,23 +90,52 @@ router.put('/:topicId/:sectionId', authMiddleware, async (req: Request, res: Res
             updated_at: new Date().toISOString()
         };
 
-        // Use upsert - insert if not exists, update if exists
-        const { data, error } = await supabaseAdmin
+        // First, try to check if section exists
+        const { data: existing } = await supabaseAdmin
             .from('sections')
-            .upsert(upsertData, {
-                onConflict: 'id,topic_id',
-                ignoreDuplicates: false
-            })
-            .select()
+            .select('id')
+            .eq('topic_id', topicId)
+            .eq('id', sectionId)
             .single();
 
+        let data, error;
+
+        if (existing) {
+            // Update existing section
+            const result = await supabaseAdmin
+                .from('sections')
+                .update({
+                    title: sectionData.title,
+                    description: sectionData.description,
+                    estimated_minutes: sectionData.estimated_minutes,
+                    has_lesson: sectionData.has_lesson,
+                    has_practice: sectionData.has_practice,
+                    updated_at: sectionData.updated_at
+                })
+                .eq('topic_id', topicId)
+                .eq('id', sectionId)
+                .select()
+                .single();
+            data = result.data;
+            error = result.error;
+        } else {
+            // Insert new section
+            const result = await supabaseAdmin
+                .from('sections')
+                .insert(sectionData)
+                .select()
+                .single();
+            data = result.data;
+            error = result.error;
+        }
+
         if (error) {
-            console.error('Upsert section error:', error);
+            console.error('Section save error:', error);
             res.status(400).json({ error: error.message });
             return;
         }
 
-        console.log(`✅ Section ${topicId}/${sectionId} upserted`);
+        console.log(`✅ Section ${topicId}/${sectionId} saved`);
         res.json(data);
     } catch (error) {
         console.error('Update section error:', error);
