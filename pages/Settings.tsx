@@ -61,11 +61,11 @@ export const Settings = () => {
         <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100">
             <Navbar />
 
-            <main className="flex-grow w-full max-w-4xl mx-auto px-6 py-10 animate-fade-in flex flex-col gap-10">
+            <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 animate-fade-in flex flex-col gap-6 sm:gap-10 overflow-y-auto">
 
                 <header className="flex flex-col gap-2">
-                    <h1 className="text-4xl font-black tracking-tight text-text-main dark:text-white">Settings</h1>
-                    <p className="text-gray-500 dark:text-gray-400 text-lg font-normal">Manage your account and system configurations.</p>
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-text-main dark:text-white">Settings</h1>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-lg font-normal">Manage your account and system configurations.</p>
                 </header>
 
                 <div className="h-px w-full bg-gray-200 dark:bg-gray-800"></div>
