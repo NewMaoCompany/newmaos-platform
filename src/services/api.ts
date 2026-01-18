@@ -9,13 +9,27 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Helper to get auth token from Supabase session
 const getAuthToken = (): string | null => {
-    const session = localStorage.getItem('supabase.auth.token');
-    if (session) {
-        try {
-            const parsed = JSON.parse(session);
-            return parsed.currentSession?.access_token || null;
-        } catch {
-            return null;
+    // Supabase v2 stores session with a key like: sb-<project-ref>-auth-token
+    // We need to find it dynamically
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.includes('-auth-token')) {
+            try {
+                const session = localStorage.getItem(key);
+                if (session) {
+                    const parsed = JSON.parse(session);
+                    // Supabase v2 format
+                    if (parsed.access_token) {
+                        return parsed.access_token;
+                    }
+                    // Legacy format
+                    if (parsed.currentSession?.access_token) {
+                        return parsed.currentSession.access_token;
+                    }
+                }
+            } catch {
+                continue;
+            }
         }
     }
     // Fallback: check for direct token storage

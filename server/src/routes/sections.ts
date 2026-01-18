@@ -58,21 +58,37 @@ router.get('/:topicId/:sectionId', optionalAuthMiddleware, async (req: Request, 
 
 // PUT /api/sections/:topicId/:sectionId - Update or create section (upsert)
 router.put('/:topicId/:sectionId', authMiddleware, async (req: Request, res: Response): Promise<void> => {
+    console.log('📝 Section update request received');
+    console.log('📝 topicId:', req.params.topicId, 'sectionId:', req.params.sectionId);
+    console.log('📝 body:', JSON.stringify(req.body));
+    console.log('📝 user:', req.user);
+
     try {
         const userId = req.user!.id;
+        const userEmail = req.user!.email;
         const { topicId, sectionId } = req.params;
         const updateData = req.body;
 
+        console.log('📝 Checking if user is creator...');
+
         // Check if user is creator (allow super admin bypass)
         const SUPER_ADMIN_EMAIL = 'newmao6120@gmail.com';
-        const { data: profile } = await supabaseAdmin
-            .from('user_profiles')
-            .select('is_creator, email')
-            .eq('id', userId)
-            .single();
+        const isSuperAdmin = userEmail === SUPER_ADMIN_EMAIL;
 
-        const isSuperAdmin = profile?.email === SUPER_ADMIN_EMAIL;
-        if (!profile?.is_creator && !isSuperAdmin) {
+        // Only check is_creator in DB if not super admin
+        let isCreator = isSuperAdmin;
+        if (!isSuperAdmin) {
+            const { data: profile } = await supabaseAdmin
+                .from('user_profiles')
+                .select('is_creator')
+                .eq('id', userId)
+                .single();
+            isCreator = profile?.is_creator || false;
+        }
+
+        console.log('📝 isCreator:', isCreator, 'isSuperAdmin:', isSuperAdmin);
+
+        if (!isCreator && !isSuperAdmin) {
             res.status(403).json({ error: 'Creator access required' });
             return;
         }
