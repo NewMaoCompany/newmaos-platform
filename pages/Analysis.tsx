@@ -88,11 +88,14 @@ export const Analysis = () => {
                             <h3 className="text-lg font-bold">Topic Mastery</h3>
                             <p className="text-sm text-gray-500">Strengths across core pillars</p>
                         </div>
-                        <div className="h-[250px] w-full flex-grow">
+                        <div className="h-[300px] w-full flex-grow overflow-hidden relative">
                             <ResponsiveContainer width="100%" height="100%">
-                                <RadarChart cx="50%" cy="50%" outerRadius="65%" data={radarData}>
+                                <RadarChart cx="50%" cy="50%" outerRadius="55%" data={radarData}>
                                     <PolarGrid stroke="#e5e7eb" />
-                                    <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fontWeight: 'bold', fill: '#86868b' }} />
+                                    <PolarAngleAxis
+                                        dataKey="subject"
+                                        tick={{ fontSize: 9, fontWeight: 'bold', fill: '#86868b' }}
+                                    />
                                     <Radar
                                         name="Mastery"
                                         dataKey="A"

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
@@ -31,6 +32,8 @@ export const ImageCropModal: React.FC<ImageCropModalProps> = ({ src, isOpen, onC
     const [aspect, setAspect] = useState<number | undefined>(undefined);
     const imgRef = useRef<HTMLImageElement>(null);
 
+
+
     const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
         if (aspect) {
             const { width, height } = e.currentTarget;
@@ -56,16 +59,25 @@ export const ImageCropModal: React.FC<ImageCropModalProps> = ({ src, isOpen, onC
         const scaleY = image.naturalHeight / image.height;
         const pixelRatio = window.devicePixelRatio;
 
-        canvas.width = Math.floor(completedCrop.width * scaleX * pixelRatio);
-        canvas.height = Math.floor(completedCrop.height * scaleY * pixelRatio);
+        // Limit max dimension to 1200px for speed
+        let finalWidth = Math.floor(completedCrop.width * scaleX * pixelRatio);
+        let finalHeight = Math.floor(completedCrop.height * scaleY * pixelRatio);
+        const MAX_DIM = 1200;
 
-        ctx.scale(pixelRatio, pixelRatio);
-        ctx.imageSmoothingQuality = 'high';
+        if (finalWidth > MAX_DIM || finalHeight > MAX_DIM) {
+            const ratio = Math.min(MAX_DIM / finalWidth, MAX_DIM / finalHeight);
+            finalWidth *= ratio;
+            finalHeight *= ratio;
+        }
+
+        canvas.width = finalWidth;
+        canvas.height = finalHeight;
+
+        ctx.scale(finalWidth / (completedCrop.width * scaleX * pixelRatio) * pixelRatio, finalHeight / (completedCrop.height * scaleY * pixelRatio) * pixelRatio);
+        ctx.imageSmoothingQuality = 'medium'; // Balance speed/quality
 
         const cropX = completedCrop.x * scaleX;
         const cropY = completedCrop.y * scaleY;
-        const cropWidth = completedCrop.width * scaleX;
-        const cropHeight = completedCrop.height * scaleY;
 
         ctx.translate(-cropX, -cropY);
         ctx.drawImage(
@@ -82,13 +94,24 @@ export const ImageCropModal: React.FC<ImageCropModalProps> = ({ src, isOpen, onC
 
         canvas.toBlob((blob) => {
             if (blob) onComplete(blob);
-        }, 'image/png');
+        }, 'image/jpeg', 0.7);
     };
+
+    const [portalContainer] = useState(() => document.createElement('div'));
+
+    useEffect(() => {
+        document.body.appendChild(portalContainer);
+        return () => {
+            if (document.body.contains(portalContainer)) {
+                document.body.removeChild(portalContainer);
+            }
+        };
+    }, [portalContainer]);
 
     if (!isOpen || !src) return null;
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+    const modalContent = (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
             <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh]">
                 {/* Header */}
                 <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-white/5">
@@ -164,4 +187,6 @@ export const ImageCropModal: React.FC<ImageCropModalProps> = ({ src, isOpen, onC
             </div>
         </div>
     );
+
+    return ReactDOM.createPortal(modalContent, portalContainer);
 };

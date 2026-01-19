@@ -4,6 +4,7 @@ import { useToast } from '../components/Toast';
 import { questionsApi, sectionsApi } from '../src/services/api';
 import { Navbar } from '../components/Navbar';
 import { CustomSelect } from '../components/CustomSelect';
+import { CustomMultiSelect } from '../components/CustomMultiSelect';
 import { Question, CourseType, QuestionCourseType } from '../types';
 import { COURSE_TOPICS, SKILL_TAGS, ERROR_TAGS, COURSE_CONTENT_DATA } from '../constants';
 import { ImageCropModal } from '../components/ImageCropModal';
@@ -37,6 +38,7 @@ interface FormState extends Omit<Question, 'id' | 'options' | 'correctOptionId' 
     weightPrimary: number;
     weightSupporting: number;
     errorPatternIds: string[];
+    explanationType: 'text' | 'image';
 }
 
 // --- Components ---
@@ -117,6 +119,8 @@ const ImageUploader = ({
     const [isUploading, setIsUploading] = useState(false);
 
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
         if (e.target.files && e.target.files.length > 0) {
             const reader = new FileReader();
             reader.addEventListener('load', () => {
@@ -130,66 +134,96 @@ const ImageUploader = ({
 
     const uploadImage = async (blob: Blob) => {
         setIsUploading(true);
-        // ...Upload logic reused from previous implementation but simplified for brevity...
-        // For now simulating upload or assuming implementation exists elsewhere or using placeholder logic
-        // Re-implementing upload logic inline to ensure it works
         try {
+            // Get auth token from Supabase session - prefer sb-* prefixed keys
             let token: string | null = null;
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
-                if (key && key.includes('-auth-token')) {
+                // Supabase stores tokens in keys like: sb-<project-ref>-auth-token
+                if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
                     try {
                         const session = localStorage.getItem(key);
                         if (session) {
                             const parsed = JSON.parse(session);
-                            token = parsed.access_token || null;
+                            if (parsed.access_token) {
+                                token = parsed.access_token;
+                                break;
+                            }
                         }
                     } catch { continue; }
                 }
             }
 
-            if (!token) throw new Error('No auth token');
+            if (!token) {
+                console.error('No auth token found for image upload');
+                alert('Please log in to upload images');
+                return;
+            }
+
             const formData = new FormData();
-            formData.append('image', blob, 'upload.png');
-            const apiUrl = import.meta.env.VITE_API_URL || '/api';
-            const res = await fetch(`${apiUrl}/upload/image`, {
+            formData.append('image', blob, 'upload.jpg');
+            // VITE_API_URL already includes '/api'
+            const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+            const res = await fetch(`${apiBase}/upload/image`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: formData
             });
-            if (!res.ok) throw new Error('Upload failed');
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({ error: 'Upload failed' }));
+                throw new Error(errorData.error || 'Upload failed');
+            }
             const data = await res.json();
-            onChange(data.url);
+            // Delay update to prevent render conflict
+            setTimeout(() => {
+                onChange(data.url);
+            }, 100);
         } catch (e) {
-            console.error(e);
             console.error('Image upload failed:', e);
-            // Error is silently handled - user sees upload spinner disappear
+            alert('Image upload failed. Please try again.');
         } finally {
             setIsUploading(false);
         }
     };
 
-    if (value) {
-        return (
-            <div className={`relative group overflow-hidden rounded-xl border border-gray-200 bg-gray-50 ${className} ${heightClass}`}>
-                <img src={value} alt="Uploaded" className="w-full h-full object-contain" />
-                <button
-                    onClick={(e) => { e.stopPropagation(); onChange(''); }}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                    <span className="material-symbols-outlined text-sm">close</span>
-                </button>
-            </div>
-        );
-    }
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fileInputRef.current?.click();
+    };
 
     return (
         <>
-            <label className={`flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors text-gray-400 ${className} ${heightClass}`}>
-                {isUploading ? <span className="material-symbols-outlined animate-spin">progress_activity</span> : <span className="material-symbols-outlined text-2xl">add_photo_alternate</span>}
-                <span className="text-xs font-bold uppercase mt-2">{placeholder}</span>
-                <input type="file" className="sr-only" accept="image/*" onChange={handleFile} />
-            </label>
+            {value ? (
+                <div className={`relative group overflow-hidden rounded-xl border border-gray-200 bg-gray-50 ${className} ${heightClass}`}>
+                    <img src={value} alt="Uploaded" className="w-full h-full object-contain" />
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onChange(''); }}
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                        <span className="material-symbols-outlined text-sm">close</span>
+                    </button>
+                </div>
+            ) : (
+                <>
+                    <div
+                        onClick={handleClick}
+                        className={`flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors text-gray-400 ${className} ${heightClass}`}
+                    >
+                        {isUploading ? <span className="material-symbols-outlined animate-spin">progress_activity</span> : <span className="material-symbols-outlined text-2xl">add_photo_alternate</span>}
+                        <span className="text-xs font-bold uppercase mt-2">{placeholder}</span>
+                    </div>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleFile}
+                    />
+                </>
+            )}
             <ImageCropModal
                 src={cropImageSrc}
                 isOpen={isCropOpen}
@@ -270,7 +304,11 @@ const NavigationSidebar = ({
     }, [selectedTopicId]);
 
     const toggleUnit = (unitId: string) => {
-        setExpandedUnits(prev => ({ ...prev, [unitId]: !prev[unitId] }));
+        setExpandedUnits(prev => {
+            const isCurrentlyExpanded = prev[unitId];
+            // If currently expanded, toggle off. If not, set ONLY this unit to true (closing others)
+            return isCurrentlyExpanded ? {} : { [unitId]: true };
+        });
     };
 
     return (
@@ -295,7 +333,7 @@ const NavigationSidebar = ({
             </div>
 
             {/* Units List */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2">
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-2 pb-20 space-y-2">
                 {units.map((unit) => {
                     // Use static data PRIORITY to ensure chapters always load (Context might have empty dynamic lists)
                     const content = topicContent[unit.id];
@@ -390,10 +428,21 @@ const QuestionListSidebar = ({
     const filtered = useMemo(() => {
         if (!selectedSubTopicId) {
             // Show all questions for the Topic (Unit)
-            return questions.filter(q => q.topic === selectedTopicId);
+            // Handle both 'AB_Limits' format and 'Limits' format
+            const topicBase = selectedTopicId.includes('_') ? selectedTopicId.split('_')[1] : selectedTopicId;
+            return questions.filter(q =>
+                q.topic === selectedTopicId ||
+                q.topic === topicBase ||
+                (q as any).topicId === selectedTopicId
+            );
         }
         // Match both sectionId (new) and legacy subTopicId binding
-        return questions.filter(q => q.sectionId === selectedSubTopicId || q.subTopicId === selectedSubTopicId);
+        // Also ensure the topic matches for proper filtering
+        const topicBase = selectedTopicId.includes('_') ? selectedTopicId.split('_')[1] : selectedTopicId;
+        return questions.filter(q =>
+            (q.sectionId === selectedSubTopicId || q.subTopicId === selectedSubTopicId) &&
+            (q.topic === selectedTopicId || q.topic === topicBase || (q as any).topicId === selectedTopicId)
+        );
     }, [questions, selectedSubTopicId, selectedTopicId]);
 
     const handleDeleteClick = (e: React.MouseEvent, qId: string) => {
@@ -454,7 +503,7 @@ const QuestionListSidebar = ({
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-3 bg-gray-50/50">
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-3 pb-20 space-y-3 bg-gray-50/50">
                     {filtered.map(q => {
                         const isActive = activeQuestionId === q.id;
                         return (
@@ -513,7 +562,7 @@ const QuestionListSidebar = ({
 
 export const QuestionCreator = () => {
     const {
-        questions, addQuestion, updateQuestion, topicContent, sections, updateSection, fetchSections, topicContent: rawTopicContent
+        questions, addQuestion, updateQuestion, deleteQuestion, topicContent, sections, updateSection, fetchSections, fetchQuestions, topicContent: rawTopicContent
     } = useApp();
 
     // -- State --
@@ -522,6 +571,7 @@ export const QuestionCreator = () => {
     const [selectedSubTopicId, setSelectedSubTopicId] = useState<string | null>('1.1');   // Default
 
     const [viewMode, setViewMode] = useState<'settings' | 'editor'>('settings');
+    const prevSelectionRef = useRef({ topicId: selectedTopicId, subTopicId: selectedSubTopicId });
 
     // Editor State
     const defaultForm: FormState = useMemo(() => ({
@@ -555,6 +605,7 @@ export const QuestionCreator = () => {
         version: 1,
         weightPrimary: 1.0,
         weightSupporting: 0.5,
+        explanationType: 'text',
         errorPatternIds: []
     }), [selectedSubTopicId, selectedTopicId]);
 
@@ -563,6 +614,7 @@ export const QuestionCreator = () => {
 
     // Chapter Settings State
     const [sectionSettings, setSectionSettings] = useState<any>(null);
+    const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
 
     // Global toast notifications
     const { showToast } = useToast();
@@ -570,6 +622,7 @@ export const QuestionCreator = () => {
     // Initial load
     useEffect(() => {
         fetchSections();
+        fetchQuestions(); // Ensure questions are loaded for display
     }, []);
 
     // Sync section settings when selection changes
@@ -581,7 +634,13 @@ export const QuestionCreator = () => {
         const sec = topicSecs.find((s: any) => s.id === selectedSubTopicId);
 
         if (sec) {
-            setSectionSettings({ ...sec, availability: { lesson: true, practice: true } }); // Mock availability for now
+            setSectionSettings({
+                ...sec,
+                availability: {
+                    lesson: sec.hasLesson !== false && sec.has_lesson !== false,
+                    practice: sec.hasPractice !== false && sec.has_practice !== false
+                }
+            });
         } else {
             // Find specific section in static data
             const unit = topicContent[selectedTopicId] || COURSE_CONTENT_DATA[selectedTopicId]; // Ensure fallback here too!
@@ -607,14 +666,23 @@ export const QuestionCreator = () => {
                 id: selectedSubTopicId,
                 title: staticSec?.title || '',
                 description: staticSec?.description || '',
+                description2: staticSec?.description2 || '',
                 estimated_minutes: staticSec?.estimatedMinutes || 10,
-                availability: { lesson: true, practice: true }
+                availability: {
+                    lesson: staticSec?.hasLesson !== false,
+                    practice: staticSec?.hasPractice !== false
+                }
             });
         }
 
-        // Reset view to settings when switching chapters (unless forcing editor)
-        setViewMode('settings');
-        setFormData(prev => ({ ...defaultForm, topicId: selectedTopicId, subTopicId: selectedSubTopicId }));
+        // Reset view to settings ONLY when switching chapters (not on data refresh)
+        if (prevSelectionRef.current.topicId !== selectedTopicId || prevSelectionRef.current.subTopicId !== selectedSubTopicId) {
+            setViewMode('settings');
+            setFormData(prev => ({ ...defaultForm, topicId: selectedTopicId, subTopicId: selectedSubTopicId }));
+
+            // Update ref
+            prevSelectionRef.current = { topicId: selectedTopicId, subTopicId: selectedSubTopicId };
+        }
 
     }, [selectedTopicId, selectedSubTopicId, sections, topicContent, defaultForm]);
 
@@ -694,6 +762,9 @@ export const QuestionCreator = () => {
             // Stay in editor mode with fresh form for adding more questions
             setFormData({ ...defaultForm, topicId: selectedTopicId, subTopicId: selectedSubTopicId });
             // viewMode stays as 'editor' - don't jump to settings
+
+            // IMMEDIATE UPDATE: Fetch questions so the sidebar list updates instantly
+            await fetchQuestions();
             fetchSections(); // Refresh counts
         } catch (e) {
             console.error(e);
@@ -713,16 +784,13 @@ export const QuestionCreator = () => {
         }
         setIsSaving(true);
         try {
-            const token = localStorage.getItem('auth_token');
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/questions/${formData.id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!res.ok) throw new Error('Delete failed');
+            // Use AppContext deleteQuestion which has proper auth handling
+            await deleteQuestion(formData.id);
             showToast('Question deleted successfully!');
             setFormData({ ...defaultForm, topicId: selectedTopicId, subTopicId: selectedSubTopicId });
             setViewMode('settings');
             fetchSections();
+            fetchQuestions(); // Refresh question list
         } catch (e) {
             console.error(e);
             showToast('Failed to delete question.', 'error');
@@ -734,12 +802,8 @@ export const QuestionCreator = () => {
     // Delete from sidebar list (takes ID directly)
     const handleDeleteFromList = async (questionId: string) => {
         try {
-            const token = localStorage.getItem('auth_token');
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/questions/${questionId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!res.ok) throw new Error('Delete failed');
+            // Use AppContext deleteQuestion which has proper auth handling
+            await deleteQuestion(questionId);
             showToast('Question deleted successfully!');
             // If deleting the currently edited question, reset editor
             if (formData.id === questionId) {
@@ -747,6 +811,7 @@ export const QuestionCreator = () => {
                 setViewMode('settings');
             }
             fetchSections();
+            fetchQuestions(); // Refresh question list
         } catch (e) {
             console.error(e);
             showToast('Failed to delete question.', 'error');
@@ -785,13 +850,22 @@ export const QuestionCreator = () => {
                 await updateSection(selectedTopicId, selectedSubTopicId, {
                     title: sectionSettings.title,
                     description: sectionSettings.description,
-                    estimated_minutes: Number(sectionSettings.estimated_minutes)
+                    description2: sectionSettings.description2,
+                    estimated_minutes: Number(sectionSettings.estimated_minutes),
+                    has_lesson: sectionSettings.availability.lesson,
+                    has_practice: sectionSettings.availability.practice
                 });
             }
+            // Update UI status
+            setSaveStatus('success');
+            setTimeout(() => setSaveStatus('idle'), 2000);
+
             showToast('Settings saved successfully!');
             fetchSections();
         } catch (e) {
             console.error(e);
+            setSaveStatus('error');
+            setTimeout(() => setSaveStatus('idle'), 3000);
             showToast('Failed to save settings.', 'error');
         }
     };
@@ -849,11 +923,22 @@ export const QuestionCreator = () => {
                                 </div>
 
                                 <div>
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Description</label>
-                                    <textarea
+                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Description (Short / Subtitle)</label>
+                                    <input
                                         value={sectionSettings.description}
                                         onChange={e => setSectionSettings({ ...sectionSettings, description: e.target.value })}
-                                        className="w-full p-4 bg-gray-50 rounded-xl font-medium min-h-[120px] border-none focus:ring-2 focus:ring-yellow-400 resize-none"
+                                        className="w-full p-4 bg-gray-50 rounded-xl font-medium border-none focus:ring-2 focus:ring-yellow-400"
+                                        placeholder="e.g. Avg vs Instant Rate"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Detailed Description (For Card)</label>
+                                    <textarea
+                                        value={sectionSettings.description2 || ''}
+                                        onChange={e => setSectionSettings({ ...sectionSettings, description2: e.target.value })}
+                                        className="w-full p-4 bg-gray-50 rounded-xl font-medium min-h-[100px] border-none focus:ring-2 focus:ring-yellow-400 resize-none"
+                                        placeholder="Enter a more detailed description..."
                                     />
                                 </div>
 
@@ -869,15 +954,31 @@ export const QuestionCreator = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Availability</label>
+                                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Availability (Check to Enable)</label>
                                             <div className="flex gap-4">
-                                                <div className="flex-1 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between">
+                                                <div
+                                                    className="flex-1 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between cursor-pointer hover:bg-yellow-100 transition-colors"
+                                                    onClick={() => setSectionSettings({ ...sectionSettings, availability: { ...sectionSettings.availability, lesson: !sectionSettings.availability.lesson } })}
+                                                >
                                                     <span className="font-bold text-gray-800">Lesson</span>
-                                                    <input type="checkbox" checked className="w-5 h-5 accent-black space-x-2" readOnly />
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={sectionSettings.availability.lesson}
+                                                        onChange={() => { }} // Handled by parent div
+                                                        className="w-5 h-5 accent-black cursor-pointer"
+                                                    />
                                                 </div>
-                                                <div className="flex-1 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between">
+                                                <div
+                                                    className="flex-1 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between cursor-pointer hover:bg-yellow-100 transition-colors"
+                                                    onClick={() => setSectionSettings({ ...sectionSettings, availability: { ...sectionSettings.availability, practice: !sectionSettings.availability.practice } })}
+                                                >
                                                     <span className="font-bold text-gray-800">Practice</span>
-                                                    <input type="checkbox" checked className="w-5 h-5 accent-blue-600" readOnly />
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={sectionSettings.availability.practice}
+                                                        onChange={() => { }} // Handled by parent div
+                                                        className="w-5 h-5 accent-blue-600 cursor-pointer"
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
@@ -885,9 +986,35 @@ export const QuestionCreator = () => {
                                 )}
 
                                 <div className="pt-8 flex gap-4">
-                                    <button onClick={handleSaveSettings} className="px-8 py-4 bg-gray-100 font-bold rounded-xl hover:bg-gray-200 transition-colors flex items-center gap-2">
-                                        <span className="material-symbols-outlined">save</span>
-                                        Save Settings
+                                    <button
+                                        onClick={handleSaveSettings}
+                                        disabled={saveStatus === 'saving'}
+                                        className={`
+                                            px-8 py-4 font-bold rounded-xl transition-all flex items-center gap-2
+                                            ${saveStatus === 'success'
+                                                ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
+                                                : saveStatus === 'error'
+                                                    ? 'bg-red-500 text-white'
+                                                    : 'bg-gray-100 hover:bg-gray-200 text-black'
+                                            }
+                                        `}
+                                    >
+                                        {saveStatus === 'saving' ? (
+                                            <>
+                                                <span className="material-symbols-outlined animate-spin">refresh</span>
+                                                Saving...
+                                            </>
+                                        ) : saveStatus === 'success' ? (
+                                            <>
+                                                <span className="material-symbols-outlined">check_circle</span>
+                                                Saved!
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="material-symbols-outlined">save</span>
+                                                Save Settings
+                                            </>
+                                        )}
                                     </button>
                                     <button onClick={handleCreateQuestion} className="flex-1 px-8 py-4 bg-black text-white font-bold rounded-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-xl">
                                         <span className="material-symbols-outlined">add_circle</span>
@@ -1018,17 +1145,12 @@ export const QuestionCreator = () => {
                                         </div>
                                         <div className="flex gap-2">
                                             <div className="relative flex-1">
-                                                <select
+                                                <CustomSelect
+                                                    placeholder="Select Primary Skill..."
                                                     value={formData.primarySkillId}
-                                                    onChange={e => setFormData({ ...formData, primarySkillId: e.target.value })}
-                                                    className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold appearance-none focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all cursor-pointer"
-                                                >
-                                                    <option value="">Select Primary Skill...</option>
-                                                    {SKILL_TAGS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
-                                                </select>
-                                                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
-                                                    <span className="material-symbols-outlined text-sm">unfold_more</span>
-                                                </div>
+                                                    onChange={val => setFormData({ ...formData, primarySkillId: val })}
+                                                    options={SKILL_TAGS.map(s => ({ label: s.label, value: s.id }))}
+                                                />
                                             </div>
                                             <input
                                                 type="number"
@@ -1048,28 +1170,24 @@ export const QuestionCreator = () => {
                                         </div>
                                         <div className="flex gap-2">
                                             <div className="relative flex-1">
-                                                <select
-                                                    multiple
+                                                <CustomMultiSelect
+                                                    placeholder="Select Supporting Skills..."
                                                     value={formData.supportingSkillIds}
-                                                    onChange={(e) => {
-                                                        const target = e.target as HTMLSelectElement;
-                                                        const selected = Array.from(target.selectedOptions, (option: HTMLOptionElement) => option.value);
-                                                        setFormData({ ...formData, supportingSkillIds: selected });
-                                                    }}
-                                                    className="w-full p-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium h-12 py-1 appearance-none focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all custom-scrollbar"
-                                                >
-                                                    {SKILL_TAGS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
-                                                </select>
+                                                    onChange={val => setFormData({ ...formData, supportingSkillIds: val })}
+                                                    options={SKILL_TAGS.map(s => ({ label: s.label, value: s.id }))}
+                                                />
                                             </div>
-                                            <input
-                                                type="number"
-                                                step="0.1"
-                                                min="0"
-                                                max="1"
-                                                value={formData.weightSupporting || 0.5}
-                                                onChange={e => setFormData({ ...formData, weightSupporting: parseFloat(e.target.value) })}
-                                                className="w-20 p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-center outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400"
-                                            />
+                                            <div className="flex flex-col justify-start">
+                                                <input
+                                                    type="number"
+                                                    step="0.1"
+                                                    min="0"
+                                                    max="1"
+                                                    value={formData.weightSupporting || 0.5}
+                                                    onChange={e => setFormData({ ...formData, weightSupporting: parseFloat(e.target.value) })}
+                                                    className="w-20 p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-center outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1107,18 +1225,12 @@ export const QuestionCreator = () => {
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Common Error Patterns</label>
                                         <div className="relative">
-                                            <select
-                                                multiple
+                                            <CustomMultiSelect
+                                                placeholder="Select Error Patterns..."
                                                 value={formData.errorPatternIds || []}
-                                                onChange={(e) => {
-                                                    const target = e.target as HTMLSelectElement;
-                                                    const selected = Array.from(target.selectedOptions, (option: HTMLOptionElement) => option.value);
-                                                    setFormData({ ...formData, errorPatternIds: selected });
-                                                }}
-                                                className="w-full p-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium h-12 py-1 appearance-none focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all custom-scrollbar"
-                                            >
-                                                {ERROR_TAGS.map(tag => <option key={tag.id} value={tag.id}>{tag.label}</option>)}
-                                            </select>
+                                                onChange={val => setFormData({ ...formData, errorPatternIds: val })}
+                                                options={ERROR_TAGS.map(t => ({ label: t.label, value: t.id }))}
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -1245,20 +1357,36 @@ export const QuestionCreator = () => {
                             )}
 
                             {/* General Explanation / Solution (For both MCQ and FRQ) */}
-                            <div className="mb-8">
-                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                                    {formData.type === 'MCQ' ? 'General Solution / Logic' : 'Suggested Solution / Marking Guide'} <span className="text-red-500">*</span>
-                                </h3>
-                                <div className="bg-white border border-gray-200 rounded-2xl p-1 shadow-sm overflow-hidden group hover:border-gray-300 transition-all focus-within:border-yellow-400 focus-within:ring-1 focus-within:ring-yellow-400">
-                                    <textarea
-                                        value={formData.explanation || ''}
-                                        onChange={e => setFormData({ ...formData, explanation: e.target.value })}
-                                        placeholder={formData.type === 'MCQ'
-                                            ? "Explain the overall logic for the correct answer..."
-                                            : "Provide the grading rubric, key points, or full solution..."}
-                                        className="w-full p-6 min-h-[120px] outline-none text-sm font-medium text-text-main resize-none bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none"
+                            <div className="mb-8 mt-12">
+                                <div className="flex items-center justify-between mb-2">
+                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                        {formData.type === 'MCQ' ? 'General Solution / Logic' : 'Suggested Solution / Marking Guide'} <span className="text-red-500">*</span>
+                                    </h3>
+                                    <InputTypeToggle
+                                        type={formData.explanationType || 'text'}
+                                        onChange={(type) => setFormData({ ...formData, explanationType: type })}
                                     />
                                 </div>
+
+                                {formData.explanationType === 'image' ? (
+                                    <ImageUploader
+                                        value={formData.explanation}
+                                        onChange={v => setFormData({ ...formData, explanation: v })}
+                                        heightClass="h-48"
+                                        placeholder="Click to Upload Solution Image"
+                                    />
+                                ) : (
+                                    <div className="bg-white border border-gray-200 rounded-2xl p-1 shadow-sm overflow-hidden group hover:border-gray-300 transition-all focus-within:border-yellow-400 focus-within:ring-1 focus-within:ring-yellow-400">
+                                        <textarea
+                                            value={formData.explanation || ''}
+                                            onChange={e => setFormData({ ...formData, explanation: e.target.value })}
+                                            placeholder={formData.type === 'MCQ'
+                                                ? "Explain the overall logic for the correct answer..."
+                                                : "Provide the grading rubric, key points, or full solution..."}
+                                            className="w-full p-6 min-h-[120px] outline-none text-sm font-medium text-text-main resize-none bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none"
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}

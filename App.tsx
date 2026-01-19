@@ -14,6 +14,7 @@ import { ResetPassword } from './pages/ResetPassword';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { TopicDetail } from './pages/TopicDetail';
 import { QuestionCreator } from './pages/QuestionCreator';
+import { Insights } from './pages/Insights';
 
 const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
   const { isAuthenticated, isAuthLoading } = useApp();
@@ -47,6 +48,7 @@ const AppRoutes = () => {
       <Route path="/practice/unit/:unitId" element={<TopicDetail />} />
       <Route path="/practice/session" element={<Practice />} />
       <Route path="/analysis" element={<Analysis />} />
+      <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
 
       {/* Settings - Keep Protected or handle logic inside */}
       <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />

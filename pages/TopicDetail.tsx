@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { useApp } from '../AppContext';
 import { COURSE_CONTENT_DATA } from '../constants';
+import { SubTopicProgress, UserSectionProgress } from '../types';
 
 export const TopicDetail = () => {
     const { unitId } = useParams();
@@ -58,6 +59,30 @@ export const TopicDetail = () => {
         return COURSE_CONTENT_DATA[unitId!]?.subTopics || [];
     }, [unitContent, unitId]);
 
+    // Progress State
+    const [progressMap, setProgressMap] = useState<Record<string, SubTopicProgress>>({});
+    const [sectionStatuses, setSectionStatuses] = useState<Record<string, UserSectionProgress>>({});
+    const { getTopicProgress, getTopicSectionProgress, user } = useApp();
+
+    useEffect(() => {
+        const loadProgress = async () => {
+            if (unitId && user?.id) {
+                // Fetch aggregated stats (legacy/dashboard)
+                getTopicProgress(unitId).then(data => setProgressMap(data));
+
+                // Fetch granular statuses (badges)
+                getTopicSectionProgress(unitId).then(data => {
+                    const statusMap: Record<string, UserSectionProgress> = {};
+                    data.forEach(item => {
+                        statusMap[item.section_id] = item;
+                    });
+                    setSectionStatuses(statusMap);
+                });
+            }
+        };
+        loadProgress();
+    }, [unitId, user?.id]);
+
     return (
         <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 flex flex-col">
             <Navbar />
@@ -96,26 +121,51 @@ export const TopicDetail = () => {
                                 {index + 1}
                             </span>
 
-                            <div className="flex-grow relative z-10 pl-4 md:pl-10">
-                                <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">{sub.title}</h3>
-                                <p className="text-text-secondary dark:text-gray-400 font-medium mb-4">{sub.description}</p>
-                                <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider text-gray-500">
+                            <div className="flex-1 relative z-10 pl-4 md:pl-10">
+                                <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{sub.title}</h3>
+                                <div className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-3">{sub.description}</div>
+
+                                <div className="flex flex-wrap items-center gap-3">
                                     {(sub.hasLesson !== false) && (
-                                        <span className="flex items-center gap-1">
+                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-bold uppercase tracking-wider">
                                             <span className="material-symbols-outlined text-[16px]">menu_book</span>
                                             Lesson
                                         </span>
                                     )}
                                     {(sub.hasPractice !== false) && (
-                                        <span className="flex items-center gap-1">
+                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs font-bold uppercase tracking-wider">
                                             <span className="material-symbols-outlined text-[16px]">exercise</span>
                                             Practice
                                         </span>
                                     )}
-                                    <span className="flex items-center gap-1">
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold uppercase tracking-wider">
                                         <span className="material-symbols-outlined text-[16px]">schedule</span>
-                                        ~{sub.estimatedMinutes} min
+                                        {sub.estimatedMinutes} min
                                     </span>
+
+                                    {/* Progress Badge */}
+                                    {(() => {
+                                        const status = sectionStatuses[sub.id]?.status;
+                                        // Also support legacy check if no explicit status record exists yet
+                                        const legacyCompleted = progressMap[sub.id]?.correctQuestions >= 3;
+
+                                        if (status === 'completed' || legacyCompleted) {
+                                            return (
+                                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                                    <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                                                    Completed
+                                                </span>
+                                            );
+                                        } else if (status === 'in_progress' || (progressMap[sub.id]?.attemptedQuestions > 0)) {
+                                            return (
+                                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                                    <span className="material-symbols-outlined text-[16px]">pending</span>
+                                                    In Progress
+                                                </span>
+                                            );
+                                        }
+                                        return null;
+                                    })()}
                                 </div>
                             </div>
 
@@ -133,7 +183,7 @@ export const TopicDetail = () => {
                         onClick={() => handleSubTopicClick('unit_test')}
                         className="group bg-gradient-to-br from-gray-50 to-gray-100 dark:from-surface-dark dark:to-black border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl p-6 md:p-8 hover:border-primary shadow-sm hover:shadow-lg transition-all cursor-pointer flex flex-col md:flex-row gap-6 md:items-center relative overflow-hidden"
                     >
-                        <div className="flex-grow relative z-10 pl-4 md:pl-10">
+                        <div className="flex-1 relative z-10 pl-4 md:pl-10">
                             <h3 className="text-2xl font-black mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
                                 <span className="material-symbols-outlined">verified</span>
                                 {unitTestConfig.title}

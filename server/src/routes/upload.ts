@@ -35,6 +35,14 @@ router.post('/image', authMiddleware, upload.single('image'), async (req: Reques
         const ext = file.originalname.split('.').pop() || 'png';
         const filename = `questions/${userId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
 
+        // Ensure bucket exists (create if not)
+        const { data: buckets } = await supabaseAdmin.storage.listBuckets();
+        const bucketExists = buckets?.some(b => b.name === 'images');
+        if (!bucketExists) {
+            console.log('Creating images bucket...');
+            await supabaseAdmin.storage.createBucket('images', { public: true });
+        }
+
         // Upload to Supabase Storage
         const { data, error } = await supabaseAdmin.storage
             .from('images')

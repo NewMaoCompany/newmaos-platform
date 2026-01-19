@@ -80,6 +80,7 @@ export interface Question {
   tolerance?: number; // Optional +/- tolerance for numeric answers
 
   explanation: string; // General solution
+  explanationType?: 'text' | 'image'; // Type of explanation
 
   // Advanced Adaptive Fields
   microExplanations?: Record<string, string>; // Map error_tag_id -> specific explanation
@@ -90,6 +91,7 @@ export interface SubTopic {
   id: string;
   title: string;
   description: string;
+  description2?: string; // Detailed description or subtitle
   content: string; // Markdown-like text for the lesson
   estimatedMinutes: number;
   hasLesson?: boolean;
@@ -157,3 +159,125 @@ export interface AppNotification {
   unread: boolean;
   link: string;
 }
+
+// --- Agent Insight Types ---
+
+export interface UserStats {
+  userId: string;
+  totalAttempts: number;
+  correctAttempts: number;
+  accuracyRate: number;
+  uniqueQuestionsAttempted: number;
+  streakCorrect: number;
+  streakWrong: number;
+  currentStreakDays: number;
+  longestStreakDays: number;
+  totalTimeMinutes: number;
+  lastPracticed: string | null;
+}
+
+export interface UserSkillMastery {
+  skillId: string;
+  skillName: string;
+  mastery: number;
+  confidence: number;
+  streakWrong: number;
+  lastPracticed: string | null;
+}
+
+export interface UserErrorStat {
+  errorTagId: string;
+  errorName: string;
+  category: string;
+  count: number;
+}
+
+export interface ReviewQueueItem {
+  questionId: string;
+  nextReviewAt: string;
+  reviewCount: number;
+  intervalDays: number;
+  isOverdue: boolean;
+  questionTopic?: string;
+  questionPrompt?: string;
+}
+
+export interface QuestionRecommendation {
+  questionId: string;
+  score: number;
+  reason: 'low_mastery' | 'spaced_review' | 'challenge';
+  reasonDetail: string;
+  skillId?: string;
+}
+
+export interface UserInsights {
+  stats: UserStats;
+  weakSkills: UserSkillMastery[];
+  topErrors: UserErrorStat[];
+  reviewQueue: ReviewQueueItem[];
+  recommendations: QuestionRecommendation[];
+}
+
+export interface UserQuestionState {
+  userId: string;
+  questionId: string;
+  isStarred: boolean;
+  isFlagged: boolean;
+  personalTags: string[];
+  personalNote?: string;
+  nextReviewAt?: string;
+  easeFactor: number;
+  intervalDays: number;
+  reviewCount: number;
+  lastAttemptId?: string;
+}
+
+export interface SubmitAttemptParams {
+  questionId: string;
+  isCorrect: boolean;
+  selectedOptionId?: string;
+  answerNumeric?: number;
+  timeSpentSeconds: number;
+  errorTags: string[];
+}
+
+export interface SubmitAttemptResult {
+  success: boolean;
+  attemptId?: string;
+  attemptNo?: number;
+  isCorrect?: boolean;
+  error?: string;
+}
+
+export interface QuestionAttempt {
+  id: string;
+  userId: string;
+  questionId: string;
+  isCorrect: boolean;
+  selectedOptionId?: string;
+  answerNumeric?: number;
+  timeSpentSeconds: number;
+  attemptNo: number;
+  errorTags: string[];
+  questionVersionId?: string;
+  createdAt: string;
+}
+
+export interface SubTopicProgress {
+  subTopicId: string;
+  totalQuestions: number;
+  attemptedQuestions: number;
+  correctQuestions: number;
+  lastActivity: string | null;
+}
+
+export interface UserSectionProgress {
+  sectionId: string;
+  status: 'in_progress' | 'completed';
+  data: any;
+  score: number;
+  correctQuestions: number;
+  totalQuestions: number;
+  lastAccessedAt: string;
+}
+

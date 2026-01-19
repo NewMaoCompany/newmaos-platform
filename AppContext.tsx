@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, CourseType, Activity, TopicMastery, CourseState, Recommendation, SessionMode, Question, AppNotification, UnitContent, SubTopic } from './types';
+import { User, CourseType, Activity, TopicMastery, CourseState, Recommendation, SessionMode, Question, AppNotification, UnitContent, SubTopic, UserInsights, SubmitAttemptParams, SubmitAttemptResult, ReviewQueueItem, SubTopicProgress, UserSectionProgress } from './types';
 import { INITIAL_USER, INITIAL_ACTIVITIES, INITIAL_RADAR_DATA, INITIAL_LINE_DATA, INITIAL_COURSES, PRACTICE_QUESTIONS, INITIAL_NOTIFICATIONS, COURSE_CONTENT_DATA } from './constants';
 import { supabase } from './src/services/supabaseClient';
 import { notificationsApi, contentApi, questionsApi, sectionsApi } from './src/services/api';
@@ -19,6 +19,8 @@ interface AppContextType {
     topicContent: Record<string, UnitContent>; // Dynamic Content Data
     skills: { id: string; name: string; unit: string; prerequisites: string[] }[]; // Skills for Question Editor
     sections: Record<string, any[]>; // Sections by topic_id for Chapter Settings
+    userInsights: UserInsights | null; // Agent Insight data
+    reviewQueue: ReviewQueueItem[]; // Spaced repetition queue
 
     login: (email: string, username?: string, id?: string) => void;
     logout: () => Promise<void>;
@@ -45,6 +47,21 @@ interface AppContextType {
     getCourseMastery: (course: CourseType) => number;
     getSectionsForTopic: (topicId: string) => any[];
     fetchSections: () => Promise<void>;
+    fetchQuestions: () => Promise<void>;
+
+    // Agent Insight Methods
+    submitAttempt: (params: SubmitAttemptParams) => Promise<SubmitAttemptResult>;
+    getUserInsights: () => Promise<UserInsights | null>;
+    getReviewQueue: (limit?: number) => Promise<ReviewQueueItem[]>;
+    toggleQuestionStarred: (questionId: string) => Promise<boolean>;
+    toggleQuestionFlagged: (questionId: string) => Promise<boolean>;
+    getTopicProgress: (topicId: string) => Promise<Record<string, SubTopicProgress>>;
+
+    // Session Persistence Methods
+    saveSectionProgress: (sectionId: string, data: any, timeSpent: number) => Promise<boolean>;
+    completeSectionSession: (sectionId: string, score: number, totalQuestions: number, correctQuestions: number, data: any) => Promise<boolean>;
+    getSectionProgress: (sectionId: string) => Promise<UserSectionProgress | null>;
+    getTopicSectionProgress: (topicId: string) => Promise<UserSectionProgress[]>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -91,6 +108,10 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
     // Sections data from database (keyed by topic_id)
     const [sections, setSections] = useState<Record<string, any[]>>({});
+
+    // Agent Insight state
+    const [userInsights, setUserInsights] = useState<UserInsights | null>(null);
+    const [reviewQueue, setReviewQueue] = useState<ReviewQueueItem[]>([]);
 
     // Algorithmic Recommendation State - Initial State for New User
     const [recommendation, setRecommendation] = useState<Recommendation>({
@@ -151,16 +172,23 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
                     // Update subTopics with section data (excluding unit_test)
                     const subSections = topicSections.filter(s => s.id !== 'unit_test');
-                    if (subSections.length > 0 && updated[topicId].subTopics) {
+
+                    // CRITICAL FIX: If subTopics is empty in state, use static data as the base
+                    const baseSubTopics = (updated[topicId].subTopics && updated[topicId].subTopics.length > 0)
+                        ? updated[topicId].subTopics
+                        : COURSE_CONTENT_DATA[topicId]?.subTopics || [];
+
+                    if (subSections.length > 0 && baseSubTopics.length > 0) {
                         updated[topicId] = {
                             ...updated[topicId],
-                            subTopics: updated[topicId].subTopics.map((sub: any) => {
+                            subTopics: baseSubTopics.map((sub: any) => {
                                 const dbSection = subSections.find(s => s.id === sub.id);
                                 if (dbSection) {
                                     return {
                                         ...sub,
                                         title: dbSection.title || sub.title,
                                         description: dbSection.description || sub.description,
+                                        description2: dbSection.description2 || sub.description2,
                                         estimatedMinutes: dbSection.estimated_minutes || sub.estimatedMinutes,
                                         hasLesson: dbSection.has_lesson !== false,
                                         hasPractice: dbSection.has_practice !== false
@@ -172,10 +200,20 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     }
                 });
 
+                // Debug verification key check
+                const sampleKey = Object.keys(grouped)[0];
+                if (sampleKey && updated[sampleKey]) {
+                    console.log(`DEBUG: Merged content for ${sampleKey}. Subtopics count: ${updated[sampleKey].subTopics?.length}`);
+                }
+
                 return updated;
             });
 
-            console.log(`✅ Loaded ${data.length} sections and updated topicContent`);
+            console.log(`✅ Loaded ${data.length} sections`);
+
+
+
+            console.log('✅ Updated topicContent with DB sections');
         } catch (error) {
             console.error('Failed to fetch sections:', error);
         }
@@ -227,6 +265,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                             ...sub,
                             title: data.title ?? sub.title,
                             description: data.description ?? sub.description,
+                            description2: data.description2 ?? sub.description2,
                             estimatedMinutes: data.estimated_minutes ?? sub.estimatedMinutes,
                             hasLesson: data.has_lesson ?? sub.hasLesson,
                             hasPractice: data.has_practice ?? sub.hasPractice
@@ -345,6 +384,276 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             console.error('Failed to mark read:', error);
         }
     };
+
+    // =====================================================
+    // AGENT INSIGHT RPC FUNCTIONS
+    // =====================================================
+
+    const submitAttempt = async (params: SubmitAttemptParams): Promise<SubmitAttemptResult> => {
+        try {
+            const { data, error } = await supabase.rpc('submit_attempt', {
+                p_question_id: params.questionId,
+                p_is_correct: params.isCorrect,
+                p_selected_option_id: params.selectedOptionId || null,
+                p_answer_numeric: params.answerNumeric || null,
+                p_time_spent_seconds: params.timeSpentSeconds,
+                p_error_tags: params.errorTags
+            });
+
+            if (error) {
+                console.error('submit_attempt RPC error:', error);
+                return { success: false, error: error.message };
+            }
+
+            console.log('✅ Attempt submitted via RPC:', data);
+
+            // Refresh insights after submission
+            getUserInsights();
+
+            return {
+                success: data?.success ?? false,
+                attemptId: data?.attempt_id,
+                attemptNo: data?.attempt_no,
+                isCorrect: data?.is_correct,
+                error: data?.error
+            };
+        } catch (error: any) {
+            console.error('submitAttempt error:', error);
+            return { success: false, error: error.message };
+        }
+    };
+
+    const getUserInsights = async (): Promise<UserInsights | null> => {
+        try {
+            const { data, error } = await supabase.rpc('get_user_insights');
+
+            if (error) {
+                console.error('get_user_insights RPC error:', error);
+                return null;
+            }
+
+            const insights: UserInsights = {
+                stats: {
+                    userId: user.id,
+                    totalAttempts: data?.stats?.total_attempts ?? 0,
+                    correctAttempts: data?.stats?.correct_attempts ?? 0,
+                    accuracyRate: data?.stats?.accuracy_rate ?? 0,
+                    uniqueQuestionsAttempted: data?.stats?.unique_questions ?? 0,
+                    streakCorrect: data?.stats?.streak_correct ?? 0,
+                    streakWrong: data?.stats?.streak_wrong ?? 0,
+                    currentStreakDays: data?.stats?.streak_days ?? 0,
+                    longestStreakDays: data?.stats?.longest_streak ?? 0,
+                    totalTimeMinutes: data?.stats?.total_time_minutes ?? 0,
+                    lastPracticed: data?.stats?.last_practiced ?? null
+                },
+                weakSkills: (data?.weak_skills ?? []).map((s: any) => ({
+                    skillId: s.skill_id,
+                    skillName: s.skill_name,
+                    mastery: s.mastery,
+                    confidence: s.confidence,
+                    streakWrong: s.streak_wrong,
+                    lastPracticed: null
+                })),
+                topErrors: (data?.top_errors ?? []).map((e: any) => ({
+                    errorTagId: e.error_tag_id,
+                    errorName: e.error_name,
+                    category: e.category,
+                    count: e.count
+                })),
+                reviewQueue: (data?.review_queue ?? []).map((r: any) => ({
+                    questionId: r.question_id,
+                    nextReviewAt: r.next_review_at,
+                    reviewCount: r.review_count,
+                    intervalDays: r.interval_days,
+                    isOverdue: false
+                })),
+                recommendations: (data?.recommendations ?? []).map((rec: any) => ({
+                    questionId: rec.question_id,
+                    score: rec.score,
+                    reason: rec.reason,
+                    reasonDetail: rec.reason_detail,
+                    skillId: rec.skill_id
+                }))
+            };
+
+            setUserInsights(insights);
+            console.log('✅ User insights loaded:', insights);
+            return insights;
+        } catch (error) {
+            console.error('getUserInsights error:', error);
+            return null;
+        }
+    };
+
+    const getReviewQueue = async (limit: number = 20): Promise<ReviewQueueItem[]> => {
+        try {
+            const { data, error } = await supabase.rpc('get_review_queue', { p_limit: limit });
+
+            if (error) {
+                console.error('get_review_queue RPC error:', error);
+                return [];
+            }
+
+            const queue: ReviewQueueItem[] = (data ?? []).map((item: any) => ({
+                questionId: item.question_id,
+                nextReviewAt: item.next_review_at,
+                reviewCount: item.review_count,
+                intervalDays: item.interval_days,
+                isOverdue: item.is_overdue,
+                questionTopic: item.question_topic,
+                questionPrompt: item.question_prompt
+            }));
+
+            setReviewQueue(queue);
+            return queue;
+        } catch (error) {
+            console.error('getReviewQueue error:', error);
+            return [];
+        }
+    };
+
+    const toggleQuestionStarred = async (questionId: string): Promise<boolean> => {
+        try {
+            const { data, error } = await supabase.rpc('toggle_question_starred', {
+                p_question_id: questionId
+            });
+
+            if (error) {
+                console.error('toggle_question_starred RPC error:', error);
+                return false;
+            }
+
+            console.log('✅ Question starred toggled:', data);
+            return data ?? false;
+        } catch (error) {
+            console.error('toggleQuestionStarred error:', error);
+            return false;
+        }
+    };
+
+    const toggleQuestionFlagged = async (questionId: string): Promise<boolean> => {
+        try {
+            const { data, error } = await supabase.rpc('toggle_question_flagged', {
+                p_question_id: questionId
+            });
+
+            if (error) {
+                console.error('toggle_question_flagged RPC error:', error);
+                return false;
+            }
+
+            console.log('✅ Question flagged toggled:', data);
+            return data ?? false;
+        } catch (error) {
+            console.error('toggleQuestionFlagged error:', error);
+            return false;
+        }
+    };
+
+    const getTopicProgress = async (topicId: string): Promise<Record<string, SubTopicProgress>> => {
+        try {
+            const { data, error } = await supabase.rpc('get_topic_progress', {
+                p_topic_id: topicId,
+                p_user_id: user.id
+            });
+
+            if (error) {
+                console.error('get_topic_progress RPC error:', error);
+                return {};
+            }
+
+            // Convert array to record keyed by subTopicId
+            const progressMap: Record<string, SubTopicProgress> = {};
+            (data || []).forEach((item: any) => {
+                progressMap[item.sub_topic_id] = {
+                    subTopicId: item.sub_topic_id,
+                    totalQuestions: item.total_questions,
+                    attemptedQuestions: item.attempted_questions,
+                    correctQuestions: item.correct_questions,
+                    lastActivity: item.last_activity
+                };
+            });
+
+            return progressMap;
+        } catch (error) {
+            console.error('getTopicProgress error:', error);
+            return {};
+        }
+    };
+
+    // --- Session Persistence Methods ---
+
+    const saveSectionProgress = async (sectionId: string, data: any, timeSpent: number): Promise<boolean> => {
+        try {
+            const { error } = await supabase.rpc('save_section_progress', {
+                p_section_id: sectionId,
+                p_data: data,
+                p_time_spent: timeSpent
+            });
+            if (error) {
+                console.error('save_section_progress error:', error);
+                return false;
+            }
+            return true;
+        } catch (error) {
+            console.error('saveSectionProgress error:', error);
+            return false;
+        }
+    };
+
+    const completeSectionSession = async (sectionId: string, score: number, totalQuestions: number, correctQuestions: number, data: any): Promise<boolean> => {
+        try {
+            const { error } = await supabase.rpc('complete_section_session', {
+                p_section_id: sectionId,
+                p_score: score,
+                p_total_questions: totalQuestions,
+                p_correct_questions: correctQuestions,
+                p_data: data
+            });
+            if (error) {
+                console.error('complete_section_session error:', error);
+                return false;
+            }
+
+            return true;
+        } catch (error) {
+            console.error('completeSectionSession error:', error);
+            return false;
+        }
+    };
+
+    const getSectionProgress = async (sectionId: string): Promise<UserSectionProgress | null> => {
+        try {
+            const { data, error } = await supabase.rpc('get_section_progress', {
+                p_section_id: sectionId
+            });
+
+            if (error) throw error;
+            if (data && data.length > 0) {
+                return data[0] as UserSectionProgress;
+            }
+            return null;
+        } catch (error) {
+            console.error('Error fetching section progress:', error);
+            return null;
+        }
+    };
+
+    const getTopicSectionProgress = async (topicId: string): Promise<UserSectionProgress[]> => {
+        try {
+            const { data, error } = await supabase.rpc('get_topic_section_progress', {
+                p_topic_id: topicId
+            });
+
+            if (error) throw error;
+            return (data || []) as UserSectionProgress[];
+        } catch (error) {
+            console.error('Error fetching topic section progress:', error);
+            return [];
+        }
+    };
+
+
 
     // Calculate Course Mastery dynamically from Radar Data
     const getCourseMastery = (courseType: CourseType) => {
@@ -755,6 +1064,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             topicContent,
             skills,
             sections,
+            userInsights,
+            reviewQueue,
             login,
             logout,
             toggleCourse,
@@ -773,7 +1084,18 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             markNotificationRead,
             getCourseMastery,
             getSectionsForTopic,
-            fetchSections
+            fetchSections,
+            fetchQuestions,
+            submitAttempt,
+            getUserInsights,
+            getReviewQueue,
+            toggleQuestionStarred,
+            toggleQuestionFlagged,
+            getTopicProgress,
+            saveSectionProgress,
+            completeSectionSession,
+            getSectionProgress,
+            getTopicSectionProgress
         }}>
             {children}
         </AppContext.Provider>

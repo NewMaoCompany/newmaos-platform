@@ -4,6 +4,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { COURSE_CONTENT_DATA } from '../constants';
 import { SessionMode, Question } from '../types';
 import { Navbar } from '../components/Navbar';
+import { AdvancedCalculator } from '../components/AdvancedCalculator';
+import { SessionSummary } from '../components/SessionSummary';
+import { useToast } from '../components/Toast';
 
 // Markdown-ish renderer for the lesson content
 const ContentRenderer = ({ content }: { content: string }) => {
@@ -34,9 +37,15 @@ const ContentRenderer = ({ content }: { content: string }) => {
     )
 }
 
+
+
+
+
+
 export const Practice = () => {
-    const { user, completePractice, questions: allQuestions } = useApp();
+    const { user, completePractice, questions: allQuestions, topicContent, submitAttempt, getTopicProgress, saveSectionProgress, completeSectionSession, getSectionProgress } = useApp();
     const navigate = useNavigate();
+    const { showToast } = useToast();
     const location = useLocation();
     const topicParam = location.state?.topic || 'General'; // This might be "AB_Limits" or just "Limits"
     const subTopicId = location.state?.subTopicId;
@@ -51,8 +60,48 @@ export const Practice = () => {
     );
     const [subTopicData, setSubTopicData] = useState<any>(null);
 
+    // Check for previous progress or saved session
+    useEffect(() => {
+        const checkProgress = async () => {
+            if (subTopicId && subTopicId !== 'unit_test' && topicParam) {
+                // 1. Check for Saved Session (In Progress)
+                const savedSession = await getSectionProgress(subTopicId);
+
+                if (savedSession && savedSession.status === 'in_progress' && savedSession.data) {
+                    showToast('Resuming your previous session...', 'info');
+
+                    // Restore Answers
+                    if (savedSession.data.userAnswers) {
+                        setUserAnswers(savedSession.data.userAnswers);
+                    }
+
+                    // Restore Timer (if saved)
+                    if (savedSession.data.timeSpent) {
+                        // We don't have a direct setTimeSpent state, but could adjust startTime
+                        // For now, just acknowledged. 
+                    }
+                }
+                // 2. Check for Completed Progress (if not in progress)
+                else {
+                    const progressMap = await getTopicProgress(topicParam);
+                    const progress = progressMap[subTopicId];
+                    if (progress && progress.attemptedQuestions > 0) {
+                        showToast(
+                            `You have already practiced this topic (Completed: ${progress.correctQuestions}/${progress.attemptedQuestions})`,
+                            'info'
+                        );
+                    }
+                }
+            }
+        };
+        // Only run once on mount per subtopic
+        checkProgress();
+    }, [subTopicId, topicParam]);
     // State for Sidebar Tools
-    const [activeTool, setActiveTool] = useState<'none' | 'formula' | 'calculator' | 'scratchpad'>('none');
+    const [activeTool, setActiveTool] = useState<'none' | 'calculator' | 'formula' | 'scratchpad'>('none');
+
+    // Add calc position state
+    const [calcPosition, setCalcPosition] = useState({ x: window.innerWidth / 2 - 320, y: window.innerHeight / 2 - 200 });
 
     // --- Scratchpad State & Logic ---
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -73,6 +122,15 @@ export const Practice = () => {
     const [markedQuestions, setMarkedQuestions] = useState<Set<string>>(new Set());
     const [eliminatedOptions, setEliminatedOptions] = useState<Record<string, string[]>>({}); // qId -> [optIds]
     const [questionResults, setQuestionResults] = useState<Record<string, 'correct' | 'incorrect'>>({}); // qId -> status
+
+    // Dual Submission Mode States
+    const [submitMode, setSubmitMode] = useState<'immediate' | 'batch'>('immediate');
+    const [userAnswers, setUserAnswers] = useState<Record<string, string>>({}); // qId -> selectedOptionId for batch mode
+    const [showSummary, setShowSummary] = useState(false);
+    const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+
+    // Agent Insight: Track time spent on each question
+    const questionStartTimeRef = useRef<number>(Date.now());
 
     const toggleMark = (qId: string) => {
         const newSet = new Set(markedQuestions);
@@ -112,6 +170,8 @@ export const Practice = () => {
     };
 
     useEffect(() => {
+        if (!allQuestions || allQuestions.length === 0) return;
+
         let filtered = [];
 
         // Base Filter: Match Course Context (AB sees 'AB'|'Both', BC sees 'BC'|'Both')
@@ -138,10 +198,36 @@ export const Practice = () => {
                 // First try to match questions specifically tagged with this subTopicId
                 filtered = baseQuestions.filter(q => q.subTopicId === subTopicId);
 
-                // Find the lesson content
-                if (topicParam && COURSE_CONTENT_DATA[topicParam]) {
-                    const sub = COURSE_CONTENT_DATA[topicParam].subTopics.find(s => s.id === subTopicId);
-                    setSubTopicData(sub);
+                if (subTopicId) {
+                    // Debug Log
+                    console.log('DEBUG: Practice useEffect running');
+                    console.log('DEBUG: topicParam:', topicParam);
+                    console.log('DEBUG: subTopicId:', subTopicId);
+
+                    const dbUnit = topicContent[topicParam];
+                    console.log('DEBUG: Found dbUnit:', !!dbUnit);
+
+                    if (dbUnit) {
+                        const dbSubTopic = dbUnit.subTopics?.find((s: any) => s.id === subTopicId);
+                        console.log('DEBUG: Found dbSubTopic:', dbSubTopic);
+                        if (dbSubTopic) {
+                            setSubTopicData(dbSubTopic);
+                        }
+                        // Fallback to static if DB content exists but specific subtopic not found (shouldn't happen if structure matches)
+                        else {
+                            console.warn('DEBUG: dbSubTopic not found in dbUnit, falling back to static');
+                            if (COURSE_CONTENT_DATA[topicParam]) {
+                                const sub = COURSE_CONTENT_DATA[topicParam].subTopics.find(s => s.id === subTopicId);
+                                setSubTopicData(sub);
+                            }
+                        }
+                    } else {
+                        console.warn('DEBUG: dbUnit not found, falling back to static');
+                        if (COURSE_CONTENT_DATA[topicParam]) {
+                            const sub = COURSE_CONTENT_DATA[topicParam].subTopics.find(s => s.id === subTopicId);
+                            setSubTopicData(sub);
+                        }
+                    }
                 }
             }
         }
@@ -158,7 +244,7 @@ export const Practice = () => {
         }
 
         setQuestions(filtered);
-    }, [topicParam, subTopicId, user.currentCourse, sessionMode, allQuestions, cleanTopic]);
+    }, [topicParam, subTopicId, user.currentCourse, sessionMode, allQuestions, cleanTopic, topicContent]);
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -168,6 +254,26 @@ export const Practice = () => {
 
     const question = questions[currentQuestionIndex];
     const progress = questions.length > 0 ? ((currentQuestionIndex) / questions.length) * 100 : 0;
+
+    // --- State Sync on Navigation ---
+    useEffect(() => {
+        if (!question) return;
+
+        // Sync selected answer from stored user answers
+        const savedAnswer = userAnswers[question.id];
+        setSelectedAnswer(savedAnswer || null);
+
+        // Sync submission/feedback state
+        // If we have a result, it means it was graded (immediate mode)
+        // If it's just in userAnswers but no result, it's saved (batch mode) -> NOT submitted
+        if (questionResults[question.id]) {
+            setIsSubmitted(true);
+            setFeedback(questionResults[question.id]);
+        } else {
+            setIsSubmitted(false);
+            setFeedback(null);
+        }
+    }, [currentQuestionIndex, question, userAnswers, questionResults]);
 
     // --- Scratchpad Canvas Setup ---
     useEffect(() => {
@@ -274,17 +380,37 @@ export const Practice = () => {
         }
     };
 
-    const handleSubmit = () => {
+    // Immediate mode: submit and show feedback right away
+    const handleSubmit = async () => {
         if (!selectedAnswer) return;
 
         setIsSubmitted(true);
         const isCorrect = selectedAnswer === question.correctOptionId;
+
+        // Persist answer for mixed-mode scoring (e.g. if batch submit is triggered later)
+        setUserAnswers(prev => ({ ...prev, [question.id]: selectedAnswer }));
 
         // Update visual progress state
         setQuestionResults(prev => ({
             ...prev,
             [question.id]: isCorrect ? 'correct' : 'incorrect'
         }));
+
+        // Submit to Agent Insight system
+        const startTime = questionStartTimeRef.current || Date.now();
+        const timeSpent = Math.round((Date.now() - startTime) / 1000);
+
+        try {
+            await submitAttempt({
+                questionId: question.id,
+                isCorrect,
+                selectedOptionId: selectedAnswer,
+                timeSpentSeconds: timeSpent,
+                errorTags: isCorrect ? [] : (question.errorTags || [])
+            });
+        } catch (error) {
+            console.error('Failed to submit attempt:', error);
+        }
 
         if (isCorrect) {
             setFeedback('correct');
@@ -294,26 +420,87 @@ export const Practice = () => {
         }
     };
 
+    // Batch mode: save answer and go to next question without immediate feedback
+    const handleSkipToNext = () => {
+        if (selectedAnswer) {
+            setUserAnswers(prev => ({ ...prev, [question.id]: selectedAnswer }));
+        }
+
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(prev => prev + 1);
+            setSelectedAnswer(userAnswers[questions[currentQuestionIndex + 1]?.id] || null);
+            setIsSubmitted(false);
+            setFeedback(null);
+            questionStartTimeRef.current = Date.now(); // Reset timer for new question
+        } else {
+            // Last question - Confirm before submit
+            setShowSubmitConfirm(true);
+        }
+    };
+
+    // Batch submit all answers at once
+    const handleBatchSubmit = () => {
+        // Include current selection
+        const allAnswers = selectedAnswer
+            ? { ...userAnswers, [question.id]: selectedAnswer }
+            : userAnswers;
+
+        let correctCount = 0;
+        questions.forEach(q => {
+            const userAnswer = allAnswers[q.id];
+            const isCorrect = userAnswer === q.correctOptionId;
+            setQuestionResults(prev => ({
+                ...prev,
+                [q.id]: isCorrect ? 'correct' : 'incorrect'
+            }));
+            if (isCorrect) correctCount++;
+        });
+
+        setSessionResults({ correct: correctCount, total: questions.length });
+        setShowSummary(true);
+    };
+
+    // Next after immediate submission
     const handleNext = () => {
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1);
             setSelectedAnswer(null);
             setIsSubmitted(false);
             setFeedback(null);
+            questionStartTimeRef.current = Date.now(); // Reset timer for new question
         } else {
             finishSession();
         }
     };
 
-    const finishSession = () => {
+    // Show summary instead of immediate navigation
+    // Show summary instead of immediate navigation
+    const finishSession = async () => {
+        // Mark section as completed in granular progress tracking
+        if (subTopicId && subTopicId !== 'unit_test') {
+            await completeSectionSession(
+                subTopicId,
+                sessionResults.correct,
+                questions.length, // Total questions in this session
+                sessionResults.correct,
+                {
+                    userAnswers,
+                    questionResults,
+                    timestamp: new Date().toISOString()
+                }
+            );
+        }
+
         completePractice({
             correct: sessionResults.correct,
             total: questions.length,
-            // Use cleanTopic to ensure stats update correctly
             topic: question?.topic || cleanTopic
         });
-        // Return to hub or topic detail? 
-        // If we came from a specific unit, return to that unit page.
+        setShowSummary(true);
+    };
+
+    // Exit from summary page
+    const handleExitSummary = () => {
         if (subTopicId) {
             navigate(`/practice/unit/${topicParam}`);
         } else {
@@ -322,29 +509,41 @@ export const Practice = () => {
     };
 
     const handleExitRequest = () => {
-        setShowExitConfirm(true);
-    };
-
-    const handleConfirmExit = () => {
-        // Logic for instant exit without simulated delay
-        const attempted = currentQuestionIndex + (isSubmitted ? 1 : 0);
-
-        // Save if user has attempted at least one question
-        if (attempted > 0 && viewState === 'practice' && questions.length > 0) {
-            completePractice({
-                correct: sessionResults.correct,
-                total: attempted,
-                // CRITICAL: Ensure we pass the clean topic name (e.g. "Limits") 
-                // so it matches the keys in radarData, otherwise stats won't update.
-                topic: question?.topic || cleanTopic
-            });
-        }
-
-        if (subTopicId) {
-            navigate(`/practice/unit/${topicParam}`);
+        if (viewState === 'practice' && subTopicId && subTopicId !== 'unit_test') {
+            setShowExitConfirm(true); // Show confirmation dialog
         } else {
             navigate('/practice');
         }
+    };
+
+    const confirmSaveAndExit = async () => {
+        setIsSaving(true);
+        // Save current state
+        if (subTopicId) {
+            const success = await saveSectionProgress(subTopicId, {
+                userAnswers,
+                currentQuestionIndex
+            }, 0); // TODO: Track actual cumulative time
+
+            if (success) {
+                showToast('Progress saved successfully', 'success');
+            } else {
+                showToast('Failed to save progress', 'error');
+            }
+        }
+        setIsSaving(false);
+        setShowExitConfirm(false);
+        navigate(`/practice/${topicParam}`); // Go back to Unit Detail
+    };
+
+    const confirmExitWithoutSave = () => {
+        setShowExitConfirm(false);
+        navigate(`/practice/${topicParam}`);
+    };
+
+    // Kept for backward compatibility if needed, but mainly replaced by confirmSaveAndExit
+    const handleConfirmExit = () => {
+        confirmSaveAndExit();
     };
 
     const handleReportSubmit = () => {
@@ -469,16 +668,41 @@ export const Practice = () => {
                     </div>
                 </header>
 
-                <main className="flex-grow flex flex-col items-center py-8 px-4 sm:px-6">
-                    <div className="max-w-3xl w-full bg-surface-light dark:bg-surface-dark p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
-                        <div className="prose dark:prose-invert max-w-none">
-                            <h2 className="text-2xl font-black mb-4">{subTopicData.title}</h2>
-                            <ContentRenderer content={subTopicData.content} />
+                <main className="flex-grow flex flex-col items-center justify-center py-12 px-4 sm:px-6">
+                    <div className="max-w-4xl w-full bg-surface-light dark:bg-surface-dark p-12 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-800">
+                        <div className="mb-8 border-b border-gray-100 dark:border-gray-800 pb-8">
+                            <h2 className="text-3xl font-black mb-2">{subTopicData.title}</h2>
+                            <div className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">{subTopicData.description}</div>
+
+                            {subTopicData.description2 && (
+                                <p className="text-lg text-text-secondary dark:text-gray-400 font-medium leading-relaxed mb-6">
+                                    {subTopicData.description2}
+                                </p>
+                            )}
+
+                            <div className="flex flex-wrap items-center gap-3">
+                                {(subTopicData.hasLesson !== false) && (
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-bold uppercase tracking-wider">
+                                        <span className="material-symbols-outlined text-[16px]">menu_book</span>
+                                        Lesson
+                                    </span>
+                                )}
+                                {(subTopicData.hasPractice !== false) && (
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs font-bold uppercase tracking-wider">
+                                        <span className="material-symbols-outlined text-[16px]">exercise</span>
+                                        Practice
+                                    </span>
+                                )}
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold uppercase tracking-wider">
+                                    <span className="material-symbols-outlined text-[16px]">schedule</span>
+                                    {subTopicData.estimatedMinutes} min
+                                </span>
+                            </div>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex justify-end">
+                        <div className="mt-10 flex justify-center">
                             <button
                                 onClick={() => setViewState('practice')}
-                                className="bg-primary text-black px-8 py-3 rounded-xl font-bold flex items-center gap-3 hover:shadow-lg hover:scale-[1.02] transition-all"
+                                className="bg-primary text-black px-8 py-4 rounded-xl font-bold flex items-center gap-3 hover:shadow-lg hover:scale-[1.02] transition-all text-lg"
                             >
                                 <span>Start Practice Questions</span>
                                 <span className="material-symbols-outlined">arrow_forward</span>
@@ -545,6 +769,22 @@ export const Practice = () => {
                     </div>
                 </div>
             </div>
+        );
+    }
+
+    // --- RENDER CELEBRATION SUMMARY VIEW ---
+    if (showSummary) {
+        return (
+            <SessionSummary
+                questions={questions}
+                userAnswers={userAnswers}
+                questionResults={questionResults}
+                onExit={handleExitSummary}
+                onRetake={() => {
+                    // Optional: Implement reset logic if needed later
+                    handleExitSummary();
+                }}
+            />
         );
     }
 
@@ -653,69 +893,56 @@ export const Practice = () => {
 
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start relative">
 
-                            {/* Tool Overlay Panel (Calculator / Formula) */}
-                            {(activeTool === 'formula' || activeTool === 'calculator') && (
+                            {/* Tool Overlay Panel (Formula only - Calculator is now independent) */}
+                            {activeTool === 'formula' && (
                                 <div className="absolute top-0 left-0 right-0 z-20 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl animate-fade-in-up overflow-hidden ring-1 ring-black/5">
                                     <div className="flex justify-between items-center p-4 bg-gray-50 dark:bg-black/20 border-b border-gray-100 dark:border-gray-800">
                                         <h3 className="font-bold text-lg flex items-center gap-2">
-                                            <span className="material-symbols-outlined">{activeTool === 'formula' ? 'function' : 'calculate'}</span>
-                                            {activeTool === 'formula' ? 'Reference Sheet' : 'Scientific Calculator'}
+                                            <span className="material-symbols-outlined">function</span>
+                                            Reference Sheet
                                         </h3>
                                         <button onClick={() => setActiveTool('none')} className="text-gray-500 hover:text-black dark:hover:text-white">
                                             <span className="material-symbols-outlined">close</span>
                                         </button>
                                     </div>
                                     <div className="p-6">
-                                        {activeTool === 'formula' ? (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm max-h-[400px] overflow-y-auto pr-2">
-                                                <div>
-                                                    <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Derivatives</h4>
-                                                    <ul className="space-y-2 text-gray-600 dark:text-gray-300 font-math">
-                                                        <li className="flex justify-between"><span>d/dx(xⁿ)</span> <span>nxⁿ⁻¹</span></li>
-                                                        <li className="flex justify-between"><span>d/dx(sin x)</span> <span>cos x</span></li>
-                                                        <li className="flex justify-between"><span>d/dx(cos x)</span> <span>-sin x</span></li>
-                                                        <li className="flex justify-between"><span>d/dx(eˣ)</span> <span>eˣ</span></li>
-                                                        <li className="flex justify-between"><span>d/dx(ln x)</span> <span>1/x</span></li>
-                                                        <li className="flex justify-between"><span>d/dx(uv)</span> <span>u'v + uv'</span></li>
-                                                    </ul>
-                                                </div>
-                                                <div>
-                                                    <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Integrals</h4>
-                                                    <ul className="space-y-2 text-gray-600 dark:text-gray-300 font-math">
-                                                        <li className="flex justify-between"><span>∫ xⁿ dx</span> <span>xⁿ⁺¹/(n+1)</span></li>
-                                                        <li className="flex justify-between"><span>∫ 1/x dx</span> <span>ln|x|</span></li>
-                                                        <li className="flex justify-between"><span>∫ eˣ dx</span> <span>eˣ</span></li>
-                                                        <li className="flex justify-between"><span>∫ sin x dx</span> <span>-cos x</span></li>
-                                                        <li className="flex justify-between"><span>∫ cos x dx</span> <span>sin x</span></li>
-                                                    </ul>
-                                                </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm max-h-[400px] overflow-y-auto pr-2">
+                                            <div>
+                                                <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Derivatives</h4>
+                                                <ul className="space-y-2 text-gray-600 dark:text-gray-300 font-math">
+                                                    <li className="flex justify-between"><span>d/dx(xⁿ)</span> <span>nxⁿ⁻¹</span></li>
+                                                    <li className="flex justify-between"><span>d/dx(sin x)</span> <span>cos x</span></li>
+                                                    <li className="flex justify-between"><span>d/dx(cos x)</span> <span>-sin x</span></li>
+                                                    <li className="flex justify-between"><span>d/dx(eˣ)</span> <span>eˣ</span></li>
+                                                    <li className="flex justify-between"><span>d/dx(ln x)</span> <span>1/x</span></li>
+                                                    <li className="flex justify-between"><span>d/dx(uv)</span> <span>u'v + uv'</span></li>
+                                                </ul>
                                             </div>
-                                        ) : (
-                                            <div className="max-w-xs mx-auto">
-                                                <div className="bg-gray-100 dark:bg-black/40 p-4 rounded-xl mb-4 text-right font-mono text-2xl tracking-widest min-h-[64px] flex items-center justify-end overflow-x-auto">
-                                                    {calcDisplay}
-                                                </div>
-                                                <div className="grid grid-cols-4 gap-3">
-                                                    {['C', '(', ')', '÷'].map(b => (
-                                                        <button key={b} onClick={() => handleCalcInput(b)} className="p-3 bg-gray-200 dark:bg-white/5 rounded-lg font-bold hover:bg-gray-300 dark:hover:bg-white/10">{b}</button>
-                                                    ))}
-                                                    {['7', '8', '9', '×'].map(b => (
-                                                        <button key={b} onClick={() => handleCalcInput(b)} className={`p-3 rounded-lg font-bold ${['×'].includes(b) ? 'bg-gray-200 dark:bg-white/5' : 'bg-white dark:bg-white/10 border border-gray-200 dark:border-gray-700'}`}>{b}</button>
-                                                    ))}
-                                                    {['4', '5', '6', '-'].map(b => (
-                                                        <button key={b} onClick={() => handleCalcInput(b)} className={`p-3 rounded-lg font-bold ${['-'].includes(b) ? 'bg-gray-200 dark:bg-white/5' : 'bg-white dark:bg-white/10 border border-gray-200 dark:border-gray-700'}`}>{b}</button>
-                                                    ))}
-                                                    {['1', '2', '3', '+'].map(b => (
-                                                        <button key={b} onClick={() => handleCalcInput(b)} className={`p-3 rounded-lg font-bold ${['+'].includes(b) ? 'bg-gray-200 dark:bg-white/5' : 'bg-white dark:bg-white/10 border border-gray-200 dark:border-gray-700'}`}>{b}</button>
-                                                    ))}
-                                                    {['0', '.', 'π', '='].map(b => (
-                                                        <button key={b} onClick={() => handleCalcInput(b)} className={`p-3 rounded-lg font-bold ${b === '=' ? 'bg-primary text-black' : 'bg-white dark:bg-white/10 border border-gray-200 dark:border-gray-700'}`}>{b}</button>
-                                                    ))}
-                                                </div>
+                                            <div>
+                                                <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Integrals</h4>
+                                                <ul className="space-y-2 text-gray-600 dark:text-gray-300 font-math">
+                                                    <li className="flex justify-between"><span>∫ xⁿ dx</span> <span>xⁿ⁺¹/(n+1)</span></li>
+                                                    <li className="flex justify-between"><span>∫ 1/x dx</span> <span>ln|x|</span></li>
+                                                    <li className="flex justify-between"><span>∫ eˣ dx</span> <span>eˣ</span></li>
+                                                    <li className="flex justify-between"><span>∫ sin x dx</span> <span>-cos x</span></li>
+                                                    <li className="flex justify-between"><span>∫ cos x dx</span> <span>sin x</span></li>
+                                                </ul>
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
                                 </div>
+                            )}
+
+                            {/* Independent Calculator Window */}
+                            {activeTool === 'calculator' && (
+                                <AdvancedCalculator
+                                    onInput={handleCalcInput}
+                                    display={calcDisplay}
+                                    calculatorAllowed={question.calculatorAllowed}
+                                    position={calcPosition}
+                                    onClose={() => setActiveTool('none')}
+                                    onPositionChange={setCalcPosition}
+                                />
                             )}
 
                             <div className="lg:col-span-7 flex flex-col min-h-[350px]">
@@ -823,22 +1050,55 @@ export const Practice = () => {
 
                                     <div className="pt-6 mt-4">
                                         {!isSubmitted ? (
-                                            <button
-                                                onClick={handleSubmit}
-                                                disabled={!selectedAnswer}
-                                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover py-3.5 px-4 text-text-main font-bold shadow-sm transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-                                            >
-                                                <span>Submit Answer</span>
-                                                <span className="material-symbols-outlined text-lg">arrow_forward</span>
-                                            </button>
+                                            <div className="flex gap-3">
+                                                {currentQuestionIndex > 0 && (
+                                                    <button
+                                                        onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                                                        className="flex items-center justify-center gap-1 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 py-3.5 px-4 text-gray-600 dark:text-gray-300 font-bold transition-all active:scale-[0.98]"
+                                                        title="Previous Question"
+                                                    >
+                                                        <span className="material-symbols-outlined text-lg">arrow_back</span>
+                                                    </button>
+                                                )}
+                                                <button
+                                                    onClick={handleSubmit}
+                                                    disabled={!selectedAnswer}
+                                                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover py-3.5 px-4 text-text-main font-bold shadow-sm transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    <span>Submit Answer</span>
+                                                    <span className="material-symbols-outlined text-lg">check</span>
+                                                </button>
+                                                <button
+                                                    onClick={handleSkipToNext}
+                                                    className={`flex items-center justify-center gap-1 rounded-xl border-2 py-3.5 px-5 font-bold transition-all active:scale-[0.98] ${currentQuestionIndex === questions.length - 1
+                                                        ? 'bg-black dark:bg-white text-white dark:text-black border-transparent hover:opacity-90 shadow-sm'
+                                                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-600 dark:text-gray-300'
+                                                        }`}
+                                                    title={currentQuestionIndex === questions.length - 1 ? "Submit all answers" : "Save answer and check later"}
+                                                >
+                                                    <span>{currentQuestionIndex === questions.length - 1 ? 'Submit All' : 'Save & Next'}</span>
+                                                    <span className="material-symbols-outlined text-lg">{currentQuestionIndex === questions.length - 1 ? 'done_all' : 'save_as'}</span>
+                                                </button>
+                                            </div>
                                         ) : (
-                                            <button
-                                                onClick={handleNext}
-                                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 py-3.5 px-4 text-white dark:text-black font-bold shadow-sm transition-all active:scale-[0.98]"
-                                            >
-                                                <span>{currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Practice'}</span>
-                                                <span className="material-symbols-outlined text-lg">arrow_forward</span>
-                                            </button>
+                                            <div className="flex gap-3">
+                                                {currentQuestionIndex > 0 && (
+                                                    <button
+                                                        onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                                                        className="flex items-center justify-center gap-1 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 py-3.5 px-4 text-gray-600 dark:text-gray-300 font-bold transition-all active:scale-[0.98]"
+                                                        title="Previous Question"
+                                                    >
+                                                        <span className="material-symbols-outlined text-lg">arrow_back</span>
+                                                    </button>
+                                                )}
+                                                <button
+                                                    onClick={handleNext}
+                                                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 py-3.5 px-4 text-white dark:text-black font-bold shadow-sm transition-all active:scale-[0.98]"
+                                                >
+                                                    <span>{currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Practice'}</span>
+                                                    <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -865,64 +1125,109 @@ export const Practice = () => {
                             </button>
                             <button
                                 onClick={() => setActiveTool(activeTool === 'calculator' ? 'none' : 'calculator')}
-                                className={`group relative flex items-center justify-center size-10 rounded-full transition-all ${activeTool === 'calculator' ? 'text-primary bg-black/5 dark:bg-white/10' : 'text-gray-500 hover:text-text-main hover:bg-gray-100 dark:hover:bg-white/10'}`}
+                                className={`group relative flex items-center justify-center size-10 rounded-full transition-all ${activeTool === 'calculator' ? 'text-primary bg-black/5 dark:bg-white/10' : 'text-gray-500 hover:text-text-main hover:bg-gray-100 dark:hover:bg-white/10'} ${!question.calculatorAllowed && 'hidden'}`}
+                                disabled={!question.calculatorAllowed}
                             >
                                 <span className="material-symbols-outlined">calculate</span>
-                                <div className="absolute right-14 top-1/2 -translate-y-1/2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Calculator</div>
+                                <div className="absolute right-14 top-1/2 -translate-y-1/2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                    {question.calculatorAllowed ? 'Calculator' : 'No Calc'}
+                                </div>
                             </button>
                         </div>
                     </div>
 
                 </div>
-            </main>
+            </main >
 
             {/* Exit Confirmation Modal */}
-            {showExitConfirm && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 dark:border-gray-800 transform transition-all scale-100">
-                        <div className="flex flex-col items-center text-center gap-4 mb-6">
-                            <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-500 rounded-full flex items-center justify-center">
-                                <span className="material-symbols-outlined text-2xl">save</span>
+            {
+                showExitConfirm && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+                        <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 dark:border-gray-800 transform transition-all scale-100">
+                            <div className="flex flex-col items-center text-center gap-4 mb-6">
+                                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-500 rounded-full flex items-center justify-center">
+                                    <span className="material-symbols-outlined text-2xl">save</span>
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-text-main dark:text-white">Save Progress?</h3>
+                                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+                                        You are about to exit. Would you like to save your progress to resume later, or exit without saving?
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 className="text-xl font-bold text-text-main dark:text-white">Exit Session?</h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
-                                    Are you sure you want to leave? Your progress ({sessionResults.correct} correct) will be automatically saved.
-                                </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={confirmExitWithoutSave}
+                                    disabled={isSaving}
+                                    className="flex-1 py-3 rounded-xl font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
+                                >
+                                    Don't Save
+                                </button>
+                                <button
+                                    onClick={confirmSaveAndExit}
+                                    disabled={isSaving}
+                                    className="flex-1 py-3 rounded-xl font-bold bg-primary text-text-main hover:brightness-105 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
+                                >
+                                    {isSaving ? (
+                                        <>
+                                            <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
+                                            Saving...
+                                        </>
+                                    ) : (
+                                        'Save & Exit'
+                                    )}
+                                </button>
                             </div>
-                        </div>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => setShowExitConfirm(false)}
-                                disabled={isSaving}
-                                className="flex-1 py-3 rounded-xl font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleConfirmExit}
-                                disabled={isSaving}
-                                className="flex-1 py-3 rounded-xl font-bold bg-primary text-text-main hover:brightness-105 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
-                            >
-                                {isSaving ? (
-                                    <>
-                                        <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
-                                        Saving...
-                                    </>
-                                ) : (
-                                    'Exit & Save'
-                                )}
-                            </button>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
+
+            {/* Submit All Confirmation Modal */}
+            {
+                showSubmitConfirm && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+                        <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 dark:border-gray-800 transform transition-all scale-100">
+                            <div className="flex flex-col items-center text-center gap-4 mb-6">
+                                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 rounded-full flex items-center justify-center">
+                                    <span className="material-symbols-outlined text-2xl">publish</span>
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-text-main dark:text-white">Submit All Answers?</h3>
+                                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+                                        You are about to submit your practice session. You can review your results immediately after.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setShowSubmitConfirm(false)}
+                                    className="flex-1 py-3 rounded-xl font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowSubmitConfirm(false);
+                                        // handleBatchSubmit is not defined in this scope yet, we need to ensure it is or use handleNext equivalent
+                                        // Assuming handleBatchSubmit logic is needed here or standard finish
+                                        finishSession();
+                                    }}
+                                    className="flex-1 py-3 rounded-xl font-bold bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-all shadow-sm"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
 
             {/* Bottom Overview Bar - Floating Compact Style */}
             <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
                 <div className="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 shadow-xl rounded-2xl px-4 py-3 flex items-center gap-4 animate-fade-in-up">
                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider shrink-0 hidden sm:block">Questions</span>
-                    <div className="flex items-center gap-2 max-w-[80vw] overflow-x-auto no-scrollbar mask-gradient-x">
+                    <div className="flex items-center gap-2 max-w-[80vw] overflow-x-auto no-scrollbar mask-gradient-x p-2">
                         {questions.map((q, idx) => {
                             const isCurrent = idx === currentQuestionIndex;
                             const isMarked = markedQuestions.has(q.id);
@@ -950,68 +1255,70 @@ export const Practice = () => {
             </div>
 
             {/* Report Modal */}
-            {showReportModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-md w-full p-6 border border-gray-100 dark:border-gray-800 transform transition-all scale-100">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-xl font-bold text-text-main dark:text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-red-500">flag</span>
-                                Report Issue
-                            </h3>
-                            <button onClick={() => setShowReportModal(false)} className="text-gray-400 hover:text-text-main dark:hover:text-white">
-                                <span className="material-symbols-outlined">close</span>
-                            </button>
-                        </div>
+            {
+                showReportModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+                        <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-md w-full p-6 border border-gray-100 dark:border-gray-800 transform transition-all scale-100">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-xl font-bold text-text-main dark:text-white flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-red-500">flag</span>
+                                    Report Issue
+                                </h3>
+                                <button onClick={() => setShowReportModal(false)} className="text-gray-400 hover:text-text-main dark:hover:text-white">
+                                    <span className="material-symbols-outlined">close</span>
+                                </button>
+                            </div>
 
-                        <div className="flex flex-col gap-4">
-                            <div className="flex flex-col gap-2">
-                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Issue Type</label>
-                                <select
-                                    value={reportReason}
-                                    onChange={(e) => setReportReason(e.target.value)}
-                                    className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                            <div className="flex flex-col gap-4">
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Issue Type</label>
+                                    <select
+                                        value={reportReason}
+                                        onChange={(e) => setReportReason(e.target.value)}
+                                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                                    >
+                                        <option value="content_error">Content Error (Question/Answer)</option>
+                                        <option value="formatting">Formatting/Display Issue</option>
+                                        <option value="explanation">Explanation is confusing</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Details (Optional)</label>
+                                    <textarea
+                                        placeholder="Please describe the issue..."
+                                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent outline-none focus:ring-2 focus:ring-primary/50 text-sm h-24 resize-none"
+                                    ></textarea>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3 mt-6">
+                                <button
+                                    onClick={() => setShowReportModal(false)}
+                                    disabled={isReporting}
+                                    className="flex-1 py-3 rounded-xl font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
                                 >
-                                    <option value="content_error">Content Error (Question/Answer)</option>
-                                    <option value="formatting">Formatting/Display Issue</option>
-                                    <option value="explanation">Explanation is confusing</option>
-                                    <option value="other">Other</option>
-                                </select>
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleReportSubmit}
+                                    disabled={isReporting}
+                                    className="flex-1 py-3 rounded-xl font-bold bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
+                                >
+                                    {isReporting ? (
+                                        <>
+                                            <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        'Submit Report'
+                                    )}
+                                </button>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Details (Optional)</label>
-                                <textarea
-                                    placeholder="Please describe the issue..."
-                                    className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent outline-none focus:ring-2 focus:ring-primary/50 text-sm h-24 resize-none"
-                                ></textarea>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-3 mt-6">
-                            <button
-                                onClick={() => setShowReportModal(false)}
-                                disabled={isReporting}
-                                className="flex-1 py-3 rounded-xl font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleReportSubmit}
-                                disabled={isReporting}
-                                className="flex-1 py-3 rounded-xl font-bold bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
-                            >
-                                {isReporting ? (
-                                    <>
-                                        <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
-                                        Sending...
-                                    </>
-                                ) : (
-                                    'Submit Report'
-                                )}
-                            </button>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
