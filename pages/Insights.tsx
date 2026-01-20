@@ -4,6 +4,119 @@ import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { UserInsights, UserSkillMastery, UserErrorStat, QuestionRecommendation, ReviewQueueItem } from '../types';
 
+// --- Helper Components ---
+
+const StatCard: React.FC<{ icon: string; label: string; value: string | number; color: string }> = ({ icon, label, value, color }) => {
+    const colorClasses: Record<string, string> = {
+        blue: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
+        green: 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400',
+        orange: 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400',
+        purple: 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+    };
+
+    return (
+        <div className="bg-white dark:bg-white/5 rounded-2xl p-5 border border-gray-200 dark:border-white/10">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${colorClasses[color]}`}>
+                <span className="material-symbols-outlined">{icon}</span>
+            </div>
+            <div className="text-2xl font-bold text-text-main dark:text-white">{value}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">{label}</div>
+        </div>
+    );
+};
+
+const SkillBar: React.FC<{ skill: UserSkillMastery; rank: number }> = ({ skill, rank }) => {
+    const masteryColor = skill.mastery < 40 ? 'bg-red-500' : skill.mastery < 70 ? 'bg-amber-500' : 'bg-green-500';
+
+    return (
+        <div className="flex items-center gap-3">
+            <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-400">
+                {rank}
+            </div>
+            <div className="flex-1">
+                <div className="flex justify-between items-center mb-1">
+                    <span className="text-sm font-medium text-text-main dark:text-white">{skill.skillName}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{skill.mastery?.toFixed(0)}%</span>
+                </div>
+                <div className="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                    <div
+                        className={`h-full ${masteryColor} rounded-full transition-all`}
+                        style={{ width: `${Math.min(100, skill.mastery)}%` }}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const ErrorCard: React.FC<{ error: UserErrorStat; rank: number }> = ({ error, rank }) => {
+    return (
+        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
+            <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                <span className="text-red-600 dark:text-red-400 text-sm font-bold">{rank}</span>
+            </div>
+            <div className="flex-1">
+                <div className="font-medium text-text-main dark:text-white text-sm">{error.errorName}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{error.category} error</div>
+            </div>
+            <div className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-1 rounded-full text-xs font-bold">
+                {error.count}x
+            </div>
+        </div>
+    );
+};
+
+const RecommendationCard: React.FC<{ rec: QuestionRecommendation }> = ({ rec }) => {
+    const reasonLabels: Record<string, { label: string; color: string }> = {
+        low_mastery: { label: 'Weak Skill', color: 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' },
+        spaced_review: { label: 'Review Due', color: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' },
+        challenge: { label: 'Challenge', color: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' },
+    };
+
+    const reasonInfo = reasonLabels[rec.reason] || { label: rec.reason, color: 'bg-gray-100 text-gray-600' };
+
+    return (
+        <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5">
+            <div className="flex items-center gap-2 mb-2">
+                <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${reasonInfo.color}`}>
+                    {reasonInfo.label}
+                </span>
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{rec.reasonDetail}</p>
+        </div>
+    );
+};
+
+const ReviewQueueCard: React.FC<{ item: ReviewQueueItem }> = ({ item }) => {
+    const isOverdue = item.isOverdue;
+
+    return (
+        <div className={`p-3 rounded-xl border ${isOverdue ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900/30' : 'bg-gray-50 dark:bg-white/5 border-gray-100 dark:border-white/5'}`}>
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <span className={`material-symbols-outlined text-lg ${isOverdue ? 'text-red-500' : 'text-blue-500'}`}>
+                        {isOverdue ? 'warning' : 'schedule'}
+                    </span>
+                    <span className="text-sm font-medium text-text-main dark:text-white">
+                        {item.questionTopic || 'Question'}
+                    </span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                        Review #{item.reviewCount + 1}
+                    </span>
+                    {isOverdue && (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+                            Overdue
+                        </span>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
 export const Insights = () => {
     const { user, isAuthenticated, getUserInsights, getReviewQueue, userInsights } = useApp();
     const navigate = useNavigate();
@@ -171,114 +284,3 @@ export const Insights = () => {
     );
 };
 
-// --- Helper Components ---
-
-const StatCard = ({ icon, label, value, color }: { icon: string; label: string; value: string | number; color: string }) => {
-    const colorClasses: Record<string, string> = {
-        blue: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
-        green: 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400',
-        orange: 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400',
-        purple: 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
-    };
-
-    return (
-        <div className="bg-white dark:bg-white/5 rounded-2xl p-5 border border-gray-200 dark:border-white/10">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${colorClasses[color]}`}>
-                <span className="material-symbols-outlined">{icon}</span>
-            </div>
-            <div className="text-2xl font-bold text-text-main dark:text-white">{value}</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">{label}</div>
-        </div>
-    );
-};
-
-const SkillBar = ({ skill, rank }: { skill: UserSkillMastery; rank: number }) => {
-    const masteryColor = skill.mastery < 40 ? 'bg-red-500' : skill.mastery < 70 ? 'bg-amber-500' : 'bg-green-500';
-
-    return (
-        <div className="flex items-center gap-3">
-            <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-400">
-                {rank}
-            </div>
-            <div className="flex-1">
-                <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium text-text-main dark:text-white">{skill.skillName}</span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">{skill.mastery?.toFixed(0)}%</span>
-                </div>
-                <div className="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-                    <div
-                        className={`h-full ${masteryColor} rounded-full transition-all`}
-                        style={{ width: `${Math.min(100, skill.mastery)}%` }}
-                    />
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const ErrorCard = ({ error, rank }: { error: UserErrorStat; rank: number }) => {
-    return (
-        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
-            <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                <span className="text-red-600 dark:text-red-400 text-sm font-bold">{rank}</span>
-            </div>
-            <div className="flex-1">
-                <div className="font-medium text-text-main dark:text-white text-sm">{error.errorName}</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{error.category} error</div>
-            </div>
-            <div className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-1 rounded-full text-xs font-bold">
-                {error.count}x
-            </div>
-        </div>
-    );
-};
-
-const RecommendationCard = ({ rec }: { rec: QuestionRecommendation }) => {
-    const reasonLabels: Record<string, { label: string; color: string }> = {
-        low_mastery: { label: 'Weak Skill', color: 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' },
-        spaced_review: { label: 'Review Due', color: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' },
-        challenge: { label: 'Challenge', color: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' },
-    };
-
-    const reasonInfo = reasonLabels[rec.reason] || { label: rec.reason, color: 'bg-gray-100 text-gray-600' };
-
-    return (
-        <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5">
-            <div className="flex items-center gap-2 mb-2">
-                <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${reasonInfo.color}`}>
-                    {reasonInfo.label}
-                </span>
-            </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{rec.reasonDetail}</p>
-        </div>
-    );
-};
-
-const ReviewQueueCard = ({ item }: { item: ReviewQueueItem }) => {
-    const isOverdue = item.isOverdue;
-
-    return (
-        <div className={`p-3 rounded-xl border ${isOverdue ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900/30' : 'bg-gray-50 dark:bg-white/5 border-gray-100 dark:border-white/5'}`}>
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <span className={`material-symbols-outlined text-lg ${isOverdue ? 'text-red-500' : 'text-blue-500'}`}>
-                        {isOverdue ? 'warning' : 'schedule'}
-                    </span>
-                    <span className="text-sm font-medium text-text-main dark:text-white">
-                        {item.questionTopic || 'Question'}
-                    </span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                        Review #{item.reviewCount + 1}
-                    </span>
-                    {isOverdue && (
-                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
-                            Overdue
-                        </span>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-};

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../AppContext';
+import { supabase } from '../src/services/supabaseClient'; // Import Supabase client
 import { Navbar } from '../components/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
 import { CourseType } from '../types';
@@ -29,6 +30,72 @@ const RadialProgress = ({ percentage }: { percentage: number }) => {
       <span className="absolute font-bold text-xl text-text-main dark:text-white group-hover:scale-110 transition-transform">
         {percentage === 0 ? '-' : (percentage >= 90 ? 'A' : percentage >= 80 ? 'B' : 'C')}
       </span>
+    </div>
+  );
+};
+
+const CourseCard = ({
+  type,
+  onSelect,
+  onStart
+}: {
+  type: CourseType;
+  onSelect: () => void;
+  onStart: (e: React.MouseEvent) => void;
+}) => {
+  const { user, courses, getSectionStatus } = useApp();
+  const course = courses[type];
+  const isActive = user.currentCourse === type;
+
+  // Use Synchronous lookup from Cache (no async flickering)
+  const courseStatus = getSectionStatus(type);
+
+  return (
+    <div
+      onClick={onSelect}
+      className={`group relative overflow-hidden bg-surface-light dark:bg-surface-dark rounded-2xl sm:rounded-[32px] p-5 sm:p-8 border-2 transition-all duration-300 cursor-pointer flex flex-col justify-between min-h-[280px] sm:min-h-[340px]
+          ${isActive ? 'border-primary shadow-soft scale-[1.01] z-10' : 'border-white dark:border-white/5 hover:border-gray-200 dark:hover:border-gray-700'}`}
+    >
+      {/* Background Icon */}
+      <div className="absolute top-8 right-8 opacity-5 pointer-events-none">
+        <span className={`material-symbols-outlined text-[140px] ${isActive ? 'text-primary' : 'text-gray-500'}`}>
+          {type === 'AB' ? 'functions' : 'all_inclusive'}
+        </span>
+      </div>
+
+      <div className="relative z-10 flex flex-col items-start">
+        <div className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-6
+                  ${courseStatus === 'in_progress'
+            ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+            : courseStatus === 'completed'
+              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+              : 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400'}`}>
+          {courseStatus === 'in_progress' ? 'In Progress' : courseStatus === 'completed' ? 'Completed' : 'Not Started'}
+        </div>
+
+        <h3 className="text-3xl font-black text-text-main dark:text-white mb-2 tracking-tight">{course.title}</h3>
+
+        <p className="text-text-secondary dark:text-gray-400 font-medium leading-relaxed max-w-[85%]">
+          {type === 'AB'
+            ? 'Track your mastery across all 8 units.'
+            : 'Start your journey with Unit 1.'
+          }
+        </p>
+      </div>
+
+      <div className="relative z-10 mt-8 w-full">
+        <button
+          onClick={onStart}
+          className={`w-full py-4 px-6 rounded-xl font-bold flex items-center justify-between gap-4 transition-all duration-200
+                  ${isActive
+              ? 'bg-primary text-text-main hover:brightness-105 shadow-md'
+              : 'bg-gray-50 dark:bg-white/5 text-text-main dark:text-white hover:bg-gray-100 dark:hover:bg-white/10'
+            }`}
+        >
+          <span className="truncate">{course.status === 'Not Started' ? 'Start Course' : 'Continue Learning'}</span>
+          <span className="material-symbols-outlined shrink-0">arrow_forward</span>
+        </button>
+      </div>
     </div>
   );
 };
@@ -76,6 +143,49 @@ export const Dashboard = () => {
     dismissLoginPrompt();
   };
 
+  // --- Daily Stats for "24h Refresh" ---
+  const [dailyStats, setDailyStats] = useState({
+    total_time_seconds: 0,
+    unique_questions_solved: 0,
+    correct_attempts: 0,
+    total_attempts: 0,
+    accuracy_rate: 0
+  });
+
+  useEffect(() => {
+    const fetchDailyStats = async () => {
+      if (!user?.id) return;
+
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0); // Start of local day
+
+      try {
+        const { data, error } = await supabase.rpc('get_daily_user_stats', {
+          p_start_timestamp: startOfDay.toISOString()
+        });
+
+        if (error) {
+          console.error('get_daily_user_stats error:', error);
+          return;
+        }
+
+        if (data && data.length > 0) {
+          const stats = data[0];
+          setDailyStats({
+            ...stats,
+            accuracy_rate: stats.total_attempts > 0
+              ? ((stats.correct_attempts / stats.total_attempts) * 100)
+              : 0
+          });
+        }
+      } catch (err) {
+        console.error('Fetch daily stats failed:', err);
+      }
+    };
+
+    fetchDailyStats();
+  }, [user?.id]);
+
   // Calculate dynamic trend based on the last two data points
   const currentMetric = lineData[lineData.length - 1].value;
   const previousMetric = lineData.length > 1 ? lineData[lineData.length - 2].value : currentMetric;
@@ -104,61 +214,6 @@ export const Dashboard = () => {
     }
     // Navigate to practice hub
     navigate('/practice');
-  };
-
-  const CourseCard = ({ type }: { type: CourseType }) => {
-    const course = courses[type];
-    const isActive = user.currentCourse === type;
-    // const currentModule = course.modules[course.currentModuleIndex]; // Deprecated for display
-    const isInProgress = course.status === 'In Progress';
-    const mastery = getCourseMastery(type);
-
-    return (
-      <div
-        onClick={() => handleCardSelect(type)}
-        className={`group relative overflow-hidden bg-surface-light dark:bg-surface-dark rounded-2xl sm:rounded-[32px] p-5 sm:p-8 border-2 transition-all duration-300 cursor-pointer flex flex-col justify-between min-h-[280px] sm:min-h-[340px]
-            ${isActive ? 'border-primary shadow-soft scale-[1.01] z-10' : 'border-white dark:border-white/5 hover:border-gray-200 dark:hover:border-gray-700'}`}
-      >
-        {/* Background Icon */}
-        <div className="absolute top-8 right-8 opacity-5 pointer-events-none">
-          <span className={`material-symbols-outlined text-[140px] ${isActive ? 'text-primary' : 'text-gray-500'}`}>
-            {type === 'AB' ? 'functions' : 'all_inclusive'}
-          </span>
-        </div>
-
-        <div className="relative z-10 flex flex-col items-start">
-          <div className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-6
-                    ${course.status === 'In Progress'
-              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-              : 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400'}`}>
-            {course.status}
-          </div>
-
-          <h3 className="text-3xl font-black text-text-main dark:text-white mb-2 tracking-tight">{course.title}</h3>
-
-          <p className="text-text-secondary dark:text-gray-400 font-medium leading-relaxed max-w-[85%]">
-            {type === 'AB'
-              ? 'Track your mastery across all 8 units.'
-              : 'Start your journey with Unit 1.'
-            }
-          </p>
-        </div>
-
-        <div className="relative z-10 mt-8 w-full">
-          <button
-            onClick={(e) => handleStartSession(e, type)}
-            className={`w-full py-4 px-6 rounded-xl font-bold flex items-center justify-between gap-4 transition-all duration-200
-                    ${isActive
-                ? 'bg-primary text-text-main hover:brightness-105 shadow-md'
-                : 'bg-gray-50 dark:bg-white/5 text-text-main dark:text-white hover:bg-gray-100 dark:hover:bg-white/10'
-              }`}
-          >
-            <span className="truncate">{course.status === 'Not Started' ? 'Start Course' : 'Continue Learning'}</span>
-            <span className="material-symbols-outlined shrink-0">arrow_forward</span>
-          </button>
-        </div>
-      </div>
-    );
   };
 
   const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -197,8 +252,16 @@ export const Dashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-            <CourseCard type="AB" />
-            <CourseCard type="BC" />
+            <CourseCard
+              type="AB"
+              onSelect={() => handleCardSelect('AB')}
+              onStart={(e) => handleStartSession(e, 'AB')}
+            />
+            <CourseCard
+              type="BC"
+              onSelect={() => handleCardSelect('BC')}
+              onStart={(e) => handleStartSession(e, 'BC')}
+            />
           </div>
         </section>
 
@@ -212,37 +275,38 @@ export const Dashboard = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            {/* Card 1: Mastery Rate */}
+            {/* Card 1: Accuracy Rate (24h) */}
             <div
               className="bg-white dark:bg-surface-dark rounded-3xl p-6 border border-white dark:border-white/5 shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-between"
               onClick={() => navigate('/analysis')}
             >
               <div className="flex flex-col gap-2">
-                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Mastery Rate</span>
+                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Accuracy Rate <span className="text-[10px] text-gray-400 font-normal">(24h refresh)</span></span>
                 <div className="flex flex-col items-start">
-                  <span className="text-4xl font-black text-text-main dark:text-white tracking-tighter">{currentCourseMastery}%</span>
-                  <span className={`text-xs font-bold px-1.5 py-0.5 rounded mt-1 ${isPositive ? 'text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-400' : 'text-red-600 bg-red-100'}`}>
-                    {isPositive ? '+' : ''}{trendValue}%
+                  <span className="text-4xl font-black text-text-main dark:text-white tracking-tighter">{dailyStats.accuracy_rate.toFixed(0)}%</span>
+                  {/* Reuse trend or show streak? Keeping trend for now or just generic + */}
+                  <span className={`text-xs font-bold px-1.5 py-0.5 rounded mt-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400`}>
+                    Today
                   </span>
                 </div>
               </div>
-              <RadialProgress percentage={currentCourseMastery} />
+              <RadialProgress percentage={dailyStats.accuracy_rate} />
             </div>
 
-            {/* Card 2: Problems Solved */}
+            {/* Card 2: Problems Solved (24h) */}
             <div
               className="bg-white dark:bg-surface-dark rounded-3xl p-6 border border-white dark:border-white/5 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between min-h-[160px]"
               onClick={() => navigate('/practice')}
             >
               <div className="flex justify-between items-start">
-                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Problems Solved</span>
+                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Problems Solved <span className="text-[10px] text-gray-400 font-normal block sm:inline">(24h refresh)</span></span>
                 <div className="bg-primary/20 p-2 rounded-lg text-yellow-700 dark:text-primary">
                   <span className="material-symbols-outlined block text-lg">edit_note</span>
                 </div>
               </div>
               <div>
-                <span className="text-4xl font-black text-text-main dark:text-white tracking-tighter">{user.problemsSolved}</span>
-                <p className="text-xs font-bold text-gray-400 mt-1">Top {user.percentile}% of students</p>
+                <span className="text-4xl font-black text-text-main dark:text-white tracking-tighter">{dailyStats.unique_questions_solved}</span>
+                <p className="text-xs font-bold text-gray-400 mt-1">Unique questions today</p>
               </div>
             </div>
 
@@ -252,10 +316,12 @@ export const Dashboard = () => {
               onClick={() => navigate('/analysis')}
             >
               <div className="flex flex-col gap-1 mb-2">
-                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Study Time</span>
+                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Study Time <span className="text-[10px] text-gray-400 font-normal">(24h refresh)</span></span>
                 <div className="flex items-baseline gap-1">
-                  {/* Dynamically show today's study hours */}
-                  <span className="text-4xl font-black text-text-main dark:text-white tracking-tighter">{user.studyHours[todayIndex]}</span>
+                  {/* Show Today's Stats from DB or fallback to calculation */}
+                  <span className="text-4xl font-black text-text-main dark:text-white tracking-tighter">
+                    {(dailyStats.total_time_seconds / 3600).toFixed(1)}
+                  </span>
                   <span className="text-lg font-bold text-gray-400">hrs</span>
                 </div>
               </div>

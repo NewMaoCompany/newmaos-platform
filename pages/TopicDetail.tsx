@@ -3,36 +3,27 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { useApp } from '../AppContext';
 import { COURSE_CONTENT_DATA } from '../constants';
-import { SubTopicProgress, UserSectionProgress } from '../types';
+import { SubTopicProgress, UserSectionProgress, SubTopic } from '../types';
+import { supabase } from '../src/services/supabaseClient';
 
 export const TopicDetail = () => {
     const { unitId } = useParams();
     const navigate = useNavigate();
-    const { topicContent } = useApp();
+    // Consolidated useApp hook - must be at top level
+    const { topicContent, user, getTopicProgress, getSectionStatus, fetchAllUserProgress, questions } = useApp();
 
-    // Ensure page starts at top when visiting a new unit
-    useEffect(() => {
-        window.scrollTo(0, 0);
+    // Handle legacy IDs (e.g. AB_Limits -> ABBC_Limits)
+    const effectiveUnitId = useMemo(() => {
+        if (!unitId) return '';
+        // Special case: Unit 9 and Unit 10 are BC-only and should keep BC_ prefix
+        if (unitId === 'BC_Unit9' || unitId === 'BC_Series') return unitId;
+
+        if (unitId.startsWith('ABBC_')) return unitId;
+        if (unitId.startsWith('AB_') || unitId.startsWith('BC_')) {
+            return 'ABBC_' + unitId.split('_')[1];
+        }
+        return unitId;
     }, [unitId]);
-
-    // Safety check: if topic doesn't exist in our data, show placeholder or redirect
-    const unitContent = unitId ? topicContent[unitId] : null;
-
-    if (!unitContent) {
-        return (
-            <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-main dark:text-white flex flex-col">
-                <Navbar />
-                <div className="flex-grow flex flex-col items-center justify-center p-6 text-center">
-                    <span className="material-symbols-outlined text-6xl text-gray-300 mb-4">folder_off</span>
-                    <h2 className="text-2xl font-bold mb-2">Topic Content Not Found</h2>
-                    <p className="text-gray-500 mb-6">The detailed content for this topic is currently being developed.</p>
-                    <button onClick={() => navigate('/practice')} className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg font-bold">
-                        Back to Hub
-                    </button>
-                </div>
-            </div>
-        );
-    }
 
     const handleSubTopicClick = (subTopicId: string) => {
         navigate('/practice/session', {
@@ -44,44 +35,129 @@ export const TopicDetail = () => {
         });
     };
 
+    // Ensure page starts at top when visiting a new unit
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [unitId]);
+
+    // Safety check reference (moved render logic to bottom)
+    // COMPAT LAYER: Handle stale server state where topicContent still has 'AB_' keys
+    const unitContent = useMemo(() => {
+        if (!effectiveUnitId) return null;
+        if (topicContent[effectiveUnitId]) return topicContent[effectiveUnitId];
+
+        // Fallback: If ABBC_ is missing, try legacy AB_ or BC_ keys (if server is stale)
+        if (effectiveUnitId.startsWith('ABBC_')) {
+            const suffix = effectiveUnitId.replace('ABBC_', '');
+            return topicContent[`AB_${suffix}`] || topicContent[`BC_${suffix}`] || null;
+        }
+        return null;
+    }, [effectiveUnitId, topicContent]);
+
     // Use dynamic Unit Test config or fall back to defaults
-    const unitTestConfig = unitContent.unitTest || {
+    const unitTestConfig = unitContent?.unitTest || {
         title: 'Unit Test',
-        description: `Comprehensive assessment covering all topics in ${unitContent.title}.`,
+        description: unitContent ? `Comprehensive assessment covering all topics in ${unitContent.title}.` : '',
         estimatedMinutes: 45
     };
 
-    // Use COURSE_CONTENT_DATA as fallback when DB subTopics is empty
-    const subTopics = useMemo(() => {
-        if (unitContent.subTopics && unitContent.subTopics.length > 0) {
-            return unitContent.subTopics;
-        }
-        return COURSE_CONTENT_DATA[unitId!]?.subTopics || [];
-    }, [unitContent, unitId]);
+    const [dbSections, setDbSections] = useState<SubTopic[]>([]);
+    const [isLoadingSections, setIsLoadingSections] = useState(true);
 
-    // Progress State
+    useEffect(() => {
+        const fetchSections = async () => {
+            if (!effectiveUnitId) return;
+            setIsLoadingSections(true);
+            const { data, error } = await supabase
+                .from('sections')
+                .select('*')
+                .eq('topic_id', effectiveUnitId)
+                .neq('is_unit_test', true)
+                .order('sort_order', { ascending: true });
+
+            if (error) {
+                console.error('Error fetching sections:', error);
+            }
+
+            if (data) {
+                const formatted: SubTopic[] = data.map(s => ({
+                    id: s.id,
+                    title: s.title,
+                    description: s.description,
+                    content: '',
+                    estimatedMinutes: s.estimated_minutes,
+                    hasLesson: s.has_lesson,
+                    hasPractice: s.has_practice,
+                    courseScope: s.course_scope
+                }));
+                setDbSections(formatted);
+            }
+            setIsLoadingSections(false);
+        };
+        fetchSections();
+    }, [effectiveUnitId]);
+
+    const subTopics = useMemo(() => {
+        // Prioritize DB sections, fallback to constants
+        const raw = dbSections.length > 0 ? dbSections : (unitContent?.subTopics || []);
+
+        // Filter based on Course Scope and User's Current Course
+        return raw.filter(s => {
+            if (!s.courseScope || s.courseScope === 'both') return true;
+            if (user.currentCourse === 'AB') return s.courseScope !== 'bc_only';
+            if (user.currentCourse === 'BC') return s.courseScope !== 'ab_only';
+            return true;
+        });
+    }, [dbSections, unitContent, user.currentCourse]);
+
     const [progressMap, setProgressMap] = useState<Record<string, SubTopicProgress>>({});
-    const [sectionStatuses, setSectionStatuses] = useState<Record<string, UserSectionProgress>>({});
-    const { getTopicProgress, getTopicSectionProgress, user } = useApp();
 
     useEffect(() => {
         const loadProgress = async () => {
-            if (unitId && user?.id) {
-                // Fetch aggregated stats (legacy/dashboard)
-                getTopicProgress(unitId).then(data => setProgressMap(data));
-
-                // Fetch granular statuses (badges)
-                getTopicSectionProgress(unitId).then(data => {
-                    const statusMap: Record<string, UserSectionProgress> = {};
-                    data.forEach(item => {
-                        statusMap[item.section_id] = item;
-                    });
-                    setSectionStatuses(statusMap);
-                });
+            // ... existing progress logic ...
+            if (effectiveUnitId && user?.id) {
+                getTopicProgress(effectiveUnitId).then(data => setProgressMap(data));
+                try {
+                    await fetchAllUserProgress();
+                } catch (e) { console.error(e); }
             }
         };
         loadProgress();
-    }, [unitId, user?.id]);
+    }, [effectiveUnitId, user?.id]);
+
+    // Helper to calculate dynamic time
+    const calculateTime = (sectionId: string) => {
+        const relevantQuestions = questions.filter(q =>
+            (q.sectionId === sectionId || q.subTopicId === sectionId) &&
+            // Filter by course context if needed, but usually sectionId is unique enough or shared questions should count
+            (q.course === user.currentCourse || q.course === 'Both')
+        );
+        const totalSeconds = relevantQuestions.reduce((sum, q) => sum + (q.targetTimeSeconds || 120), 0);
+        return Math.ceil(totalSeconds / 60) || 10; // Default to 10 min if 0/empty
+    };
+
+    // --- RENDER ---
+
+    if (!unitContent) {
+        return (
+            <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-main dark:text-white flex flex-col">
+                <Navbar />
+                <div className="flex-grow flex flex-col items-center justify-center p-6 text-center">
+                    <span className="material-symbols-outlined text-6xl text-gray-300 mb-4">folder_off</span>
+                    <h2 className="text-2xl font-bold mb-2">Topic Content Not Found</h2>
+                    <p className="text-gray-500 mb-6 font-mono text-xs text-left bg-gray-100 p-4 rounded max-w-lg">
+                        <strong>Debug Info:</strong><br />
+                        Requested ID: {unitId || 'null'} <br />
+                        Effective ID: {effectiveUnitId} <br />
+                        Keys: {Object.keys(topicContent).length}
+                    </p>
+                    <button onClick={() => navigate('/practice')} className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg font-bold">
+                        Back to Hub
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 flex flex-col">
@@ -140,13 +216,12 @@ export const TopicDetail = () => {
                                     )}
                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold uppercase tracking-wider">
                                         <span className="material-symbols-outlined text-[16px]">schedule</span>
-                                        {sub.estimatedMinutes} min
+                                        {calculateTime(sub.id)} min
                                     </span>
 
                                     {/* Progress Badge */}
                                     {(() => {
-                                        const status = sectionStatuses[sub.id]?.status;
-                                        // Also support legacy check if no explicit status record exists yet
+                                        const status = getSectionStatus(sub.id);
                                         const legacyCompleted = progressMap[sub.id]?.correctQuestions >= 3;
 
                                         if (status === 'completed' || legacyCompleted) {
@@ -191,17 +266,41 @@ export const TopicDetail = () => {
                             <p className="text-text-secondary dark:text-gray-400 font-medium mb-4">
                                 {unitTestConfig.description}
                             </p>
-                            <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider text-gray-500">
-                                <span className="flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-[16px]">timer</span>
-                                    ~{unitTestConfig.estimatedMinutes} min
-                                </span>
-                                <span className="flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-[16px]">grade</span>
-                                    Scored
-                                </span>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider text-gray-500">
+                                    <span className="flex items-center gap-1">
+                                        <span className="material-symbols-outlined text-[16px]">timer</span>
+                                        ~{calculateTime('unit_test')} min
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                        <span className="material-symbols-outlined text-[16px]">grade</span>
+                                        Scored
+                                    </span>
+                                </div>
+                                {/* Unit Test Progress - Robust Check */}
+                                {(() => {
+                                    const status1 = getSectionStatus(`${unitId}_unit_test`);
+                                    const status2 = getSectionStatus('unit_test');
+                                    const finalStatus = status1 !== 'not_started' ? status1 : status2;
+
+                                    if (finalStatus !== 'not_started') {
+                                        return (
+                                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                                                ${finalStatus === 'in_progress'
+                                                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                    : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'}`}>
+                                                <span className="material-symbols-outlined text-[12px]">
+                                                    {finalStatus === 'in_progress' ? 'pending' : 'check_circle'}
+                                                </span>
+                                                {finalStatus === 'in_progress' ? 'In Progress' : 'Completed'}
+                                            </span>
+                                        );
+                                    }
+                                    return null;
+                                })()}
                             </div>
                         </div>
+
                         <div className="relative z-10 shrink-0">
                             <button className="w-full md:w-auto px-6 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold group-hover:scale-105 transition-all flex items-center justify-center gap-2 shadow-md">
                                 Start Test
@@ -212,11 +311,24 @@ export const TopicDetail = () => {
 
                 </section>
 
-                {subTopics.length === 0 && (
-                    <div className="p-12 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-3xl text-center text-gray-400">
-                        No sub-topics found for this unit.
-                    </div>
-                )}
+                {/* LOADING STATE - Spinner */}
+                {
+                    (isLoadingSections && subTopics.length === 0) && (
+                        <div className="flex justify-center py-20">
+                            <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    )
+                }
+
+                {/* EMPTY STATE - Only show if DONE loading and STILL empty */}
+                {
+                    (!isLoadingSections && subTopics.length === 0) && (
+                        <div className="p-12 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-3xl text-center text-gray-400">
+                            No sub-topics found for this unit.
+                        </div>
+                    )
+                }
+
             </main>
         </div>
     );

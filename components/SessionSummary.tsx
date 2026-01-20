@@ -71,6 +71,60 @@ export const SessionSummary = ({
 
     const incorrectQuestions = questions.filter(q => questionResults[q.id] === 'incorrect');
 
+    const renderContent = (content: string, type?: 'text' | 'image', options: { noBorder?: boolean } = {}) => {
+        if (!content) return null;
+
+        let isImage = false;
+        if (type) {
+            isImage = type === 'image';
+        } else {
+            isImage = content.trim().startsWith('http') ||
+                content.trim().startsWith('data:image') ||
+                content.trim().startsWith('/');
+        }
+
+        if (isImage) {
+            // Try to parse array for multiple images
+            let imageUrls: string[] = [];
+            try {
+                if (content.trim().startsWith('[')) {
+                    const parsed = JSON.parse(content);
+                    if (Array.isArray(parsed)) {
+                        imageUrls = parsed;
+                    } else {
+                        imageUrls = [content];
+                    }
+                } else {
+                    imageUrls = [content];
+                }
+            } catch {
+                imageUrls = [content];
+            }
+
+            return (
+                <div className="flex flex-col gap-4 my-2">
+                    {imageUrls.map((url, idx) => (
+                        <div key={idx} className="flex justify-center">
+                            <img
+                                src={url}
+                                alt={`Content ${idx + 1}`}
+                                className={`max-w-full rounded-lg ${options.noBorder ? '' : 'border border-gray-200 dark:border-gray-700 shadow-sm'}`}
+                                style={{ maxHeight: '200px' }}
+                            />
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        // Check for LaTeX if text
+        if (content.includes('$') || content.includes('\\')) {
+            return <InlineMath>{content}</InlineMath>;
+        }
+
+        return <span className="whitespace-pre-wrap">{content}</span>;
+    };
+
     if (viewMode === 'review') {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-black p-4 md:p-8 animate-fade-in flex flex-col items-center">
@@ -99,9 +153,8 @@ export const SessionSummary = ({
                                             {idx + 1}
                                         </div>
                                         <div className="flex-1">
-                                            <div className="prose dark:prose-invert max-w-none text-base">
-                                                {/* Use ContentRenderer concept or simple HTML if trusted */}
-                                                <div dangerouslySetInnerHTML={{ __html: q.prompt }} />
+                                            <div className="text-base text-gray-900 dark:text-gray-100 font-medium">
+                                                {renderContent(q.prompt, q.promptType, { noBorder: true })}
                                             </div>
                                         </div>
                                     </div>
@@ -114,7 +167,7 @@ export const SessionSummary = ({
                                             </div>
                                             <div className="text-gray-800 dark:text-gray-200">
                                                 {userAnswer ? (
-                                                    <InlineMath>{userAnswer.value}</InlineMath> // Assuming simple text or latex
+                                                    renderContent(userAnswer.value, userAnswer.type, { noBorder: true })
                                                 ) : <span className="text-gray-400 italic">No answer selected</span>}
                                             </div>
                                         </div>
@@ -126,16 +179,18 @@ export const SessionSummary = ({
                                             </div>
                                             <div className="text-gray-800 dark:text-gray-200">
                                                 {correctAnswer ? (
-                                                    <InlineMath>{correctAnswer.value}</InlineMath>
+                                                    renderContent(correctAnswer.value, correctAnswer.type, { noBorder: true })
                                                 ) : <span className="text-gray-400 italic">Unknown</span>}
                                             </div>
                                         </div>
                                     </div>
 
                                     {q.explanation && (
-                                        <div className="mt-4 ml-12 p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                                        <div className="mt-4 ml-12 p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-gray-800">
                                             <div className="text-xs font-bold text-blue-500 uppercase tracking-widest mb-1">Explanation</div>
-                                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{q.explanation}</p>
+                                            <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                                {renderContent(q.explanation, q.explanationType, { noBorder: true })}
+                                            </div>
                                         </div>
                                     )}
                                 </div>

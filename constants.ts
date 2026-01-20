@@ -256,50 +256,46 @@ const UNIT10_SUBTOPICS_BC = [
 // Used by Course Navigator (Dashboard/Sidebar)
 export const COURSE_TOPICS: Record<CourseType, { id: string; subject: string; count: number }[]> = {
   AB: [
-    { id: 'AB_Limits', subject: 'Unit 1: Limits and Continuity', count: 0 },
-    { id: 'AB_Derivatives', subject: 'Unit 2: Differentiation: Definition and Fundamental Properties', count: 0 },
-    { id: 'AB_Composite', subject: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', count: 0 },
-    { id: 'AB_Applications', subject: 'Unit 4: Contextual Applications of Differentiation', count: 0 },
-    { id: 'AB_Analytical', subject: 'Unit 5: Analytical Applications of Differentiation', count: 0 },
-    { id: 'AB_Integration', subject: 'Unit 6: Integration and Accumulation of Change', count: 0 },
-    { id: 'AB_DiffEq', subject: 'Unit 7: Differential Equations', count: 0 },
-    { id: 'AB_AppIntegration', subject: 'Unit 8: Applications of Integration', count: 0 },
+    { id: 'ABBC_Limits', subject: 'Unit 1: Limits and Continuity', count: 0 },
+    { id: 'ABBC_Derivatives', subject: 'Unit 2: Differentiation: Definition and Fundamental Properties', count: 0 },
+    { id: 'ABBC_Composite', subject: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', count: 0 },
+    { id: 'ABBC_Applications', subject: 'Unit 4: Contextual Applications of Differentiation', count: 0 },
+    { id: 'ABBC_Analytical', subject: 'Unit 5: Analytical Applications of Differentiation', count: 0 },
+    { id: 'ABBC_Integration', subject: 'Unit 6: Integration and Accumulation of Change', count: 0 },
+    { id: 'ABBC_DiffEq', subject: 'Unit 7: Differential Equations', count: 0 },
+    { id: 'ABBC_AppIntegration', subject: 'Unit 8: Applications of Integration', count: 0 },
   ],
   BC: [
-    { id: 'BC_Limits', subject: 'Unit 1: Limits and Continuity', count: 0 },
-    { id: 'BC_Derivatives', subject: 'Unit 2: Differentiation: Definition and Fundamental Properties', count: 0 },
-    { id: 'BC_Composite', subject: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', count: 0 },
-    { id: 'BC_Applications', subject: 'Unit 4: Contextual Applications of Differentiation', count: 0 },
-    { id: 'BC_Analytical', subject: 'Unit 5: Analytical Applications of Differentiation', count: 0 },
-    { id: 'BC_Integration', subject: 'Unit 6: Integration and Accumulation of Change', count: 0 },
-    { id: 'BC_DiffEq', subject: 'Unit 7: Differential Equations', count: 0 },
-    { id: 'BC_AppIntegration', subject: 'Unit 8: Applications of Integration', count: 0 },
+    { id: 'ABBC_Limits', subject: 'Unit 1: Limits and Continuity', count: 0 },
+    { id: 'ABBC_Derivatives', subject: 'Unit 2: Differentiation: Definition and Fundamental Properties', count: 0 },
+    { id: 'ABBC_Composite', subject: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', count: 0 },
+    { id: 'ABBC_Applications', subject: 'Unit 4: Contextual Applications of Differentiation', count: 0 },
+    { id: 'ABBC_Analytical', subject: 'Unit 5: Analytical Applications of Differentiation', count: 0 },
+    { id: 'ABBC_Integration', subject: 'Unit 6: Integration and Accumulation of Change', count: 0 },
+    { id: 'ABBC_DiffEq', subject: 'Unit 7: Differential Equations', count: 0 },
+    { id: 'ABBC_AppIntegration', subject: 'Unit 8: Applications of Integration', count: 0 },
     { id: 'BC_Unit9', subject: 'Unit 9: Parametric Equations, Polar Coordinates, and Vector-Valued Functions', count: 0 },
     { id: 'BC_Series', subject: 'Unit 10: Infinite Sequences and Series', count: 0 },
   ]
 };
 
 // Used by TopicDetail and QuestionCreator to populate subtopics
+// Used by TopicDetail and QuestionCreator to populate subtopics
 export const COURSE_CONTENT_DATA: Record<string, UnitContent> = {
-  // AB Mappings
-  'AB_Limits': { id: 'AB_Limits', title: 'Unit 1: Limits and Continuity', description: 'Limits and Continuity', subTopics: UNIT1_SUBTOPICS },
-  'AB_Derivatives': { id: 'AB_Derivatives', title: 'Unit 2: Differentiation: Definition and Fundamental Properties', description: 'Differentiation Definition', subTopics: UNIT2_SUBTOPICS },
-  'AB_Composite': { id: 'AB_Composite', title: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', description: 'Composite Functions', subTopics: UNIT3_SUBTOPICS },
-  'AB_Applications': { id: 'AB_Applications', title: 'Unit 4: Contextual Applications of Differentiation', description: 'Contextual Applications', subTopics: UNIT4_SUBTOPICS },
-  'AB_Analytical': { id: 'AB_Analytical', title: 'Unit 5: Analytical Applications of Differentiation', description: 'Analytical Applications', subTopics: UNIT5_SUBTOPICS },
-  'AB_Integration': { id: 'AB_Integration', title: 'Unit 6: Integration and Accumulation of Change', description: 'Integration and Accumulation of Change', subTopics: UNIT6_SUBTOPICS_AB },
-  'AB_DiffEq': { id: 'AB_DiffEq', title: 'Unit 7: Differential Equations', description: 'Differential Equations', subTopics: UNIT7_SUBTOPICS_AB },
-  'AB_AppIntegration': { id: 'AB_AppIntegration', title: 'Unit 8: Applications of Integration', description: 'Applications of Integration', subTopics: UNIT8_SUBTOPICS_AB },
+  // SHARED Mappings (ABBC)
+  'ABBC_Limits': { id: 'ABBC_Limits', title: 'Unit 1: Limits and Continuity', description: 'Limits and Continuity', subTopics: UNIT1_SUBTOPICS },
+  'ABBC_Derivatives': { id: 'ABBC_Derivatives', title: 'Unit 2: Differentiation: Definition and Fundamental Properties', description: 'Differentiation Definition', subTopics: UNIT2_SUBTOPICS },
+  'ABBC_Composite': { id: 'ABBC_Composite', title: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', description: 'Composite Functions', subTopics: UNIT3_SUBTOPICS },
+  'ABBC_Applications': { id: 'ABBC_Applications', title: 'Unit 4: Contextual Applications of Differentiation', description: 'Contextual Applications', subTopics: UNIT4_SUBTOPICS },
+  'ABBC_Analytical': { id: 'ABBC_Analytical', title: 'Unit 5: Analytical Applications of Differentiation', description: 'Analytical Applications', subTopics: UNIT5_SUBTOPICS },
+  // NOTE: Integration, DiffEq, AppIntegration have mixed content. 
+  // We point them to the BC superset in constants for now, but UI should filter based on scope if using DB.
+  // Actually, let's use the BC superset (Logic: Contains everything) and rely on UI to hide unmatched scope.
+  'ABBC_Integration': { id: 'ABBC_Integration', title: 'Unit 6: Integration and Accumulation of Change', description: 'Integration and Accumulation of Change', subTopics: UNIT6_SUBTOPICS_BC },
+  'ABBC_DiffEq': { id: 'ABBC_DiffEq', title: 'Unit 7: Differential Equations', description: 'Differential Equations', subTopics: UNIT7_SUBTOPICS_BC },
+  'ABBC_AppIntegration': { id: 'ABBC_AppIntegration', title: 'Unit 8: Applications of Integration', description: 'Applications of Integration', subTopics: UNIT8_SUBTOPICS_BC },
 
-  // BC Mappings
-  'BC_Limits': { id: 'BC_Limits', title: 'Unit 1: Limits and Continuity', description: 'Limits and Continuity', subTopics: UNIT1_SUBTOPICS },
-  'BC_Derivatives': { id: 'BC_Derivatives', title: 'Unit 2: Differentiation: Definition and Fundamental Properties', description: 'Differentiation Definition', subTopics: UNIT2_SUBTOPICS },
-  'BC_Composite': { id: 'BC_Composite', title: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', description: 'Composite Functions', subTopics: UNIT3_SUBTOPICS },
-  'BC_Applications': { id: 'BC_Applications', title: 'Unit 4: Contextual Applications of Differentiation', description: 'Contextual Applications', subTopics: UNIT4_SUBTOPICS },
-  'BC_Analytical': { id: 'BC_Analytical', title: 'Unit 5: Analytical Applications of Differentiation', description: 'Analytical Applications', subTopics: UNIT5_SUBTOPICS },
-  'BC_Integration': { id: 'BC_Integration', title: 'Unit 6: Integration and Accumulation of Change', description: 'Integration and Accumulation of Change', subTopics: UNIT6_SUBTOPICS_BC },
-  'BC_DiffEq': { id: 'BC_DiffEq', title: 'Unit 7: Differential Equations', description: 'Differential Equations', subTopics: UNIT7_SUBTOPICS_BC },
-  'BC_AppIntegration': { id: 'BC_AppIntegration', title: 'Unit 8: Applications of Integration', description: 'Applications of Integration', subTopics: UNIT8_SUBTOPICS_BC },
+  // BC Only Mappings (Unit 9/10)
   'BC_Unit9': { id: 'BC_Unit9', title: 'Unit 9: Parametric Equations, Polar Coordinates, and Vector-Valued Functions', description: 'Parametric/Polar/Vector', subTopics: UNIT9_SUBTOPICS_BC },
   'BC_Series': { id: 'BC_Series', title: 'Unit 10: Infinite Sequences and Series', description: 'Infinite Series', subTopics: UNIT10_SUBTOPICS_BC },
 };

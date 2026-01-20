@@ -34,6 +34,7 @@ export interface QuestionOption {
   type?: 'text' | 'image';
   errorTagId?: string; // Optional: Map specific wrong answer to an error ID (e.g. ERR_SIGN)
   explanation?: string; // Specific feedback for this option
+  explanationType?: 'text' | 'image'; // Type of explanation content
 }
 
 export interface Question {
@@ -47,7 +48,7 @@ export interface Question {
   // Metadata
   status: 'draft' | 'published';
   version: number;
-  source: 'CollegeBoard' | 'textbook' | 'self';
+  source: string;
   sourceYear?: number;
   notes?: string;
 
@@ -96,6 +97,7 @@ export interface SubTopic {
   estimatedMinutes: number;
   hasLesson?: boolean;
   hasPractice?: boolean;
+  courseScope?: 'both' | 'ab_only' | 'bc_only';
 }
 
 export interface UnitTestConfig {
@@ -272,12 +274,13 @@ export interface SubTopicProgress {
 }
 
 export interface UserSectionProgress {
-  sectionId: string;
+  section_id: string;
   status: 'in_progress' | 'completed';
   data: any;
   score: number;
-  correctQuestions: number;
-  totalQuestions: number;
-  lastAccessedAt: string;
+  correct_questions: number;
+  total_questions: number;
+  last_accessed_at: string;
+  entity_type?: 'course' | 'unit' | 'section';
 }
 

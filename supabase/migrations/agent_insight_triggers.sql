@@ -209,11 +209,11 @@ BEGIN
         GREATEST(0, LEAST(100, 50 + v_delta)),
         100
     )
-    ON CONFLICT (user_id, subject) DO UPDATE SET
+    ON CONFLICT (user_id, topic_id) WHERE topic_id IS NOT NULL DO UPDATE SET
         mastery_score = GREATEST(0, LEAST(100, 
             topic_mastery.mastery_score + v_delta
         )),
-        topic_id = COALESCE(topic_mastery.topic_id, v_topic_id),
+        topic_id = COALESCE(topic_mastery.topic_id, excluded.topic_id),
         updated_at = NOW();
 
     RETURN NEW;

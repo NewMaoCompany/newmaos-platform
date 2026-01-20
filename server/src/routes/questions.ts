@@ -16,17 +16,42 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
                 question_skills(skill_id, role, weight),
                 question_error_patterns(error_tag_id)
             `)
-            .order('created_at', { ascending: false })
+            .order('created_at', { ascending: true })
             .limit(Number(limit));
 
         if (course) {
             query = query.or(`course.eq.${course},course.eq.Both`);
         }
-        if (topic) {
-            query = query.eq('topic', topic);
-        }
         if (subTopicId) {
             query = query.eq('sub_topic_id', subTopicId);
+        }
+
+        if (topic) {
+            // Check for cross-course shared topic
+            // Enhanced Logic for Unified ABBC Content
+            const topicStr = String(topic);
+            const isAb = topicStr.startsWith('AB_');
+            const isBc = topicStr.startsWith('BC_');
+            const isUnified = topicStr.startsWith('ABBC_');
+
+            if (isUnified) {
+                // If requesting ABBC_Limits, we want limits from AB OR BC OR ABBC
+                const base = topicStr.substring(5); // Remove ABBC_ prefix
+                // Search for: ABBC_Limits OR AB_Limits OR BC_Limits
+                // This covers all bases: new content (if labeled ABBC), and old content (AB/BC tags)
+                query = query.or(`topic.eq.${topicStr},topic.eq.AB_${base},topic.eq.BC_${base}`);
+            } else if (isAb || isBc) {
+                // Legacy: If explicitly asking for AB_Limits, try to find counterpart too if it's shared
+                // (Though simpler to just let frontend ask for ABBC now)
+                const base = topicStr.substring(3);
+                const counterpart = isAb ? `BC_${base}` : `AB_${base}`;
+                const unified = `ABBC_${base}`;
+
+                // Search: requested, counterpart (if shared), or Unified ID
+                query = query.or(`topic.eq.${topicStr},and(topic.eq.${counterpart},course.eq.Both),topic.eq.${unified}`);
+            } else {
+                query = query.eq('topic', topic);
+            }
         }
         if (difficulty) {
             query = query.eq('difficulty', Number(difficulty));
@@ -71,6 +96,7 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
                 correctOptionId: q.correct_option_id,
                 tolerance: q.tolerance,
                 explanation: q.explanation,
+                explanationType: q.explanation_type || (q.explanation && (q.explanation.startsWith('http') || q.explanation.startsWith('data:')) ? 'image' : 'text'),
                 microExplanations: q.micro_explanations,
                 recommendationReasons: q.recommendation_reasons,
 
@@ -298,8 +324,30 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
         if (prompt !== undefined) updates.prompt = prompt;
         if (promptType !== undefined) updates.prompt_type = promptType;
         if (latex !== undefined) updates.latex = latex;
-        if (options !== undefined) updates.options = options;
-        if (correctOptionId !== undefined) updates.correct_option_id = correctOptionId;
+        // Process options and map correct ID (same as POST)
+        let processedOptions = options;
+        if (options) {
+            processedOptions = options.map((opt: any, index: number) => ({
+                ...opt,
+                id: opt.id || `opt_${Date.now()}_${index}`
+            }));
+            updates.options = processedOptions;
+        }
+
+        if (correctOptionId !== undefined) {
+            let finalCorrectId = correctOptionId;
+            // If correctOptionId is a label (A/B/C/D) and we have options, find the matching ID
+            // If options were not updated in this request, we might need to fetch current ones, 
+            // but typically frontend sends both. For now, assuming if correctOptionId changes, options usually come with it or exist.
+            // If options IS passed, user processedOptions.
+            if (type === 'MCQ' && processedOptions) {
+                const matchingOpt = processedOptions.find((o: any) => o.label === correctOptionId);
+                if (matchingOpt) {
+                    finalCorrectId = matchingOpt.id;
+                }
+            }
+            updates.correct_option_id = finalCorrectId;
+        }
         if (tolerance !== undefined) updates.tolerance = tolerance;
         if (explanation !== undefined) updates.explanation = explanation;
         if (microExplanations !== undefined) updates.micro_explanations = microExplanations;

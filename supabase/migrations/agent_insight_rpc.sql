@@ -34,13 +34,6 @@ BEGIN
     FROM public.question_attempts
     WHERE user_id = v_user_id AND question_id = p_question_id;
 
-    -- Get latest question version
-    SELECT id INTO v_question_version_id
-    FROM public.question_versions
-    WHERE question_id = p_question_id
-    ORDER BY version DESC
-    LIMIT 1;
-
     -- Insert attempt (triggers will handle the rest)
     INSERT INTO public.question_attempts (
         user_id,
@@ -50,8 +43,7 @@ BEGIN
         answer_numeric,
         time_spent_seconds,
         attempt_no,
-        error_tags,
-        question_version_id
+        error_tags
     ) VALUES (
         v_user_id,
         p_question_id,
@@ -60,18 +52,21 @@ BEGIN
         p_answer_numeric,
         p_time_spent_seconds,
         v_attempt_no,
-        p_error_tags,
-        v_question_version_id
+        p_error_tags
     )
     RETURNING id INTO v_attempt_id;
 
-    -- Insert error tags into attempt_errors
-    FOREACH v_tag IN ARRAY p_error_tags
-    LOOP
-        INSERT INTO public.attempt_errors (attempt_id, error_tag_id)
-        VALUES (v_attempt_id, v_tag)
-        ON CONFLICT DO NOTHING;
-    END LOOP;
+    -- Insert error tags into attempt_errors safely (ignore if tag not found in master list)
+    IF p_error_tags IS NOT NULL THEN
+        FOREACH v_tag IN ARRAY p_error_tags
+        LOOP
+            INSERT INTO public.attempt_errors (attempt_id, error_tag_id)
+            SELECT v_attempt_id, id 
+            FROM public.error_tags 
+            WHERE id = v_tag
+            ON CONFLICT DO NOTHING;
+        END LOOP;
+    END IF;
 
     -- Return result
     RETURN jsonb_build_object(

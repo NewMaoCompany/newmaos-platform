@@ -20,7 +20,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 
         // 0. Check if user already exists in auth
         const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
-        const existingUser = users.find(u => u.email === email);
+        const existingUser = users.find((u: any) => u.email === email);
 
         if (existingUser) {
             if (existingUser.email_confirmed_at) {
@@ -262,7 +262,7 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
 
         // Get user name from auth
         const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
-        const found = users.find(u => u.email === email);
+        const found = users.find((u: any) => u.email === email);
         const userName = found?.user_metadata?.name || email.split('@')[0];
 
         const code = generateCode();
@@ -394,7 +394,7 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
 
         // 1. Check if user exists
         const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
-        const user = users.find(u => u.email === email);
+        const user = users.find((u: any) => u.email === email);
 
         if (!user) {
             res.status(404).json({ error: 'No account found with this email. Please sign up.' });
@@ -534,7 +534,7 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
 
         // 2. Get User ID
         const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
-        const user = users.find(u => u.email === email);
+        const user = users.find((u: any) => u.email === email);
         if (!user) {
             res.status(404).json({ error: 'User not found' });
             return;
@@ -679,7 +679,7 @@ router.post('/verify-change-email', async (req: Request, res: Response): Promise
 
         // 2. Check if email is already taken
         const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
-        const existing = users.find(u => u.email === email);
+        const existing = users.find((u: any) => u.email === email);
         if (existing) {
             res.status(400).json({ error: 'Email is already in use by another account.' });
             return;
@@ -718,7 +718,7 @@ router.post('/initiate-change-email', async (req: Request, res: Response): Promi
 
         // 1. Check if email is already taken
         const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
-        const existing = users.find(u => u.email === email);
+        const existing = users.find((u: any) => u.email === email);
         if (existing) {
             res.status(400).json({ error: 'This email is already associated with another account.' });
             return;

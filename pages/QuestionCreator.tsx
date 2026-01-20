@@ -2,12 +2,15 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useApp } from '../AppContext';
 import { useToast } from '../components/Toast';
 import { questionsApi, sectionsApi } from '../src/services/api';
+import { supabase } from '../src/services/supabaseClient';
+import { MathRenderer } from '../components/MathRenderer';
 import { Navbar } from '../components/Navbar';
 import { CustomSelect } from '../components/CustomSelect';
 import { CustomMultiSelect } from '../components/CustomMultiSelect';
+import { CreatableSelect } from '../components/CreatableSelect';
+import { CreatableMultiSelect } from '../components/CreatableMultiSelect';
 import { Question, CourseType, QuestionCourseType } from '../types';
 import { COURSE_TOPICS, SKILL_TAGS, ERROR_TAGS, COURSE_CONTENT_DATA } from '../constants';
-import { ImageCropModal } from '../components/ImageCropModal';
 
 // --- Types ---
 
@@ -18,6 +21,7 @@ interface FormOptionState {
     errorTagId?: string;
     type: 'text' | 'image';
     explanation: string;
+    explanationType: 'text' | 'image';
 }
 
 interface FormState extends Omit<Question, 'id' | 'options' | 'correctOptionId' | 'course'> {
@@ -31,7 +35,7 @@ interface FormState extends Omit<Question, 'id' | 'options' | 'correctOptionId' 
     promptType: 'text' | 'image';
 
     // Metadata
-    source: 'CollegeBoard' | 'textbook' | 'self';
+    source: string;
     sourceYear?: number;
     notes?: string;
     status: 'draft' | 'published';
@@ -101,10 +105,12 @@ const ToastNotification = ({ message, type = 'success', onClose }: { message: st
     );
 };
 
+// ... (skipping ImageUploader/Component updates, jumping to Logic in QuestionCreator)
+
 const ImageUploader = ({
     value,
     onChange,
-    placeholder = "Click to Upload Image",
+    placeholder = "Click or Drag to Upload Image",
     className = "",
     heightClass = "h-48"
 }: {
@@ -114,32 +120,36 @@ const ImageUploader = ({
     className?: string;
     heightClass?: string;
 }) => {
-    const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
-    const [isCropOpen, setIsCropOpen] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    // The following states are likely intended for a different component (e.g., QuestionCreator)
+    // but are placed here based on the provided instruction snippet's context.
+    // If this is incorrect, please provide the full context of the component where these states should reside.
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [promptPreview, setPromptPreview] = useState(false);
+    const [explanationPreview, setExplanationPreview] = useState(false);
+    const [optionPreviews, setOptionPreviews] = useState<Record<number, boolean>>({});
+    // const navigate = useNavigate(); // This line is commented out as useNavigate is not imported and likely belongs elsewhere.
 
-    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (e.target.files && e.target.files.length > 0) {
-            const reader = new FileReader();
-            reader.addEventListener('load', () => {
-                setCropImageSrc(reader.result as string);
-                setIsCropOpen(true);
-            });
-            reader.readAsDataURL(e.target.files[0]);
-            e.target.value = '';
+    // Parse value into array of URLs
+    const images: string[] = React.useMemo(() => {
+        if (!value) return [];
+        try {
+            const parsed = JSON.parse(value);
+            if (Array.isArray(parsed)) return parsed;
+            return [value];
+        } catch {
+            return [value];
         }
-    };
+    }, [value]);
 
-    const uploadImage = async (blob: Blob) => {
+    const uploadImages = async (files: File[]) => {
         setIsUploading(true);
         try {
             // Get auth token from Supabase session - prefer sb-* prefixed keys
             let token: string | null = null;
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
-                // Supabase stores tokens in keys like: sb-<project-ref>-auth-token
                 if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
                     try {
                         const session = localStorage.getItem(key);
@@ -160,29 +170,94 @@ const ImageUploader = ({
                 return;
             }
 
-            const formData = new FormData();
-            formData.append('image', blob, 'upload.jpg');
-            // VITE_API_URL already includes '/api'
-            const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
-            const res = await fetch(`${apiBase}/upload/image`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` },
-                body: formData
-            });
-            if (!res.ok) {
-                const errorData = await res.json().catch(() => ({ error: 'Upload failed' }));
-                throw new Error(errorData.error || 'Upload failed');
+            const uploadedUrls: string[] = [];
+
+            // Upload sequentially
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append('image', file, 'upload.jpg');
+                const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+
+                const res = await fetch(`${apiBase}/upload/image`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    console.error(`Failed to upload ${file.name}`);
+                    continue;
+                }
+                const data = await res.json();
+                uploadedUrls.push(data.url);
             }
-            const data = await res.json();
-            // Delay update to prevent render conflict
-            setTimeout(() => {
-                onChange(data.url);
-            }, 100);
+
+            if (uploadedUrls.length > 0) {
+                const newImages = [...images, ...uploadedUrls];
+                // Store as JSON if multiple or strict consistency desired
+                // Given existing single-string usage, we adapt:
+                if (newImages.length === 1) {
+                    onChange(newImages[0]);
+                } else {
+                    onChange(JSON.stringify(newImages));
+                }
+            }
+
         } catch (e) {
             console.error('Image upload failed:', e);
             alert('Image upload failed. Please try again.');
         } finally {
             setIsUploading(false);
+        }
+    };
+
+    const processFiles = (files: FileList | File[]) => {
+        const imageFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+        if (imageFiles.length === 0) return;
+        uploadImages(imageFiles);
+    };
+
+    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.target.files && e.target.files.length > 0) {
+            processFiles(e.target.files);
+            e.target.value = '';
+        }
+    };
+
+    // Drag and Drop Handlers
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            processFiles(e.dataTransfer.files);
+        }
+    };
+
+    const removeImage = (index: number) => {
+        const newImages = [...images];
+        newImages.splice(index, 1);
+        if (newImages.length === 0) {
+            onChange('');
+        } else if (newImages.length === 1) {
+            onChange(newImages[0]);
+        } else {
+            onChange(JSON.stringify(newImages));
         }
     };
 
@@ -195,42 +270,55 @@ const ImageUploader = ({
     };
 
     return (
-        <>
-            {value ? (
-                <div className={`relative group overflow-hidden rounded-xl border border-gray-200 bg-gray-50 ${className} ${heightClass}`}>
-                    <img src={value} alt="Uploaded" className="w-full h-full object-contain" />
-                    <button
-                        onClick={(e) => { e.stopPropagation(); onChange(''); }}
-                        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                        <span className="material-symbols-outlined text-sm">close</span>
-                    </button>
+        <div className={`flex flex-col gap-2 ${className}`}>
+            {/* Image Grid */}
+            {images.length > 0 && (
+                <div className={`grid grid-cols-2 sm:grid-cols-3 gap-2 mb-2`}>
+                    {images.map((url, idx) => (
+                        <div key={idx} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
+                            <img src={url} alt={`Uploaded ${idx}`} className="w-full h-full object-cover" />
+                            <button
+                                onClick={(e) => { e.stopPropagation(); removeImage(idx); }}
+                                className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                                <span className="material-symbols-outlined text-[10px]">close</span>
+                            </button>
+                        </div>
+                    ))}
                 </div>
-            ) : (
-                <>
-                    <div
-                        onClick={handleClick}
-                        className={`flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors text-gray-400 ${className} ${heightClass}`}
-                    >
-                        {isUploading ? <span className="material-symbols-outlined animate-spin">progress_activity</span> : <span className="material-symbols-outlined text-2xl">add_photo_alternate</span>}
-                        <span className="text-xs font-bold uppercase mt-2">{placeholder}</span>
-                    </div>
-                    <input
-                        ref={fileInputRef}
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleFile}
-                    />
-                </>
             )}
-            <ImageCropModal
-                src={cropImageSrc}
-                isOpen={isCropOpen}
-                onClose={() => { setIsCropOpen(false); setCropImageSrc(null); }}
-                onComplete={(blob) => { setIsCropOpen(false); setCropImageSrc(null); uploadImage(blob); }}
+
+            {/* Drop Zone */}
+            <div
+                onClick={handleClick}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 text-gray-400 ${isDragging
+                    ? 'border-yellow-400 bg-yellow-50 scale-[1.02] shadow-sm'
+                    : 'border-gray-200 hover:bg-gray-50'
+                    } ${heightClass}`}
+            >
+                {isUploading ? (
+                    <span className="material-symbols-outlined animate-spin text-yellow-500">progress_activity</span>
+                ) : (
+                    <span className={`material-symbols-outlined text-2xl transition-colors ${isDragging ? 'text-yellow-500' : ''}`}>
+                        {isDragging ? 'upload_file' : 'add_photo_alternate'}
+                    </span>
+                )}
+                <span className={`text-xs font-bold uppercase mt-2 transition-colors ${isDragging ? 'text-yellow-600' : ''}`}>
+                    {isDragging ? 'Drop Images Here' : (images.length > 0 ? "Add More Images" : placeholder)}
+                </span>
+            </div>
+            <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                accept="image/*"
+                multiple
+                onChange={handleFile}
             />
-        </>
+        </div>
     );
 };
 
@@ -359,7 +447,7 @@ const NavigationSidebar = ({
                                 <span className={`material-symbols-outlined text-[14px] text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`}>chevron_right</span>
                             </button>
 
-                            {isExpanded && content?.subTopics && (
+                            {isExpanded && (
                                 <div className="mt-1 ml-4 pl-2 border-l-2 border-gray-100 space-y-1">
                                     {/* Unit Test */}
                                     <button
@@ -424,30 +512,74 @@ const QuestionListSidebar = ({
     activeQuestionId?: string;
 }) => {
     const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+    const [draggingId, setDraggingId] = useState<string | null>(null);
+    const [localOrder, setLocalOrder] = useState<string[]>([]);
 
     const filtered = useMemo(() => {
-        if (!selectedSubTopicId) {
-            // Show all questions for the Topic (Unit)
-            // Handle both 'AB_Limits' format and 'Limits' format
-            const topicBase = selectedTopicId.includes('_') ? selectedTopicId.split('_')[1] : selectedTopicId;
-            return questions.filter(q =>
-                q.topic === selectedTopicId ||
-                q.topic === topicBase ||
-                (q as any).topicId === selectedTopicId
-            );
-        }
-        // Match both sectionId (new) and legacy subTopicId binding
-        // Also ensure the topic matches for proper filtering
-        const topicBase = selectedTopicId.includes('_') ? selectedTopicId.split('_')[1] : selectedTopicId;
-        return questions.filter(q =>
-            (q.sectionId === selectedSubTopicId || q.subTopicId === selectedSubTopicId) &&
-            (q.topic === selectedTopicId || q.topic === topicBase || (q as any).topicId === selectedTopicId)
-        );
+        // Helper to strip course prefix (AB_, BC_, Both_, or ABBC_)
+        const getBase = (id: string) => id.replace(/^(AB_|BC_|Both_|ABBC_)/, '');
+        const selectedBase = getBase(selectedTopicId);
+
+        return questions.filter(q => {
+            // 1. Check Topic Match
+            // Exact match OR Base match if question is shared
+            const qBase = getBase(q.topic);
+            const isTopicMatch = q.topic === selectedTopicId ||
+                (q.course === 'Both' && qBase === selectedBase) ||
+                (q as any).topicId === selectedTopicId; // Legacy fallback
+
+            if (!isTopicMatch) return false;
+
+            // 2. Check SubTopic Match (if selected)
+            if (selectedSubTopicId) {
+                // Special handling for Unit Tests which might have prefixes in DB (e.g. ABBC_Limits_unit_test)
+                if (selectedSubTopicId === 'unit_test') {
+                    return q.sectionId === 'unit_test' || q.sectionId?.endsWith('_unit_test') ||
+                        q.subTopicId === 'unit_test' || q.subTopicId?.endsWith('_unit_test');
+                }
+                return q.sectionId === selectedSubTopicId || q.subTopicId === selectedSubTopicId;
+            }
+
+            return true;
+        });
     }, [questions, selectedSubTopicId, selectedTopicId]);
 
+    // Load order from local storage
+    useEffect(() => {
+        const key = `q_order_${selectedTopicId}_${selectedSubTopicId || 'all'}`;
+        try {
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                setLocalOrder(JSON.parse(saved));
+            } else {
+                setLocalOrder([]);
+            }
+        } catch (e) {
+            console.error("Failed to load order", e);
+        }
+    }, [selectedTopicId, selectedSubTopicId]);
+
+    // Compute display questions
+    const displayQuestions = useMemo(() => {
+        if (localOrder.length === 0) return filtered;
+
+        const orderMap = new Map<string, number>(localOrder.map((id, i) => [id, i]));
+
+        // Items in order array are sorted by index
+        // Items NOT in order array (new ones) are appended at the end (idx = Infinity)
+        // or we can fallback to filtered order for them
+        return [...filtered].sort((a, b) => {
+            const idxA = orderMap.has(a.id) ? orderMap.get(a.id)! : 9999999;
+            const idxB = orderMap.has(b.id) ? orderMap.get(b.id)! : 9999999;
+
+            if (idxA === idxB) return 0; // Maintain relative order if both new
+            return idxA - idxB;
+        });
+    }, [filtered, localOrder]);
+
     const handleDeleteClick = (e: React.MouseEvent, qId: string) => {
-        e.stopPropagation(); // Prevent selecting the question
-        setDeleteTargetId(qId); // Open modal
+        e.stopPropagation();
+        setDeleteTargetId(qId);
     };
 
     const handleConfirmDelete = () => {
@@ -455,6 +587,44 @@ const QuestionListSidebar = ({
             onDeleteQuestion(deleteTargetId);
             setDeleteTargetId(null);
         }
+    };
+
+    // Drag Handlers
+    const handleDragStart = (e: React.DragEvent, id: string) => {
+        e.dataTransfer.effectAllowed = "move";
+        setDraggingId(id);
+        // Ghost image customization if needed
+    };
+
+    const handleDragOver = (e: React.DragEvent, targetId: string) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+
+        if (!draggingId || draggingId === targetId) return;
+
+        // Reorder locally for visual feedback
+        const currentList = displayQuestions.map(q => q.id);
+        const fromIndex = currentList.indexOf(draggingId);
+        const toIndex = currentList.indexOf(targetId);
+
+        if (fromIndex === -1 || toIndex === -1) return;
+
+        const newList = [...currentList];
+        newList.splice(fromIndex, 1);
+        newList.splice(toIndex, 0, draggingId);
+
+        setLocalOrder(newList);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        setDraggingId(null);
+
+        // Save to LocalStorage
+        const key = `q_order_${selectedTopicId}_${selectedSubTopicId || 'all'}`;
+        // Ensure we save the specific current order of ALL filtered IDs
+        const currentOrderIds = displayQuestions.map(q => q.id);
+        localStorage.setItem(key, JSON.stringify(currentOrderIds));
     };
 
     return (
@@ -492,29 +662,38 @@ const QuestionListSidebar = ({
 
             <div className="w-80 border-r border-gray-200 h-full bg-white flex flex-col flex-shrink-0">
                 <div className="p-4 border-b border-gray-100">
-                    <p className="text-[12px] font-bold text-gray-900 mb-2">Questions</p>
+                    <p className="text-[12px] font-bold text-gray-900 mb-2">Questions ({displayQuestions.length})</p>
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-2 top-2 text-gray-400 text-sm">search</span>
                         <input
                             type="text"
-                            placeholder="Deep search prompts, content..."
+                            placeholder="Deep search..."
                             className="w-full pl-8 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs outline-none focus:border-yellow-400 transition-all"
                         />
                     </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-3 pb-20 space-y-3 bg-gray-50/50">
-                    {filtered.map(q => {
+                    {displayQuestions.map((q, index) => {
                         const isActive = activeQuestionId === q.id;
+                        const isDragging = draggingId === q.id;
+
                         return (
                             <div
                                 key={q.id}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, q.id)}
+                                onDragOver={(e) => handleDragOver(e, q.id)}
+                                onDrop={handleDrop}
                                 onClick={() => onSelectQuestion(q)}
                                 className={`p-3 rounded-xl border cursor-pointer transition-all group relative ${isActive
                                     ? 'bg-white border-yellow-400 shadow-md ring-1 ring-yellow-400/20'
                                     : 'bg-white border-gray-100 shadow-sm hover:border-gray-300'
-                                    }`}
+                                    } ${isDragging ? 'opacity-50 scale-95' : ''}`}
                             >
+                                {/* Drag Handle Hint (Optional, handled by whole card) */}
+                                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-gray-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
                                 {/* Delete Button */}
                                 <button
                                     onClick={(e) => handleDeleteClick(e, q.id)}
@@ -547,7 +726,7 @@ const QuestionListSidebar = ({
                         );
                     })}
 
-                    {filtered.length === 0 && selectedSubTopicId && (
+                    {displayQuestions.length === 0 && selectedSubTopicId && (
                         <div className="text-center py-10 text-gray-400 text-xs">
                             No questions in this section yet.
                         </div>
@@ -567,7 +746,7 @@ export const QuestionCreator = () => {
 
     // -- State --
     const [activeCourse, setActiveCourse] = useState<CourseType>('AB');
-    const [selectedTopicId, setSelectedTopicId] = useState<string>('AB_Limits'); // Default
+    const [selectedTopicId, setSelectedTopicId] = useState<string>('ABBC_Limits'); // Default Unified ID
     const [selectedSubTopicId, setSelectedSubTopicId] = useState<string | null>('1.1');   // Default
 
     const [viewMode, setViewMode] = useState<'settings' | 'editor'>('settings');
@@ -589,10 +768,10 @@ export const QuestionCreator = () => {
         prompt: '',
         latex: '',
         options: [
-            { label: 'A', value: '', type: 'image', explanation: '' },
-            { label: 'B', value: '', type: 'image', explanation: '' },
-            { label: 'C', value: '', type: 'image', explanation: '' },
-            { label: 'D', value: '', type: 'image', explanation: '' }
+            { label: 'A', value: '', type: 'image', explanation: '', explanationType: 'image' },
+            { label: 'B', value: '', type: 'image', explanation: '', explanationType: 'image' },
+            { label: 'C', value: '', type: 'image', explanation: '', explanationType: 'image' },
+            { label: 'D', value: '', type: 'image', explanation: '', explanationType: 'image' }
         ],
         correctOptionLabel: 'A',
         explanation: '',
@@ -603,14 +782,19 @@ export const QuestionCreator = () => {
         source: 'self',
         status: 'published',
         version: 1,
-        weightPrimary: 1.0,
-        weightSupporting: 0.5,
-        explanationType: 'text',
+        weightPrimary: 0.8,
+        weightSupporting: 0.2,
+        explanationType: 'image',
         errorPatternIds: []
     }), [selectedSubTopicId, selectedTopicId]);
 
     const [formData, setFormData] = useState<FormState>(defaultForm);
     const [isSaving, setIsSaving] = useState(false);
+
+    // Preview States
+    const [promptPreview, setPromptPreview] = useState(false);
+    const [explanationPreview, setExplanationPreview] = useState(false);
+    const [optionPreviews, setOptionPreviews] = useState<Record<number, boolean>>({});
 
     // Chapter Settings State
     const [sectionSettings, setSectionSettings] = useState<any>(null);
@@ -659,8 +843,8 @@ export const QuestionCreator = () => {
                 return;
             }
 
-            const staticSec = unit?.subTopics?.find((s: any) => s.id === selectedSubTopicId) ||
-                (selectedSubTopicId === 'unit_test' ? unit?.unitTest : null);
+            const staticSec = (unit?.subTopics?.find((s: any) => s.id === selectedSubTopicId) ||
+                (selectedSubTopicId === 'unit_test' ? unit?.unitTest : null)) as any;
 
             setSectionSettings({
                 id: selectedSubTopicId,
@@ -693,9 +877,14 @@ export const QuestionCreator = () => {
     };
 
     const handleSelectQuestion = (q: Question) => {
+        // Derive correct label from ID
+        const correctOpt = q.options.find(o => o.id === q.correctOptionId);
+        const derivedLabel = correctOpt ? correctOpt.label : 'A';
+
         setFormData({
             ...defaultForm,
             ...q,
+            correctOptionLabel: derivedLabel,
             // Map legacy fields
             options: q.options.map((o: any) => ({ ...o, type: o.type || 'text', explanation: o.explanation || '' }))
         });
@@ -707,27 +896,141 @@ export const QuestionCreator = () => {
         setViewMode('editor');
     };
 
+    // --- Dynamic Skills & Error Tags ---
+    const [fetchedSkills, setFetchedSkills] = useState<{ label: string, value: string }[]>([]);
+    const [fetchedErrors, setFetchedErrors] = useState<{ label: string, value: string }[]>([]);
+    const [isResetting, setIsResetting] = useState(false);
+
+    useEffect(() => {
+        const fetchMetadata = async () => {
+            // Fetch Skills
+            const { data: skillsData } = await supabase.from('skills').select('id, name');
+            if (skillsData) {
+                const mapped = skillsData.map(s => ({ label: s.name, value: s.id }));
+                setFetchedSkills(mapped);
+            } else {
+                // Fallback to constants if DB empty? 
+                // User wants to CLEAR DB, so if empty, show empty.
+                // But initially might be empty.
+                // We merge constants if we want, but let's stick to DB as source of truth if connected.
+                if (SKILL_TAGS.length > 0 && (!skillsData || skillsData.length === 0)) {
+                    // map constants effectively? No, keep it clean.
+                }
+            }
+            // Fetch Errors
+            const { data: errorsData } = await supabase.from('error_tags').select('id, name');
+            if (errorsData) {
+                setFetchedErrors(errorsData.map(e => ({ label: e.name, value: e.id })));
+            }
+        };
+        fetchMetadata();
+    }, [isResetting]); // Refetch when resetting
+
+    const handleCreateSkill = async (name: string): Promise<string | null> => {
+        const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        const unit = selectedTopicId || 'General';
+
+        // Optimistic update
+        const newOpt = { label: name, value: id };
+        setFetchedSkills(prev => [...prev, newOpt]);
+
+        const { error } = await supabase.from('skills').insert({ id, name, unit }).select().single();
+        if (error) {
+            // If conflict (exists), return the ID.
+            if (error.code === '23505') return id;
+            showToast(`Failed to create skill: ${error.message}`, 'error');
+            setFetchedSkills(prev => prev.filter(p => p.value !== id)); // Revert
+            return null;
+        }
+        return id;
+    };
+
+    const handleCreateError = async (name: string): Promise<string | null> => {
+        const id = 'ERR_' + name.toUpperCase().replace(/[^A-Z0-9]/g, '_').substring(0, 20);
+
+        const newOpt = { label: name, value: id };
+        setFetchedErrors(prev => [...prev, newOpt]);
+
+        const { error } = await supabase.from('error_tags').insert({ id, name }).select().single();
+        if (error) {
+            if (error.code === '23505') return id;
+            showToast(`Failed to create error tag: ${error.message}`, 'error');
+            setFetchedErrors(prev => prev.filter(p => p.value !== id));
+            return null;
+        }
+        return id;
+    };
+
+    const handleDeleteSkillValue = async (id: string): Promise<void> => {
+        const { error } = await supabase.from('skills').delete().eq('id', id);
+        if (error) {
+            showToast(`Failed to delete skill: ${error.message}`, 'error');
+            throw error;
+        }
+        setFetchedSkills(prev => prev.filter(s => s.value !== id));
+    };
+
+    const handleDeleteErrorValue = async (id: string): Promise<void> => {
+        const { error } = await supabase.from('error_tags').delete().eq('id', id);
+        if (error) {
+            showToast(`Failed to delete error tag: ${error.message}`, 'error');
+            throw error;
+        }
+        setFetchedErrors(prev => prev.filter(e => e.value !== id));
+    };
+
+    const handleDeleteAllMetadata = async () => {
+        if (!window.confirm("ARE YOU SURE? This will DELETE ALL SKILLS and ERROR TAGS from the database immediately. This cannot be undone.")) return;
+
+        setIsResetting(true);
+        try {
+            await supabase.from('question_skills').delete().neq('question_id', '00000000-0000-0000-0000-000000000000');
+            await supabase.from('question_error_patterns').delete().neq('question_id', '00000000-0000-0000-0000-000000000000');
+            await supabase.from('user_skill_mastery').delete().neq('user_id', '00000000-0000-0000-0000-000000000000');
+            await supabase.from('skills').delete().neq('id', '_');
+            await supabase.from('error_tags').delete().neq('id', '_');
+
+            showToast("All metadata deleted successfully from Supabase.", "success");
+            setFetchedSkills([]);
+            setFetchedErrors([]);
+        } catch (e: any) {
+            console.error(e);
+            showToast(`Delete failed: ${e.message}`, 'error');
+        } finally {
+            setIsResetting(false);
+        }
+    };
+
     const handleSaveQuestion = async () => {
         // Validation for required fields
         const errors: string[] = [];
 
-        if (!formData.title?.trim()) errors.push('Question Name');
-        if (!formData.prompt?.trim()) errors.push('Question Prompt');
+        // DRAFTING MODE: Minimal validation
+        if (formData.status === 'draft') {
+            if (!formData.title?.trim()) errors.push('Question Name');
+        } else {
+            // PUBLISHED MODE: Full Validation
+            if (!formData.title?.trim()) errors.push('Question Name');
+            if (!selectedTopicId) errors.push('Topic (Unit)');
+            if (!selectedSubTopicId) errors.push('Chapter (Section)');
+            if (!formData.primarySkillId) errors.push('Primary Skill');
+            if (!formData.prompt?.trim()) errors.push('Question Prompt');
 
-        if (formData.type === 'MCQ') {
-            // Check that at least the correct option has content
-            const correctOpt = formData.options.find(o => o.label === formData.correctOptionLabel);
-            if (!correctOpt?.value?.trim()) errors.push('Correct Answer Option (Option ' + formData.correctOptionLabel + ')');
+            if (formData.type === 'MCQ') {
+                // Check that at least the correct option has content
+                const correctOpt = formData.options.find(o => o.label === formData.correctOptionLabel);
+                if (!correctOpt?.value?.trim()) errors.push('Correct Answer Option (Option ' + formData.correctOptionLabel + ')');
 
-            // Check explanations for all options with content
-            formData.options.forEach(opt => {
-                if (opt.value?.trim() && !opt.explanation?.trim()) {
-                    errors.push(`Explanation for Option ${opt.label}`);
-                }
-            });
+                // Check explanations for all options with content
+                formData.options.forEach(opt => {
+                    if (opt.value?.trim() && !opt.explanation?.trim()) {
+                        errors.push(`Explanation for Option ${opt.label}`);
+                    }
+                });
+            }
+
+            if (!formData.explanation?.trim()) errors.push('General Explanation / Solution');
         }
-
-        if (!formData.explanation?.trim()) errors.push('General Explanation / Solution');
 
         if (errors.length > 0) {
             showToast(`Missing required fields: ${errors.join(', ')}`, 'error');
@@ -736,19 +1039,29 @@ export const QuestionCreator = () => {
 
         setIsSaving(true);
         try {
+            // Dynamic Topic ID Calculation to handle shared/course-specific topics
+            // 1. Get base topic (e.g. 'Limits' from 'AB_Limits')
+            const baseTopicId = selectedTopicId.replace(/^(AB_|BC_|Both_)/, '');
+            // 2. Determine correct prefix based on chosen course
+            let prefix = 'AB_';
+            if (formData.course === 'BC') prefix = 'BC_';
+            else if (formData.course === 'Both') prefix = 'Both_';
+
+            const calculatedTopicId = `${prefix}${baseTopicId}`;
+
             const payload = {
                 ...formData,
                 // Ensure correct topic identifiers for filtering
-                topic: selectedTopicId,       // Use the unit ID (e.g. 'AB_Limits')
-                topicId: selectedTopicId,     // Redundant but explicit
+                topic: calculatedTopicId,       // e.g. 'Both_Limits' if course is Both
+                topicId: calculatedTopicId,     // Redundant but explicit
                 subTopicId: selectedSubTopicId,
                 sectionId: selectedSubTopicId,
                 correctOptionId: formData.correctOptionLabel, // Simplify for now
                 // Ensure numeric types
-                difficulty: Number(formData.difficulty),
+                difficulty: Number(formData.difficulty) as unknown as 1 | 2 | 3 | 4 | 5,
                 targetTimeSeconds: Number(formData.targetTimeSeconds),
-                weightPrimary: Number(formData.weightPrimary),
-                weightSupporting: Number(formData.weightSupporting),
+                weightPrimary: Number(formData.weightPrimary) || 1.0,
+                weightSupporting: Number(formData.weightSupporting) || 0.5,
                 sourceYear: formData.sourceYear ? Number(formData.sourceYear) : undefined
             } as any;
 
@@ -766,9 +1079,10 @@ export const QuestionCreator = () => {
             // IMMEDIATE UPDATE: Fetch questions so the sidebar list updates instantly
             await fetchQuestions();
             fetchSections(); // Refresh counts
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            showToast('Failed to save question. Please check your connection and try again.', 'error');
+            const msg = e.response?.data?.error || e.message || 'Failed to save question.';
+            showToast(msg, 'error');
         } finally {
             setIsSaving(false);
         }
@@ -945,13 +1259,9 @@ export const QuestionCreator = () => {
                                 {sectionSettings.type !== 'UNIT' && (
                                     <div className="grid grid-cols-2 gap-8">
                                         <div>
-                                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Estimated Time (Min)</label>
-                                            <input
-                                                type="number"
-                                                value={sectionSettings.estimated_minutes}
-                                                onChange={e => setSectionSettings({ ...sectionSettings, estimated_minutes: e.target.value })}
-                                                className="w-full p-4 bg-white border-2 border-yellow-400 rounded-xl font-bold text-lg focus:outline-none"
-                                            />
+                                            {/* Estimated Time Removed per User Request (Now calculated dynamically) */}
+                                            {/* <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Estimated Time (Min)</label>
+                                            <input ... /> */}
                                         </div>
                                         <div>
                                             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Availability (Check to Enable)</label>
@@ -1067,7 +1377,18 @@ export const QuestionCreator = () => {
 
                             {/* Metadata Grid */}
                             <div className="mb-8">
-                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Classification & Metadata</h3>
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Classification & Metadata</h3>
+
+                                    {/* RESET BUTTON for User Request */}
+                                    <button
+                                        onClick={handleDeleteAllMetadata}
+                                        className="text-[10px] text-red-400 hover:text-red-600 underline font-medium"
+                                        title="Clears all Skills and Error Tags from DB"
+                                    >
+                                        [DEV] Clear Supabase Metadata
+                                    </button>
+                                </div>
 
                                 {/* Row 1: Name & Status */}
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -1129,9 +1450,25 @@ export const QuestionCreator = () => {
                                         <CustomSelect
                                             label="Difficulty Level"
                                             value={formData.difficulty}
-                                            onChange={(val) => setFormData({ ...formData, difficulty: Number(val) })}
+                                            onChange={(val) => setFormData({ ...formData, difficulty: Number(val) as import('../types').DifficultyLevel })}
                                             options={DIFFICULTY_OPTIONS}
                                             icon="signal_cellular_alt"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Row 3.5: Estimated Time (New per User Request) */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Estimated Time (Min)</label>
+                                        <input
+                                            type="number"
+                                            step="0.5"
+                                            min="0.5"
+                                            value={(formData.targetTimeSeconds || 120) / 60}
+                                            onChange={e => setFormData({ ...formData, targetTimeSeconds: parseFloat(e.target.value) * 60 })}
+                                            className="w-full p-4 bg-white border border-gray-200 rounded-xl text-sm font-bold outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all"
+                                            placeholder="e.g. 2"
                                         />
                                     </div>
                                 </div>
@@ -1145,11 +1482,13 @@ export const QuestionCreator = () => {
                                         </div>
                                         <div className="flex gap-2">
                                             <div className="relative flex-1">
-                                                <CustomSelect
-                                                    placeholder="Select Primary Skill..."
+                                                <CreatableSelect
+                                                    placeholder="Select or Create Primary Skill..."
                                                     value={formData.primarySkillId}
                                                     onChange={val => setFormData({ ...formData, primarySkillId: val })}
-                                                    options={SKILL_TAGS.map(s => ({ label: s.label, value: s.id }))}
+                                                    onCreate={handleCreateSkill}
+                                                    onDeleteOption={handleDeleteSkillValue}
+                                                    options={fetchedSkills}
                                                 />
                                             </div>
                                             <input
@@ -1170,24 +1509,24 @@ export const QuestionCreator = () => {
                                         </div>
                                         <div className="flex gap-2">
                                             <div className="relative flex-1">
-                                                <CustomMultiSelect
-                                                    placeholder="Select Supporting Skills..."
+                                                <CreatableMultiSelect
+                                                    placeholder="Select or Create Supporting Skills..."
                                                     value={formData.supportingSkillIds}
                                                     onChange={val => setFormData({ ...formData, supportingSkillIds: val })}
-                                                    options={SKILL_TAGS.map(s => ({ label: s.label, value: s.id }))}
+                                                    onCreate={handleCreateSkill}
+                                                    onDeleteOption={handleDeleteSkillValue}
+                                                    options={fetchedSkills}
                                                 />
                                             </div>
-                                            <div className="flex flex-col justify-start">
-                                                <input
-                                                    type="number"
-                                                    step="0.1"
-                                                    min="0"
-                                                    max="1"
-                                                    value={formData.weightSupporting || 0.5}
-                                                    onChange={e => setFormData({ ...formData, weightSupporting: parseFloat(e.target.value) })}
-                                                    className="w-20 p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-center outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400"
-                                                />
-                                            </div>
+                                            <input
+                                                type="number"
+                                                step="0.1"
+                                                min="0"
+                                                max="1"
+                                                value={formData.weightSupporting}
+                                                onChange={e => setFormData({ ...formData, weightSupporting: parseFloat(e.target.value) })}
+                                                className="w-20 p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-center outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -1216,8 +1555,8 @@ export const QuestionCreator = () => {
                                         <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Source</label>
                                         <input
                                             type="text"
-                                            value={formData.source || 'self'}
-                                            onChange={e => setFormData({ ...formData, source: e.target.value as any })}
+                                            value={formData.source || ''}
+                                            onChange={e => setFormData({ ...formData, source: e.target.value })}
                                             placeholder="e.g. Textbook, Past Paper, Self"
                                             className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all"
                                         />
@@ -1225,11 +1564,13 @@ export const QuestionCreator = () => {
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Common Error Patterns</label>
                                         <div className="relative">
-                                            <CustomMultiSelect
-                                                placeholder="Select Error Patterns..."
+                                            <CreatableMultiSelect
+                                                placeholder="Select or Create Error Patterns..."
                                                 value={formData.errorPatternIds || []}
                                                 onChange={val => setFormData({ ...formData, errorPatternIds: val })}
-                                                options={ERROR_TAGS.map(t => ({ label: t.label, value: t.id }))}
+                                                onCreate={handleCreateError}
+                                                onDeleteOption={handleDeleteErrorValue}
+                                                options={fetchedErrors}
                                             />
                                         </div>
                                     </div>
@@ -1251,7 +1592,7 @@ export const QuestionCreator = () => {
                             <div className="mb-8">
                                 <div className="flex justify-between mb-2">
                                     <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Question Prompt (Text / Image) <span className="text-red-500">*</span></h3>
-                                    <div className="flex bg-gray-100 p-1 rounded-lg">
+                                    <div className="flex bg-gray-100 p-1 rounded-lg gap-1">
                                         <button
                                             onClick={() => setFormData({ ...formData, promptType: 'text' })}
                                             className={`text-[10px] font-bold px-3 py-1.5 rounded-md transition-all ${formData.promptType === 'text' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-gray-700'}`}
@@ -1264,20 +1605,39 @@ export const QuestionCreator = () => {
                                         >
                                             Image
                                         </button>
+                                        {formData.promptType === 'text' && (
+                                            <>
+                                                <div className="w-px bg-gray-300 my-1 mx-1"></div>
+                                                <button
+                                                    onClick={() => setPromptPreview(!promptPreview)}
+                                                    className={`text-[10px] font-bold px-3 py-1.5 rounded-md transition-all flex items-center gap-1 ${promptPreview ? 'bg-black text-white' : 'text-gray-500 hover:text-gray-700'}`}
+                                                >
+                                                    <span className="material-symbols-outlined text-[14px]">{promptPreview ? 'visibility_off' : 'visibility'}</span>
+                                                    {promptPreview ? 'Edit' : 'Preview'}
+                                                </button>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                                 <div className={`
                                     bg-white border rounded-2xl p-1 shadow-sm overflow-hidden group transition-all
-                                    ${formData.promptType === 'text' ? 'focus-within:border-yellow-400 focus-within:ring-2 focus-within:ring-yellow-400' : ''}
+                                    ${formData.promptType === 'text' && !promptPreview ? 'focus-within:border-yellow-400 focus-within:ring-2 focus-within:ring-yellow-400' : ''}
                                     ${'border-gray-200 hover:border-gray-300'}
                                 `}>
                                     {formData.promptType === 'text' ? (
-                                        <textarea
-                                            value={formData.prompt}
-                                            onChange={e => setFormData({ ...formData, prompt: e.target.value })}
-                                            placeholder="Enter the question prompt here..."
-                                            className="w-full p-6 min-h-[160px] outline-none text-base font-medium text-text-main resize-none bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none placeholder:text-gray-400"
-                                        />
+                                        promptPreview ? (
+                                            <div className="p-6 min-h-[160px] cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => setPromptPreview(false)}>
+                                                <MathRenderer content={formData.prompt} />
+                                                <div className="mt-4 text-xs text-center text-gray-400 font-medium">Click to edit</div>
+                                            </div>
+                                        ) : (
+                                            <textarea
+                                                value={formData.prompt}
+                                                onChange={e => setFormData({ ...formData, prompt: e.target.value })}
+                                                placeholder="Enter the question prompt here... (Supports LaTeX: $x^2$ or $$x^2$$)"
+                                                className="w-full p-6 min-h-[160px] outline-none text-base font-medium text-text-main resize-none bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none placeholder:text-gray-400 font-mono"
+                                            />
+                                        )
                                     ) : (
                                         <div className="p-4">
                                             <ImageUploader value={formData.prompt} onChange={v => setFormData({ ...formData, prompt: v })} />
@@ -1311,21 +1671,43 @@ export const QuestionCreator = () => {
                                                                 <button onClick={() => {
                                                                     const ops = [...formData.options]; ops[idx].type = 'image'; setFormData({ ...formData, options: ops });
                                                                 }} className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${opt.type === 'image' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}>Image</button>
+
+                                                                {opt.type === 'text' && (
+                                                                    <>
+                                                                        <div className="w-px bg-gray-300 my-1 mx-1"></div>
+                                                                        <button
+                                                                            onClick={() => setOptionPreviews(prev => ({ ...prev, [idx]: !prev[idx] }))}
+                                                                            className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all flex items-center gap-1 ${optionPreviews[idx] ? 'bg-black text-white' : 'text-gray-400 hover:text-gray-600'}`}
+                                                                        >
+                                                                            <span className="material-symbols-outlined text-[14px]">{optionPreviews[idx] ? 'visibility_off' : 'visibility'}</span>
+                                                                            {optionPreviews[idx] ? 'Edit' : 'Preview'}
+                                                                        </button>
+                                                                    </>
+                                                                )}
                                                             </div>
                                                         </div>
 
                                                         {/* Option Input */}
                                                         {opt.type === 'text' ? (
-                                                            <input
-                                                                value={opt.value}
-                                                                onChange={e => {
-                                                                    const ops = [...formData.options];
-                                                                    ops[idx].value = e.target.value;
-                                                                    setFormData({ ...formData, options: ops });
-                                                                }}
-                                                                placeholder={`Enter Option ${opt.label} content...`}
-                                                                className="w-full p-4 bg-gray-50 rounded-xl text-base font-bold outline-none border border-transparent focus:bg-white focus:border-yellow-400 transition-all"
-                                                            />
+                                                            optionPreviews[idx] ? (
+                                                                <div
+                                                                    className="w-full p-4 bg-gray-50 rounded-xl border border-transparent hover:bg-white hover:border-gray-200 transition-all cursor-pointer min-h-[58px] flex items-center"
+                                                                    onClick={() => setOptionPreviews(prev => ({ ...prev, [idx]: false }))}
+                                                                >
+                                                                    <MathRenderer content={opt.value} />
+                                                                </div>
+                                                            ) : (
+                                                                <input
+                                                                    value={opt.value}
+                                                                    onChange={e => {
+                                                                        const ops = [...formData.options];
+                                                                        ops[idx].value = e.target.value;
+                                                                        setFormData({ ...formData, options: ops });
+                                                                    }}
+                                                                    placeholder={`Enter Option ${opt.label} content...`}
+                                                                    className="w-full p-4 bg-gray-50 rounded-xl text-base font-bold outline-none border border-transparent focus:bg-white focus:border-yellow-400 transition-all font-mono"
+                                                                />
+                                                            )
                                                         ) : (
                                                             <ImageUploader value={opt.value} onChange={v => {
                                                                 const ops = [...formData.options];
@@ -1335,18 +1717,43 @@ export const QuestionCreator = () => {
                                                         )}
 
                                                         {/* Explanation */}
+                                                        {/* Explanation */}
                                                         <div>
-                                                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Explanation (Why this option is correct/incorrect) <span className="text-red-500">*</span></label>
-                                                            <textarea
-                                                                value={opt.explanation || ''}
-                                                                onChange={e => {
-                                                                    const ops = [...formData.options];
-                                                                    ops[idx].explanation = e.target.value;
-                                                                    setFormData({ ...formData, options: ops });
-                                                                }}
-                                                                placeholder={`Explain why Option ${opt.label} is ${formData.correctOptionLabel === opt.label ? 'correct' : 'incorrect'}...`}
-                                                                className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all resize-y min-h-[80px]"
-                                                            />
+                                                            <div className="flex justify-between items-center mb-2">
+                                                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Explanation (Correct/Incorrect Reason) <span className="text-red-500">*</span></label>
+                                                                <InputTypeToggle
+                                                                    type={opt.explanationType || 'image'}
+                                                                    onChange={(t) => {
+                                                                        const ops = [...formData.options];
+                                                                        ops[idx].explanationType = t;
+                                                                        setFormData({ ...formData, options: ops });
+                                                                    }}
+                                                                />
+                                                            </div>
+
+                                                            {opt.explanationType === 'image' ? (
+                                                                <ImageUploader
+                                                                    value={opt.explanation || ''}
+                                                                    onChange={v => {
+                                                                        const ops = [...formData.options];
+                                                                        ops[idx].explanation = v;
+                                                                        setFormData({ ...formData, options: ops });
+                                                                    }}
+                                                                    heightClass="h-24"
+                                                                    placeholder="Upload Explanation Image"
+                                                                />
+                                                            ) : (
+                                                                <textarea
+                                                                    value={opt.explanation || ''}
+                                                                    onChange={e => {
+                                                                        const ops = [...formData.options];
+                                                                        ops[idx].explanation = e.target.value;
+                                                                        setFormData({ ...formData, options: ops });
+                                                                    }}
+                                                                    placeholder={`Explain why Option ${opt.label} is ${formData.correctOptionLabel === opt.label ? 'correct' : 'incorrect'}...`}
+                                                                    className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all resize-y min-h-[80px]"
+                                                                />
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1363,9 +1770,18 @@ export const QuestionCreator = () => {
                                         {formData.type === 'MCQ' ? 'General Solution / Logic' : 'Suggested Solution / Marking Guide'} <span className="text-red-500">*</span>
                                     </h3>
                                     <InputTypeToggle
-                                        type={formData.explanationType || 'text'}
+                                        type={formData.explanationType || 'image'}
                                         onChange={(type) => setFormData({ ...formData, explanationType: type })}
                                     />
+                                    {formData.explanationType === 'text' && (
+                                        <button
+                                            onClick={() => setExplanationPreview(!explanationPreview)}
+                                            className={`ml-2 text-[10px] font-bold px-3 py-1.5 rounded-md transition-all flex items-center gap-1 ${explanationPreview ? 'bg-black text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-700'}`}
+                                        >
+                                            <span className="material-symbols-outlined text-[14px]">{explanationPreview ? 'visibility_off' : 'visibility'}</span>
+                                            {explanationPreview ? 'Edit' : 'Preview'}
+                                        </button>
+                                    )}
                                 </div>
 
                                 {formData.explanationType === 'image' ? (
@@ -1377,14 +1793,21 @@ export const QuestionCreator = () => {
                                     />
                                 ) : (
                                     <div className="bg-white border border-gray-200 rounded-2xl p-1 shadow-sm overflow-hidden group hover:border-gray-300 transition-all focus-within:border-yellow-400 focus-within:ring-1 focus-within:ring-yellow-400">
-                                        <textarea
-                                            value={formData.explanation || ''}
-                                            onChange={e => setFormData({ ...formData, explanation: e.target.value })}
-                                            placeholder={formData.type === 'MCQ'
-                                                ? "Explain the overall logic for the correct answer..."
-                                                : "Provide the grading rubric, key points, or full solution..."}
-                                            className="w-full p-6 min-h-[120px] outline-none text-sm font-medium text-text-main resize-none bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none"
-                                        />
+                                        {explanationPreview ? (
+                                            <div className="p-6 min-h-[120px] cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => setExplanationPreview(false)}>
+                                                <MathRenderer content={formData.explanation || ''} block />
+                                                <div className="mt-4 text-xs text-center text-gray-400 font-medium">Click to edit</div>
+                                            </div>
+                                        ) : (
+                                            <textarea
+                                                value={formData.explanation || ''}
+                                                onChange={e => setFormData({ ...formData, explanation: e.target.value })}
+                                                placeholder={formData.type === 'MCQ'
+                                                    ? "Explain the overall logic for the correct answer..."
+                                                    : "Provide the grading rubric, key points, or full solution..."}
+                                                className="w-full p-6 min-h-[120px] outline-none text-sm font-medium text-text-main resize-none bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none font-mono"
+                                            />
+                                        )}
                                     </div>
                                 )}
                             </div>

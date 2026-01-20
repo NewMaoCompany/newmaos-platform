@@ -17,7 +17,7 @@ export const PracticeHub = () => {
 
     // Resolve Full Title if available in Unit Content (Using dynamic topicContent)
     const activeUnit = topicContent[recommendation.topic];
-    const displayTitle = activeUnit ? activeUnit.title : recommendation.topic;
+    const displayTitle = activeUnit ? activeUnit.title : (recommendation.topic || 'Select a Topic');
 
     // Resolve Background Icon based on topic string
     const getBackgroundIcon = (topic: string) => {
@@ -54,6 +54,12 @@ export const PracticeHub = () => {
 
         return 'calculate';
     };
+
+    // Use synchronous helper for instant status
+    const { getSectionStatus } = useApp();
+
+    // Async loading removed in favor of AppContext caching
+
 
     // Helper to map Topic ID to Radar Data Subject for progress
     const getTopicProgress = (id: string) => {
@@ -264,7 +270,14 @@ export const PracticeHub = () => {
                                 const staticContent = COURSE_CONTENT_DATA[topic.id] || { subTopics: [] };
 
                                 // Calculate Dynamic Counts
-                                const topicQuestions = questions.filter((q: Question) => q.topic === topic.id && (q.status === 'published' || !q.status));
+                                const topicQuestions = questions.filter((q: Question) => {
+                                    const qBase = q.topic.includes('_') ? q.topic.split('_')[1] : q.topic;
+                                    const tBase = topic.id.includes('_') ? topic.id.split('_')[1] : topic.id;
+
+                                    const isMatch = q.topic === topic.id || (q.course === 'Both' && qBase === tBase);
+                                    const isStatusValid = q.status === 'published' || !q.status;
+                                    return isMatch && isStatusValid;
+                                });
                                 const totalQuestions = topicQuestions.filter((q: Question) => !q.sectionId?.includes('unit_test')).length;
 
                                 // Count unique chapters (excluding 'unit_test' and 'overview' and 'undefined')
@@ -294,8 +307,20 @@ export const PracticeHub = () => {
                                     >
                                         <div>
                                             <div className="flex justify-between items-start mb-3">
-                                                <div className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 group-hover:bg-primary/20 group-hover:text-yellow-700 dark:group-hover:text-primary transition-colors">
-                                                    <span className="material-symbols-outlined">{getTopicIcon(topic.id)}</span>
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="p-2 w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 group-hover:bg-primary/20 group-hover:text-yellow-700 dark:group-hover:text-primary transition-colors">
+                                                        <span className="material-symbols-outlined">{getTopicIcon(topic.id)}</span>
+                                                    </div>
+                                                    {/* Unit Status Badge */}
+                                                    {/* Unit Status Badge */}
+                                                    {getSectionStatus(topic.id) !== 'not_started' && (
+                                                        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider w-fit
+                                                            ${getSectionStatus(topic.id) === 'in_progress'
+                                                                ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                                : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
+                                                            {getSectionStatus(topic.id) === 'in_progress' ? 'In Progress' : 'Completed'}
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <span className="text-xs font-bold bg-gray-100 dark:bg-white/10 px-2 py-1 rounded text-gray-500">
                                                     {/* Fallback to topic.subject from constants if context not ready, but usually content.title is best */}

@@ -1,0 +1,13 @@
+# Language & Communication
+- Always respond in Chinese.
+- Do not omit steps, logic, or important details.
+- If English content appears, translate to Chinese first.
+- All artifacts (implementation_plan.md, walkthrough.md, task.md) MUST be written in Chinese.
+
+# Collaboration Model
+- Agent's responsibility is to MODIFY CODE ONLY.
+- User is responsible for running the app and testing.
+- Agent must NOT spend time testing or verifying unless requested.
+
+# Supabase Access
+- Requires explicit user authorization per message.
