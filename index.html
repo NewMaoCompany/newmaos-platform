@@ -89,13 +89,14 @@
       /* Disable overscroll bounce/rubber-banding on all devices */
       overscroll-behavior: none;
       -webkit-overflow-scrolling: auto;
+      background-color: #1c1c1e;
+      /* Default to dark to avoid white flash/bars */
     }
 
     body {
       font-family: 'Inter', sans-serif;
       -webkit-font-smoothing: antialiased;
-      min-width: 1024px;
-      /* Force minimum desktop width */
+      /* Removed min-width to allow full responsiveness */
     }
 
     /* Ensure main content areas can scroll */
@@ -205,7 +206,7 @@
       overflow-y: auto !important;
       overscroll-behavior-y: none !important;
       -webkit-overflow-scrolling: auto !important;
-      touch-action: pan-y;
+      /* Removed touch-action: pan-y to allow horizontal swipe/scroll propogation */
       position: relative;
     }
 
