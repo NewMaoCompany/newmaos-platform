@@ -2033,7 +2033,7 @@ export const Practice = () => {
                 </div>
             )}
 
-            <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border-light dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 sm:px-6 lg:px-12 h-16 shrink-0">
+            <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border-light dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 sm:px-6 lg:px-12 pt-6 pb-2 shrink-0">
                 <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
                     <div className="size-8 flex items-center justify-center text-text-main dark:text-white bg-primary rounded-lg shrink-0">
                         <span className="material-symbols-outlined text-xl font-bold">functions</span>
