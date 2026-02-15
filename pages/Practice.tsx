@@ -1224,7 +1224,8 @@ export const Practice = () => {
     // --- Trackpad Swipe Navigation (Wheel Event) ---
     // Use ref to track sequential wheel events and implement debounce/threshold
     const lastWheelTime = useRef<number>(0);
-    const WHEEL_COOLDOWN = 500; // Time in ms to prevent rapid triggers
+    const wheelAccumulator = useRef<number>(0);
+    const WHEEL_COOLDOWN = 300; // Time in ms to prevent rapid triggers
 
     useEffect(() => {
         const handleWheel = (e: WheelEvent) => {
@@ -1243,55 +1244,43 @@ export const Practice = () => {
                 e.preventDefault();
 
                 const now = Date.now();
+                // Reset accumulator if cooldown period has passed since last effective trigger
                 if (now - lastWheelTime.current < WHEEL_COOLDOWN) {
-                    return; // Debounce
+                    wheelAccumulator.current = 0;
+                    return;
                 }
 
-                // Lower threshold slightly to be more responsive (was 10)
-                if (Math.abs(e.deltaX) > 5) {
-                    if (e.deltaX > 0) {
-                        // Two fingers move LEFT -> Scroll RIGHT -> DeltaX > 0 => NEXT Question
-                        if (!isSubmitted && currentQuestionIndex < questions.length - 1) {
-                            // Only allow forward if not submitted? Wait, original code allowed if isSubmitted OR not last
-                            // Original: if (isSubmitted || currentQuestionIndex < questions.length - 1)
-                            // My previous attempt logic was convoluted.
-                            // Let's simplified: Always allow Next if there is a next question
-                            // User can review questions freely.
-                            if (currentQuestionIndex < questions.length - 1) {
-                                setCurrentQuestionIndex(prev => prev + 1);
-                                lastWheelTime.current = now;
-                            }
-                        } else if (isSubmitted && currentQuestionIndex < questions.length - 1) {
-                            setCurrentQuestionIndex(prev => prev + 1);
-                            lastWheelTime.current = now;
-                        } else if (currentQuestionIndex < questions.length - 1) {
-                            // If NOT submitted, can we go next? Yes, usually.
-                            // Original logic: if (isSubmitted || currentQuestionIndex < questions.length - 1)
-                            // Wait, if current is last, we can't go next.
-                            // The logic was:
-                            // if (isSubmitted || currentQuestionIndex < questions.length - 1) {
-                            //    if (currentQuestionIndex < questions.length - 1) ...
-                            // }
+                // Accumulate deltaX for robust detection of slow/fast swipes
+                wheelAccumulator.current += e.deltaX;
 
-                            // Let's simplify:
+                // Detect swipe (Threshold 30px cumulative)
+                if (Math.abs(wheelAccumulator.current) > 30) {
+                    if (wheelAccumulator.current > 0) {
+                        // Swipe Left (Go Next)
+                        if (currentQuestionIndex < questions.length - 1) {
                             setCurrentQuestionIndex(prev => prev + 1);
                             lastWheelTime.current = now;
+                            wheelAccumulator.current = 0;
                         }
                     } else {
-                        // Two fingers move RIGHT -> Scroll LEFT -> DeltaX < 0 => PREV Question
+                        // Swipe Right (Go Prev)
                         if (currentQuestionIndex > 0) {
                             setCurrentQuestionIndex(prev => prev - 1);
                             lastWheelTime.current = now;
+                            wheelAccumulator.current = 0;
                         }
                     }
                 }
+            } else {
+                // Vertical scroll resets horizontal accumulator
+                wheelAccumulator.current = 0;
             }
         };
 
         // Passive: false is required to use preventDefault
         window.addEventListener('wheel', handleWheel, { passive: false });
         return () => window.removeEventListener('wheel', handleWheel);
-    }, [currentQuestionIndex, isSubmitted, questions.length, activeTool]);
+    }, [currentQuestionIndex, questions.length, activeTool]);
 
 
     // Show summary instead of immediate navigation
