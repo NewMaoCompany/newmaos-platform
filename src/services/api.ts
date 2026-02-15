@@ -3,9 +3,9 @@
  * Handles all communication with the backend server
  */
 
-// In production (when VITE_API_URL is not set), use relative /api path
-// This allows Vercel rewrites to route requests to api.newmaos.com
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// In production, force use of Railway backend to bypass broken Vercel env var or routing
+const API_BASE_URL = 'https://cheerful-patience-production-206d.up.railway.app/api';
+// const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Helper to get auth token from Supabase session
 const getAuthToken = (): string | null => {
