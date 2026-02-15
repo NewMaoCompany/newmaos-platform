@@ -243,7 +243,13 @@ export const Navbar = () => {
         </Link>
 
         {/* Central Navigation - Scrollable on mobile, Centered on desktop */}
-        <div className="flex-1 flex items-center justify-start sm:justify-center gap-2 lg:gap-3 overflow-x-auto no-scrollbar mx-2 sm:mx-4 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div
+          className="flex-1 flex items-center justify-start sm:justify-center gap-2 lg:gap-3 overflow-x-auto no-scrollbar mx-2 sm:mx-4 pl-2 pr-6 sm:px-0 [&::-webkit-scrollbar]:hidden"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}
+        >
           <Link
             to="/dashboard"
             className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
