@@ -1213,8 +1213,60 @@ export const Practice = () => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [currentQuestionIndex, isSubmitted, questions.length, handleNext, handleSkipToNext]);
 
+    // --- Trackpad Swipe Navigation (Wheel Event) ---
+    // Use ref to track sequential wheel events and implement debounce/threshold
+    const lastWheelTime = useRef<number>(0);
+    const WHEEL_COOLDOWN = 500; // Time in ms to prevent rapid triggers
+
+    useEffect(() => {
+        const handleWheel = (e: WheelEvent) => {
+            // Disable if any tool overlay is active
+            if (activeTool !== 'none') return;
+
+            // Check if scrolling math/code blocks
+            const target = e.target as HTMLElement;
+            if (target.closest('.font-math') || target.closest('.overflow-x-auto') || target.closest('.overflow-auto')) {
+                return;
+            }
+
+            // Check for horizontal scroll dominance
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                // If significant horizontal scroll, prevent browser defaults (history nav) and trigger our nav
+                if (Math.abs(e.deltaX) > 10) {
+                    e.preventDefault();
+
+                    const now = Date.now();
+                    if (now - lastWheelTime.current < WHEEL_COOLDOWN) {
+                        return; // Debounce
+                    }
+
+                    if (e.deltaX > 0) {
+                        // Two fingers move LEFT -> Scroll RIGHT -> DeltaX > 0 => NEXT Question
+                        if (isSubmitted || currentQuestionIndex < questions.length - 1) { // Allow nav if submitted or not last
+                            if (currentQuestionIndex < questions.length - 1) {
+                                setCurrentQuestionIndex(prev => prev + 1);
+                                lastWheelTime.current = now;
+                            }
+                        }
+                    } else {
+                        // Two fingers move RIGHT -> Scroll LEFT -> DeltaX < 0 => PREV Question
+                        if (currentQuestionIndex > 0) {
+                            setCurrentQuestionIndex(prev => prev - 1);
+                            lastWheelTime.current = now;
+                        }
+                    }
+                }
+            }
+        };
+
+        // Passive: false is required to use preventDefault
+        window.addEventListener('wheel', handleWheel, { passive: false });
+        return () => window.removeEventListener('wheel', handleWheel);
+    }, [currentQuestionIndex, isSubmitted, questions.length, activeTool]);
+
+
     // Show summary instead of immediate navigation
-    const finishSession = async (overrideCorrect?: number, overrideAnswers?: any, overrideResults?: any) => {
+    async function finishSession(overrideCorrect?: number, overrideAnswers?: any, overrideResults?: any) {
         // --- NEW: Skip progress persistence if in Summary mode ---
         if (sessionMode === 'Summary') {
             setShowSummary(true);
