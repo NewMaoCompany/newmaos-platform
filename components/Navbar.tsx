@@ -242,11 +242,11 @@ export const Navbar = () => {
           <h1 className="text-lg sm:text-xl font-bold tracking-tight text-text-main dark:text-white">NewMaoS</h1>
         </Link>
 
-        {/* Central Navigation - Always Desktop */}
-        <div className="flex items-center gap-2 lg:gap-3">
+        {/* Central Navigation - Scrollable on mobile, Centered on desktop */}
+        <div className="flex-1 flex items-center justify-start sm:justify-center gap-2 lg:gap-3 overflow-x-auto no-scrollbar mx-2 sm:mx-4 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <Link
             to="/dashboard"
-            className={`text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
+            className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
           >
             <span>Dashboard</span>
             {needsCheckin && (
@@ -255,11 +255,11 @@ export const Navbar = () => {
               </span>
             )}
           </Link>
-          <Link to="/practice" className={`text-sm font-medium px-4 py-1.5 rounded-lg transition-all ${isActive('/practice') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+          <Link to="/practice" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all whitespace-nowrap ${isActive('/practice') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
             Practice
           </Link>
           {isAuthenticated && isPro ? (
-            <Link to="/analysis" className={`text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+            <Link to="/analysis" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
               <span>Analysis</span>
               {analysisUnreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
@@ -269,10 +269,10 @@ export const Navbar = () => {
             </Link>
           ) : (
             <div
-              className="relative group cursor-pointer"
+              className="relative group cursor-pointer shrink-0"
               onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
             >
-              <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60">
+              <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
                 <span>Analysis</span>
                 <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
               </div>
@@ -283,7 +283,7 @@ export const Navbar = () => {
             </div>
           )}
           {isAuthenticated && isPro ? (
-            <Link to="/forum" className={`text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative ${isActive('/forum') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+            <Link to="/forum" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/forum') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
               <span>Forum</span>
               {totalUnreadChatCount > 0 && (
                 <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
@@ -293,10 +293,10 @@ export const Navbar = () => {
             </Link>
           ) : (
             <div
-              className="relative group cursor-pointer"
+              className="relative group cursor-pointer shrink-0"
               onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
             >
-              <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60">
+              <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
                 <span>Forum</span>
                 <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
               </div>
@@ -309,7 +309,7 @@ export const Navbar = () => {
           {isAuthenticated ? (
             <Link
               to="/settings"
-              className={`text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
+              className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
             >
               <span>Settings</span>
               {settingsHasUnread && (
@@ -319,8 +319,8 @@ export const Navbar = () => {
               )}
             </Link>
           ) : (
-            <div className="relative group">
-              <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 cursor-not-allowed opacity-60">
+            <div className="relative group shrink-0">
+              <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 cursor-not-allowed opacity-60 whitespace-nowrap">
                 <span>Settings</span>
                 <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
               </div>
