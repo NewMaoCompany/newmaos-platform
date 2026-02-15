@@ -798,6 +798,14 @@ export const Practice = () => {
         }
     }, [currentQuestionIndex, questions, userAnswers, questionResults]);
 
+    // Safety: Ensure index is within bounds if questions list changes (e.g. filter update)
+    useEffect(() => {
+        if (questions.length > 0 && currentQuestionIndex >= questions.length) {
+            console.warn('[Practice] Index out of bounds, resetting to 0');
+            setCurrentQuestionIndex(0);
+        }
+    }, [questions.length, currentQuestionIndex]);
+
     // Update viewing option when submitted
     useEffect(() => {
         if (isSubmitted && selectedAnswer) {
@@ -1799,7 +1807,8 @@ export const Practice = () => {
     // OPTIMIZED LOADING CONDTION:
     // If viewState is 'lesson', we allow rendering immediately (using sync subTopicData) even if session check is pending.
     // We only block for loading if we are in 'practice' mode (where questions/progress are critical).
-    if (viewState === 'practice' && (isLoadingQuestions || (questions.length === 0 && !showEmptyState))) {
+    const isQuestionMissing = questions.length > 0 && !question; // Safety check for out-of-bounds
+    if (viewState === 'practice' && (isLoadingQuestions || (questions.length === 0 && !showEmptyState) || isQuestionMissing)) {
         return (
             <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
