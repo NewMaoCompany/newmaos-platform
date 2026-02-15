@@ -1231,22 +1231,43 @@ export const Practice = () => {
 
             // Check for horizontal scroll dominance
             if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-                // If significant horizontal scroll, prevent browser defaults (history nav) and trigger our nav
-                if (Math.abs(e.deltaX) > 10) {
-                    e.preventDefault();
+                // Prevent browser back/forward navigation gestures immediately
+                e.preventDefault();
 
-                    const now = Date.now();
-                    if (now - lastWheelTime.current < WHEEL_COOLDOWN) {
-                        return; // Debounce
-                    }
+                const now = Date.now();
+                if (now - lastWheelTime.current < WHEEL_COOLDOWN) {
+                    return; // Debounce
+                }
 
+                // Lower threshold slightly to be more responsive (was 10)
+                if (Math.abs(e.deltaX) > 5) {
                     if (e.deltaX > 0) {
                         // Two fingers move LEFT -> Scroll RIGHT -> DeltaX > 0 => NEXT Question
-                        if (isSubmitted || currentQuestionIndex < questions.length - 1) { // Allow nav if submitted or not last
+                        if (!isSubmitted && currentQuestionIndex < questions.length - 1) {
+                            // Only allow forward if not submitted? Wait, original code allowed if isSubmitted OR not last
+                            // Original: if (isSubmitted || currentQuestionIndex < questions.length - 1)
+                            // My previous attempt logic was convoluted.
+                            // Let's simplified: Always allow Next if there is a next question
+                            // User can review questions freely.
                             if (currentQuestionIndex < questions.length - 1) {
                                 setCurrentQuestionIndex(prev => prev + 1);
                                 lastWheelTime.current = now;
                             }
+                        } else if (isSubmitted && currentQuestionIndex < questions.length - 1) {
+                            setCurrentQuestionIndex(prev => prev + 1);
+                            lastWheelTime.current = now;
+                        } else if (currentQuestionIndex < questions.length - 1) {
+                            // If NOT submitted, can we go next? Yes, usually.
+                            // Original logic: if (isSubmitted || currentQuestionIndex < questions.length - 1)
+                            // Wait, if current is last, we can't go next.
+                            // The logic was:
+                            // if (isSubmitted || currentQuestionIndex < questions.length - 1) {
+                            //    if (currentQuestionIndex < questions.length - 1) ...
+                            // }
+
+                            // Let's simplify:
+                            setCurrentQuestionIndex(prev => prev + 1);
+                            lastWheelTime.current = now;
                         }
                     } else {
                         // Two fingers move RIGHT -> Scroll LEFT -> DeltaX < 0 => PREV Question
