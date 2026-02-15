@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { supabaseAdmin } from '../config/supabase';
 import { authMiddleware } from '../middleware/auth';
+import { getRelativeTime } from '../utils/time';
 
 const router = Router();
 
@@ -10,6 +11,19 @@ router.get('/', authMiddleware, async (req: Request, res: Response): Promise<voi
         const userId = req.user!.id;
         const { limit = 50 } = req.query;
 
+        // 1. Fetch friend requests for current user to check statuses
+        const { data: friendRequests } = await supabaseAdmin
+            .from('friend_requests')
+            .select('sender_id, status')
+            .eq('receiver_id', userId);
+
+        const acceptedSenders = new Set(
+            (friendRequests || [])
+                .filter(r => r.status === 'accepted')
+                .map(r => r.sender_id)
+        );
+
+        // 2. Fetch notifications
         const { data, error } = await supabaseAdmin
             .from('notifications')
             .select('*')
@@ -22,14 +36,28 @@ router.get('/', authMiddleware, async (req: Request, res: Response): Promise<voi
             return;
         }
 
-        // Transform to frontend format
-        const notifications = (data || []).map((item: { id: number; text: string; created_at: string; unread: boolean; link: string }) => ({
-            id: item.id,
-            text: item.text,
-            time: getRelativeTime(new Date(item.created_at)),
-            unread: item.unread,
-            link: item.link
-        }));
+        // 3. Transform to frontend format with isAccepted enrichment
+        const notifications = (data || []).map((item: any) => {
+            let isAccepted = false;
+            if (item.link && item.link.includes('action=friend_request')) {
+                const urlParams = new URLSearchParams(item.link.split('?')[1]);
+                const senderId = urlParams.get('sender_id');
+                if (senderId && acceptedSenders.has(senderId)) {
+                    isAccepted = true;
+                }
+            }
+
+            return {
+                id: item.id,
+                text: item.text,
+                time: getRelativeTime(new Date(item.created_at)),
+                unread: item.unread,
+                link: item.link,
+                type: item.type,
+                metadata: item.metadata,
+                isAccepted
+            };
+        });
 
         res.json(notifications);
     } catch (error) {
@@ -88,7 +116,7 @@ router.put('/read-all', authMiddleware, async (req: Request, res: Response): Pro
 // POST /api/notifications - Create a notification (internal use)
 router.post('/', authMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
-        const { userId, text, link } = req.body;
+        const { userId, text, link, type, metadata } = req.body;
 
         if (!userId || !text) {
             res.status(400).json({ error: 'userId and text are required' });
@@ -101,7 +129,9 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
                 user_id: userId,
                 text,
                 link: link || '/dashboard',
-                unread: true
+                unread: true,
+                type: type || null,
+                metadata: metadata || null
             })
             .select()
             .single();
@@ -124,19 +154,63 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
     }
 });
 
-// Helper function to get relative time
-function getRelativeTime(date: Date): string {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString();
-}
+// POST /api/notifications/:id/accept-friend - Accept a friend request via notification
+router.post('/:id/accept-friend', authMiddleware, async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.user!.id;
+        const notifId = Number(req.params.id);
+
+        // 1. Find the notification and extract sender_id from link
+        const { data: notif, error: notifError } = await supabaseAdmin
+            .from('notifications')
+            .select('id, link')
+            .eq('id', notifId)
+            .eq('user_id', userId)
+            .single();
+
+        if (notifError || !notif) {
+            res.status(404).json({ error: 'Notification not found' });
+            return;
+        }
+
+        // Extract sender_id from link
+        let senderId: string | null = null;
+        if (notif.link && notif.link.includes('sender_id=')) {
+            const urlParams = new URLSearchParams(notif.link.split('?')[1]);
+            senderId = urlParams.get('sender_id');
+        }
+
+        if (!senderId) {
+            res.status(400).json({ error: 'No sender_id found in notification' });
+            return;
+        }
+
+        // 2. Update friend_requests status to accepted
+        const { error: frError } = await supabaseAdmin
+            .from('friend_requests')
+            .update({ status: 'accepted' })
+            .eq('sender_id', senderId)
+            .eq('receiver_id', userId);
+
+        if (frError) {
+            console.error('Failed to accept friend request:', frError);
+            res.status(400).json({ error: frError.message });
+            return;
+        }
+
+        // 3. Update notification metadata to mark as accepted & mark as read
+        await supabaseAdmin
+            .from('notifications')
+            .update({ metadata: { accepted: true }, unread: false })
+            .eq('id', notifId);
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Accept friend error:', error);
+        res.status(500).json({ error: 'Failed to accept friend request' });
+    }
+});
+
 
 export default router;

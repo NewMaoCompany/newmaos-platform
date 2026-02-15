@@ -1,0 +1,1 @@
+UPDATE public.questions SET prompt = $JSON$["Use the graph provided. What is $\\lim_{x \\to -2} f(x)$?", "https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384273436_gly0o.jpg"]$JSON$ WHERE id = '7411bef6-0477-4631-924b-b38afc3d2ecb';

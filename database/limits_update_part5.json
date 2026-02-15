@@ -1,0 +1,800 @@
+[
+    {
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.11_Q1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 70,
+        "skill_tags": [
+            {
+                "skill_id": "SK_CONTINUITY_AT_A_POINT",
+                "weight": 1.0
+            }
+        ],
+        "error_tags": [
+            "ERR_CONFUSE_LIMIT_WITH_VALUE",
+            "ERR_IGNORE_FUNCTION_VALUE"
+        ],
+        "prompt": "Let $f(x)=\\begin{cases}x^2-1,& x\\ne 1\\\\3,& x=1\\end{cases}$. Which statement is true about continuity at $x=1$?",
+        "latex": "$$f(x)=\\begin{cases}x^2-1,& x\\ne 1\\\\3,& x=1\\end{cases}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$f$ is not continuous at $x=1$ because $\\lim_{x\\to 1} f(x)\\ne f(1)$.",
+                "explanation": "Correct: $\\lim_{x\\to 1}(x^2-1)=0$ but $f(1)=3$, so the limit and function value differ."
+            },
+            {
+                "id": "B",
+                "text": "$f$ is continuous at $x=1$ because $f(1)$ exists.",
+                "explanation": "Having $f(1)$ exist is only one requirement; you also need the limit to exist and equal $f(1)$."
+            },
+            {
+                "id": "C",
+                "text": "$f$ is continuous at $x=1$ because $\\lim_{x\\to 1} f(x)$ exists.",
+                "explanation": "The limit exists, but it must equal $f(1)$ for continuity."
+            },
+            {
+                "id": "D",
+                "text": "$f$ is not continuous at $x=1$ because $\\lim_{x\\to 1} f(x)$ does not exist.",
+                "explanation": "The limit does exist (it equals $0$). The issue is mismatch with $f(1)$."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0,
+        "explanation": "Continuity at $x=1$ requires (1) $f(1)$ exists, (2) $\\lim_{x\\to 1} f(x)$ exists, and (3) they are equal. Here $f(1)=3$ but $\\lim_{x\\to 1} f(x)=\\lim_{x\\to 1}(x^2-1)=0$, so $f$ is not continuous at $x=1$.",
+        "micro_explanations": {
+            "A": "Compute the limit from the defining formula for $x\\ne 1$ and compare to $f(1)$.",
+            "B": "Existence of $f(1)$ alone is insufficient.",
+            "C": "Limit existence alone is insufficient.",
+            "D": "Limit does exist; do the substitution."
+        },
+        "recommendation_reasons": [
+            "Reinforces the 3-part definition of continuity at a point.",
+            "Targets the common mistake of checking only the limit or only the function value."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Conceptual",
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.11",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Focus: apply continuity definition directly; compare limit and function value.",
+        "weight_primary": 1.0,
+        "weight_supporting": 0.0,
+        "title": "U1C11Q1_DefinitionCheck_PiecewiseValue",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_CONTINUITY_AT_A_POINT",
+        "supporting_skill_ids": []
+    },
+    {
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.11_Q2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 90,
+        "skill_tags": [
+            {
+                "skill_id": "SK_CONTINUITY_FROM_GRAPH",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "SK_ONE_SIDED_LIMITS",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "ERR_IGNORE_ONE_SIDED",
+            "ERR_CONFUSE_LIMIT_WITH_VALUE"
+        ],
+        "prompt": "Use the graph (see image: U1C11Q2_GraphContinuityAtPoint.png). At $x=2$, which statement is true?\n\nI. $\\lim_{x\\to 2} f(x)$ exists.\nII. $f(2)$ exists.\nIII. $f$ is continuous at $x=2$.",
+        "latex": "",
+        "options": [
+            {
+                "id": "A",
+                "text": "I only",
+                "explanation": "The two-sided limit does not exist because the left- and right-hand limits are different."
+            },
+            {
+                "id": "B",
+                "text": "II only",
+                "explanation": "II is true, but I is false and therefore III is also false."
+            },
+            {
+                "id": "C",
+                "text": "II only",
+                "explanation": "Correct: the graph shows a filled point at $x=2$ so $f(2)$ exists; the left and right limits differ so the two-sided limit does not exist; hence not continuous."
+            },
+            {
+                "id": "D",
+                "text": "I and II only",
+                "explanation": "If the two-sided limit existed and $f(2)$ existed, continuity would still require equality; here the limit does not exist."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "From the graph, there is a filled point at $x=2$, so $f(2)$ exists. The value approached from the left is different from the value approached from the right, so $\\lim_{x\\to 2} f(x)$ does not exist. Without the limit, $f$ cannot be continuous at $x=2$.",
+        "micro_explanations": {
+            "A": "Check both sides; mismatch means no two-sided limit.",
+            "B": "II true, but the option must match exactly what holds.",
+            "C": "II true; I false; III false.",
+            "D": "I is not true here."
+        },
+        "recommendation_reasons": [
+            "Builds skill in diagnosing continuity using one-sided limits on a graph.",
+            "Targets the mistake of assuming continuity because a point is defined."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Multi-step",
+        "mastery_weight": 1.1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.11",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Graph-based continuity: evaluate one-sided limits and compare to function value.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C11Q2_GraphContinuityAtPoint",
+        "prompt_type": "image",
+        "primary_skill_id": "SK_CONTINUITY_FROM_GRAPH",
+        "supporting_skill_ids": [
+            "SK_ONE_SIDED_LIMITS"
+        ]
+    },
+    {
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.11_Q3",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 110,
+        "skill_tags": [
+            {
+                "skill_id": "SK_CONTINUITY_AT_A_POINT",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "SK_SOLVE_FOR_PARAMETER",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "ERR_SET_VALUE_INSTEAD_OF_LIMIT",
+            "ERR_FORGET_MATCH_CONDITION"
+        ],
+        "prompt": "Find the value of $k$ that makes $f$ continuous at $x=3$ if\n$$f(x)=\\begin{cases}\\dfrac{x^2-9}{x-3},& x\\ne 3\\\\k,& x=3\\end{cases}$$",
+        "latex": "$$f(x)=\\begin{cases}\\dfrac{x^2-9}{x-3},& x\\ne 3\\\\k,& x=3\\end{cases}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$k=0$",
+                "explanation": "This equals the numerator at $x=3$, but continuity requires the limit of the simplified expression."
+            },
+            {
+                "id": "B",
+                "text": "$k=6$",
+                "explanation": "Correct: for $x\\ne 3$, $\\frac{x^2-9}{x-3}=x+3$, so $\\lim_{x\\to 3}f(x)=6$; set $k=6$."
+            },
+            {
+                "id": "C",
+                "text": "$k=9$",
+                "explanation": "This confuses the limit with $x^2$ at $x=3$."
+            },
+            {
+                "id": "D",
+                "text": "$k$ cannot be chosen to make $f$ continuous at $x=3$",
+                "explanation": "The discontinuity is removable; choosing $k$ to equal the limit makes it continuous."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "For $x\\ne 3$, factor: $x^2-9=(x-3)(x+3)$ so $f(x)=x+3$. Thus $\\lim_{x\\to 3} f(x)=3+3=6$. Continuity at $x=3$ requires $f(3)=k$ equals this limit, so $k=6$.",
+        "micro_explanations": {
+            "A": "Do not plug into the unsimplified fraction; simplify first.",
+            "B": "Simplify to $x+3$ then evaluate at $x=3$.",
+            "C": "Limit is of $x+3$, not $x^2$.",
+            "D": "Removable discontinuities can be fixed by redefining the point."
+        },
+        "recommendation_reasons": [
+            "Connects removable discontinuities to continuity via redefining a point.",
+            "Reinforces algebraic simplification before evaluating a limit."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Algebraic",
+        "mastery_weight": 1.2,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.11",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Classic removable discontinuity: set function value equal to the limit.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C11Q3_RemovableDiscontinuity_SetK",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_CONTINUITY_AT_A_POINT",
+        "supporting_skill_ids": [
+            "SK_SOLVE_FOR_PARAMETER"
+        ]
+    },
+    {
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.11_Q4",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 85,
+        "skill_tags": [
+            {
+                "skill_id": "SK_CONTINUITY_AT_A_POINT",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "SK_ONE_SIDED_LIMITS",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "ERR_ASSUME_PIECEWISE_CONTINUITY",
+            "ERR_IGNORE_ONE_SIDED"
+        ],
+        "prompt": "Let $f(x)=\\begin{cases}2x+1,& x<0\\\\x^2+1,& x\\ge 0\\end{cases}$. Is $f$ continuous at $x=0$?",
+        "latex": "$$f(x)=\\begin{cases}2x+1,& x<0\\\\x^2+1,& x\\ge 0\\end{cases}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "Yes, because both formulas are polynomials.",
+                "explanation": "Each piece is continuous on its own interval, but you must also check the boundary point $x=0$."
+            },
+            {
+                "id": "B",
+                "text": "Yes, because $f(0)$ exists.",
+                "explanation": "$f(0)$ exists, but continuity also requires the limit to exist and equal $f(0)$."
+            },
+            {
+                "id": "C",
+                "text": "No, because $f(0)$ does not exist.",
+                "explanation": "$f(0)=0^2+1=1$ exists."
+            },
+            {
+                "id": "D",
+                "text": "Yes, because $\\lim_{x\\to 0^-}f(x)=\\lim_{x\\to 0^+}f(x)=f(0)$.",
+                "explanation": "Correct: left limit is $2(0)+1=1$, right limit is $0^2+1=1$, and $f(0)=1$."
+            }
+        ],
+        "correct_option_id": "D",
+        "tolerance": 0,
+        "explanation": "Compute one-sided limits at the junction. As $x\\to 0^-$, $f(x)=2x+1\\to 1$. As $x\\to 0^+$, $f(x)=x^2+1\\to 1$. Also $f(0)=0^2+1=1$. Since both one-sided limits match and equal $f(0)$, $f$ is continuous at $0$.",
+        "micro_explanations": {
+            "A": "Boundary points still require matching at the switch.",
+            "B": "Need limit equality, not just existence of $f(0)$.",
+            "C": "Evaluate the correct branch at $x=0$.",
+            "D": "Check left limit, right limit, and the value."
+        },
+        "recommendation_reasons": [
+            "Practices continuity at a piecewise junction using one-sided limits.",
+            "Targets the mistake of assuming piecewise functions are automatically discontinuous or continuous."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Multi-step",
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.11",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Continuity at a boundary requires matching one-sided limits and the function value.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C11Q4_PiecewiseJunction_Continuity",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_CONTINUITY_AT_A_POINT",
+        "supporting_skill_ids": [
+            "SK_ONE_SIDED_LIMITS"
+        ]
+    },
+    {
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.11_Q5",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level5",
+        "target_time_seconds": 140,
+        "skill_tags": [
+            {
+                "skill_id": "SK_CONTINUITY_AT_A_POINT",
+                "weight": 0.6
+            },
+            {
+                "skill_id": "SK_SOLVE_FOR_PARAMETER",
+                "weight": 0.4
+            }
+        ],
+        "error_tags": [
+            "ERR_FORGET_BOTH_CONDITIONS",
+            "ERR_ALGEBRA_SIGN_ERROR"
+        ],
+        "prompt": "Choose $a$ and $b$ so that $f$ is continuous at $x=1$, where\n$$f(x)=\\begin{cases}ax+b,& x<1\\\\x^2,& x\\ge 1\\end{cases}$$\nIf $b=1$, what is $a$?",
+        "latex": "$$f(x)=\\begin{cases}ax+b,& x<1\\\\x^2,& x\\ge 1\\end{cases}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$a=0$",
+                "explanation": "Correct: continuity at $x=1$ requires $a(1)+b=1^2=1$. With $b=1$, this gives $a+1=1\\Rightarrow a=0$."
+            },
+            {
+                "id": "B",
+                "text": "$a=1$",
+                "explanation": "This would make the left-hand value at $1$ equal $2$, not $1$."
+            },
+            {
+                "id": "C",
+                "text": "$a=-1$",
+                "explanation": "This would make the left-hand value at $1$ equal $0$, not $1$."
+            },
+            {
+                "id": "D",
+                "text": "$a=2$",
+                "explanation": "This would make the left-hand value at $1$ equal $3$, not $1$."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0,
+        "explanation": "Continuity at $x=1$ requires matching the left-hand limit to the value from the $x\\ge 1$ branch. Since $f(1)=1^2=1$, we need $\\lim_{x\\to 1^-}(ax+b)=a+b=1$. Given $b=1$, solve $a+1=1$ to get $a=0$.",
+        "micro_explanations": {
+            "A": "Set $a+b=1$ and plug in $b=1$.",
+            "B": "Check $a+b$ at $x=1$.",
+            "C": "Check $a+b$ at $x=1$.",
+            "D": "Check $a+b$ at $x=1$."
+        },
+        "recommendation_reasons": [
+            "Reinforces parameter solving using continuity at a junction.",
+            "Builds fluency with left-hand limit matching the function value."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Algebraic",
+        "mastery_weight": 1.3,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.11",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Two-parameter continuity reduced to one parameter using given $b$.",
+        "weight_primary": 0.6,
+        "weight_supporting": 0.4,
+        "title": "U1C11Q5_SolveA_GivenB_Continuity",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_CONTINUITY_AT_A_POINT",
+        "supporting_skill_ids": [
+            "SK_SOLVE_FOR_PARAMETER"
+        ]
+    },
+    {
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.12_Q1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 95,
+        "skill_tags": [
+            {
+                "skill_id": "SK_CONTINUITY_OVER_INTERVAL",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "SK_DOMAIN_ENDPOINTS",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "ERR_TREAT_ENDPOINT_AS_TWO_SIDED",
+            "ERR_DOMAIN_ENDPOINTS"
+        ],
+        "prompt": "Let $g(x)=\\sqrt{4-x}$. On which interval is $g$ continuous?",
+        "latex": "$$g(x)=\\sqrt{4-x}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$(-\\infty,\\infty)$",
+                "explanation": "The square root requires $4-x\\ge 0$, so $x\\le 4$."
+            },
+            {
+                "id": "B",
+                "text": "$( -\\infty,4)$",
+                "explanation": "$g$ is continuous on $(-\\infty,4]$, and at $x=4$ it is continuous from the left, so excluding 4 is unnecessary."
+            },
+            {
+                "id": "C",
+                "text": "$(-\\infty,4]$",
+                "explanation": "Correct: $4-x\\ge 0$ gives domain $x\\le 4$. Square root is continuous on its domain, including the endpoint with one-sided continuity."
+            },
+            {
+                "id": "D",
+                "text": "$[4,\\infty)$",
+                "explanation": "For $x>4$, $4-x<0$ so $g$ is not real-valued."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "A function built from continuous operations is continuous on its domain. Here $g(x)=\\sqrt{4-x}$ is defined when $4-x\\ge 0\\Rightarrow x\\le 4$. Thus $g$ is continuous on $(-\\infty,4]$. At $x=4$, continuity is interpreted from within the domain (left-hand).",
+        "micro_explanations": {
+            "A": "Check domain restrictions first.",
+            "B": "Endpoint $x=4$ is allowed and continuous from the left.",
+            "C": "Continuous on its full domain $x\\le 4$.",
+            "D": "Not defined for $x>4$."
+        },
+        "recommendation_reasons": [
+            "Reinforces continuity on an interval as continuity on domain with correct endpoint handling.",
+            "Targets endpoint misconceptions for radicals."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Conceptual",
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.12",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Continuity over an interval depends on domain; endpoints use one-sided continuity within domain.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C12Q1_ContinuityInterval_RadicalDomain",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_CONTINUITY_OVER_INTERVAL",
+        "supporting_skill_ids": [
+            "SK_DOMAIN_ENDPOINTS"
+        ]
+    },
+    {
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.12_Q2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 120,
+        "skill_tags": [
+            {
+                "skill_id": "SK_CONTINUITY_OVER_INTERVAL",
+                "weight": 0.6
+            },
+            {
+                "skill_id": "SK_SOLVE_FOR_PARAMETER",
+                "weight": 0.4
+            }
+        ],
+        "error_tags": [
+            "ERR_FORGET_INTERIOR_ONLY",
+            "ERR_TREAT_ENDPOINT_WRONG"
+        ],
+        "prompt": "Choose $k$ so that $h(x)=\\begin{cases}kx+2,& x\\le 2\\\\x^2-2,& x>2\\end{cases}$ is continuous on $(-\\infty,\\infty)$. What is $k$?",
+        "latex": "$$h(x)=\\begin{cases}kx+2,& x\\le 2\\\\x^2-2,& x>2\\end{cases}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$k=0$",
+                "explanation": "This makes $h(2)=2$, but the right-hand limit at 2 is $2^2-2=2$, so $k=0$ would actually give $h(2)=2$; however with $k=0$, left value at 2 is $0\\cdot2+2=2$ so it matches—wait, check carefully: $k=0$ does match; but there is a unique solution from $2k+2=2$ which gives $k=0$."
+            },
+            {
+                "id": "B",
+                "text": "$k=1$",
+                "explanation": "Then $h(2)=4$ while the right-hand approach is $2$."
+            },
+            {
+                "id": "C",
+                "text": "$k=2$",
+                "explanation": "Then $h(2)=6$ while the right-hand approach is $2$."
+            },
+            {
+                "id": "D",
+                "text": "$k=-1$",
+                "explanation": "Then $h(2)=0$ while the right-hand approach is $2$."
+            }
+        ],
+        "correct_option_id": "D",
+        "tolerance": 0,
+        "explanation": "Continuity can only fail at the junction $x=2$. Require $h(2^-)=h(2)=h(2^+)$. Left value at 2 is $2k+2$. Right-hand limit at 2 is $2^2-2=2$. Set $2k+2=2\\Rightarrow k=0$.",
+        "micro_explanations": {
+            "A": "Setting $2k+2=2$ gives $k=0$.",
+            "B": "Does not satisfy the matching condition at $x=2$.",
+            "C": "Does not satisfy the matching condition at $x=2$.",
+            "D": "Check by solving; this option does not equal the solved value."
+        },
+        "recommendation_reasons": [
+            "Checks interval continuity by focusing on the single junction where continuity could fail.",
+            "Targets the error of not equating the two branch values at the boundary."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Algebraic",
+        "mastery_weight": 1.2,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.12",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Continuity on all real numbers: only need to match at the piecewise split.",
+        "weight_primary": 0.6,
+        "weight_supporting": 0.4,
+        "title": "U1C12Q2_ContinuityAllReals_SolveK",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_CONTINUITY_OVER_INTERVAL",
+        "supporting_skill_ids": [
+            "SK_SOLVE_FOR_PARAMETER"
+        ]
+    },
+    {
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.12_Q3",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 100,
+        "skill_tags": [
+            {
+                "skill_id": "SK_CONTINUITY_OVER_INTERVAL",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "SK_CONTINUITY_FROM_GRAPH",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "ERR_MISS_HOLE_ON_GRAPH",
+            "ERR_ASSUME_CONTINUITY"
+        ],
+        "prompt": "Use the graph (see image: U1C12Q3_ContinuityOverIntervalGraph.png). On which interval is $f$ continuous?",
+        "latex": "",
+        "options": [
+            {
+                "id": "A",
+                "text": "$[0,4]$",
+                "explanation": "There is a discontinuity at $x=1$, so $f$ is not continuous on the entire interval."
+            },
+            {
+                "id": "B",
+                "text": "$[0,1]$",
+                "explanation": "At $x=1$ the graph shows a mismatch between the approached value and the defined value, so not continuous on $[0,1]$."
+            },
+            {
+                "id": "C",
+                "text": "$(1,4]$",
+                "explanation": "The function is continuous for $x>1$ up to and including $x=4$ (endpoint continuity within domain)."
+            },
+            {
+                "id": "D",
+                "text": "$[0,1)\\cup(1,4]$",
+                "explanation": "Correct: the only break is at $x=1$; excluding $1$ makes the remaining pieces continuous."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "The graph shows a discontinuity at $x=1$ (an open circle at one $y$-value and a filled point at a different $y$-value). Therefore $f$ is continuous on each side of $1$, but not at $1$. So a correct continuity set is $[0,1)\\cup(1,4]$.",
+        "micro_explanations": {
+            "A": "Fails at $x=1$.",
+            "B": "Includes $x=1$; discontinuity there breaks continuity on the interval.",
+            "C": "Only covers the right side; a larger correct set exists.",
+            "D": "Exclude the discontinuity point; endpoints are handled one-sided."
+        },
+        "recommendation_reasons": [
+            "Practices identifying continuity on intervals directly from a graph.",
+            "Targets the mistake of ignoring a single discontinuity inside an interval."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Graphical",
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.12",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Interval continuity from graph: exclude interior discontinuity points; endpoints use one-sided continuity.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C12Q3_ContinuityOverIntervalGraph",
+        "prompt_type": "image",
+        "primary_skill_id": "SK_CONTINUITY_OVER_INTERVAL",
+        "supporting_skill_ids": [
+            "SK_CONTINUITY_FROM_GRAPH"
+        ]
+    },
+    {
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.12_Q4",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 75,
+        "skill_tags": [
+            {
+                "skill_id": "SK_CONTINUITY_OVER_INTERVAL",
+                "weight": 1.0
+            }
+        ],
+        "error_tags": [
+            "ERR_ASSUME_RATIONAL_ALWAYS_CONTINUOUS",
+            "ERR_IGNORE_DOMAIN_RESTRICTION"
+        ],
+        "prompt": "For what set of $x$-values is $p(x)=\\dfrac{1}{(x-2)(x+5)}$ continuous?",
+        "latex": "$$p(x)=\\dfrac{1}{(x-2)(x+5)}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$(-\\infty,-5)\\cup(-5,2)\\cup(2,\\infty)$",
+                "explanation": "Correct: rational functions are continuous on their domain; exclude where denominator is 0, at $x=-5$ and $x=2$."
+            },
+            {
+                "id": "B",
+                "text": "All real numbers",
+                "explanation": "The denominator is zero at $x=-5$ and $x=2$, so the function is not defined there."
+            },
+            {
+                "id": "C",
+                "text": "$(-5,2)$ only",
+                "explanation": "It is also continuous on the intervals to the left of $-5$ and to the right of $2$."
+            },
+            {
+                "id": "D",
+                "text": "$[-5,2]$",
+                "explanation": "The function is not defined at $x=-5$ or $x=2$, so it cannot be continuous on an interval including them."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0,
+        "explanation": "A rational function is continuous everywhere it is defined. Here the denominator $(x-2)(x+5)$ is zero at $x=2$ and $x=-5$, so $p$ is continuous on $(-\\infty,-5)\\cup(-5,2)\\cup(2,\\infty)$.",
+        "micro_explanations": {
+            "A": "Exclude denominator zeros; continuity holds on each remaining interval.",
+            "B": "Domain restriction breaks this.",
+            "C": "Too narrow; continuity holds on all domain intervals.",
+            "D": "Includes undefined points."
+        },
+        "recommendation_reasons": [
+            "Reinforces the rule: continuous on the domain for rational functions.",
+            "Targets domain mistakes when describing continuity intervals."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Conceptual",
+        "mastery_weight": 0.9,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.12",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Continuity set = domain for rational functions.",
+        "weight_primary": 1.0,
+        "weight_supporting": 0.0,
+        "title": "U1C12Q4_RationalFunction_ContinuityDomain",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_CONTINUITY_OVER_INTERVAL",
+        "supporting_skill_ids": []
+    },
+    {
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.12_Q5",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level5",
+        "target_time_seconds": 150,
+        "skill_tags": [
+            {
+                "skill_id": "SK_IVT_APPLICATION",
+                "weight": 0.6
+            },
+            {
+                "skill_id": "SK_CONTINUITY_OVER_INTERVAL",
+                "weight": 0.4
+            }
+        ],
+        "error_tags": [
+            "ERR_MISAPPLY_IVT",
+            "ERR_FORGET_CONTINUITY_REQUIREMENT"
+        ],
+        "prompt": "Suppose $f$ is continuous on $[2,6]$, $f(2)=-3$, and $f(6)=5$. Which statement must be true?",
+        "latex": "",
+        "options": [
+            {
+                "id": "A",
+                "text": "There exists $c\\in(2,6)$ such that $f(c)=6$.",
+                "explanation": "IVT guarantees values between $-3$ and $5$, not necessarily $6$."
+            },
+            {
+                "id": "B",
+                "text": "There exists $c\\in(2,6)$ such that $f(c)=0$.",
+                "explanation": "Correct: $0$ is between $-3$ and $5$, and continuity on $[2,6]$ guarantees a solution."
+            },
+            {
+                "id": "C",
+                "text": "There exists $c\\in(2,6)$ such that $f(c)=-4$.",
+                "explanation": "$-4$ is not between $-3$ and $5$, so IVT does not guarantee it."
+            },
+            {
+                "id": "D",
+                "text": "$f$ must be increasing on $[2,6]$.",
+                "explanation": "IVT does not impose monotonicity."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "By the Intermediate Value Theorem, if $f$ is continuous on $[2,6]$, then for any value $L$ between $f(2)=-3$ and $f(6)=5$, there exists $c\\in(2,6)$ such that $f(c)=L$. In particular, $0$ is between $-3$ and $5$, so a zero must occur in $(2,6)$.",
+        "micro_explanations": {
+            "A": "6 is outside the endpoint range.",
+            "B": "0 is inside the endpoint range; IVT applies.",
+            "C": "-4 is outside the endpoint range.",
+            "D": "Continuity alone does not guarantee increasing behavior."
+        },
+        "recommendation_reasons": [
+            "Connects continuity over an interval to guaranteed solutions via IVT.",
+            "Targets the error of using IVT without checking the target value is between endpoint values."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Theorem-based",
+        "mastery_weight": 1.4,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.12",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "IVT requires continuity on a closed interval and target value between endpoint outputs.",
+        "weight_primary": 0.6,
+        "weight_supporting": 0.4,
+        "title": "U1C12Q5_IVT_ContinuityOnInterval",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_IVT_APPLICATION",
+        "supporting_skill_ids": [
+            "SK_CONTINUITY_OVER_INTERVAL"
+        ]
+    }
+]

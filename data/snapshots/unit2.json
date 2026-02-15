@@ -1,0 +1,659 @@
+{
+  "timestamp": "2026-01-31T05:37:49.094Z",
+  "description": "Proposed Unit 2 Relational Data (Semantic)",
+  "skills": [
+    {
+      "id": "exp_derivatives_basic",
+      "name": "exp_derivatives_basic",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "tangent_line_equation",
+      "name": "tangent_line_equation",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "derivative_notation",
+      "name": "derivative_notation",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "trig_derivatives_basic",
+      "name": "trig_derivatives_basic",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "derivative_definition_limit",
+      "name": "derivative_definition_limit",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "difference_quotient",
+      "name": "difference_quotient",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "quotient_rule",
+      "name": "quotient_rule",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "product_rule",
+      "name": "product_rule",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "diff_vs_continuity",
+      "name": "diff_vs_continuity",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "linearity_rules",
+      "name": "linearity_rules",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "derivative_from_graph",
+      "name": "derivative_from_graph",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "slope_instant_rate",
+      "name": "slope_instant_rate",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "method_selection_derivatives",
+      "name": "method_selection_derivatives",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "differentiability_concept",
+      "name": "differentiability_concept",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "derivative_from_table",
+      "name": "derivative_from_table",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "log_derivatives_basic",
+      "name": "log_derivatives_basic",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "interpret_derivative_context",
+      "name": "interpret_derivative_context",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "nondifferentiable_features",
+      "name": "nondifferentiable_features",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "power_rule_basic",
+      "name": "power_rule_basic",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "normal_line_equation",
+      "name": "normal_line_equation",
+      "unit": "Differentiation_Definition"
+    },
+    {
+      "id": "slope_avg_rate",
+      "name": "slope_avg_rate",
+      "unit": "Differentiation_Definition"
+    }
+  ],
+  "error_tags": [
+    {
+      "id": "exp_log_derivative_confusion",
+      "name": "exp_log_derivative_confusion"
+    },
+    {
+      "id": "tangent_line_equation_error",
+      "name": "tangent_line_equation_error"
+    },
+    {
+      "id": "trig_derivative_swap_error",
+      "name": "trig_derivative_swap_error"
+    },
+    {
+      "id": "h_limit_handling_error",
+      "name": "h_limit_handling_error"
+    },
+    {
+      "id": "quotient_rule_structure_error",
+      "name": "quotient_rule_structure_error"
+    },
+    {
+      "id": "product_rule_structure_error",
+      "name": "product_rule_structure_error"
+    },
+    {
+      "id": "diff_implies_continuity_missed",
+      "name": "diff_implies_continuity_missed"
+    },
+    {
+      "id": "tangent_line_point_confusion",
+      "name": "tangent_line_point_confusion"
+    },
+    {
+      "id": "difference_quotient_setup_error",
+      "name": "difference_quotient_setup_error"
+    },
+    {
+      "id": "slope_from_graph_misread",
+      "name": "slope_from_graph_misread"
+    },
+    {
+      "id": "linearity_missing_term",
+      "name": "linearity_missing_term"
+    },
+    {
+      "id": "wrong_method_choice_derivative",
+      "name": "wrong_method_choice_derivative"
+    },
+    {
+      "id": "continuous_implies_diff_wrong",
+      "name": "continuous_implies_diff_wrong"
+    },
+    {
+      "id": "table_derivative_estimate_error",
+      "name": "table_derivative_estimate_error"
+    },
+    {
+      "id": "quotient_rule_sign_error",
+      "name": "quotient_rule_sign_error"
+    },
+    {
+      "id": "cancel_h_mistake",
+      "name": "cancel_h_mistake"
+    },
+    {
+      "id": "secant_vs_tangent_confusion",
+      "name": "secant_vs_tangent_confusion"
+    },
+    {
+      "id": "corner_cusp_not_recognized",
+      "name": "corner_cusp_not_recognized"
+    },
+    {
+      "id": "constant_derivative_error",
+      "name": "constant_derivative_error"
+    },
+    {
+      "id": "normal_line_slope_error",
+      "name": "normal_line_slope_error"
+    },
+    {
+      "id": "derivative_notation_misread",
+      "name": "derivative_notation_misread"
+    },
+    {
+      "id": "power_rule_exponent_error",
+      "name": "power_rule_exponent_error"
+    },
+    {
+      "id": "average_rate_wrong_interval",
+      "name": "average_rate_wrong_interval"
+    },
+    {
+      "id": "vertical_tangent_not_recognized",
+      "name": "vertical_tangent_not_recognized"
+    }
+  ],
+  "question_skills": [
+    {
+      "question_id": "020c11da-da5a-4654-b7ff-6fdcabcf592e",
+      "skill_id": "exp_derivatives_basic"
+    },
+    {
+      "question_id": "05a91bec-4319-43c9-9174-95660bef2707",
+      "skill_id": "tangent_line_equation"
+    },
+    {
+      "question_id": "05a91bec-4319-43c9-9174-95660bef2707",
+      "skill_id": "derivative_notation"
+    },
+    {
+      "question_id": "0f1685a4-0118-4400-bfa2-63f046bddd3e",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "17c52048-f1e4-4f08-8732-13f794ab9668",
+      "skill_id": "derivative_definition_limit"
+    },
+    {
+      "question_id": "17c52048-f1e4-4f08-8732-13f794ab9668",
+      "skill_id": "difference_quotient"
+    },
+    {
+      "question_id": "184e3ee3-de68-47e6-aaeb-a6acab457ffd",
+      "skill_id": "quotient_rule"
+    },
+    {
+      "question_id": "1cbf9be0-4580-42cc-99af-8b8e92c9b97b",
+      "skill_id": "product_rule"
+    },
+    {
+      "question_id": "1cbf9be0-4580-42cc-99af-8b8e92c9b97b",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "1d9802c3-0bb0-4ee2-b28b-e4c3f9d62d74",
+      "skill_id": "diff_vs_continuity"
+    },
+    {
+      "question_id": "20a746ae-7223-4895-8a78-79cbdeaf172a",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "20a746ae-7223-4895-8a78-79cbdeaf172a",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "22333f09-d3e6-4f04-b4ba-a6781c1cb98c",
+      "skill_id": "derivative_from_graph"
+    },
+    {
+      "question_id": "24c4c6d2-d7e8-4467-997e-a66d596d79aa",
+      "skill_id": "derivative_definition_limit"
+    },
+    {
+      "question_id": "24c4c6d2-d7e8-4467-997e-a66d596d79aa",
+      "skill_id": "difference_quotient"
+    },
+    {
+      "question_id": "24e9f4f8-695b-4ced-a7ca-d192f49a1a48",
+      "skill_id": "difference_quotient"
+    },
+    {
+      "question_id": "24e9f4f8-695b-4ced-a7ca-d192f49a1a48",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "271d5001-ab77-40ee-863d-ecb908e00ee7",
+      "skill_id": "derivative_from_graph"
+    },
+    {
+      "question_id": "271d5001-ab77-40ee-863d-ecb908e00ee7",
+      "skill_id": "slope_instant_rate"
+    },
+    {
+      "question_id": "30247f6c-c5ac-40e7-9057-909944b38a42",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "30572517-70d6-4e48-9829-347311411348",
+      "skill_id": "method_selection_derivatives"
+    },
+    {
+      "question_id": "30572517-70d6-4e48-9829-347311411348",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "33421970-4324-4bd1-82b3-c9d57ce2617a",
+      "skill_id": "differentiability_concept"
+    },
+    {
+      "question_id": "3421ebd1-1cd7-4034-827d-816461063c96",
+      "skill_id": "method_selection_derivatives"
+    },
+    {
+      "question_id": "3421ebd1-1cd7-4034-827d-816461063c96",
+      "skill_id": "derivative_definition_limit"
+    },
+    {
+      "question_id": "3733383c-7480-4fcb-814e-0a6afe057944",
+      "skill_id": "derivative_from_table"
+    },
+    {
+      "question_id": "3733383c-7480-4fcb-814e-0a6afe057944",
+      "skill_id": "difference_quotient"
+    },
+    {
+      "question_id": "3828181b-4115-4bf0-bc85-5f5813ca1857",
+      "skill_id": "quotient_rule"
+    },
+    {
+      "question_id": "3828181b-4115-4bf0-bc85-5f5813ca1857",
+      "skill_id": "log_derivatives_basic"
+    },
+    {
+      "question_id": "3f678293-e82d-4368-8577-0717a129a045",
+      "skill_id": "difference_quotient"
+    },
+    {
+      "question_id": "3f678293-e82d-4368-8577-0717a129a045",
+      "skill_id": "derivative_definition_limit"
+    },
+    {
+      "question_id": "3f92f0dc-2b38-4563-8a4b-2dbc2203027e",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "3f92f0dc-2b38-4563-8a4b-2dbc2203027e",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "408aed1b-0bf7-4b20-9168-ce3048175967",
+      "skill_id": "diff_vs_continuity"
+    },
+    {
+      "question_id": "432288c0-0c3b-456a-aeef-07a638861fa8",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "432288c0-0c3b-456a-aeef-07a638861fa8",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "44f58c63-78f3-4a23-91d4-0e6e48196efe",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "489db17c-15b1-4b1b-943c-308806d5c54f",
+      "skill_id": "interpret_derivative_context"
+    },
+    {
+      "question_id": "489db17c-15b1-4b1b-943c-308806d5c54f",
+      "skill_id": "slope_instant_rate"
+    },
+    {
+      "question_id": "4cf08aad-480a-4ee7-8ad3-aa81da9665a5",
+      "skill_id": "derivative_from_graph"
+    },
+    {
+      "question_id": "4eb3349b-6d4c-469f-9a3b-aada3e83c2c1",
+      "skill_id": "nondifferentiable_features"
+    },
+    {
+      "question_id": "4eb3349b-6d4c-469f-9a3b-aada3e83c2c1",
+      "skill_id": "diff_vs_continuity"
+    },
+    {
+      "question_id": "512e4ef2-cfb6-48ac-91da-fae6d237ea84",
+      "skill_id": "derivative_from_table"
+    },
+    {
+      "question_id": "52fe8fe2-8729-4d93-a390-97f661acfd9a",
+      "skill_id": "quotient_rule"
+    },
+    {
+      "question_id": "52fe8fe2-8729-4d93-a390-97f661acfd9a",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "57d30721-0abe-45a6-96be-8f381262537e",
+      "skill_id": "method_selection_derivatives"
+    },
+    {
+      "question_id": "57d30721-0abe-45a6-96be-8f381262537e",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "5e620428-3fe0-4c61-a644-8f749e2041be",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "5e620428-3fe0-4c61-a644-8f749e2041be",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "5f28158d-416c-4237-b617-427fdd4fac14",
+      "skill_id": "quotient_rule"
+    },
+    {
+      "question_id": "5f28158d-416c-4237-b617-427fdd4fac14",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "69737486-d14c-40e6-8c8c-f71c5e557aca",
+      "skill_id": "product_rule"
+    },
+    {
+      "question_id": "6d1f1f2e-5090-4f8f-a00d-16a85041bf56",
+      "skill_id": "log_derivatives_basic"
+    },
+    {
+      "question_id": "6d8ccce8-090a-40be-8e25-03c4c9cbd0f4",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "6d8ccce8-090a-40be-8e25-03c4c9cbd0f4",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "72dd142e-bef9-4f05-b426-56c2c61e8c27",
+      "skill_id": "derivative_from_graph"
+    },
+    {
+      "question_id": "73c6b115-5fb3-4030-a85f-135b917a8000",
+      "skill_id": "derivative_from_table"
+    },
+    {
+      "question_id": "73c6b115-5fb3-4030-a85f-135b917a8000",
+      "skill_id": "difference_quotient"
+    },
+    {
+      "question_id": "73fa8c73-5409-41cc-92bf-4e6dd7ec9d57",
+      "skill_id": "product_rule"
+    },
+    {
+      "question_id": "73fa8c73-5409-41cc-92bf-4e6dd7ec9d57",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "754f482a-844c-422c-b23d-aff2d66ca4fc",
+      "skill_id": "normal_line_equation"
+    },
+    {
+      "question_id": "754f482a-844c-422c-b23d-aff2d66ca4fc",
+      "skill_id": "tangent_line_equation"
+    },
+    {
+      "question_id": "80c62aaf-d83c-40b3-b2ab-9cca15eac2e8",
+      "skill_id": "slope_instant_rate"
+    },
+    {
+      "question_id": "80c62aaf-d83c-40b3-b2ab-9cca15eac2e8",
+      "skill_id": "difference_quotient"
+    },
+    {
+      "question_id": "85bda686-1664-4841-b4fc-81ef3370758f",
+      "skill_id": "product_rule"
+    },
+    {
+      "question_id": "85bda686-1664-4841-b4fc-81ef3370758f",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "878d6f75-6746-419a-9dfd-5a10fae3966f",
+      "skill_id": "diff_vs_continuity"
+    },
+    {
+      "question_id": "8819d62b-11ae-4131-9a73-f9060b516421",
+      "skill_id": "nondifferentiable_features"
+    },
+    {
+      "question_id": "88ae6803-0699-487d-8c33-45c2bf06f10c",
+      "skill_id": "method_selection_derivatives"
+    },
+    {
+      "question_id": "88ae6803-0699-487d-8c33-45c2bf06f10c",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "88fa7ab9-c412-41be-be20-0c1ccd0c66a0",
+      "skill_id": "quotient_rule"
+    },
+    {
+      "question_id": "88fa7ab9-c412-41be-be20-0c1ccd0c66a0",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "891d304e-8db9-44e3-8b7c-f0dab0c25a78",
+      "skill_id": "derivative_from_graph"
+    },
+    {
+      "question_id": "891d304e-8db9-44e3-8b7c-f0dab0c25a78",
+      "skill_id": "derivative_notation"
+    },
+    {
+      "question_id": "8d676d26-b96a-4f4b-8b5e-6b034eabc24a",
+      "skill_id": "quotient_rule"
+    },
+    {
+      "question_id": "8d676d26-b96a-4f4b-8b5e-6b034eabc24a",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "92067e1f-2ca7-43cf-b08c-265573e35955",
+      "skill_id": "slope_instant_rate"
+    },
+    {
+      "question_id": "92067e1f-2ca7-43cf-b08c-265573e35955",
+      "skill_id": "slope_avg_rate"
+    },
+    {
+      "question_id": "965e82a6-505e-4854-8bc4-925baecd03ff",
+      "skill_id": "interpret_derivative_context"
+    },
+    {
+      "question_id": "965e82a6-505e-4854-8bc4-925baecd03ff",
+      "skill_id": "slope_instant_rate"
+    },
+    {
+      "question_id": "997b15cc-b985-4c56-a08a-8ae4cf99dfc6",
+      "skill_id": "trig_derivatives_basic"
+    },
+    {
+      "question_id": "a80c0b86-0167-403d-b31d-74fb4b0a39ea",
+      "skill_id": "derivative_notation"
+    },
+    {
+      "question_id": "a80c0b86-0167-403d-b31d-74fb4b0a39ea",
+      "skill_id": "interpret_derivative_context"
+    },
+    {
+      "question_id": "abe28423-4854-4a34-83c3-4dd9d0fc88a0",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "add0bc6f-e828-405d-87ea-f5e224796bf1",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "b1fdc896-1b99-4753-b986-7ee1fcdb27ac",
+      "skill_id": "slope_avg_rate"
+    },
+    {
+      "question_id": "bae2f1fc-ce42-4bdd-b9d0-45cf31f0149f",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "bc798f16-fc48-4db1-bcf5-41b57770ff85",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "bc798f16-fc48-4db1-bcf5-41b57770ff85",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "beab9937-2e0a-420e-a540-3e46624c7188",
+      "skill_id": "difference_quotient"
+    },
+    {
+      "question_id": "beab9937-2e0a-420e-a540-3e46624c7188",
+      "skill_id": "slope_avg_rate"
+    },
+    {
+      "question_id": "ca6b2eda-8919-4bff-9da7-84bdb3322cb2",
+      "skill_id": "derivative_from_graph"
+    },
+    {
+      "question_id": "d7f5b853-f6d2-4d12-b043-787faef79f35",
+      "skill_id": "derivative_notation"
+    },
+    {
+      "question_id": "d90dc96e-148d-4ac8-a406-2903dbd38e8a",
+      "skill_id": "nondifferentiable_features"
+    },
+    {
+      "question_id": "db269d76-4ce6-48f6-bb2e-138cc79ef3e8",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "dde972b3-8ff0-44ef-94c0-7551944318f7",
+      "skill_id": "product_rule"
+    },
+    {
+      "question_id": "dde972b3-8ff0-44ef-94c0-7551944318f7",
+      "skill_id": "log_derivatives_basic"
+    },
+    {
+      "question_id": "e1ccd149-62f7-4418-a18c-6c850e37dcb2",
+      "skill_id": "method_selection_derivatives"
+    },
+    {
+      "question_id": "e1ccd149-62f7-4418-a18c-6c850e37dcb2",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "e5bfc943-7601-4e22-ad58-283a5e336f49",
+      "skill_id": "method_selection_derivatives"
+    },
+    {
+      "question_id": "e5bfc943-7601-4e22-ad58-283a5e336f49",
+      "skill_id": "product_rule"
+    },
+    {
+      "question_id": "e7e2561d-5502-476b-9f39-f26e2216c5ce",
+      "skill_id": "slope_avg_rate"
+    },
+    {
+      "question_id": "ef9eb6a7-d358-4817-b018-a06f38d840ad",
+      "skill_id": "linearity_rules"
+    },
+    {
+      "question_id": "ef9eb6a7-d358-4817-b018-a06f38d840ad",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "efdf6412-1289-4538-9ce6-acd1b67bafad",
+      "skill_id": "log_derivatives_basic"
+    },
+    {
+      "question_id": "f51602e6-ecf7-46ea-8f9c-4a726ebb1a75",
+      "skill_id": "product_rule"
+    },
+    {
+      "question_id": "f51602e6-ecf7-46ea-8f9c-4a726ebb1a75",
+      "skill_id": "power_rule_basic"
+    },
+    {
+      "question_id": "f8b5fead-9cb7-4857-b7ac-0bd35befaabc",
+      "skill_id": "method_selection_derivatives"
+    },
+    {
+      "question_id": "f8b5fead-9cb7-4857-b7ac-0bd35befaabc",
+      "skill_id": "quotient_rule"
+    },
+    {
+      "question_id": "f8cda24a-c64d-43d8-8848-d978318dd686",
+      "skill_id": "exp_derivatives_basic"
+    },
+    {
+      "question_id": "fca9dfc7-9f43-4d82-8627-bbf1cccb0eb6",
+      "skill_id": "method_selection_derivatives"
+    },
+    {
+      "question_id": "fca9dfc7-9f43-4d82-8627-bbf1cccb0eb6",
+      "skill_id": "derivative_definition_limit"
+    }
+  ]
+}

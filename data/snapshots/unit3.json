@@ -1,0 +1,339 @@
+{
+  "timestamp": "2026-01-31T05:37:49.124Z",
+  "description": "Proposed Unit 3 Relational Data (Semantic)",
+  "skills": [
+    {
+      "id": "method_selection_unit3",
+      "name": "method_selection_unit3",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "inverse_trig_derivatives",
+      "name": "inverse_trig_derivatives",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "higher_order_derivatives",
+      "name": "higher_order_derivatives",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "inverse_function_derivative",
+      "name": "inverse_function_derivative",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "inverse_from_table_graph",
+      "name": "inverse_from_table_graph",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "inverse_trig_chain",
+      "name": "inverse_trig_chain",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "chain_rule_basic",
+      "name": "chain_rule_basic",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "implicit_diff_basic",
+      "name": "implicit_diff_basic",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "chain_rule_with_trig_exp_log",
+      "name": "chain_rule_with_trig_exp_log",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "chain_rule_multi_layer",
+      "name": "chain_rule_multi_layer",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "implicit_diff_product_quotient",
+      "name": "implicit_diff_product_quotient",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "implicit_diff_at_point",
+      "name": "implicit_diff_at_point",
+      "unit": "Composite_Implicit_Inverse"
+    },
+    {
+      "id": "higher_order_meaning",
+      "name": "higher_order_meaning",
+      "unit": "Composite_Implicit_Inverse"
+    }
+  ],
+  "error_tags": [
+    {
+      "id": "inverse_derivative_wrong_input",
+      "name": "inverse_derivative_wrong_input"
+    },
+    {
+      "id": "inverse_trig_wrong_formula",
+      "name": "inverse_trig_wrong_formula"
+    },
+    {
+      "id": "higher_order_compute_error",
+      "name": "higher_order_compute_error"
+    },
+    {
+      "id": "inverse_trig_missing_chain",
+      "name": "inverse_trig_missing_chain"
+    },
+    {
+      "id": "inverse_table_lookup_error",
+      "name": "inverse_table_lookup_error"
+    },
+    {
+      "id": "chain_rule_missing_inner",
+      "name": "chain_rule_missing_inner"
+    },
+    {
+      "id": "method_choice_wrong_unit3",
+      "name": "method_choice_wrong_unit3"
+    },
+    {
+      "id": "implicit_diff_forget_dydx",
+      "name": "implicit_diff_forget_dydx"
+    },
+    {
+      "id": "higher_order_derivative_misread",
+      "name": "higher_order_derivative_misread"
+    },
+    {
+      "id": "chain_rule_wrong_layers",
+      "name": "chain_rule_wrong_layers"
+    },
+    {
+      "id": "implicit_diff_wrong_product_rule",
+      "name": "implicit_diff_wrong_product_rule"
+    },
+    {
+      "id": "inverse_trig_sign_domain_confusion",
+      "name": "inverse_trig_sign_domain_confusion"
+    },
+    {
+      "id": "implicit_diff_point_sub_error",
+      "name": "implicit_diff_point_sub_error"
+    },
+    {
+      "id": "chain_rule_algebra_slip",
+      "name": "chain_rule_algebra_slip"
+    },
+    {
+      "id": "inverse_derivative_reciprocal_confusion",
+      "name": "inverse_derivative_reciprocal_confusion"
+    },
+    {
+      "id": "implicit_diff_not_isolated",
+      "name": "implicit_diff_not_isolated"
+    }
+  ],
+  "question_skills": [
+    {
+      "question_id": "064151a0-0ebb-4a10-8b79-d93609c59ee9",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "12429fb2-5293-418d-87bf-140f7b17f6f2",
+      "skill_id": "inverse_trig_derivatives"
+    },
+    {
+      "question_id": "217431e2-b0ca-42cc-b9c9-2278d5b3825d",
+      "skill_id": "higher_order_derivatives"
+    },
+    {
+      "question_id": "237cf050-c6e9-417f-82f2-f087c0e64031",
+      "skill_id": "inverse_function_derivative"
+    },
+    {
+      "question_id": "2c8a01b6-04cf-4640-8859-1e7693ddff10",
+      "skill_id": "inverse_from_table_graph"
+    },
+    {
+      "question_id": "32dad1dc-44f2-4d16-8891-658a35c6949a",
+      "skill_id": "inverse_trig_chain"
+    },
+    {
+      "question_id": "43f54028-932d-4324-93bd-bc7b66d4aa60",
+      "skill_id": "inverse_from_table_graph"
+    },
+    {
+      "question_id": "45c7fa2f-01e9-40fa-9952-9e5174deb197",
+      "skill_id": "chain_rule_basic"
+    },
+    {
+      "question_id": "48ff88e2-4be0-406e-b3dc-9e143a76b037",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "4ac07956-9445-4ba7-8503-887545eccf85",
+      "skill_id": "chain_rule_basic"
+    },
+    {
+      "question_id": "4ae5ad52-fd2a-45fb-8299-9c496d49fbad",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "59ef59bc-c73f-499e-9eb5-4572d8ac5352",
+      "skill_id": "implicit_diff_basic"
+    },
+    {
+      "question_id": "5ba089cb-f6b9-427f-8b66-dec62446e2f6",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "68e20850-4913-4f14-b767-b7bafe0f078e",
+      "skill_id": "higher_order_derivatives"
+    },
+    {
+      "question_id": "693e3865-f241-4f57-8dd8-3b4c1c3ba5f6",
+      "skill_id": "chain_rule_with_trig_exp_log"
+    },
+    {
+      "question_id": "7852b305-5521-476c-8f83-a3e330ac8e50",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "7b2a990b-362a-4e30-945a-62143fb5feec",
+      "skill_id": "chain_rule_multi_layer"
+    },
+    {
+      "question_id": "813fb837-2d2c-496e-a3d0-9d2aabd140cc",
+      "skill_id": "implicit_diff_product_quotient"
+    },
+    {
+      "question_id": "8823710e-ebdc-4df6-ad52-29c428493194",
+      "skill_id": "higher_order_derivatives"
+    },
+    {
+      "question_id": "897e129e-4492-4730-a82f-cb9ce2fc9288",
+      "skill_id": "inverse_trig_chain"
+    },
+    {
+      "question_id": "91021dbf-3f38-431a-a003-f82eb3d54442",
+      "skill_id": "inverse_trig_derivatives"
+    },
+    {
+      "question_id": "9341e84d-13ef-4339-b540-3be3de4ae6b2",
+      "skill_id": "implicit_diff_product_quotient"
+    },
+    {
+      "question_id": "9948ca83-d7e5-436a-9732-7a0459aa8485",
+      "skill_id": "implicit_diff_at_point"
+    },
+    {
+      "question_id": "a1929b91-9cb1-490f-92b9-6f814c232c49",
+      "skill_id": "chain_rule_with_trig_exp_log"
+    },
+    {
+      "question_id": "a2a450ef-9de9-405b-a9ce-0fd06a62c7ec",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "a4321137-6af8-407b-a198-c4e51643b63b",
+      "skill_id": "inverse_trig_chain"
+    },
+    {
+      "question_id": "aa958cac-bb36-4906-81e0-f962563d7266",
+      "skill_id": "inverse_trig_chain"
+    },
+    {
+      "question_id": "ab0a99e4-7fa2-4633-b6ba-7846588fef95",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "aba62706-c5e8-4b65-889d-567b46443a58",
+      "skill_id": "inverse_function_derivative"
+    },
+    {
+      "question_id": "b06e5bba-2b83-4c37-97ca-9532b76345b1",
+      "skill_id": "higher_order_derivatives"
+    },
+    {
+      "question_id": "b24bb9d4-e702-48df-bc3d-9273302d1302",
+      "skill_id": "higher_order_derivatives"
+    },
+    {
+      "question_id": "b512ef70-c34c-44bc-a74b-636a5e48f66e",
+      "skill_id": "inverse_trig_derivatives"
+    },
+    {
+      "question_id": "b916692b-b088-4d8b-a58e-435aef8e94d4",
+      "skill_id": "chain_rule_basic"
+    },
+    {
+      "question_id": "c10ecac2-d45e-4889-a2e4-138c7ee3c760",
+      "skill_id": "higher_order_derivatives"
+    },
+    {
+      "question_id": "c207f06e-4de5-4ce8-a445-976ef78ae13d",
+      "skill_id": "inverse_trig_chain"
+    },
+    {
+      "question_id": "c5013f1b-d22c-40ac-9b2a-04cce9be4846",
+      "skill_id": "chain_rule_basic"
+    },
+    {
+      "question_id": "c7fc9c97-240f-40df-a0cb-a7188349c5cc",
+      "skill_id": "higher_order_derivatives"
+    },
+    {
+      "question_id": "c8512468-74c6-4d5b-861c-72f6ed11cb61",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "ce013efd-dec8-49e0-8794-80deb344430a",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "d284a0ec-a98f-4349-aec0-2e4f0d394005",
+      "skill_id": "higher_order_derivatives"
+    },
+    {
+      "question_id": "d59b784d-995b-4b67-8fc4-ae8cab832f9d",
+      "skill_id": "inverse_function_derivative"
+    },
+    {
+      "question_id": "d90169b7-1b2d-4b99-b142-5fbf168c4e47",
+      "skill_id": "inverse_function_derivative"
+    },
+    {
+      "question_id": "d938642b-9344-4467-ab9b-72853a0f6845",
+      "skill_id": "higher_order_meaning"
+    },
+    {
+      "question_id": "ddd27b7b-19ad-4540-8b4e-644ed93bd859",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "e225840b-7f71-4a71-a1a3-c2951f79fc3f",
+      "skill_id": "inverse_trig_chain"
+    },
+    {
+      "question_id": "e5dba277-8737-4ae1-b68b-65ba01e5fb08",
+      "skill_id": "higher_order_meaning"
+    },
+    {
+      "question_id": "e83c7313-4921-4d24-bfd9-5cb3c28fc38b",
+      "skill_id": "inverse_function_derivative"
+    },
+    {
+      "question_id": "eb432132-45c2-4c67-a8dc-b16e3e885d16",
+      "skill_id": "implicit_diff_basic"
+    },
+    {
+      "question_id": "ec11e644-7d02-40b2-8533-878258709ccb",
+      "skill_id": "method_selection_unit3"
+    },
+    {
+      "question_id": "ed7dddc1-2ffc-4a21-a080-f07f60e14e3f",
+      "skill_id": "implicit_diff_basic"
+    }
+  ]
+}

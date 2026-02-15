@@ -5,8 +5,15 @@ import { Navbar } from '../components/Navbar';
 import { usersApi } from '../src/services/api';
 
 export const Settings = () => {
-    const { user, updateUser, toggleCourse, logout } = useApp();
+    const {
+        user, updateUser, toggleCourse, logout, isPro,
+        notifications, markNotificationRead, userPoints, proUpgradeDismissed
+    } = useApp();
     const navigate = useNavigate();
+
+    const membershipNotifs = notifications.filter(n => n.unread && n.text?.startsWith('[Membership]'));
+    const hasMembershipAlert = membershipNotifs.length > 0;
+    const needsProUpgrade = !isPro && userPoints.balance >= 199 && hasMembershipAlert;
 
     // Local state for toggles
     const [preferences, setPreferences] = useState(user.preferences);
@@ -16,9 +23,10 @@ export const Settings = () => {
     // Creator Area State
     const [showAccessModal, setShowAccessModal] = useState(false);
 
-    // Hardcoded Super Admin
-    const SUPER_ADMIN_EMAIL = 'newmao6120@gmail.com';
-    const hasCreatorAccess = user.isCreator || user.email === SUPER_ADMIN_EMAIL;
+
+
+    // Creator Area Access - Strictly from Context (which handles @newmaos.com and super admin)
+    const hasCreatorAccess = user.isCreator;
 
     // Sync local state if user context updates from other sources
     useEffect(() => {
@@ -40,7 +48,10 @@ export const Settings = () => {
 
         try {
             // 1. Persist to Backend
-            await usersApi.updatePreferences(preferences);
+            await usersApi.updatePreferences({
+                email_notifications: preferences.emailNotifications,
+                sound_effects: preferences.soundEffects
+            });
 
             // 2. Update Local State (Context)
             updateUser({ preferences });
@@ -58,10 +69,10 @@ export const Settings = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100">
+        <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-hidden">
             <Navbar />
 
-            <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 animate-fade-in flex flex-col gap-6 sm:gap-10 overflow-y-auto">
+            <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 animate-fade-in flex flex-col gap-6 sm:gap-10 overflow-y-auto scroll-bounce">
 
                 <header className="flex flex-col gap-2">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-text-main dark:text-white">Settings</h1>
@@ -82,12 +93,15 @@ export const Settings = () => {
                                     <p className="text-gray-500 dark:text-gray-400 text-sm">{user.email}</p>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => navigate('/settings/profile')}
-                                className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-text-main dark:text-white text-sm font-semibold transition-colors"
-                            >
-                                Edit Profile
-                            </button>
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => navigate('/settings/profile')}
+                                    className="px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-sm font-bold transition-all shadow-md active:scale-95 flex items-center gap-2"
+                                >
+                                    <span className="material-symbols-outlined text-lg">edit</span>
+                                    Edit Profile
+                                </button>
+                            </div>
                         </div>
                         <div className="flex flex-col">
                             <div
@@ -101,16 +115,19 @@ export const Settings = () => {
                                 <span className="material-symbols-outlined text-gray-400 text-lg">chevron_right</span>
                             </div>
                             <div
-                                onClick={() => navigate('/settings/billing')}
-                                className="flex items-center justify-between p-4 px-6 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer"
+                                onClick={() => navigate('/settings/subscription')}
+                                className="flex items-center justify-between p-4 px-6 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer group/row"
                             >
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-3 relative">
                                     <span className="material-symbols-outlined text-gray-400">credit_card</span>
-                                    <span className="text-sm font-medium">Subscription & Billing</span>
+                                    <span className="text-sm font-medium">Subscription</span>
+                                    {(hasMembershipAlert || needsProUpgrade) && (
+                                        <span className="absolute -top-1 -left-1 w-2 h-2 bg-red-500 rounded-full shadow-sm animate-pulse"></span>
+                                    )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">Basic</span>
-                                    <span className="material-symbols-outlined text-gray-400 text-lg">chevron_right</span>
+                                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">{isPro ? 'Pro' : 'Basic'}</span>
+                                    <span className="material-symbols-outlined text-gray-400 text-lg group-hover/row:translate-x-1 transition-transform">chevron_right</span>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +218,7 @@ export const Settings = () => {
                         Sign Out
                     </button>
                     <div className="flex flex-col items-center">
-                        <p className="text-gray-400 text-xs font-medium">NewMaoS v1.0.0</p>
+                        <p className="text-gray-400 text-xs font-medium">NewMaoS v2.0.0</p>
                     </div>
                 </div>
 
@@ -250,6 +267,8 @@ export const Settings = () => {
                     </div>
                 </div>
             )}
+
+
         </div>
     );
 };

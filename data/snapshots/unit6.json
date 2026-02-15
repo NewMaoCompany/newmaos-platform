@@ -1,0 +1,969 @@
+{
+  "timestamp": "2026-01-31T04:40:18.098Z",
+  "description": "Proposed Unit 6 Relational Data",
+  "skills": [
+    {
+      "id": "indefinite_integral_notation",
+      "name": "indefinite_integral_notation",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "definite_integral_notation",
+      "name": "definite_integral_notation",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "summation_notation_sigma",
+      "name": "summation_notation_sigma",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "algebraic_prep_complete_square",
+      "name": "algebraic_prep_complete_square",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "antiderivative_basic_rules",
+      "name": "antiderivative_basic_rules",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "technique_selection_antidiff",
+      "name": "technique_selection_antidiff",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "u_substitution_setup",
+      "name": "u_substitution_setup",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "algebraic_prep_long_division",
+      "name": "algebraic_prep_long_division",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "integral_properties_basic",
+      "name": "integral_properties_basic",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "accumulation_behavior_analysis",
+      "name": "accumulation_behavior_analysis",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "ftc1_accumulation_function",
+      "name": "ftc1_accumulation_function",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "ftc2_evaluate_integral",
+      "name": "ftc2_evaluate_integral",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "u_substitution_limits",
+      "name": "u_substitution_limits",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "integral_total_vs_net_area",
+      "name": "integral_total_vs_net_area",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "area_under_curve_interpretation",
+      "name": "area_under_curve_interpretation",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "accumulation_concept",
+      "name": "accumulation_concept",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "link_riemann_to_integral",
+      "name": "link_riemann_to_integral",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "riemann_sum_from_table",
+      "name": "riemann_sum_from_table",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "riemann_sum_setup",
+      "name": "riemann_sum_setup",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "accumulation_from_variable_limit",
+      "name": "accumulation_from_variable_limit",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "ftc1_chain_inside",
+      "name": "ftc1_chain_inside",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "area_as_integral_from_graph",
+      "name": "area_as_integral_from_graph",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "riemann_sum_interpretation",
+      "name": "riemann_sum_interpretation",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "method_selection_unit6",
+      "name": "method_selection_unit6",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "units_and_context_integrals",
+      "name": "units_and_context_integrals",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "accumulation_from_table_trapezoid",
+      "name": "accumulation_from_table_trapezoid",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "riemann_sum_from_graph",
+      "name": "riemann_sum_from_graph",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "integral_symmetry_even_odd",
+      "name": "integral_symmetry_even_odd",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "net_change_from_integral",
+      "name": "net_change_from_integral",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "ftc1_derivative_of_accumulation",
+      "name": "ftc1_derivative_of_accumulation",
+      "unit": "Integration_Accumulation"
+    },
+    {
+      "id": "recover_f_from_accumulation_graph",
+      "name": "recover_f_from_accumulation_graph",
+      "unit": "Integration_Accumulation"
+    }
+  ],
+  "error_tags": [
+    {
+      "id": "antiderivative_constant_missing",
+      "name": "antiderivative_constant_missing"
+    },
+    {
+      "id": "sigma_index_error",
+      "name": "sigma_index_error"
+    },
+    {
+      "id": "complete_square_incorrect",
+      "name": "complete_square_incorrect"
+    },
+    {
+      "id": "wrong_method_choice_unit6",
+      "name": "wrong_method_choice_unit6"
+    },
+    {
+      "id": "long_division_skipped",
+      "name": "long_division_skipped"
+    },
+    {
+      "id": "integral_additivity_error",
+      "name": "integral_additivity_error"
+    },
+    {
+      "id": "du_missing_factor",
+      "name": "du_missing_factor"
+    },
+    {
+      "id": "accumulation_behavior_misread",
+      "name": "accumulation_behavior_misread"
+    },
+    {
+      "id": "ftc2_antiderivative_not_used",
+      "name": "ftc2_antiderivative_not_used"
+    },
+    {
+      "id": "u_limits_not_changed_or_mixed",
+      "name": "u_limits_not_changed_or_mixed"
+    },
+    {
+      "id": "area_sign_misread",
+      "name": "area_sign_misread"
+    },
+    {
+      "id": "net_vs_total_change_confusion",
+      "name": "net_vs_total_change_confusion"
+    },
+    {
+      "id": "sigma_expression_mismatch",
+      "name": "sigma_expression_mismatch"
+    },
+    {
+      "id": "table_interval_misuse",
+      "name": "table_interval_misuse"
+    },
+    {
+      "id": "chain_rule_missing_factor",
+      "name": "chain_rule_missing_factor"
+    },
+    {
+      "id": "integral_bounds_reversal_error",
+      "name": "integral_bounds_reversal_error"
+    },
+    {
+      "id": "accumulation_chain_rule_missing",
+      "name": "accumulation_chain_rule_missing"
+    },
+    {
+      "id": "area_sign_mistake",
+      "name": "area_sign_mistake"
+    },
+    {
+      "id": "power_rule_antiderivative_error",
+      "name": "power_rule_antiderivative_error"
+    },
+    {
+      "id": "bounds_swap_error",
+      "name": "bounds_swap_error"
+    },
+    {
+      "id": "u_choice_poor",
+      "name": "u_choice_poor"
+    },
+    {
+      "id": "units_not_interpreted",
+      "name": "units_not_interpreted"
+    },
+    {
+      "id": "delta_x_wrong",
+      "name": "delta_x_wrong"
+    },
+    {
+      "id": "sample_point_wrong",
+      "name": "sample_point_wrong"
+    },
+    {
+      "id": "symmetry_even_odd_misuse",
+      "name": "symmetry_even_odd_misuse"
+    },
+    {
+      "id": "accumulation_derivative_wrong_variable",
+      "name": "accumulation_derivative_wrong_variable"
+    },
+    {
+      "id": "ftc_sign_error",
+      "name": "ftc_sign_error"
+    },
+    {
+      "id": "accumulation_vs_value_confusion",
+      "name": "accumulation_vs_value_confusion"
+    }
+  ],
+  "question_skills": [
+    {
+      "question_id": "005a84a2-24aa-4633-9e4c-a6871ce2de74",
+      "skill_id": "indefinite_integral_notation"
+    },
+    {
+      "question_id": "005a84a2-24aa-4633-9e4c-a6871ce2de74",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "013022df-2313-41b9-9a86-4509c0306bc5",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "013022df-2313-41b9-9a86-4509c0306bc5",
+      "skill_id": "summation_notation_sigma"
+    },
+    {
+      "question_id": "02faf402-a407-4781-9dcc-df442fe7a07a",
+      "skill_id": "algebraic_prep_complete_square"
+    },
+    {
+      "question_id": "02faf402-a407-4781-9dcc-df442fe7a07a",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "082230d0-983b-4e80-9e60-090b7a554d61",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "082230d0-983b-4e80-9e60-090b7a554d61",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "0a398937-39d1-4a28-ac19-b58a8f0203e5",
+      "skill_id": "algebraic_prep_long_division"
+    },
+    {
+      "question_id": "0a398937-39d1-4a28-ac19-b58a8f0203e5",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "155e396f-f42c-4f20-8bd3-f28285b29d2d",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "15e56497-6963-444b-a54e-4cec0bc1d1ad",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "15e56497-6963-444b-a54e-4cec0bc1d1ad",
+      "skill_id": "algebraic_prep_long_division"
+    },
+    {
+      "question_id": "18aec7c0-6b26-4f98-9656-03624432239e",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "18aec7c0-6b26-4f98-9656-03624432239e",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "1f6ad600-e62c-489d-ae86-40daf092540a",
+      "skill_id": "accumulation_behavior_analysis"
+    },
+    {
+      "question_id": "1f6ad600-e62c-489d-ae86-40daf092540a",
+      "skill_id": "ftc1_accumulation_function"
+    },
+    {
+      "question_id": "2136370a-9eb0-41ca-beee-7d833ebecdac",
+      "skill_id": "ftc2_evaluate_integral"
+    },
+    {
+      "question_id": "2136370a-9eb0-41ca-beee-7d833ebecdac",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "2559d603-7240-4e2b-b7fd-e2eb2a8650c7",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "2559d603-7240-4e2b-b7fd-e2eb2a8650c7",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "283bcdcd-da4d-4ec7-b0f5-a8931e63f8ac",
+      "skill_id": "u_substitution_limits"
+    },
+    {
+      "question_id": "283bcdcd-da4d-4ec7-b0f5-a8931e63f8ac",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "299cb297-5567-460f-b85a-c679498d17d7",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "299cb297-5567-460f-b85a-c679498d17d7",
+      "skill_id": "algebraic_prep_complete_square"
+    },
+    {
+      "question_id": "2a469a95-1cff-4b59-9048-ba7705573654",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "2c272e31-a5ac-4638-92a6-06c7a0bf7570",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "2c272e31-a5ac-4638-92a6-06c7a0bf7570",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "2f702f96-d980-42b2-bf98-46084d3b4cb5",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "2f702f96-d980-42b2-bf98-46084d3b4cb5",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "2fef7887-51c2-448b-8cc2-9a07376f4867",
+      "skill_id": "integral_total_vs_net_area"
+    },
+    {
+      "question_id": "2fef7887-51c2-448b-8cc2-9a07376f4867",
+      "skill_id": "area_under_curve_interpretation"
+    },
+    {
+      "question_id": "33222e06-f4f2-4d45-a436-6f360289bb30",
+      "skill_id": "ftc2_evaluate_integral"
+    },
+    {
+      "question_id": "33222e06-f4f2-4d45-a436-6f360289bb30",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "3792835e-6f77-4104-805b-298a4d38a869",
+      "skill_id": "integral_total_vs_net_area"
+    },
+    {
+      "question_id": "3792835e-6f77-4104-805b-298a4d38a869",
+      "skill_id": "accumulation_concept"
+    },
+    {
+      "question_id": "385d5ac4-2781-4c5c-bd88-28504b5a619c",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "385d5ac4-2781-4c5c-bd88-28504b5a619c",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "3adff39e-5c18-435e-b3fc-5b7e6dcca221",
+      "skill_id": "link_riemann_to_integral"
+    },
+    {
+      "question_id": "3adff39e-5c18-435e-b3fc-5b7e6dcca221",
+      "skill_id": "summation_notation_sigma"
+    },
+    {
+      "question_id": "3bfd36b8-5ea0-4ce1-b54c-f01b57a865a9",
+      "skill_id": "accumulation_concept"
+    },
+    {
+      "question_id": "3bfd36b8-5ea0-4ce1-b54c-f01b57a865a9",
+      "skill_id": "area_under_curve_interpretation"
+    },
+    {
+      "question_id": "3e58de54-6305-4181-a4a3-983be470de3e",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "3e58de54-6305-4181-a4a3-983be470de3e",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "3e8de532-f3da-4d86-aeb0-16147bcba5b3",
+      "skill_id": "area_under_curve_interpretation"
+    },
+    {
+      "question_id": "3e8de532-f3da-4d86-aeb0-16147bcba5b3",
+      "skill_id": "accumulation_concept"
+    },
+    {
+      "question_id": "3ea7901d-f58e-4aa4-85ad-70591e7a639d",
+      "skill_id": "riemann_sum_from_table"
+    },
+    {
+      "question_id": "3ea7901d-f58e-4aa4-85ad-70591e7a639d",
+      "skill_id": "riemann_sum_setup"
+    },
+    {
+      "question_id": "43221cdd-7f62-4284-9545-9463cca07d1b",
+      "skill_id": "ftc2_evaluate_integral"
+    },
+    {
+      "question_id": "43221cdd-7f62-4284-9545-9463cca07d1b",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "475ba097-a67d-4b5b-bd7a-846abc4aaf8f",
+      "skill_id": "accumulation_behavior_analysis"
+    },
+    {
+      "question_id": "475ba097-a67d-4b5b-bd7a-846abc4aaf8f",
+      "skill_id": "accumulation_from_variable_limit"
+    },
+    {
+      "question_id": "49ffed08-b8a5-4150-9d19-26f614aff6c2",
+      "skill_id": "u_substitution_limits"
+    },
+    {
+      "question_id": "49ffed08-b8a5-4150-9d19-26f614aff6c2",
+      "skill_id": "ftc2_evaluate_integral"
+    },
+    {
+      "question_id": "4a6a2096-8f92-432b-9a6b-9b3695cf8df6",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "4a6a2096-8f92-432b-9a6b-9b3695cf8df6",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "4baf1eb7-ed4e-4f8e-a9bf-6159da6a053e",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "4baf1eb7-ed4e-4f8e-a9bf-6159da6a053e",
+      "skill_id": "ftc2_evaluate_integral"
+    },
+    {
+      "question_id": "4d48005d-3b78-408b-b01c-3b4db3667c46",
+      "skill_id": "ftc1_chain_inside"
+    },
+    {
+      "question_id": "4d48005d-3b78-408b-b01c-3b4db3667c46",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "4e9c9519-4cdb-4bf5-8f4c-e093b5551f0f",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "4e9c9519-4cdb-4bf5-8f4c-e093b5551f0f",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "4f878f79-52c8-473d-9719-a045b77900d9",
+      "skill_id": "algebraic_prep_long_division"
+    },
+    {
+      "question_id": "4f878f79-52c8-473d-9719-a045b77900d9",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "50a69703-cdb9-4851-b0d1-cef99283efb3",
+      "skill_id": "algebraic_prep_complete_square"
+    },
+    {
+      "question_id": "50a69703-cdb9-4851-b0d1-cef99283efb3",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "5449d335-13a7-405c-bbcf-3b2720b6c5f7",
+      "skill_id": "accumulation_concept"
+    },
+    {
+      "question_id": "5449d335-13a7-405c-bbcf-3b2720b6c5f7",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "55fdca60-3ae2-47cf-87ad-2da7ae7413db",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "55fdca60-3ae2-47cf-87ad-2da7ae7413db",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "57840a2a-07a0-4355-8c06-e23b1bdf5348",
+      "skill_id": "riemann_sum_from_table"
+    },
+    {
+      "question_id": "57840a2a-07a0-4355-8c06-e23b1bdf5348",
+      "skill_id": "riemann_sum_setup"
+    },
+    {
+      "question_id": "580aeca3-7d91-4996-bac7-46105e97edd6",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "580aeca3-7d91-4996-bac7-46105e97edd6",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "611edbd4-1826-4642-a521-d60d3e536164",
+      "skill_id": "riemann_sum_from_table"
+    },
+    {
+      "question_id": "611edbd4-1826-4642-a521-d60d3e536164",
+      "skill_id": "accumulation_concept"
+    },
+    {
+      "question_id": "698353bd-c4ec-4f0d-bf01-e062565671a8",
+      "skill_id": "accumulation_from_variable_limit"
+    },
+    {
+      "question_id": "698353bd-c4ec-4f0d-bf01-e062565671a8",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "6ac83bfa-085f-49f7-808f-c72c6608a50c",
+      "skill_id": "indefinite_integral_notation"
+    },
+    {
+      "question_id": "6ac83bfa-085f-49f7-808f-c72c6608a50c",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "71e7d4b1-ae1e-4c40-a3c4-491615482fde",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "71e7d4b1-ae1e-4c40-a3c4-491615482fde",
+      "skill_id": "ftc2_evaluate_integral"
+    },
+    {
+      "question_id": "75fec008-8348-4ecc-a5a3-7ba55ceeb0fc",
+      "skill_id": "area_as_integral_from_graph"
+    },
+    {
+      "question_id": "75fec008-8348-4ecc-a5a3-7ba55ceeb0fc",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "7652e004-cf70-41cd-9681-f2a8a76ddfee",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "7652e004-cf70-41cd-9681-f2a8a76ddfee",
+      "skill_id": "algebraic_prep_complete_square"
+    },
+    {
+      "question_id": "7795d469-1c92-4f1f-9f18-88b9af7c41c5",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "7795d469-1c92-4f1f-9f18-88b9af7c41c5",
+      "skill_id": "indefinite_integral_notation"
+    },
+    {
+      "question_id": "8065a6df-5f3c-4726-bbc0-e329b543a055",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "8065a6df-5f3c-4726-bbc0-e329b543a055",
+      "skill_id": "ftc2_evaluate_integral"
+    },
+    {
+      "question_id": "86680f08-64ab-4f61-a111-db531c5e6da0",
+      "skill_id": "riemann_sum_interpretation"
+    },
+    {
+      "question_id": "86680f08-64ab-4f61-a111-db531c5e6da0",
+      "skill_id": "method_selection_unit6"
+    },
+    {
+      "question_id": "8b341210-b4d4-4d0b-8d48-ddb29b0a4e87",
+      "skill_id": "algebraic_prep_long_division"
+    },
+    {
+      "question_id": "8b341210-b4d4-4d0b-8d48-ddb29b0a4e87",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "8fd55577-13d9-4257-a531-e22466aba681",
+      "skill_id": "integral_total_vs_net_area"
+    },
+    {
+      "question_id": "8fd55577-13d9-4257-a531-e22466aba681",
+      "skill_id": "area_under_curve_interpretation"
+    },
+    {
+      "question_id": "92758f87-f757-4e3e-bba0-ab612ee8044e",
+      "skill_id": "u_substitution_limits"
+    },
+    {
+      "question_id": "92758f87-f757-4e3e-bba0-ab612ee8044e",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "94aa3d0b-aa16-4d51-802d-bd3b10fff058",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "94aa3d0b-aa16-4d51-802d-bd3b10fff058",
+      "skill_id": "algebraic_prep_long_division"
+    },
+    {
+      "question_id": "95d44d41-9676-4b09-a9da-15dca49aa221",
+      "skill_id": "integral_total_vs_net_area"
+    },
+    {
+      "question_id": "95d44d41-9676-4b09-a9da-15dca49aa221",
+      "skill_id": "area_under_curve_interpretation"
+    },
+    {
+      "question_id": "9c76c106-ed10-4b8c-aac0-666dc7d9420f",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "9d2daeb3-4f0c-49c4-b903-3d383c9d2c68",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "9d2daeb3-4f0c-49c4-b903-3d383c9d2c68",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "9e7bd368-3169-4ab7-bb7c-e9fbb0fbd911",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "9e7bd368-3169-4ab7-bb7c-e9fbb0fbd911",
+      "skill_id": "algebraic_prep_complete_square"
+    },
+    {
+      "question_id": "a21d2655-f3a7-481f-9c33-b4eec9928136",
+      "skill_id": "units_and_context_integrals"
+    },
+    {
+      "question_id": "a21d2655-f3a7-481f-9c33-b4eec9928136",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "a4e20b4d-0d0c-47db-a041-2342655e4b9e",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "a4e20b4d-0d0c-47db-a041-2342655e4b9e",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "a5d9e4e6-c292-4abf-9cdc-d2b548770797",
+      "skill_id": "accumulation_behavior_analysis"
+    },
+    {
+      "question_id": "a5d9e4e6-c292-4abf-9cdc-d2b548770797",
+      "skill_id": "accumulation_from_variable_limit"
+    },
+    {
+      "question_id": "a61c18fd-d82b-440f-8d19-c8e9406491c7",
+      "skill_id": "accumulation_from_table_trapezoid"
+    },
+    {
+      "question_id": "a61c18fd-d82b-440f-8d19-c8e9406491c7",
+      "skill_id": "riemann_sum_from_table"
+    },
+    {
+      "question_id": "a7df3e74-ec18-4233-9124-7ad24fc1796f",
+      "skill_id": "riemann_sum_from_graph"
+    },
+    {
+      "question_id": "a7df3e74-ec18-4233-9124-7ad24fc1796f",
+      "skill_id": "riemann_sum_setup"
+    },
+    {
+      "question_id": "a9a0fccf-f389-4a51-90ed-6bfc52b6b1c9",
+      "skill_id": "units_and_context_integrals"
+    },
+    {
+      "question_id": "a9a0fccf-f389-4a51-90ed-6bfc52b6b1c9",
+      "skill_id": "area_under_curve_interpretation"
+    },
+    {
+      "question_id": "abc23348-c024-424f-a267-69f7f9abc944",
+      "skill_id": "accumulation_concept"
+    },
+    {
+      "question_id": "ad9dbdb9-13fe-4108-8cd6-d9d665153ee6",
+      "skill_id": "ftc2_evaluate_integral"
+    },
+    {
+      "question_id": "ad9dbdb9-13fe-4108-8cd6-d9d665153ee6",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "b3441422-6e24-4132-9b60-debee1a1116c",
+      "skill_id": "indefinite_integral_notation"
+    },
+    {
+      "question_id": "b3441422-6e24-4132-9b60-debee1a1116c",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "b60d837d-eb10-4788-9fc8-c4a069fd1084",
+      "skill_id": "integral_symmetry_even_odd"
+    },
+    {
+      "question_id": "b60d837d-eb10-4788-9fc8-c4a069fd1084",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "b843f3e1-0b11-4e1b-b743-508f87f91217",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "b843f3e1-0b11-4e1b-b743-508f87f91217",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "bb2f71dd-19d8-4741-bd50-4266a8cdcd50",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "bdd8a7c1-5f50-40d8-9e3e-82f4ce5b4ba3",
+      "skill_id": "ftc2_evaluate_integral"
+    },
+    {
+      "question_id": "bdd8a7c1-5f50-40d8-9e3e-82f4ce5b4ba3",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "c0ba1851-09b6-4f2d-8a7f-3f8fad647278",
+      "skill_id": "net_change_from_integral"
+    },
+    {
+      "question_id": "c0ba1851-09b6-4f2d-8a7f-3f8fad647278",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "c1bb5c0e-d814-4b96-adce-368cf62b6cb0",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "c1bb5c0e-d814-4b96-adce-368cf62b6cb0",
+      "skill_id": "area_under_curve_interpretation"
+    },
+    {
+      "question_id": "c3c2e6b5-216c-4f19-9681-7465a7b6a01b",
+      "skill_id": "algebraic_prep_long_division"
+    },
+    {
+      "question_id": "c3c2e6b5-216c-4f19-9681-7465a7b6a01b",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "c4a32c8f-9e04-4279-81e2-c6dc63599733",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "c4a32c8f-9e04-4279-81e2-c6dc63599733",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "c7c3aeeb-414f-4947-a0ac-b2cc775ae5d6",
+      "skill_id": "accumulation_behavior_analysis"
+    },
+    {
+      "question_id": "c7c3aeeb-414f-4947-a0ac-b2cc775ae5d6",
+      "skill_id": "area_under_curve_interpretation"
+    },
+    {
+      "question_id": "cb107e44-7ff0-4408-9fb2-aed8568bbb99",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "cb107e44-7ff0-4408-9fb2-aed8568bbb99",
+      "skill_id": "algebraic_prep_long_division"
+    },
+    {
+      "question_id": "cce12eb3-a477-4d78-b0b0-9eb767064903",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "cce12eb3-a477-4d78-b0b0-9eb767064903",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "d52be690-9c99-43fa-bc11-50debe357dc6",
+      "skill_id": "riemann_sum_from_table"
+    },
+    {
+      "question_id": "d52be690-9c99-43fa-bc11-50debe357dc6",
+      "skill_id": "summation_notation_sigma"
+    },
+    {
+      "question_id": "d74df51d-7560-47d3-a984-c3fc4fcff2e5",
+      "skill_id": "accumulation_from_variable_limit"
+    },
+    {
+      "question_id": "d74df51d-7560-47d3-a984-c3fc4fcff2e5",
+      "skill_id": "ftc1_accumulation_function"
+    },
+    {
+      "question_id": "d7505719-2f65-44ea-b539-f42cee277fe1",
+      "skill_id": "ftc1_derivative_of_accumulation"
+    },
+    {
+      "question_id": "d7505719-2f65-44ea-b539-f42cee277fe1",
+      "skill_id": "area_as_integral_from_graph"
+    },
+    {
+      "question_id": "db2802e3-31d3-4502-83ca-91d57bbc827a",
+      "skill_id": "riemann_sum_setup"
+    },
+    {
+      "question_id": "db2802e3-31d3-4502-83ca-91d57bbc827a",
+      "skill_id": "definite_integral_notation"
+    },
+    {
+      "question_id": "ddd4ee5e-66fa-4959-a070-c6c3edcf2b66",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "ddd4ee5e-66fa-4959-a070-c6c3edcf2b66",
+      "skill_id": "u_substitution_limits"
+    },
+    {
+      "question_id": "e62e164c-44bf-4540-9c66-3921fa16efa6",
+      "skill_id": "integral_symmetry_even_odd"
+    },
+    {
+      "question_id": "e68dd7c9-97ac-4f4c-8db8-1647243b049a",
+      "skill_id": "integral_properties_basic"
+    },
+    {
+      "question_id": "e9fb6754-c538-4767-9f9d-ba15d1c2b851",
+      "skill_id": "riemann_sum_from_graph"
+    },
+    {
+      "question_id": "e9fb6754-c538-4767-9f9d-ba15d1c2b851",
+      "skill_id": "area_under_curve_interpretation"
+    },
+    {
+      "question_id": "f1338cd1-d950-4097-b27c-aea987acd445",
+      "skill_id": "u_substitution_setup"
+    },
+    {
+      "question_id": "f1338cd1-d950-4097-b27c-aea987acd445",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "f14b7f23-cc0a-43eb-900e-e62e63268b82",
+      "skill_id": "algebraic_prep_long_division"
+    },
+    {
+      "question_id": "f14b7f23-cc0a-43eb-900e-e62e63268b82",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "f3f62212-b5e2-49c2-92f9-bb8a4838845f",
+      "skill_id": "technique_selection_antidiff"
+    },
+    {
+      "question_id": "f3f62212-b5e2-49c2-92f9-bb8a4838845f",
+      "skill_id": "algebraic_prep_complete_square"
+    },
+    {
+      "question_id": "f4a8b441-6671-46a8-af4b-fffbd3b44763",
+      "skill_id": "antiderivative_basic_rules"
+    },
+    {
+      "question_id": "f4a8b441-6671-46a8-af4b-fffbd3b44763",
+      "skill_id": "indefinite_integral_notation"
+    },
+    {
+      "question_id": "f81101d0-5204-4707-85c4-c9b3d1993e3f",
+      "skill_id": "accumulation_from_variable_limit"
+    },
+    {
+      "question_id": "f81101d0-5204-4707-85c4-c9b3d1993e3f",
+      "skill_id": "ftc1_accumulation_function"
+    },
+    {
+      "question_id": "f9f485e4-316d-47e9-a2f1-6f9a60241ed2",
+      "skill_id": "summation_notation_sigma"
+    },
+    {
+      "question_id": "f9f485e4-316d-47e9-a2f1-6f9a60241ed2",
+      "skill_id": "link_riemann_to_integral"
+    },
+    {
+      "question_id": "fd425984-8054-4ea6-b0ea-63f75d0f075c",
+      "skill_id": "recover_f_from_accumulation_graph"
+    },
+    {
+      "question_id": "fd425984-8054-4ea6-b0ea-63f75d0f075c",
+      "skill_id": "accumulation_behavior_analysis"
+    }
+  ]
+}

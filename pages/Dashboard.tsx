@@ -4,6 +4,7 @@ import { supabase } from '../src/services/supabaseClient'; // Import Supabase cl
 import { Navbar } from '../components/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
 import { CourseType } from '../types';
+import { WelcomeGiftModal } from '../components/WelcomeGiftModal';
 
 const RadialProgress = ({ percentage }: { percentage: number }) => {
   const radius = 30;
@@ -43,12 +44,21 @@ const CourseCard = ({
   onSelect: () => void;
   onStart: (e: React.MouseEvent) => void;
 }) => {
-  const { user, courses, getSectionStatus } = useApp();
+  const { user, courses, getSectionStatus, getCourseProgress } = useApp();
   const course = courses[type];
   const isActive = user.currentCourse === type;
+  const [progress, setProgress] = useState(0);
 
   // Use Synchronous lookup from Cache (no async flickering)
   const courseStatus = getSectionStatus(type);
+
+  useEffect(() => {
+    if (user?.id) {
+      getCourseProgress(type).then(data => {
+        if (data) setProgress(data.progress_percentage || 0);
+      });
+    }
+  }, [type, user?.id]);
 
   return (
     <div
@@ -64,13 +74,16 @@ const CourseCard = ({
       </div>
 
       <div className="relative z-10 flex flex-col items-start">
-        <div className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-6
+        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-6
                   ${courseStatus === 'in_progress'
             ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
             : courseStatus === 'completed'
               ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
               : 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400'}`}>
-          {courseStatus === 'in_progress' ? 'In Progress' : courseStatus === 'completed' ? 'Completed' : 'Not Started'}
+          <span>{courseStatus === 'in_progress' ? 'In Progress' : courseStatus === 'completed' ? 'Completed' : 'Not Started'}</span>
+          {(courseStatus === 'in_progress' || courseStatus === 'completed') && (
+            <span className="opacity-70">• {Math.round(progress)}%</span>
+          )}
         </div>
 
         <h3 className="text-3xl font-black text-text-main dark:text-white mb-2 tracking-tight">{course.title}</h3>
@@ -84,6 +97,11 @@ const CourseCard = ({
       </div>
 
       <div className="relative z-10 mt-8 w-full">
+        {isActive && progress > 0 && (
+          <div className="mb-4 h-2 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+            <div className="h-full bg-primary transition-all duration-1000 ease-out" style={{ width: `${progress}%` }}></div>
+          </div>
+        )}
         <button
           onClick={onStart}
           className={`w-full py-4 px-6 rounded-xl font-bold flex items-center justify-between gap-4 transition-all duration-200
@@ -101,10 +119,13 @@ const CourseCard = ({
 };
 
 export const Dashboard = () => {
-  const { user, courses, toggleCourse, startCourse, lineData, isAuthenticated, isAuthLoading, hasDismissedLoginPrompt, dismissLoginPrompt, getCourseMastery } = useApp();
+  const { user, courses, toggleCourse, startCourse, lineData, isAuthenticated, isAuthLoading, hasDismissedLoginPrompt, dismissLoginPrompt, getCourseMastery, performDailyCheckin, getCheckinStatus, checkinStatus } = useApp();
   const navigate = useNavigate();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [todayIndex, setTodayIndex] = useState(0);
+  const [showWelcomeGift, setShowWelcomeGift] = useState(false);
+
+  const needsCheckin = checkinStatus === 'not_checked_in';
 
   // Trigger login modal ONLY after auth loading completes and user is NOT authenticated
   useEffect(() => {
@@ -121,27 +142,58 @@ export const Dashboard = () => {
     }
   }, [isAuthenticated, isAuthLoading, hasDismissedLoginPrompt]);
 
+  // Welcome Gift Logic: Show if user is authenticated and hasn't claimed yet
+  useEffect(() => {
+    if (isAuthLoading || !isAuthenticated || !user?.id) return;
+
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let cancelled = false;
+
+    const checkWelcomeGift = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('points_ledger')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('description', 'Welcome Gift')
+          .limit(1);
+
+        if (cancelled) return;
+
+        if (error) {
+          console.error('Welcome gift check error:', error);
+          // On error, default to showing the popup (better to show twice than never)
+          timer = setTimeout(() => { if (!cancelled) setShowWelcomeGift(true); }, 1500);
+          return;
+        }
+
+        // If no "Welcome Gift" transaction found, show the modal
+        if (!data || data.length === 0) {
+          timer = setTimeout(() => { if (!cancelled) setShowWelcomeGift(true); }, 1500);
+        }
+      } catch (err) {
+        console.error('Welcome gift check exception:', err);
+        // On exception, still show the popup
+        if (!cancelled) {
+          timer = setTimeout(() => { if (!cancelled) setShowWelcomeGift(true); }, 1500);
+        }
+      }
+    };
+
+    checkWelcomeGift();
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [isAuthenticated, isAuthLoading, user?.id]);
+
   // Determine current day of the week (0=Sun, 1=Mon... 6=Sat) on mount
   useEffect(() => {
     setTodayIndex(new Date().getDay());
   }, []);
 
-  // Show loading spinner while auth is being determined to prevent flash
-  if (isAuthLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-surface-light dark:bg-surface-dark">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-sm text-gray-500 font-medium">Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
-  const handleDismissPrompt = () => {
-    setShowLoginPrompt(false);
-    dismissLoginPrompt();
-  };
+  // Check-in red dot: derived from global checkinStatus (no local state needed)
 
   // --- Daily Stats for "24h Refresh" ---
   const [dailyStats, setDailyStats] = useState({
@@ -152,39 +204,142 @@ export const Dashboard = () => {
     accuracy_rate: 0
   });
 
+  const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const { data, error } = await supabase.from('questions').select('id', { count: 'exact', head: true }).limit(1);
+        if (error) throw error;
+        setConnectionStatus('connected');
+        console.log('✅ Supabase connected from Dashboard');
+      } catch (err) {
+        console.error('❌ Supabase connection check failed:', err);
+        setConnectionStatus('error');
+      }
+    };
+    checkConnection();
+  }, []);
+
   useEffect(() => {
     const fetchDailyStats = async () => {
       if (!user?.id) return;
 
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0); // Start of local day
+      // Use rolling 24h window
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
       try {
-        const { data, error } = await supabase.rpc('get_daily_user_stats', {
-          p_start_timestamp: startOfDay.toISOString()
-        });
+        // Direct Query to 'question_attempts' (Most robust method)
+        const { data, error } = await supabase
+          .from('question_attempts')
+          .select('question_id, is_correct, time_spent_seconds, created_at')
+          .eq('user_id', user.id)
+          .gte('created_at', oneDayAgo.toISOString());
 
         if (error) {
-          console.error('get_daily_user_stats error:', error);
+          console.error('Fetch daily stats failed:', error);
           return;
         }
 
-        if (data && data.length > 0) {
-          const stats = data[0];
+        if (data) {
+          const totalAttempts = data.length;
+
+          // 1. Group attempts by question_id
+          const attemptsMap = new Map<string, any[]>();
+          data.forEach(d => {
+            const arr = attemptsMap.get(d.question_id) || [];
+            arr.push(d);
+            attemptsMap.set(d.question_id, arr);
+          });
+
+          const uniqueAttemptedCount = attemptsMap.size;
+          const uniqueQuestionIds = Array.from(attemptsMap.keys());
+
+          // 2. Calculate Weighted Accuracy
+          // Rules:
+          // 1st try correct = 100%
+          // 2nd try correct = 80%
+          // 3rd try correct = 70%
+          // ... -10% ...
+          // Floor = 40%
+
+          let totalScore = 0;
+
+          attemptsMap.forEach((attempts, qId) => {
+            // Sort by time ascending
+            attempts.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+
+            // Find first correct attempt index (1-based)
+            const firstCorrectIndex = attempts.findIndex(a => a.is_correct);
+
+            if (firstCorrectIndex === -1) {
+              // Never solved today -> 0 score (or should it be partial? Assuming 0 for "Correctness")
+              totalScore += 0;
+            } else {
+              const k = firstCorrectIndex + 1; // Attempt # where it was solved
+              let score = 0;
+              if (k === 1) score = 100;
+              else if (k === 2) score = 80;
+              else {
+                // k=3 -> 70, k=4 -> 60...
+                // Formula: 70 - (k-3)*10
+                score = 70 - (k - 3) * 10;
+              }
+              // Floor at 40
+              if (score < 40) score = 40;
+
+              totalScore += score;
+            }
+          });
+
+          // 3. Count unique questions correctly solved (latest attempt today is correct)
+          let solvedCount = 0;
+          attemptsMap.forEach((attempts) => {
+            // Sort by time descending to get the latest
+            attempts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+            if (attempts[0].is_correct) {
+              solvedCount++;
+            }
+          });
+
+          const weightedAccuracy = uniqueAttemptedCount > 0 ? totalScore / uniqueAttemptedCount : 0;
+          const totalTimeSeconds = data.reduce((acc, curr) => acc + (Number(curr.time_spent_seconds) || 0), 0);
+
           setDailyStats({
-            ...stats,
-            accuracy_rate: stats.total_attempts > 0
-              ? ((stats.correct_attempts / stats.total_attempts) * 100)
-              : 0
+            total_time_seconds: totalTimeSeconds,
+            unique_questions_solved: solvedCount,
+            correct_attempts: 0, // Unused display
+            total_attempts: totalAttempts,
+            accuracy_rate: Math.round(weightedAccuracy),
           });
         }
       } catch (err) {
-        console.error('Fetch daily stats failed:', err);
+        console.error('Fetch daily stats exception:', err);
       }
     };
 
-    fetchDailyStats();
-  }, [user?.id]);
+    if (isAuthenticated) {
+      fetchDailyStats();
+    }
+  }, [user?.id, isAuthenticated]);
+
+  const handleDismissPrompt = () => {
+    setShowLoginPrompt(false);
+    dismissLoginPrompt();
+  };
+
+  // Show loading spinner while auth is being determined to prevent flash
+  // MOVED AFTER HOOKS to avoid hook violation
+  if (isAuthLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-surface-light dark:bg-surface-dark">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-sm text-gray-500 font-medium">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   // Calculate dynamic trend based on the last two data points
   const currentMetric = lineData[lineData.length - 1].value;
@@ -219,10 +374,10 @@ export const Dashboard = () => {
   const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans">
+    <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans overflow-hidden">
       <Navbar />
 
-      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-8 sm:gap-12 w-full animate-fade-in">
+      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-8 sm:gap-12 w-full animate-fade-in overflow-y-auto scroll-bounce">
         <header className="flex flex-col gap-2">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-text-main dark:text-white">
             Hello, {user.name ? user.name.split(' ')[0] : 'Student'}
@@ -233,21 +388,31 @@ export const Dashboard = () => {
         </header>
 
         <section className="flex flex-col gap-8">
-          {/* Toggle - Visual only for quick switch context, actual switching happens on card click too */}
-          <div className="flex justify-start overflow-x-auto pb-2 -mb-2">
-            <div className="inline-flex bg-white dark:bg-white/5 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm shrink-0">
-              <button
-                onClick={() => handleCardSelect('AB')}
-                className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 whitespace-nowrap ${user.currentCourse === 'AB' ? 'bg-gray-100 text-black dark:bg-white dark:text-black shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'}`}
-              >
-                AP Calculus AB
-              </button>
-              <button
-                onClick={() => handleCardSelect('BC')}
-                className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 whitespace-nowrap ${user.currentCourse === 'BC' ? 'bg-gray-100 text-black dark:bg-white dark:text-black shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'}`}
-              >
-                AP Calculus BC
-              </button>
+          {/* Prominent Daily Check-in Button */}
+          <div
+            onClick={() => {
+              navigate('/checkin');
+            }}
+            className="w-full bg-white dark:bg-surface-dark rounded-[28px] p-5 sm:p-6 border border-white dark:border-white/5 shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-between group animate-fade-in relative"
+          >
+            {needsCheckin && (
+              <div className="absolute top-4 right-4 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+              </div>
+            )}
+            <div className="flex items-center gap-4 sm:gap-6">
+              <div className="p-3 sm:p-4 bg-primary rounded-2xl text-text-main shadow-glow-sm group-hover:scale-110 transition-transform rotate-3 group-hover:rotate-0">
+                <span className="material-symbols-outlined text-2xl sm:text-3xl block">calendar_today</span>
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-lg sm:text-xl font-black text-text-main dark:text-white tracking-tight">Daily Check-in</h3>
+                <p className="text-xs sm:text-sm font-medium text-text-secondary dark:text-gray-400">Maintain your streak & earn daily rewards</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="hidden sm:block text-[10px] font-bold uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-opacity">Go Now</span>
+              <span className="material-symbols-outlined text-gray-300 group-hover:translate-x-1 group-hover:text-primary transition-all">arrow_forward</span>
             </div>
           </div>
 
@@ -266,12 +431,14 @@ export const Dashboard = () => {
         </section>
 
         <section>
-          <h3 className="text-lg font-bold text-text-main dark:text-white mb-6 flex items-center gap-2">
-            <span className="p-1.5 bg-primary rounded-md text-text-main">
-              <span className="material-symbols-outlined text-lg block">analytics</span>
-            </span>
-            Current Performance
-          </h3>
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-text-main dark:text-white flex items-center gap-2">
+              <span className="p-1.5 bg-primary rounded-md text-text-main">
+                <span className="material-symbols-outlined text-lg block">analytics</span>
+              </span>
+              Current Performance
+            </h3>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
@@ -320,9 +487,9 @@ export const Dashboard = () => {
                 <div className="flex items-baseline gap-1">
                   {/* Show Today's Stats from DB or fallback to calculation */}
                   <span className="text-4xl font-black text-text-main dark:text-white tracking-tighter">
-                    {(dailyStats.total_time_seconds / 3600).toFixed(1)}
+                    {(dailyStats.total_time_seconds / 60).toFixed(0)}
                   </span>
-                  <span className="text-lg font-bold text-gray-400">hrs</span>
+                  <span className="text-lg font-bold text-gray-400">mins</span>
                 </div>
               </div>
 
@@ -364,49 +531,56 @@ export const Dashboard = () => {
       </main>
 
       {/* Login Prompt Modal for Guests */}
-      {showLoginPrompt && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-surface-light dark:bg-surface-dark w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-white/20 relative animate-fade-in-up">
-            {/* Close Button for Guest Mode */}
-            <button
-              onClick={handleDismissPrompt}
-              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-gray-400 hover:text-text-main dark:hover:text-white"
-              title="Continue as Guest"
-            >
-              <span className="material-symbols-outlined text-xl">close</span>
-            </button>
+      {
+        showLoginPrompt && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+            <div className="bg-surface-light dark:bg-surface-dark w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-white/20 relative animate-fade-in-up">
+              {/* Close Button for Guest Mode */}
+              <button
+                onClick={handleDismissPrompt}
+                className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-gray-400 hover:text-text-main dark:hover:text-white"
+                title="Continue as Guest"
+              >
+                <span className="material-symbols-outlined text-xl">close</span>
+              </button>
 
-            <div className="flex flex-col items-center text-center mt-4">
-              <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-text-main shadow-glow mb-6 rotate-3">
-                <span className="material-symbols-outlined text-4xl">lock</span>
+              <div className="flex flex-col items-center text-center mt-4">
+                <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-text-main shadow-glow mb-6 rotate-3">
+                  <span className="material-symbols-outlined text-4xl">lock</span>
+                </div>
+                <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">Sign In Required</h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-8">
+                  Save your progress, track your mastery, and get personalized AI recommendations.
+                </p>
+
+                <div className="flex flex-col gap-3 w-full">
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="w-full py-3.5 bg-primary rounded-xl font-bold text-text-main shadow-md hover:brightness-105 active:scale-95 transition-all"
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    onClick={() => navigate('/signup')}
+                    className="w-full py-3.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+                  >
+                    Create Account
+                  </button>
+                </div>
+
+                <p className="mt-6 text-xs text-gray-400 cursor-pointer hover:text-primary transition-colors" onClick={handleDismissPrompt}>
+                  Continue as Guest (Progress won't be saved)
+                </p>
               </div>
-              <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">Sign In Required</h3>
-              <p className="text-gray-500 dark:text-gray-400 mb-8">
-                Save your progress, track your mastery, and get personalized AI recommendations.
-              </p>
-
-              <div className="flex flex-col gap-3 w-full">
-                <button
-                  onClick={() => navigate('/login')}
-                  className="w-full py-3.5 bg-primary rounded-xl font-bold text-text-main shadow-md hover:brightness-105 active:scale-95 transition-all"
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={() => navigate('/signup')}
-                  className="w-full py-3.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-                >
-                  Create Account
-                </button>
-              </div>
-
-              <p className="mt-6 text-xs text-gray-400 cursor-pointer hover:text-primary transition-colors" onClick={handleDismissPrompt}>
-                Continue as Guest (Progress won't be saved)
-              </p>
             </div>
           </div>
-        </div>
+        )
+      }
+
+      {/* Welcome Gift Modal */}
+      {showWelcomeGift && (
+        <WelcomeGiftModal onClaimed={() => setShowWelcomeGift(false)} />
       )}
-    </div>
+    </div >
   );
 };

@@ -1,16 +1,14 @@
-
 import cron from 'node-cron';
 import { supabaseAdmin } from '../config/supabase';
-import { Resend } from 'resend';
+import { sendEmail } from './emailService';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
-
 // ==========================================
 // 1. Weekly Progress (Gold/Black - Premium)
 // ==========================================
+// ... (templates remain the same)
 const templateWeeklyProgress = (name: string) => `
 <!DOCTYPE html>
 <html>
@@ -268,12 +266,11 @@ export const initEmailScheduler = () => {
                 const { subject, html } = getRandomTemplate(user.name || 'Student');
 
                 try {
-                    await resend.emails.send({
-                        from: 'NewMaoS <noreply@newmaos.com>',
-                        to: user.email,
-                        subject: subject,
-                        html: html
-                    });
+                    await sendEmail(
+                        user.email,
+                        subject,
+                        html
+                    );
                     console.log(`✅ Sent weekly email to ${user.email}`);
 
                     // 3. Insert In-App Notification
@@ -303,5 +300,19 @@ export const initEmailScheduler = () => {
         }
     });
 
-    console.log('✅ Weekly Email Scheduler Initialized (Mon 9:00 AM)');
+    // ------------------------------------------
+    // 2. Daily Notification Cleanup (3:00 AM)
+    // ------------------------------------------
+    cron.schedule('0 3 * * *', async () => {
+        console.log('⏰ Running Daily Notification Cleanup Job...');
+        try {
+            const { error } = await supabaseAdmin.rpc('cleanup_read_notifications');
+            if (error) throw error;
+            console.log('✅ Cleaned up old read notifications');
+        } catch (err) {
+            console.error('❌ Notification Cleanup Error:', err);
+        }
+    });
+
+    console.log('✅ Email Scheduler Initialized (Weekly Emails + Daily Cleanup)');
 };

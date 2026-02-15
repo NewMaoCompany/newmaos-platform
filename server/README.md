@@ -26,7 +26,7 @@ cp .env.example .env
 
 Your `.env` file should look like:
 ```
-PORT=4000
+PORT=4005
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=eyJhbGciOiJI...
 SUPABASE_SERVICE_KEY=eyJhbGciOiJI...
@@ -46,7 +46,7 @@ npm run build
 npm start
 ```
 
-The server will start at `http://localhost:4000`
+The server will start at `http://localhost:4005`
 
 ## API Endpoints
 
@@ -108,8 +108,8 @@ npx tsc --noEmit
 
 ```bash
 # Test health endpoint
-curl http://localhost:4000/api/health
+curl http://localhost:4005/api/health
 
 # Test with auth token
-curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:4000/api/users/me
+curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:4005/api/users/me
 ```

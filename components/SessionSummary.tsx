@@ -1,30 +1,135 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Question } from '../types';
+import { MathRenderer } from '../components/MathRenderer';
 import { InlineMath } from 'react-katex';
+import { QuestionCommentSection } from './QuestionCommentSection';
+import { useApp } from '../AppContext';
 import 'katex/dist/katex.min.css';
 
 interface SessionSummaryProps {
     questions: Question[];
     userAnswers: Record<string, string>;
-    questionResults: Record<string, 'correct' | 'incorrect'>;
+    questionResults: Record<string, 'correct' | 'incorrect' | boolean>;
     onExit: () => void;
     onRetake: () => void;
+    onReviewErrors?: () => void;
+    summaryHistory?: {
+        type?: 'first_attempt' | 'review';
+        attemptNumber?: number;
+        round?: number;
+        label: string;
+        timestamp: string;
+        score?: number;
+        userAnswers: Record<string, string>;
+        questionResults: Record<string, 'correct' | 'incorrect' | boolean>;
+    }[];
+    justCompletedSessionLabel?: string | null;
+    discussSlug?: string | null;
 }
 
 export const SessionSummary = ({
     questions,
-    userAnswers,
-    questionResults,
+    userAnswers: initialUserAnswers,
+    questionResults: initialQuestionResults,
     onExit,
-    onRetake
+    onRetake,
+    onReviewErrors,
+    summaryHistory = [],
+    justCompletedSessionLabel = null,
+    discussSlug = null
 }: SessionSummaryProps) => {
-    const [viewMode, setViewMode] = useState<'overview' | 'review'>('overview');
+    // Determine default selection:
+    // Use justCompletedSessionLabel to find and auto-select the session that was just completed
+    const getDefaultIndex = () => {
+        console.log('🔍 [SessionSummary] getDefaultIndex called');
+        console.log('  justCompletedSessionLabel:', justCompletedSessionLabel);
+        console.log('  summaryHistory length:', summaryHistory.length);
+        console.log('  summaryHistory labels:', summaryHistory.map(h => h.label));
 
-    // Calculate Stats
+        if (justCompletedSessionLabel && summaryHistory.length > 0) {
+            // Find the index of the session with matching label
+            const index = summaryHistory.findIndex(h => h.label === justCompletedSessionLabel);
+            console.log('  Found index:', index);
+            if (index !== -1) {
+                return index; // Auto-select the just-completed session
+            }
+        }
+        // Fallback: select newest history or Current Session
+        const fallback = summaryHistory.length > 0 ? 0 : -1;
+        console.log('  Using fallback:', fallback);
+        return fallback;
+    };
+
+    // Calculate initial index to avoid button delay
+    const getInitialIndex = () => {
+        if (justCompletedSessionLabel && summaryHistory.length > 0) {
+            const index = summaryHistory.findIndex(h => h.label === justCompletedSessionLabel);
+            if (index !== -1) return index;
+        }
+        return summaryHistory.length > 0 ? 0 : -1;
+    };
+
+    const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<number>(getInitialIndex());
+    const [historyExpanded, setHistoryExpanded] = useState(false); // Controls history dropdown
+    const navigate = useNavigate();
+
+    // useEffect to auto-select the just-completed session when props update
+    useEffect(() => {
+        console.log('🔍 [SessionSummary useEffect] triggered');
+        console.log('  justCompletedSessionLabel:', justCompletedSessionLabel);
+        console.log('  summaryHistory length:', summaryHistory.length);
+        console.log('  summaryHistory labels:', summaryHistory.map(h => h.label));
+
+        if (justCompletedSessionLabel && summaryHistory.length > 0) {
+            const index = summaryHistory.findIndex(h => h.label === justCompletedSessionLabel);
+            console.log('  Found index for label:', index);
+            if (index !== -1) {
+                setSelectedHistoryIndex(index);
+                return;
+            }
+        }
+
+        // Fallback: if history exists but no justCompleted, select newest
+        if (summaryHistory.length > 0) {
+            setSelectedHistoryIndex(0);
+        }
+    }, [justCompletedSessionLabel, summaryHistory]);
+
+    // Derived Data based on selection
+    const activeUserAnswers = selectedHistoryIndex === -1
+        ? initialUserAnswers
+        : summaryHistory[selectedHistoryIndex]?.userAnswers || {};
+
+    const activeQuestionResults = selectedHistoryIndex === -1
+        ? (initialQuestionResults && Object.keys(initialQuestionResults).length > 0 ? initialQuestionResults : (summaryHistory[summaryHistory.length - 1]?.questionResults || {}))
+        : summaryHistory[selectedHistoryIndex]?.questionResults || {};
+
+    // View State
+    const [viewMode, setViewMode] = useState<'overview' | 'review'>('overview');
+    const [reviewFilter, setReviewFilter] = useState<'all' | 'correct' | 'incorrect'>('all');
+    const [visibleComments, setVisibleComments] = useState<Record<string, boolean>>({});
+
+    // Calculate Stats for ACTIVE selection
     const total = questions.length;
-    const correctCount = Object.values(questionResults).filter(r => r === 'correct').length;
-    const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
-    const incorrectCount = total - correctCount;
+    // Safety check: Filter results that actually match passed questions
+    const validResults = Object.entries(activeQuestionResults).filter(([qid]) => questions.some(q => q.id === qid));
+
+    // CRITICAL FIX: When viewing Current Session (index -1), count ALL correct/incorrect in questionResults
+    // not just those matching filtered questions array (which may be Review subset)
+    const correctCount = selectedHistoryIndex === -1
+        ? Object.values(activeQuestionResults).filter(r => r === 'correct' || r === true).length
+        : validResults.filter(([, r]) => r === 'correct' || r === true).length;
+
+    const incorrectCount = selectedHistoryIndex === -1
+        ? Object.values(activeQuestionResults).filter(r => r === 'incorrect' || r === false).length
+        : validResults.length - correctCount;
+
+    // Accuracy based on what was *attempted* in this snapshot
+    const attemptedCount = selectedHistoryIndex === -1
+        ? Object.keys(activeQuestionResults).length
+        : validResults.length;
+    const accuracy = attemptedCount > 0 ? Math.round((correctCount / attemptedCount) * 100) : 0;
 
     // Determine Theme Configuration
     const getConfig = () => {
@@ -69,7 +174,7 @@ export const SessionSummary = ({
 
     const config = getConfig();
 
-    const incorrectQuestions = questions.filter(q => questionResults[q.id] === 'incorrect');
+    const incorrectQuestions = questions.filter(q => activeQuestionResults[q.id] === 'incorrect' || activeQuestionResults[q.id] === false);
 
     const renderContent = (content: string, type?: 'text' | 'image', options: { noBorder?: boolean } = {}) => {
         if (!content) return null;
@@ -87,115 +192,178 @@ export const SessionSummary = ({
             // Try to parse array for multiple images
             let imageUrls: string[] = [];
             try {
-                if (content.trim().startsWith('[')) {
-                    const parsed = JSON.parse(content);
-                    if (Array.isArray(parsed)) {
-                        imageUrls = parsed;
-                    } else {
-                        imageUrls = [content];
-                    }
-                } else {
-                    imageUrls = [content];
-                }
-            } catch {
+                const parsed = JSON.parse(content);
+                if (Array.isArray(parsed)) imageUrls = parsed;
+                else imageUrls = [content];
+            } catch (e) {
                 imageUrls = [content];
             }
 
             return (
-                <div className="flex flex-col gap-4 my-2">
-                    {imageUrls.map((url, idx) => (
-                        <div key={idx} className="flex justify-center">
-                            <img
-                                src={url}
-                                alt={`Content ${idx + 1}`}
-                                className={`max-w-full rounded-lg ${options.noBorder ? '' : 'border border-gray-200 dark:border-gray-700 shadow-sm'}`}
-                                style={{ maxHeight: '200px' }}
-                            />
-                        </div>
+                <div className={`flex flex-wrap gap-4 ${options.noBorder ? '' : 'p-4 rounded-xl bg-gray-50 dark:bg-zinc-800'}`}>
+                    {imageUrls.map((url, i) => (
+                        <img key={i} src={url} alt="Content" className="max-w-full h-auto rounded-lg shadow-sm" />
                     ))}
                 </div>
             );
         }
 
-        // Check for LaTeX if text
-        if (content.includes('$') || content.includes('\\')) {
-            return <InlineMath>{content}</InlineMath>;
-        }
-
-        return <span className="whitespace-pre-wrap">{content}</span>;
+        // Text content - use MathRenderer
+        return <MathRenderer content={content} />;
     };
 
     if (viewMode === 'review') {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-black p-4 md:p-8 animate-fade-in flex flex-col items-center">
-                <div className="w-full max-w-3xl">
+            <div className="min-h-screen max-h-screen overflow-y-auto bg-gray-50 dark:bg-black p-4 md:p-8 animate-fade-in flex flex-col items-center">
+                <div className="w-full max-w-3xl pb-10">
                     <div className="mb-6 flex items-center justify-between">
                         <button
                             onClick={() => setViewMode('overview')}
                             className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
                         >
                             <span className="material-symbols-outlined">arrow_back</span>
-                            Back to Summary
+                            Back
                         </button>
-                        <h2 className="text-xl font-bold">Review Mistakes ({incorrectCount})</h2>
+                        <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl">
+                            {(['all', 'correct', 'incorrect'] as const).map((f) => (
+                                <button
+                                    key={f}
+                                    onClick={() => setReviewFilter(f)}
+                                    className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${reviewFilter === f
+                                        ? 'bg-white dark:bg-zinc-800 text-black dark:text-white shadow-sm'
+                                        : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                        }`}
+                                >
+                                    {f.charAt(0).toUpperCase() + f.slice(1)}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="space-y-6">
-                        {incorrectQuestions.map((q, idx) => {
-                            const userAnswerId = userAnswers[q.id];
-                            const userAnswer = q.options.find(o => o.id === userAnswerId);
-                            const correctAnswer = q.options.find(o => o.id === q.correctOptionId);
+                        {(() => {
+                            const filteredQuestions = questions.filter(q => {
+                                const result = activeQuestionResults[q.id];
+                                // ONLY show questions that were part of this specific attempt (active set)
+                                if (result === undefined || result === null) return false;
 
-                            return (
-                                <div key={q.id} className="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
-                                    <div className="flex items-start gap-4 mb-4">
-                                        <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0 text-red-600 dark:text-red-400 font-bold text-sm">
-                                            {idx + 1}
+                                if (reviewFilter === 'all') return true;
+                                if (reviewFilter === 'correct') return result === 'correct' || result === true;
+                                if (reviewFilter === 'incorrect') return result === 'incorrect' || result === false;
+                                return false;
+                            });
+
+                            if (filteredQuestions.length === 0) {
+                                return (
+                                    <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-white dark:bg-zinc-900 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                                        <div className="w-16 h-16 bg-gray-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mb-4">
+                                            <span className="material-symbols-outlined text-3xl text-gray-400">
+                                                {reviewFilter === 'correct' ? 'sentiment_dissatisfied' : 'celebration'}
+                                            </span>
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="text-base text-gray-900 dark:text-gray-100 font-medium">
-                                                {renderContent(q.prompt, q.promptType, { noBorder: true })}
-                                            </div>
-                                        </div>
+                                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                                            {reviewFilter === 'correct' ? 'No correct questions found' : (reviewFilter === 'incorrect' ? 'No mistakes, great job!' : 'The list is empty')}
+                                        </h3>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                            {reviewFilter === 'correct'
+                                                ? 'Keep working hard! Review your materials and try again.'
+                                                : (reviewFilter === 'incorrect' ? 'Congratulations! You answered all questions correctly.' : 'No questions to display under the current filter.')}
+                                        </p>
                                     </div>
+                                );
+                            }
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-12">
-                                        <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30">
-                                            <div className="text-xs font-bold text-red-500 uppercase tracking-widest mb-2 flex items-center gap-1">
-                                                <span className="material-symbols-outlined text-sm">close</span>
-                                                Your Answer
+                            return filteredQuestions.map((q, idx) => {
+                                const userAnswerId = activeUserAnswers[q.id];
+                                const userAnswer = q.options.find(o => o.id === userAnswerId);
+                                const correctAnswer = q.options.find(o => o.id === q.correctOptionId);
+
+                                return (
+                                    <div key={q.id} className="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
+                                        <div className="flex items-start gap-4 mb-4">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-bold text-sm ${(activeQuestionResults[q.id] === 'correct' || activeQuestionResults[q.id] === true)
+                                                ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+                                                : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                                                }`}>
+                                                {idx + 1}
                                             </div>
-                                            <div className="text-gray-800 dark:text-gray-200">
-                                                {userAnswer ? (
-                                                    renderContent(userAnswer.value, userAnswer.type, { noBorder: true })
-                                                ) : <span className="text-gray-400 italic">No answer selected</span>}
+                                            <div className="flex-1">
+                                                <div className="text-base text-gray-900 dark:text-gray-100 font-medium font-bold">
+                                                    {renderContent(q.prompt, q.promptType, { noBorder: true })}
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/30">
-                                            <div className="text-xs font-bold text-green-600 uppercase tracking-widest mb-2 flex items-center gap-1">
-                                                <span className="material-symbols-outlined text-sm">check</span>
-                                                Correct Answer
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-12">
+                                            <div className={`p-4 rounded-xl border ${(activeQuestionResults[q.id] === 'correct' || activeQuestionResults[q.id] === true) ? 'bg-green-50 dark:bg-green-900/10 border-green-100 dark:border-green-900/30' : 'bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30'}`}>
+                                                <div className={`text-xs font-bold uppercase tracking-widest mb-2 flex items-center gap-1 ${(activeQuestionResults[q.id] === 'correct' || activeQuestionResults[q.id] === true) ? 'text-green-600' : 'text-red-500'}`}>
+                                                    <span className="material-symbols-outlined text-sm">{(activeQuestionResults[q.id] === 'correct' || activeQuestionResults[q.id] === true) ? 'check' : 'close'}</span>
+                                                    Your Answer {userAnswerId ? `(${userAnswerId})` : ''}
+                                                </div>
+                                                <div className="text-gray-800 dark:text-gray-200">
+                                                    {userAnswer ? (
+                                                        renderContent(userAnswer.value, userAnswer.type, { noBorder: true })
+                                                    ) : <span className="text-gray-400 italic">No answer selected</span>}
+                                                </div>
                                             </div>
-                                            <div className="text-gray-800 dark:text-gray-200">
-                                                {correctAnswer ? (
-                                                    renderContent(correctAnswer.value, correctAnswer.type, { noBorder: true })
-                                                ) : <span className="text-gray-400 italic">Unknown</span>}
+
+                                            <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/30">
+                                                <div className="text-xs font-bold text-green-600 uppercase tracking-widest mb-2 flex items-center gap-1">
+                                                    <span className="material-symbols-outlined text-sm">check</span>
+                                                    Correct Answer ({q.correctOptionId})
+                                                </div>
+                                                <div className="text-gray-800 dark:text-gray-200">
+                                                    {correctAnswer ? (
+                                                        renderContent(correctAnswer.value || (correctAnswer as any).text || '', correctAnswer.type, { noBorder: true })
+                                                    ) : <span className="text-gray-400 italic">Unknown</span>}
+                                                </div>
                                             </div>
                                         </div>
+
+                                        {/* Option Feedback (Micro Explanations) */}
+                                        {userAnswerId && (userAnswer?.explanation || q.microExplanations?.[userAnswerId]) && (
+                                            <div className="mt-4 ml-12 p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-gray-800">
+                                                <div className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1 flex items-center gap-1">
+                                                    <span className="material-symbols-outlined text-xs">lightbulb</span>
+                                                    Option Feedback
+                                                </div>
+                                                <div className="text-xs text-gray-600 dark:text-gray-400">
+                                                    {renderContent(userAnswer?.explanation || q.microExplanations?.[userAnswerId] || '', 'text', { noBorder: true })}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {q.explanation && (
+                                            <div className="mt-4 ml-12 p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-gray-800">
+                                                <div className="text-xs font-bold text-blue-500 uppercase tracking-widest mb-1">Explanation</div>
+                                                <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                                    {renderContent(q.explanation, q.explanationType, { noBorder: true })}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div className="mt-4 ml-12 flex justify-start">
+                                            <button
+                                                onClick={() => setVisibleComments(prev => ({ ...prev, [q.id]: !prev[q.id] }))}
+                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${visibleComments[q.id] ? 'bg-primary text-white shadow-sm' : 'bg-indigo-50 dark:bg-indigo-900/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/20'}`}
+                                            >
+                                                <span className="material-symbols-outlined text-sm">forum</span>
+                                                {visibleComments[q.id] ? 'Hide Comments' : 'Discuss this Question'}
+                                            </button>
+                                        </div>
+
+                                        {visibleComments[q.id] && (
+                                            <div className="mt-2 ml-12">
+                                                <QuestionCommentSection
+                                                    questionId={q.id}
+                                                    channelSlug={discussSlug}
+                                                />
+                                            </div>
+                                        )}
                                     </div>
-
-                                    {q.explanation && (
-                                        <div className="mt-4 ml-12 p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-gray-800">
-                                            <div className="text-xs font-bold text-blue-500 uppercase tracking-widest mb-1">Explanation</div>
-                                            <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                                                {renderContent(q.explanation, q.explanationType, { noBorder: true })}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
+                                );
+                            });
+                        })()}
                     </div>
                 </div>
             </div>
@@ -208,57 +376,142 @@ export const SessionSummary = ({
             <div className={`absolute top-0 left-0 w-full h-[40vh] bg-gradient-to-b ${config.bgGradient} opacity-50 -z-10`}></div>
             <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl -z-10 animate-pulse-slow"></div>
 
-            <div className="w-full max-w-md bg-white/80 dark:bg-black/40 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-12 text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white/50 dark:border-white/10 relative">
+            {/* Content Card */}
+            <div className="w-full max-w-xl bg-white/80 dark:bg-black/40 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-10 text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white/50 dark:border-white/10 relative">
 
                 {/* Floating Icon Header */}
-                <div className="absolute -top-12 left-1/2 -translate-x-1/2">
-                    <div className="w-24 h-24 bg-white dark:bg-zinc-900 rounded-full shadow-xl flex items-center justify-center border-4 border-white dark:border-zinc-800">
-                        <span className={`material-symbols-outlined text-5xl ${config.iconColor} drop-shadow-sm`}>
+                <div className="absolute -top-7 left-1/2 -translate-x-1/2">
+                    <div className="w-12 h-12 bg-white dark:bg-zinc-900 rounded-full shadow-xl flex items-center justify-center border-4 border-white dark:border-zinc-800">
+                        <span className={`material-symbols-outlined text-xl ${config.iconColor} drop-shadow-sm`}>
                             {config.icon}
                         </span>
                     </div>
                 </div>
 
-                <div className="mt-10 mb-8">
-                    <h1 className="text-3xl md:text-4xl font-black mb-3 text-gray-900 dark:text-white tracking-tight">
+                <div className="mt-2 mb-2">
+                    <h1 className="text-lg md:text-xl font-black mb-1 text-gray-900 dark:text-white tracking-tight">
                         {config.title}
                     </h1>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
                         {config.subtitle}
                     </p>
                 </div>
 
+                {/* History Selector - Vertical Dropdown Style */}
+                {summaryHistory.length > 0 && (
+                    <div className="mb-6 relative">
+                        {/* Current Selection Button */}
+                        <button
+                            onClick={() => setHistoryExpanded(!historyExpanded)}
+                            className="w-full flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${selectedHistoryIndex === -1
+                                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                                    }`}>
+                                    <span className="material-symbols-outlined text-lg">
+                                        history
+                                    </span>
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-gray-900 dark:text-white leading-tight">
+                                        <span className="text-xs font-bold opacity-60">
+                                            {selectedHistoryIndex === -1 ? 'Current Session' : (summaryHistory[selectedHistoryIndex]?.label || 'Past Attempt')}
+                                        </span>
+                                    </div>
+                                    <div className="text-[10px] text-gray-500 dark:text-gray-400">
+                                        {selectedHistoryIndex === -1
+                                            ? 'Latest results'
+                                            : new Date(summaryHistory[selectedHistoryIndex]?.timestamp).toLocaleDateString()
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <span className={`material-symbols-outlined text-gray-400 transition-transform ${historyExpanded ? 'rotate-180' : ''}`}>
+                                expand_more
+                            </span>
+                        </button>
+
+                        {/* Dropdown List */}
+                        {historyExpanded && (
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50 max-h-64 overflow-y-auto scroll-bounce">
+                                <div className="py-2">
+                                    {/* Link to Current Props Results if viewing history */}
+                                    {initialQuestionResults && Object.keys(initialQuestionResults).length > 0 && (
+                                        <button
+                                            onClick={() => { setSelectedHistoryIndex(-1); setHistoryExpanded(false); }}
+                                            className={`w-full text-left px-5 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors flex items-center justify-between ${selectedHistoryIndex === -1 ? 'text-primary' : 'text-text-main dark:text-white'}`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <span className="material-symbols-outlined text-[18px]">bolt</span>
+                                                <span className="font-bold text-sm">Current Session</span>
+                                                <span className="text-[9px] opacity-50">Latest cumulative</span>
+                                            </div>
+                                            {selectedHistoryIndex === -1 && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
+                                        </button>
+                                    )}
+
+                                    {[...summaryHistory].reverse().map((hist, idx) => {
+                                        const actualIndex = summaryHistory.length - 1 - idx;
+                                        return (
+                                            <button
+                                                key={hist.timestamp + actualIndex}
+                                                onClick={() => { setSelectedHistoryIndex(actualIndex); setHistoryExpanded(false); }}
+                                                className={`w-full text-left px-5 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors flex items-center justify-between ${selectedHistoryIndex === actualIndex ? 'text-primary' : 'text-text-main dark:text-white'}`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <span className="material-symbols-outlined text-[18px]">
+                                                        {hist.type === 'review' ? 'history_edu' : 'first_page'}
+                                                    </span>
+                                                    <div className="flex flex-col">
+                                                        <span className="font-bold text-sm">{hist.label}</span>
+                                                        <span className="text-[9px] opacity-50">{new Date(hist.timestamp).toLocaleString()}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs font-black">{hist.score}%</span>
+                                                    {selectedHistoryIndex === actualIndex && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {/* Vertical Stack Stats */}
-                <div className="flex flex-col gap-4 mb-10">
-                    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 rounded-2xl">
+                <div className="flex flex-col gap-3 mb-6">
+                    <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-2xl">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
-                                <span className="material-symbols-outlined">check_circle</span>
+                            <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
+                                <span className="material-symbols-outlined text-lg">check_circle</span>
                             </div>
                             <div className="text-left">
-                                <div className="text-sm font-semibold text-gray-500 dark:text-gray-400">Correct</div>
-                                <div className="text-xl font-bold text-gray-900 dark:text-white">{correctCount}</div>
+                                <div className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Correct</div>
+                                <div className="text-lg font-black text-gray-900 dark:text-white leading-tight">{correctCount}</div>
                             </div>
                         </div>
                         <div className="h-8 w-px bg-gray-200 dark:bg-gray-700"></div>
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400">
-                                <span className="material-symbols-outlined">cancel</span>
+                            <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400">
+                                <span className="material-symbols-outlined text-lg">cancel</span>
                             </div>
                             <div className="text-left">
-                                <div className="text-sm font-semibold text-gray-500 dark:text-gray-400">Mistakes</div>
-                                <div className="text-xl font-bold text-gray-900 dark:text-white">{incorrectCount}</div>
+                                <div className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Mistakes</div>
+                                <div className="text-lg font-black text-gray-900 dark:text-white leading-tight">{incorrectCount}</div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="relative p-6 bg-gradient-to-r from-gray-900 to-gray-800 dark:from-zinc-800 dark:to-zinc-900 rounded-2xl text-white overflow-hidden shadow-lg group">
+                    <div className="relative p-4 bg-gradient-to-r from-gray-900 to-gray-800 dark:from-zinc-800 dark:to-zinc-900 rounded-2xl text-white overflow-hidden shadow-lg group">
                         <div className="relative z-10 flex flex-col items-center">
-                            <div className="text-5xl font-black tracking-tight mb-1">{accuracy}%</div>
-                            <div className="text-xs font-bold uppercase tracking-widest opacity-60">Accuracy Score</div>
+                            <div className="text-4xl font-black tracking-tight mb-0.5">{accuracy}%</div>
+                            <div className="text-[10px] font-bold uppercase tracking-widest opacity-60">Accuracy Score</div>
                         </div>
-                        {/* Decorative Chart Line */}
-                        <div className="absolute bottom-0 left-0 w-full h-12 opacity-20">
+                        <div className="absolute bottom-0 left-0 w-full h-8 opacity-20">
                             <svg className="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
                                 <path d="M0,40 Q25,10 50,30 T100,20 V40 H0 Z" fill="currentColor" />
                             </svg>
@@ -267,23 +520,50 @@ export const SessionSummary = ({
                 </div>
 
                 {/* Actions */}
-                <div className="space-y-3">
-                    {incorrectCount > 0 && (
+                <div className="space-y-2.5 min-h-[160px] flex flex-col justify-end">
+                    {/* 1. Review Errors (Priority if mistakes exist) - Show for Current Session AND Review entries */}
+                    {incorrectCount > 0 && onReviewErrors && (
                         <button
-                            onClick={() => setViewMode('review')}
-                            className="w-full py-3.5 rounded-xl font-bold border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2 group"
+                            onClick={onReviewErrors}
+                            className="w-full py-3.5 rounded-xl font-bold bg-red-500 text-white hover:brightness-110 hover:shadow-lg hover:shadow-red-500/30 transition-all flex items-center justify-center gap-2"
                         >
-                            <span className="material-symbols-outlined group-hover:scale-110 transition-transform">history_edu</span>
-                            Review Mistakes
+                            <span className="material-symbols-outlined text-[20px]">replay_circle_filled</span>
+                            Review Errors ({incorrectCount})
                         </button>
                     )}
 
+
+
+                    {/* 3. Review Questions (Internal View) */}
+                    <button
+                        onClick={() => {
+                            setReviewFilter('all');
+                            setViewMode('review');
+                        }}
+                        className="w-full py-3 rounded-xl font-bold border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-gray-400 dark:hover:border-gray-500 transition-all flex items-center justify-center gap-2 group text-sm"
+                    >
+                        <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">history_edu</span>
+                        View Summary Details
+                    </button>
+
+                    {/* Forum Shortcut (Only if NO pending errors to review) */}
+                    {(selectedHistoryIndex !== -1 || incorrectCount === 0) && (
+                        <button
+                            onClick={() => navigate('/forum')}
+                            className="w-full py-3 rounded-xl font-bold border-2 border-indigo-100 dark:border-indigo-900/30 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/10 hover:bg-indigo-100 dark:hover:bg-indigo-900/20 transition-all flex items-center justify-center gap-2 group text-sm"
+                        >
+                            <span className="material-symbols-outlined text-[20px]">forum</span>
+                            Discuss in Forum
+                        </button>
+                    )}
+
+                    {/* 4. Complete / Back */}
                     <button
                         onClick={onExit}
-                        className="w-full py-4 rounded-xl font-bold bg-primary text-black hover:brightness-105 hover:shadow-lg hover:shadow-primary/20 transition-all flex items-center justify-center gap-2"
+                        className={`w-full py-3.5 rounded-xl font-bold ${selectedHistoryIndex === -1 && incorrectCount === 0 ? 'bg-primary text-black' : 'bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white'} hover:brightness-105 transition-all flex items-center justify-center gap-2 text-sm`}
                     >
-                        <span className="material-symbols-outlined">done_all</span>
-                        Complete Session
+                        <span className="material-symbols-outlined text-[20px]">done_all</span>
+                        {selectedHistoryIndex === -1 && incorrectCount === 0 ? 'Finish Practice' : 'Back to List'}
                     </button>
                 </div>
             </div>

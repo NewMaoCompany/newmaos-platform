@@ -1,7 +1,8 @@
 # Language & Communication
-- Always respond in Chinese.
+- Always respond in Chinese (chat, walkthroughs, artifacts).
+- **Internal Website Content Rule**: All content *inside* the website (UI strings, notifications, database records, titles, labels) MUST be in English, regardless of the language used in chat.
 - Do not omit steps, logic, or important details.
-- If English content appears, translate to Chinese first.
+- If English content appears in communication, translate up to Chinese first (except for in-app strings).
 - All artifacts (implementation_plan.md, walkthrough.md, task.md) MUST be written in Chinese.
 
 # Collaboration Model

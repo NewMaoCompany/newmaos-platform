@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { supabaseAdmin } from '../config/supabase';
 import { authMiddleware } from '../middleware/auth';
+import { getRelativeTime } from '../utils/time';
 
 const router = Router();
 
@@ -100,7 +101,7 @@ router.get('/full', authMiddleware, async (req: Request, res: Response): Promise
 
         // Get topic mastery
         const { data: mastery } = await supabaseAdmin
-            .from('topic_mastery')
+            .from('unit_mastery')
             .select('*')
             .eq('user_id', userId);
 
@@ -126,12 +127,22 @@ router.get('/full', authMiddleware, async (req: Request, res: Response): Promise
             .order('created_at', { ascending: false })
             .limit(50);
 
+        // Transform notifications
+        const enrichedNotifications = (notifications || []).map((item: any) => {
+            return {
+                ...item,
+                time: getRelativeTime(new Date(item.created_at)),
+                // Simplified isAccepted for this route as we don't fetch friend requests here easily without more code
+                isAccepted: false
+            };
+        });
+
         res.json({
             profile,
             mastery: mastery || [],
             courseProgress: courseProgress || [],
             activities: activities || [],
-            notifications: notifications || []
+            notifications: enrichedNotifications
         });
     } catch (error) {
         console.error('Get full user data error:', error);

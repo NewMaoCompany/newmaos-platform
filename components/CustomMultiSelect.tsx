@@ -110,7 +110,7 @@ export const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
 
                 {/* Dropdown Menu */}
                 {isOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto w-full animate-fade-in-up">
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto w-full animate-fade-in-up scroll-bounce">
                         <div className="py-1">
                             {options.map((option) => {
                                 const isSelected = value.includes(option.value);

@@ -1,0 +1,778 @@
+{
+  "exportedAt": "2026-02-06T02:45:12.523Z",
+  "totalTables": 29,
+  "tables": {
+    "activities": {
+      "name": "activities",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "attempts_errors": {
+      "name": "attempts_errors",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": false,
+      "sampleData": null
+    },
+    "attempts_lessons": {
+      "name": "attempts_lessons",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": false,
+      "sampleData": null
+    },
+    "direct_chat_participants": {
+      "name": "direct_chat_participants",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": false,
+      "sampleData": null
+    },
+    "direct_chats": {
+      "name": "direct_chats",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": false,
+      "sampleData": null
+    },
+    "direct_messages": {
+      "name": "direct_messages",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": false,
+      "sampleData": null
+    },
+    "error_tags": {
+      "name": "error_tags",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "forum_channels": {
+      "name": "forum_channels",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "forum_members": {
+      "name": "forum_members",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": false,
+      "sampleData": null
+    },
+    "forum_messages": {
+      "name": "forum_messages",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "notifications": {
+      "name": "notifications",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "question_attempts": {
+      "name": "question_attempts",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "question_qna_patterns": {
+      "name": "question_qna_patterns",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": false,
+      "sampleData": null
+    },
+    "question_skills": {
+      "name": "question_skills",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "question_violations": {
+      "name": "question_violations",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": false,
+      "sampleData": null
+    },
+    "questions": {
+      "name": "questions",
+      "rowCount": 755,
+      "columnCount": 37,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "sample": "c351da6f-a1c7-4cc5-aa9f-efed76b3930b"
+        },
+        {
+          "name": "course",
+          "type": "text",
+          "nullable": false,
+          "sample": "Both"
+        },
+        {
+          "name": "topic",
+          "type": "text",
+          "nullable": false,
+          "sample": "Both_Limits"
+        },
+        {
+          "name": "sub_topic_id",
+          "type": "text",
+          "nullable": false,
+          "sample": "1.14"
+        },
+        {
+          "name": "type",
+          "type": "text",
+          "nullable": false,
+          "sample": "MCQ"
+        },
+        {
+          "name": "calculator_allowed",
+          "type": "boolean",
+          "nullable": false,
+          "sample": false
+        },
+        {
+          "name": "difficulty",
+          "type": "integer",
+          "nullable": false,
+          "sample": 5
+        },
+        {
+          "name": "target_time_seconds",
+          "type": "integer",
+          "nullable": false,
+          "sample": 140
+        },
+        {
+          "name": "skill_tags",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            "infinite_limits_asymptotes",
+            "limit_notation"
+          ]
+        },
+        {
+          "name": "error_tags",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            "notation_misread"
+          ]
+        },
+        {
+          "name": "prompt",
+          "type": "text",
+          "nullable": false,
+          "sample": "Which statement correctly interprets $\\lim_{x\\to 3^-} f(x)=-\\infty$?"
+        },
+        {
+          "name": "latex",
+          "type": "text",
+          "nullable": false,
+          "sample": "Which statement correctly interprets $\\lim_{x\\to 3^-} f(x)=-\\infty$?"
+        },
+        {
+          "name": "options",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            {
+              "id": "A",
+              "type": "text",
+              "label": "A",
+              "value": "As $x$ approaches 3 from the left, $f(x)$ decreases without bound.",
+              "explanation": "Correct: left-hand approach and values go down without bound."
+            },
+            {
+              "id": "B",
+              "type": "text",
+              "label": "B",
+              "value": "As $x$ approaches 3 from the right, $f(x)$ decreases without bound.",
+              "explanation": "This incorrectly uses the right-hand side."
+            },
+            {
+              "id": "C",
+              "type": "text",
+              "label": "C",
+              "value": "As $x$ approaches 3 from the left, $f(x)$ approaches 0.",
+              "explanation": "The limit is infinite, not zero."
+            },
+            "... +1 more"
+          ]
+        },
+        {
+          "name": "correct_option_id",
+          "type": "text",
+          "nullable": false,
+          "sample": "A"
+        },
+        {
+          "name": "tolerance",
+          "type": "numeric",
+          "nullable": false,
+          "sample": 0.001
+        },
+        {
+          "name": "explanation",
+          "type": "text",
+          "nullable": false,
+          "sample": "The notation $x\\to 3^$- means approaching 3 from values less than 3, and -$\\infty$ means the functio..."
+        },
+        {
+          "name": "micro_explanations",
+          "type": "jsonb",
+          "nullable": false,
+          "sample": {
+            "A": "Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.",
+            "B": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).",
+            "C": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).",
+            "D": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point)."
+          }
+        },
+        {
+          "name": "recommendation_reasons",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            "infinite_limits_asymptotes"
+          ]
+        },
+        {
+          "name": "created_by",
+          "type": "null",
+          "nullable": true,
+          "sample": null
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "nullable": false,
+          "sample": "2026-01-25T22:36:53.242986+00:00"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "nullable": false,
+          "sample": "2026-02-01T02:30:30.035927+00:00"
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "nullable": false,
+          "sample": "published"
+        },
+        {
+          "name": "version",
+          "type": "integer",
+          "nullable": false,
+          "sample": 1
+        },
+        {
+          "name": "reasoning_level",
+          "type": "integer",
+          "nullable": false,
+          "sample": 5
+        },
+        {
+          "name": "mastery_weight",
+          "type": "numeric",
+          "nullable": false,
+          "sample": 1.4
+        },
+        {
+          "name": "representation_type",
+          "type": "text",
+          "nullable": false,
+          "sample": "symbolic"
+        },
+        {
+          "name": "topic_id",
+          "type": "null",
+          "nullable": true,
+          "sample": null
+        },
+        {
+          "name": "section_id",
+          "type": "text",
+          "nullable": false,
+          "sample": "1.14"
+        },
+        {
+          "name": "source",
+          "type": "text",
+          "nullable": false,
+          "sample": "NewMaoS"
+        },
+        {
+          "name": "source_year",
+          "type": "integer",
+          "nullable": false,
+          "sample": 2026
+        },
+        {
+          "name": "notes",
+          "type": "null",
+          "nullable": true,
+          "sample": null
+        },
+        {
+          "name": "weight_primary",
+          "type": "numeric",
+          "nullable": false,
+          "sample": 0.9
+        },
+        {
+          "name": "weight_supporting",
+          "type": "numeric",
+          "nullable": false,
+          "sample": 0.1
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "nullable": false,
+          "sample": "1.14-P5"
+        },
+        {
+          "name": "prompt_type",
+          "type": "text",
+          "nullable": false,
+          "sample": "text"
+        },
+        {
+          "name": "primary_skill_id",
+          "type": "text",
+          "nullable": false,
+          "sample": "infinite_limits_asymptotes"
+        },
+        {
+          "name": "supporting_skill_ids",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            "limit_notation"
+          ]
+        }
+      ],
+      "isEmpty": false,
+      "sampleData": {
+        "id": "c351da6f-a1c7-4cc5-aa9f-efed76b3930b",
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "1.14",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": 5,
+        "target_time_seconds": 140,
+        "skill_tags": [
+          "infinite_limits_asymptotes",
+          "limit_notation"
+        ],
+        "error_tags": [
+          "notation_misread"
+        ],
+        "prompt": "Which statement correctly interprets $\\lim_{x\\to 3^-} f(x)=-\\infty$?",
+        "latex": "Which statement correctly interprets $\\lim_{x\\to 3^-} f(x)=-\\infty$?",
+        "options": [
+          {
+            "id": "A",
+            "type": "text",
+            "label": "A",
+            "value": "As $x$ approaches 3 from the left, $f(x)$ decreases without bound.",
+            "explanation": "Correct: left-hand approach and values go down without bound."
+          },
+          {
+            "id": "B",
+            "type": "text",
+            "label": "B",
+            "value": "As $x$ approaches 3 from the right, $f(x)$ decreases without bound.",
+            "explanation": "This incorrectly uses the right-hand side."
+          },
+          {
+            "id": "C",
+            "type": "text",
+            "label": "C",
+            "value": "As $x$ approaches 3 from the left, $f(x)$ approaches 0.",
+            "explanation": "The limit is infinite, not zero."
+          },
+          {
+            "id": "D",
+            "type": "text",
+            "label": "D",
+            "value": "As $x$ approaches 3, $f(3)$ must be undefined.",
+            "explanation": "While true for the graph, this is not what the limit statement says."
+          }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0.001,
+        "explanation": "The notation $x\\to 3^$- means approaching 3 from values less than 3, and -$\\infty$ means the function values decrease without bound.",
+        "micro_explanations": {
+          "A": "Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.",
+          "B": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).",
+          "C": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).",
+          "D": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point)."
+        },
+        "recommendation_reasons": [
+          "infinite_limits_asymptotes"
+        ],
+        "created_by": null,
+        "created_at": "2026-01-25T22:36:53.242986+00:00",
+        "updated_at": "2026-02-01T02:30:30.035927+00:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 5,
+        "mastery_weight": 1.4,
+        "representation_type": "symbolic",
+        "topic_id": null,
+        "section_id": "1.14",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": null,
+        "weight_primary": 0.9,
+        "weight_supporting": 0.1,
+        "title": "1.14-P5",
+        "prompt_type": "text",
+        "primary_skill_id": "infinite_limits_asymptotes",
+        "supporting_skill_ids": [
+          "limit_notation"
+        ]
+      }
+    },
+    "recommendations": {
+      "name": "recommendations",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "sections": {
+      "name": "sections",
+      "rowCount": 122,
+      "columnCount": 13,
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "sample": "Both_Limits_unit_test"
+        },
+        {
+          "name": "topic_id",
+          "type": "text",
+          "nullable": false,
+          "sample": "Both_Limits"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "nullable": false,
+          "sample": "Unit 1 Test"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": false,
+          "sample": ""
+        },
+        {
+          "name": "course_scope",
+          "type": "text",
+          "nullable": false,
+          "sample": "both"
+        },
+        {
+          "name": "estimated_minutes",
+          "type": "integer",
+          "nullable": false,
+          "sample": 10
+        },
+        {
+          "name": "has_lesson",
+          "type": "boolean",
+          "nullable": false,
+          "sample": true
+        },
+        {
+          "name": "has_practice",
+          "type": "boolean",
+          "nullable": false,
+          "sample": true
+        },
+        {
+          "name": "is_unit_test",
+          "type": "boolean",
+          "nullable": false,
+          "sample": true
+        },
+        {
+          "name": "sort_order",
+          "type": "integer",
+          "nullable": false,
+          "sample": 0
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "nullable": false,
+          "sample": "2026-01-29T21:06:13.523411+00:00"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "nullable": false,
+          "sample": "2026-01-31T19:42:27.29935+00:00"
+        },
+        {
+          "name": "description_2",
+          "type": "text",
+          "nullable": false,
+          "sample": "This is the comprehensive Unit 1 Test. It covers limits, continuity, and the definition of the deriv..."
+        }
+      ],
+      "isEmpty": false,
+      "sampleData": {
+        "id": "Both_Limits_unit_test",
+        "topic_id": "Both_Limits",
+        "title": "Unit 1 Test",
+        "description": "",
+        "course_scope": "both",
+        "estimated_minutes": 10,
+        "has_lesson": true,
+        "has_practice": true,
+        "is_unit_test": true,
+        "sort_order": 0,
+        "created_at": "2026-01-29T21:06:13.523411+00:00",
+        "updated_at": "2026-01-31T19:42:27.29935+00:00",
+        "description_2": "This is the comprehensive Unit 1 Test. It covers limits, continuity, and the definition of the derivative. Expect problems requiring algebraic manipulation of limits, Squeeze Theorem application, and Intermediate Value Theorem justification."
+      }
+    },
+    "session_history": {
+      "name": "session_history",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": false,
+      "sampleData": null
+    },
+    "session_question_history": {
+      "name": "session_question_history",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": false,
+      "sampleData": null
+    },
+    "skills": {
+      "name": "skills",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "topic_content": {
+      "name": "topic_content",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "unit_mastery": {
+      "name": "unit_mastery",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "user_profiles": {
+      "name": "user_profiles",
+      "rowCount": 3,
+      "columnCount": 13,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "sample": "b55d71f0-0649-4ca1-ab0e-2bb06e7f286a"
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "nullable": false,
+          "sample": "newmao"
+        },
+        {
+          "name": "avatar_url",
+          "type": "text",
+          "nullable": false,
+          "sample": "https://ui-avatars.com/api/?name=newmao&background=f9d406&color=1c1a0d&bold=true"
+        },
+        {
+          "name": "current_course",
+          "type": "text",
+          "nullable": false,
+          "sample": "AB"
+        },
+        {
+          "name": "problems_solved",
+          "type": "integer",
+          "nullable": false,
+          "sample": 0
+        },
+        {
+          "name": "study_hours",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            0,
+            0,
+            0,
+            "... +4 more"
+          ]
+        },
+        {
+          "name": "streak_days",
+          "type": "integer",
+          "nullable": false,
+          "sample": 0
+        },
+        {
+          "name": "percentile",
+          "type": "integer",
+          "nullable": false,
+          "sample": 0
+        },
+        {
+          "name": "email_notifications",
+          "type": "boolean",
+          "nullable": false,
+          "sample": true
+        },
+        {
+          "name": "sound_effects",
+          "type": "boolean",
+          "nullable": false,
+          "sample": false
+        },
+        {
+          "name": "is_creator",
+          "type": "boolean",
+          "nullable": false,
+          "sample": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "nullable": false,
+          "sample": "2026-01-16T23:45:01.551666+00:00"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "nullable": false,
+          "sample": "2026-01-16T23:45:01.551666+00:00"
+        }
+      ],
+      "isEmpty": false,
+      "sampleData": {
+        "id": "b55d71f0-0649-4ca1-ab0e-2bb06e7f286a",
+        "name": "newmao",
+        "avatar_url": "https://ui-avatars.com/api/?name=newmao&background=f9d406&color=1c1a0d&bold=true",
+        "current_course": "AB",
+        "problems_solved": 0,
+        "study_hours": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "streak_days": 0,
+        "percentile": 0,
+        "email_notifications": true,
+        "sound_effects": false,
+        "is_creator": true,
+        "created_at": "2026-01-16T23:45:01.551666+00:00",
+        "updated_at": "2026-01-16T23:45:01.551666+00:00"
+      }
+    },
+    "user_question_state": {
+      "name": "user_question_state",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "user_section_progress": {
+      "name": "user_section_progress",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "user_skill_mastery": {
+      "name": "user_skill_mastery",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "user_stats": {
+      "name": "user_stats",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    },
+    "verification_codes": {
+      "name": "verification_codes",
+      "rowCount": 0,
+      "columnCount": 0,
+      "columns": [],
+      "isEmpty": true,
+      "sampleData": null
+    }
+  }
+}

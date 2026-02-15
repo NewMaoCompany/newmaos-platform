@@ -59,3 +59,9 @@ Allowed (When Authorized):
 - Browsing Supabase Dashboard and related Supabase websites
 - Reading tables, schemas, functions, policies, and settings visually
 - SELECT queries only
+
+# Restricted Operations
+
+## Large Downloads
+- You MUST ask for explicit USER confirmation before performing any operation that involves downloading more than 10GB of data.
+- This rule is absolute and applies to all models and agents in this workspace.

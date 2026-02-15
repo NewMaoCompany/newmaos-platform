@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AppProvider, useApp } from './AppContext';
 import { ToastProvider } from './components/Toast';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -8,14 +8,23 @@ import { Dashboard } from './pages/Dashboard';
 import { PracticeHub } from './pages/PracticeHub';
 import { Practice } from './pages/Practice';
 import { Analysis } from './pages/Analysis';
+import { Forum } from './pages/Forum';
 import { Settings } from './pages/Settings';
-import { ProfileSettings, SecuritySettings, BillingSettings } from './pages/SettingsSubpages';
+import { ProfileSettings, SecuritySettings, SubscriptionSettings } from './pages/SettingsSubpages';
 import { Privacy, Terms, Support, Signup } from './pages/StaticPages';
 import { ResetPassword } from './pages/ResetPassword';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { TopicDetail } from './pages/TopicDetail';
 import { QuestionCreator } from './pages/QuestionCreator';
 import { Insights } from './pages/Insights';
+import { Profile } from './pages/Profile';
+import { PointsPage } from './pages/PointsPage';
+import { CheckinPage } from './pages/CheckinPage';
+import { ProWelcomeModal } from './components/ProWelcomeModal';
+import { useNavigate } from 'react-router-dom';
+import { StreakModal } from './components/StreakModal';
+import { useState, useEffect } from 'react';
+import { CoinCollector } from './components/CoinCollector';
 
 const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
   const { isAuthenticated, isAuthLoading } = useApp();
@@ -35,39 +44,194 @@ const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
   return <>{children}</>;
 };
 
+const PageLayer = ({ active, children, zIndex = 0 }: { active: boolean; children: React.ReactNode; zIndex?: number }) => (
+  <div
+    className={`absolute inset-0 transition-all duration-500 ease-in-out ${active ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+    style={{ zIndex }}
+  >
+    {children}
+  </div>
+);
+
+// --- Auto-Read Notifications on Route Change ---
+const AutoReadHandler = () => {
+  const location = useLocation();
+  const { notifications, markNotificationRead } = useApp();
+
+  useEffect(() => {
+    const currentPath = location.pathname + location.search;
+
+    // Find unread notifications whose link matches current path
+    const matchingNotifications = notifications.filter(n =>
+      n.unread &&
+      (n.link === currentPath || (n.link === '/dashboard' && location.pathname === '/'))
+    );
+
+    matchingNotifications.forEach(n => {
+      console.log(`[AutoRead] Marking notification ${n.id} as read (linked to ${n.link})`);
+      markNotificationRead(n.id);
+    });
+  }, [location.pathname, location.search, notifications, markNotificationRead]);
+
+  return null;
+};
+
 const AppRoutes = () => {
+  const { isAuthLoading, isAuthenticated, user, recordLoginStreak, setIsStreakModalOpen } = useApp();
+  const location = useLocation();
+  const path = location.pathname;
+
+  // Streak Modal State
+  const [showStreakModal, setShowStreakModal] = useState(false);
+  const [streakCount, setStreakCount] = useState(0);
+  const [checkinResult, setCheckinResult] = useState<any>(null);
+  const [isStreakRecovery, setIsStreakRecovery] = useState(false);
+
+  // --- Handle Login Streak (Global Trigger — separate from manual check-in) ---
+  useEffect(() => {
+    const doLoginStreak = async () => {
+      if (!isAuthenticated || !user?.id) return;
+
+      // Only trigger on "Main" entry pages (Dashboard or Practice) 
+      const isEntryPage = path === '/dashboard' || path === '/' || path === '/practice';
+      if (!isEntryPage) return;
+
+      try {
+        const hasLoggedToday = sessionStorage.getItem('login_streak_today');
+        if (hasLoggedToday) return;
+
+        const result = await recordLoginStreak();
+
+        if (result.success) {
+          sessionStorage.setItem('login_streak_today', 'true');
+          setStreakCount(result.streak || 1);
+          setIsStreakRecovery(false);
+          setCheckinResult({
+            basePoints: result.points || 10,
+            bonusPoints: 0,
+            totalPoints: result.points || 10,
+            isMilestone: false,
+            alreadyCheckedIn: false,
+          });
+          setIsStreakModalOpen(true);
+          setShowStreakModal(true);
+        } else if (result.reason === 'already_logged_today') {
+          sessionStorage.setItem('login_streak_today', 'true');
+        }
+      } catch (err) {
+        console.error('Login streak exception:', err);
+      }
+    };
+
+    doLoginStreak();
+  }, [isAuthenticated, user?.id, path, recordLoginStreak]);
+
+  if (isAuthLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-surface-light dark:bg-surface-dark">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+
+  // Define Main Pages
+  const isDashboard = path === '/dashboard' || path === '/';
+  const isPractice = path === '/practice';
+  const isAnalysis = path === '/analysis';
+  const isForum = path.startsWith('/forum');
+  const isSettings = path === '/settings';
+
+  // Check if we are on any main page
+  const isOnMainPage = isDashboard || isPractice || isAnalysis || isForum || isSettings;
+
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/verify-email" element={<VerifyEmail />} />
+    <div className="h-screen w-full bg-surface-light dark:bg-surface-dark overflow-hidden relative">
 
-      {/* Main Pages - Accessible to Guests now */}
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/practice" element={<PracticeHub />} />
-      <Route path="/practice/unit/:unitId" element={<TopicDetail />} />
-      <Route path="/practice/session" element={<Practice />} />
-      <Route path="/analysis" element={<Analysis />} />
-      <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
 
-      {/* Settings - Keep Protected or handle logic inside */}
-      <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-      <Route path="/settings/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
-      <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
-      <Route path="/settings/billing" element={<ProtectedRoute><BillingSettings /></ProtectedRoute>} />
-      <Route path="/settings/creator" element={<ProtectedRoute><QuestionCreator /></ProtectedRoute>} />
+      {/* Persistent Page Layers (Main 5) */}
+      <>
+        <PageLayer active={isDashboard} zIndex={isDashboard ? 40 : 10}>
+          <Dashboard />
+        </PageLayer>
 
-      {/* Static Pages */}
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/support" element={<Support />} />
+        <PageLayer active={isPractice} zIndex={isPractice ? 40 : 10}>
+          <PracticeHub />
+        </PageLayer>
 
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-    </Routes>
-  )
-}
+        {isAuthenticated && (
+          <>
+            <PageLayer active={isAnalysis} zIndex={isAnalysis ? 40 : 10}>
+              <Analysis />
+            </PageLayer>
+
+            <PageLayer active={isForum} zIndex={isForum ? 50 : 10}>
+              <Forum />
+            </PageLayer>
+
+            <PageLayer active={isSettings} zIndex={isSettings ? 40 : 10}>
+              <Settings />
+            </PageLayer>
+          </>
+        )}
+      </>
+
+      {/* Redirect to login if unauthenticated and on a main page that REQUIRES auth */}
+      {!isAuthenticated && (isAnalysis || isForum || isSettings) && <Navigate to="/login" replace />}
+
+      {/* Sub-Routes & Non-Main Pages Layer (Always visible if NOT on a main page layer) */}
+      <div className={`absolute inset-0 z-[60] overflow-y-auto transition-opacity duration-300 ${isOnMainPage ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}>
+        <Routes>
+          {/* Auth Pages (Always visible if not on main page) */}
+          {!isAuthenticated && (
+            <>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+            </>
+          )}
+
+          {/* Sub-pages and Details (Overlay on main layers) */}
+          <Route path="/practice/unit/:unitId" element={<TopicDetail />} />
+          <Route path="/practice/session" element={<Practice />} />
+          <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
+          <Route path="/profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/points" element={<ProtectedRoute><PointsPage /></ProtectedRoute>} />
+          <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
+
+          {/* Settings Subpages */}
+          <Route path="/settings/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+          <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
+          <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionSettings /></ProtectedRoute>} />
+          <Route path="/settings/creator" element={<ProtectedRoute><QuestionCreator /></ProtectedRoute>} />
+
+          {/* Static Pages */}
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/support" element={<Support />} />
+
+          {/* Catch-all to make the URL reflect the state, though the layers handle visibility */}
+          <Route path="/dashboard" element={<div />} />
+          <Route path="/practice" element={<div />} />
+          <Route path="/analysis" element={<div />} />
+          <Route path="/forum" element={<div />} />
+          <Route path="/settings" element={<div />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </div>
+
+      {/* Global Daily Streak Modal */}
+      <StreakModal
+        isOpen={showStreakModal}
+        streak={streakCount}
+        onClose={() => { setShowStreakModal(false); setIsStreakModalOpen(false); }}
+        isRecovery={isStreakRecovery}
+        checkinResult={checkinResult}
+      />
+    </div>
+  );
+};
 
 const App = () => {
   return (
@@ -75,7 +239,10 @@ const App = () => {
       <ErrorBoundary>
         <AppProvider>
           <Router>
+            <AutoReadHandler />
+            <CoinCollector />
             <AppRoutes />
+            <ProWelcomeModal />
           </Router>
         </AppProvider>
       </ErrorBoundary>

@@ -1,0 +1,593 @@
+{
+  "timestamp": "2026-01-31T04:40:18.068Z",
+  "description": "Proposed Unit 5 Relational Data",
+  "skills": [
+    {
+      "id": "evt_application",
+      "name": "evt_application",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "candidates_test_absolute",
+      "name": "candidates_test_absolute",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "optimization_solve_and_check",
+      "name": "optimization_solve_and_check",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "first_derivative_test",
+      "name": "first_derivative_test",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "critical_points_find",
+      "name": "critical_points_find",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "implicit_relation_behavior",
+      "name": "implicit_relation_behavior",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "optimization_modeling",
+      "name": "optimization_modeling",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "inflection_points",
+      "name": "inflection_points",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "connect_f_fprime_fdoubleprime",
+      "name": "connect_f_fprime_fdoubleprime",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "increasing_decreasing_from_derivative",
+      "name": "increasing_decreasing_from_derivative",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "concavity_from_second_derivative",
+      "name": "concavity_from_second_derivative",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "mvt_conditions",
+      "name": "mvt_conditions",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "sketch_function_from_derivative",
+      "name": "sketch_function_from_derivative",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "method_selection_unit5",
+      "name": "method_selection_unit5",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "second_derivative_test",
+      "name": "second_derivative_test",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "horizontal_vertical_tangent_implicit",
+      "name": "horizontal_vertical_tangent_implicit",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "sketch_derivative_from_function",
+      "name": "sketch_derivative_from_function",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "avg_vs_instant_rate_link",
+      "name": "avg_vs_instant_rate_link",
+      "unit": "Analytical_Diff_Applications"
+    },
+    {
+      "id": "global_vs_local_extrema",
+      "name": "global_vs_local_extrema",
+      "unit": "Analytical_Diff_Applications"
+    }
+  ],
+  "error_tags": [
+    {
+      "id": "evt_requires_closed_interval_missed",
+      "name": "evt_requires_closed_interval_missed"
+    },
+    {
+      "id": "absolute_extrema_compare_error",
+      "name": "absolute_extrema_compare_error"
+    },
+    {
+      "id": "optimization_domain_missing",
+      "name": "optimization_domain_missing"
+    },
+    {
+      "id": "first_derivative_test_misapplied",
+      "name": "first_derivative_test_misapplied"
+    },
+    {
+      "id": "implicit_tangent_condition_error",
+      "name": "implicit_tangent_condition_error"
+    },
+    {
+      "id": "optimization_constraint_missing",
+      "name": "optimization_constraint_missing"
+    },
+    {
+      "id": "inflection_without_sign_change",
+      "name": "inflection_without_sign_change"
+    },
+    {
+      "id": "sketch_missing_key_features",
+      "name": "sketch_missing_key_features"
+    },
+    {
+      "id": "sign_chart_interval_error",
+      "name": "sign_chart_interval_error"
+    },
+    {
+      "id": "concavity_sign_error",
+      "name": "concavity_sign_error"
+    },
+    {
+      "id": "increasing_decreasing_sign_flipped",
+      "name": "increasing_decreasing_sign_flipped"
+    },
+    {
+      "id": "mvt_conditions_missed",
+      "name": "mvt_conditions_missed"
+    },
+    {
+      "id": "candidates_test_missing_endpoints",
+      "name": "candidates_test_missing_endpoints"
+    },
+    {
+      "id": "graph_derivative_shape_misread",
+      "name": "graph_derivative_shape_misread"
+    },
+    {
+      "id": "implicit_extra_solutions_not_checked",
+      "name": "implicit_extra_solutions_not_checked"
+    },
+    {
+      "id": "wrong_method_choice_unit5",
+      "name": "wrong_method_choice_unit5"
+    },
+    {
+      "id": "assume_bounded_implies_extrema",
+      "name": "assume_bounded_implies_extrema"
+    },
+    {
+      "id": "ignore_open_interval_issue",
+      "name": "ignore_open_interval_issue"
+    },
+    {
+      "id": "confuse_limit_with_value",
+      "name": "confuse_limit_with_value"
+    },
+    {
+      "id": "mvt_conclusion_misread",
+      "name": "mvt_conclusion_misread"
+    },
+    {
+      "id": "confuse_local_global",
+      "name": "confuse_local_global"
+    },
+    {
+      "id": "assume_local_implies_absolute",
+      "name": "assume_local_implies_absolute"
+    },
+    {
+      "id": "endpoint_misconception",
+      "name": "endpoint_misconception"
+    },
+    {
+      "id": "second_derivative_test_wrong_use",
+      "name": "second_derivative_test_wrong_use"
+    },
+    {
+      "id": "critical_points_incomplete",
+      "name": "critical_points_incomplete"
+    },
+    {
+      "id": "forget_endpoints",
+      "name": "forget_endpoints"
+    },
+    {
+      "id": "only_check_where_derivative_zero",
+      "name": "only_check_where_derivative_zero"
+    },
+    {
+      "id": "interval_bounds_error",
+      "name": "interval_bounds_error"
+    },
+    {
+      "id": "optimization_variable_not_defined",
+      "name": "optimization_variable_not_defined"
+    },
+    {
+      "id": "global_vs_local_confusion",
+      "name": "global_vs_local_confusion"
+    },
+    {
+      "id": "evt_missing_closed_interval",
+      "name": "evt_missing_closed_interval"
+    },
+    {
+      "id": "evt_missing_continuity",
+      "name": "evt_missing_continuity"
+    },
+    {
+      "id": "forget_nondifferentiable_critical",
+      "name": "forget_nondifferentiable_critical"
+    },
+    {
+      "id": "treat_discontinuity_as_critical",
+      "name": "treat_discontinuity_as_critical"
+    },
+    {
+      "id": "ignore_domain_restriction",
+      "name": "ignore_domain_restriction"
+    }
+  ],
+  "question_skills": [
+    {
+      "question_id": "0348d1bc-d0c0-43fa-b58a-50360f6110f8",
+      "skill_id": "evt_application"
+    },
+    {
+      "question_id": "0520597a-5a06-4fc1-b495-5aced0b594e7",
+      "skill_id": "candidates_test_absolute"
+    },
+    {
+      "question_id": "06c6879a-374c-41d2-9e39-caa05bb268dc",
+      "skill_id": "candidates_test_absolute"
+    },
+    {
+      "question_id": "0c655690-5192-4960-aa8f-c2af98db7828",
+      "skill_id": "optimization_solve_and_check"
+    },
+    {
+      "question_id": "0f872543-a407-4231-b770-7ad215cc0db9",
+      "skill_id": "first_derivative_test"
+    },
+    {
+      "question_id": "0f872543-a407-4231-b770-7ad215cc0db9",
+      "skill_id": "critical_points_find"
+    },
+    {
+      "question_id": "11652131-659e-4281-ae3c-af903e5bf9c5",
+      "skill_id": "implicit_relation_behavior"
+    },
+    {
+      "question_id": "12bca92d-b895-4d5c-8c97-1c63b6fb622b",
+      "skill_id": "optimization_modeling"
+    },
+    {
+      "question_id": "1518dcd4-f36e-49cf-bd91-4e4f0ad18717",
+      "skill_id": "inflection_points"
+    },
+    {
+      "question_id": "176c1a75-cd6d-4172-b7e8-26d2f4542e1c",
+      "skill_id": "connect_f_fprime_fdoubleprime"
+    },
+    {
+      "question_id": "1e7386ae-1611-4ac5-8530-597cde004fa5",
+      "skill_id": "increasing_decreasing_from_derivative"
+    },
+    {
+      "question_id": "1fa8e481-6628-45e1-8fbf-963bcd9d741d",
+      "skill_id": "candidates_test_absolute"
+    },
+    {
+      "question_id": "222cc869-e7c8-401d-bddb-f52bbb58d7cd",
+      "skill_id": "inflection_points"
+    },
+    {
+      "question_id": "2613fa22-95e9-4756-864c-0a3d94fdabed",
+      "skill_id": "concavity_from_second_derivative"
+    },
+    {
+      "question_id": "2dea2b9d-58ed-4b14-920a-865585406c6a",
+      "skill_id": "inflection_points"
+    },
+    {
+      "question_id": "2ea0946c-eb50-4d2c-9ca9-708cd201359a",
+      "skill_id": "increasing_decreasing_from_derivative"
+    },
+    {
+      "question_id": "2ede702e-fcf0-4906-be41-9c2d8fdc64a7",
+      "skill_id": "connect_f_fprime_fdoubleprime"
+    },
+    {
+      "question_id": "30177030-4a4c-4155-92fd-3cdd1f07a5f4",
+      "skill_id": "mvt_conditions"
+    },
+    {
+      "question_id": "339a56d1-cfac-477a-afc0-3a63d2203052",
+      "skill_id": "candidates_test_absolute"
+    },
+    {
+      "question_id": "38960934-90f1-4cfe-aae4-d187650a9db4",
+      "skill_id": "sketch_function_from_derivative"
+    },
+    {
+      "question_id": "3b256f9c-ea97-4bf2-8dda-1eaedfd54b26",
+      "skill_id": "connect_f_fprime_fdoubleprime"
+    },
+    {
+      "question_id": "3ed0605e-79c0-4239-bbbd-a263a437f3af",
+      "skill_id": "implicit_relation_behavior"
+    },
+    {
+      "question_id": "400ea1f9-d6e4-4e2c-b64d-cb31b3636df3",
+      "skill_id": "implicit_relation_behavior"
+    },
+    {
+      "question_id": "4729980a-9415-4a3f-af6d-472796592a91",
+      "skill_id": "connect_f_fprime_fdoubleprime"
+    },
+    {
+      "question_id": "48a8a702-ebca-4765-a98c-590c06e4aa78",
+      "skill_id": "connect_f_fprime_fdoubleprime"
+    },
+    {
+      "question_id": "49185dae-c4b0-4acd-ac13-d1a5118919a4",
+      "skill_id": "optimization_solve_and_check"
+    },
+    {
+      "question_id": "4bdd2d46-60b1-4739-a662-2f94515d39be",
+      "skill_id": "method_selection_unit5"
+    },
+    {
+      "question_id": "4be6030f-c191-4c55-84b7-3c1dc9d3777a",
+      "skill_id": "increasing_decreasing_from_derivative"
+    },
+    {
+      "question_id": "56541f46-f0a5-40c5-9d6a-55a39efe0c80",
+      "skill_id": "method_selection_unit5"
+    },
+    {
+      "question_id": "56b15438-b17b-428d-8ff0-8f566d20129b",
+      "skill_id": "increasing_decreasing_from_derivative"
+    },
+    {
+      "question_id": "56b15438-b17b-428d-8ff0-8f566d20129b",
+      "skill_id": "method_selection_unit5"
+    },
+    {
+      "question_id": "592e892f-714a-4087-8b54-bb152d91e99d",
+      "skill_id": "concavity_from_second_derivative"
+    },
+    {
+      "question_id": "6167e1bd-a902-4601-b3c5-c85be7e49ef4",
+      "skill_id": "first_derivative_test"
+    },
+    {
+      "question_id": "6167e1bd-a902-4601-b3c5-c85be7e49ef4",
+      "skill_id": "increasing_decreasing_from_derivative"
+    },
+    {
+      "question_id": "6928a8f7-0a71-4d57-a74e-d27967da8782",
+      "skill_id": "mvt_conditions"
+    },
+    {
+      "question_id": "696465c2-6522-4744-a3e6-88dfd40f4b83",
+      "skill_id": "mvt_conditions"
+    },
+    {
+      "question_id": "696465c2-6522-4744-a3e6-88dfd40f4b83",
+      "skill_id": "method_selection_unit5"
+    },
+    {
+      "question_id": "6cecf201-69f2-4a72-8433-a98b8f411bbf",
+      "skill_id": "increasing_decreasing_from_derivative"
+    },
+    {
+      "question_id": "7058cd3c-5344-4ab5-bb92-e893c36a8c31",
+      "skill_id": "mvt_conditions"
+    },
+    {
+      "question_id": "74f9ad60-45c5-43cc-a37b-0addd0270ffc",
+      "skill_id": "method_selection_unit5"
+    },
+    {
+      "question_id": "74fa373c-38cf-4ab5-862e-108565996548",
+      "skill_id": "second_derivative_test"
+    },
+    {
+      "question_id": "76fed5b3-e163-4e8f-806a-ac9813228f04",
+      "skill_id": "mvt_conditions"
+    },
+    {
+      "question_id": "79d3b548-9971-405a-a634-9f96b6d2faa3",
+      "skill_id": "critical_points_find"
+    },
+    {
+      "question_id": "7aea56b5-f262-47c1-a5ae-bd14e49c3cab",
+      "skill_id": "connect_f_fprime_fdoubleprime"
+    },
+    {
+      "question_id": "7d93eb66-2134-4e3d-bf1c-2ec8ffe177a2",
+      "skill_id": "sketch_function_from_derivative"
+    },
+    {
+      "question_id": "7e1fe3de-5a9c-422d-b076-42dd8a6de041",
+      "skill_id": "method_selection_unit5"
+    },
+    {
+      "question_id": "85f6c038-5fcc-439a-8e0c-7e7d42f83092",
+      "skill_id": "horizontal_vertical_tangent_implicit"
+    },
+    {
+      "question_id": "8793b52b-d9b8-4aac-b13b-830afc6d6abf",
+      "skill_id": "sketch_derivative_from_function"
+    },
+    {
+      "question_id": "89d0b652-4b58-48b9-af44-d7ea14e0769a",
+      "skill_id": "optimization_modeling"
+    },
+    {
+      "question_id": "8e262c67-ff27-4f11-95dc-28c34952296e",
+      "skill_id": "optimization_solve_and_check"
+    },
+    {
+      "question_id": "91bf8896-5379-493e-99e3-bf8ab3f53665",
+      "skill_id": "concavity_from_second_derivative"
+    },
+    {
+      "question_id": "91f0812a-b5de-4d0f-97c9-4e1777ef18a6",
+      "skill_id": "concavity_from_second_derivative"
+    },
+    {
+      "question_id": "92bae04d-d00c-4bc0-b282-d26745ea0354",
+      "skill_id": "optimization_modeling"
+    },
+    {
+      "question_id": "937cd308-c65f-4779-99cf-ea818eb70a4c",
+      "skill_id": "first_derivative_test"
+    },
+    {
+      "question_id": "9badf103-d691-4ef4-9661-329f25cdcdc3",
+      "skill_id": "first_derivative_test"
+    },
+    {
+      "question_id": "9da2ee27-997a-45fe-890e-8bbb1a4e3329",
+      "skill_id": "connect_f_fprime_fdoubleprime"
+    },
+    {
+      "question_id": "a0560070-6ec7-4a6e-b560-7ee9b36d8ce2",
+      "skill_id": "optimization_modeling"
+    },
+    {
+      "question_id": "a06cb3fb-a197-4c7c-a5fc-06e8232b25f0",
+      "skill_id": "implicit_relation_behavior"
+    },
+    {
+      "question_id": "a2aa6a41-719e-4001-81a6-a19038d23153",
+      "skill_id": "second_derivative_test"
+    },
+    {
+      "question_id": "a2f02b08-a73a-4b87-86df-bab41e4e5cc8",
+      "skill_id": "increasing_decreasing_from_derivative"
+    },
+    {
+      "question_id": "a818cca3-a112-414c-bab8-1a59e1131065",
+      "skill_id": "avg_vs_instant_rate_link"
+    },
+    {
+      "question_id": "a818cca3-a112-414c-bab8-1a59e1131065",
+      "skill_id": "mvt_conditions"
+    },
+    {
+      "question_id": "a823f4a2-1879-462b-898a-0e9012dc13a3",
+      "skill_id": "inflection_points"
+    },
+    {
+      "question_id": "abbb138c-907d-4035-9dc5-8f505f8edff7",
+      "skill_id": "second_derivative_test"
+    },
+    {
+      "question_id": "aeb5eac1-664f-4a4d-8bfb-d9d50d4175e1",
+      "skill_id": "global_vs_local_extrema"
+    },
+    {
+      "question_id": "b1d6955e-0181-4c4b-b8c6-d7182886ffb4",
+      "skill_id": "mvt_conditions"
+    },
+    {
+      "question_id": "b29e18a2-4bfb-4bb9-9c06-35c4d7c985cd",
+      "skill_id": "second_derivative_test"
+    },
+    {
+      "question_id": "b4eda2e2-3cd4-4c4f-90db-3a1f1c6ab904",
+      "skill_id": "candidates_test_absolute"
+    },
+    {
+      "question_id": "bf065117-eb0c-4308-aa8b-5f75fcf20431",
+      "skill_id": "increasing_decreasing_from_derivative"
+    },
+    {
+      "question_id": "c2767b81-d922-4d44-82f9-ebc804e30b26",
+      "skill_id": "mvt_conditions"
+    },
+    {
+      "question_id": "c2767b81-d922-4d44-82f9-ebc804e30b26",
+      "skill_id": "avg_vs_instant_rate_link"
+    },
+    {
+      "question_id": "c69f05e1-07ab-455a-8c29-82271ec51f70",
+      "skill_id": "first_derivative_test"
+    },
+    {
+      "question_id": "ce1e242b-4f11-46b9-9e2b-f21b21afc3bd",
+      "skill_id": "horizontal_vertical_tangent_implicit"
+    },
+    {
+      "question_id": "ce964153-685a-48ee-b45d-ee090d6f2fae",
+      "skill_id": "second_derivative_test"
+    },
+    {
+      "question_id": "cef4bd26-bf3d-415e-b17d-fd1baca75abb",
+      "skill_id": "optimization_modeling"
+    },
+    {
+      "question_id": "d5b94c55-6dfe-4f97-97bc-e3856e44c8f8",
+      "skill_id": "optimization_modeling"
+    },
+    {
+      "question_id": "d8a68996-14c8-4607-b4eb-331d34541461",
+      "skill_id": "optimization_solve_and_check"
+    },
+    {
+      "question_id": "da68ef47-039a-48ac-ad1f-ba65dd4434fa",
+      "skill_id": "second_derivative_test"
+    },
+    {
+      "question_id": "e512544e-8525-4460-8146-04c6f444e658",
+      "skill_id": "candidates_test_absolute"
+    },
+    {
+      "question_id": "e61a29e9-ebc2-46e4-a381-0097dc4da83b",
+      "skill_id": "sketch_derivative_from_function"
+    },
+    {
+      "question_id": "e97d9f47-cd92-4659-8656-39a7fa1c88b7",
+      "skill_id": "method_selection_unit5"
+    },
+    {
+      "question_id": "ed37296f-ebee-40e6-86ab-4e7265ae61a9",
+      "skill_id": "method_selection_unit5"
+    },
+    {
+      "question_id": "f1639eb1-66f7-4ae0-ac51-668d017b92b6",
+      "skill_id": "implicit_relation_behavior"
+    },
+    {
+      "question_id": "f2766202-2b57-422a-929f-fd4b7d83516c",
+      "skill_id": "method_selection_unit5"
+    },
+    {
+      "question_id": "f46acf9f-9f89-41d0-9dcd-c554c39e246d",
+      "skill_id": "first_derivative_test"
+    },
+    {
+      "question_id": "f46acf9f-9f89-41d0-9dcd-c554c39e246d",
+      "skill_id": "critical_points_find"
+    },
+    {
+      "question_id": "fb65bf6c-808f-4231-902e-e02dd392509e",
+      "skill_id": "optimization_solve_and_check"
+    }
+  ]
+}

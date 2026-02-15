@@ -1,0 +1,903 @@
+[
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_UnitTest_Q01",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 75,
+        "skill_tags": [
+            "LimitNotation",
+            "LimitLaws"
+        ],
+        "error_tags": [
+            "NotationMisread",
+            "OneSidedVsTwoSided"
+        ],
+        "prompt": "Evaluate the limit.\n\n$$\\lim_{x\\to 3}\\left(2x^2-5x+1\\right)$$",
+        "latex": "$$\\lim_{x\\to 3}\\left(2x^2-5x+1\\right)$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "4",
+                "explanation": "This comes from substituting $x=2$, not $x=3$."
+            },
+            {
+                "id": "B",
+                "text": "4",
+                "explanation": "Substitute $x=3$: $2(9)-5(3)+1=18-15+1=4$."
+            },
+            {
+                "id": "C",
+                "text": "10",
+                "explanation": "This is $2(9)-5(3)$ but forgetting the $+1$."
+            },
+            {
+                "id": "D",
+                "text": "-4",
+                "explanation": "Sign error in $-5x$ or arithmetic error."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "Polynomials are continuous everywhere, so evaluate by direct substitution:\n$$\\lim_{x\\to 3}(2x^2-5x+1)=2(3^2)-5(3)+1=18-15+1=4.$$",
+        "micro_explanations": [
+            {
+                "option_id": "A",
+                "text": "Used the wrong approach value."
+            },
+            {
+                "option_id": "B",
+                "text": "Correct direct substitution."
+            },
+            {
+                "option_id": "C",
+                "text": "Dropped the constant term."
+            },
+            {
+                "option_id": "D",
+                "text": "Arithmetic/sign mistake."
+            }
+        ],
+        "recommendation_reasons": [
+            "Reinforces limit-as-substitution for continuous functions.",
+            "Checks careful arithmetic under time pressure."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 1,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_UnitTest",
+        "source": "NewMaoS Unit 1: Limits and Continuity — Unit Test",
+        "source_year": 2026,
+        "notes": "Focus: 1.2 Defining limits and limit notation (evaluate basic limits of continuous functions).",
+        "weight_primary": 0.8,
+        "weight_supporting": [
+            {
+                "skill_id": "LimitLaws",
+                "weight": 0.2
+            }
+        ],
+        "title": "UT1-Q01-PolynomialLimit",
+        "prompt_type": "text",
+        "primary_skill_id": "LimitNotation",
+        "supporting_skill_ids": [
+            "LimitLaws"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_UnitTest_Q02",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 110,
+        "skill_tags": [
+            "AlgebraicLimit",
+            "LimitLaws"
+        ],
+        "error_tags": [
+            "AlgebraicCancelError",
+            "NotationMisread"
+        ],
+        "prompt": "Evaluate the limit.\n\n$$\\lim_{x\\to 2}\\frac{x^2-4}{x-2}$$",
+        "latex": "$$\\lim_{x\\to 2}\\frac{x^2-4}{x-2}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "0",
+                "explanation": "This is the numerator value at $x=2$, not the simplified limit."
+            },
+            {
+                "id": "B",
+                "text": "2",
+                "explanation": "This would be $x$ at $2$, but the simplified expression is $x+2$."
+            },
+            {
+                "id": "C",
+                "text": "Does not exist",
+                "explanation": "The original form is $0/0$, which is indeterminate, not automatically DNE."
+            },
+            {
+                "id": "D",
+                "text": "4",
+                "explanation": "Factor: $x^2-4=(x-2)(x+2)$, cancel $x-2$, then evaluate $x+2$ at $2$."
+            }
+        ],
+        "correct_option_id": "D",
+        "tolerance": null,
+        "explanation": "Rewrite and simplify:\n$$\\frac{x^2-4}{x-2}=\\frac{(x-2)(x+2)}{x-2}=x+2\\quad (x\\ne 2).$$\nSo\n$$\\lim_{x\\to 2}\\frac{x^2-4}{x-2}=\\lim_{x\\to 2}(x+2)=4.$$",
+        "micro_explanations": [
+            {
+                "option_id": "A",
+                "text": "Confused numerator value with limit value."
+            },
+            {
+                "option_id": "B",
+                "text": "Simplified incorrectly."
+            },
+            {
+                "option_id": "C",
+                "text": "Indeterminate form requires algebra/other method."
+            },
+            {
+                "option_id": "D",
+                "text": "Correct factoring and cancellation."
+            }
+        ],
+        "recommendation_reasons": [
+            "Targets the classic $0/0$ indeterminate form.",
+            "Builds factoring/canceling fluency for limits."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_UnitTest",
+        "source": "NewMaoS Unit 1: Limits and Continuity — Unit Test",
+        "source_year": 2026,
+        "notes": "Focus: 1.6 Determining limits using algebraic manipulation (factoring/canceling).",
+        "weight_primary": 0.75,
+        "weight_supporting": [
+            {
+                "skill_id": "LimitLaws",
+                "weight": 0.25
+            }
+        ],
+        "title": "UT1-Q02-FactoringCancelLimit",
+        "prompt_type": "text",
+        "primary_skill_id": "AlgebraicLimit",
+        "supporting_skill_ids": [
+            "LimitLaws"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_UnitTest_Q03",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 90,
+        "skill_tags": [
+            "GraphicalLimit"
+        ],
+        "error_tags": [
+            "OneSidedVsTwoSided",
+            "AsymptoteMisread"
+        ],
+        "prompt": "Use the graph provided to evaluate.\n\nWhat is\n$$\\lim_{x\\to 2} f(x)?$$\n\n(See image.)",
+        "latex": "$$\\lim_{x\\to 2} f(x)$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "Does not exist",
+                "explanation": "As $x\\to 2^-$, $f(x)\\to -\\infty$ and as $x\\to 2^+$, $f(x)\\to +\\infty$, so the two-sided limit does not exist."
+            },
+            {
+                "id": "B",
+                "text": "0",
+                "explanation": "Confuses the $x$-axis intersection with the limit at $x=2$."
+            },
+            {
+                "id": "C",
+                "text": "$+\\infty$",
+                "explanation": "That is only the right-hand behavior; two-sided limit requires both sides match."
+            },
+            {
+                "id": "D",
+                "text": "$-\\infty$",
+                "explanation": "That is only the left-hand behavior; two-sided limit requires both sides match."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": null,
+        "explanation": "From the graph, there is a vertical asymptote at $x=2$. The function decreases without bound as $x\\to 2^-$ and increases without bound as $x\\to 2^+$. Since the one-sided behaviors are not equal, the two-sided limit does not exist.",
+        "micro_explanations": [
+            {
+                "option_id": "A",
+                "text": "Opposite infinite one-sided behavior."
+            },
+            {
+                "option_id": "B",
+                "text": "Read the wrong feature of the graph."
+            },
+            {
+                "option_id": "C",
+                "text": "Only right-hand limit."
+            },
+            {
+                "option_id": "D",
+                "text": "Only left-hand limit."
+            }
+        ],
+        "recommendation_reasons": [
+            "Checks correct interpretation of vertical asymptotes.",
+            "Forces two-sided vs one-sided distinction from a graph."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_UnitTest",
+        "source": "NewMaoS Unit 1: Limits and Continuity — Unit Test",
+        "source_year": 2026,
+        "notes": "Focus: 1.3 Estimating limit values from graphs (including infinite limits and two-sided existence).",
+        "weight_primary": 1.0,
+        "weight_supporting": [],
+        "title": "UT1-Q03-GraphLimit",
+        "prompt_type": "image",
+        "primary_skill_id": "GraphicalLimit",
+        "supporting_skill_ids": []
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_UnitTest_Q04",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 85,
+        "skill_tags": [
+            "NumericalLimit"
+        ],
+        "error_tags": [
+            "DirectionConfusion",
+            "NotationMisread"
+        ],
+        "prompt": "Use the table provided to estimate.\n\nWhat is the best estimate of\n$$\\lim_{x\\to 2} g(x)?$$\n\n(See image.)",
+        "latex": "$$\\lim_{x\\to 2} g(x)$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "3.6",
+                "explanation": "This uses the value at $x=1.9$ only and ignores values closer to $2$."
+            },
+            {
+                "id": "B",
+                "text": "3.9",
+                "explanation": "This uses $x=1.99$ only and ignores the trend from both sides."
+            },
+            {
+                "id": "C",
+                "text": "4.0",
+                "explanation": "Values approach $4$ from both sides: $3.996001$ (left) and $4.004001$ (right)."
+            },
+            {
+                "id": "D",
+                "text": "4.4",
+                "explanation": "This uses the value at $x=2.1$ which is not very close to $2$."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": null,
+        "explanation": "As $x$ gets closer to $2$ from the left, $g(x)$ is near $3.996$, and from the right, $g(x)$ is near $4.004$. Both sides approach $4$, so the best estimate is $4.0$.",
+        "micro_explanations": [
+            {
+                "option_id": "A",
+                "text": "Used a point too far from 2."
+            },
+            {
+                "option_id": "B",
+                "text": "Ignored right-hand approach."
+            },
+            {
+                "option_id": "C",
+                "text": "Correct two-sided estimate near 4."
+            },
+            {
+                "option_id": "D",
+                "text": "Used a point too far from 2."
+            }
+        ],
+        "recommendation_reasons": [
+            "Trains reading two-sided trend from a table.",
+            "Reinforces that limits depend on approach, not necessarily value at the point."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_UnitTest",
+        "source": "NewMaoS Unit 1: Limits and Continuity — Unit Test",
+        "source_year": 2026,
+        "notes": "Focus: 1.4 Estimating limit values from tables (two-sided numerical evidence).",
+        "weight_primary": 1.0,
+        "weight_supporting": [],
+        "title": "UT1-Q04-TableLimit",
+        "prompt_type": "image",
+        "primary_skill_id": "NumericalLimit",
+        "supporting_skill_ids": []
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_UnitTest_Q05",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 115,
+        "skill_tags": [
+            "LimitLaws",
+            "StrategySelection"
+        ],
+        "error_tags": [
+            "InfinityArithmetic",
+            "NotationMisread"
+        ],
+        "prompt": "Evaluate the limit using limit laws.\n\n$$\\lim_{x\\to -1}\\left(\\frac{3}{x+2}+\\frac{2x}{x^2+3}\\right)$$",
+        "latex": "$$\\lim_{x\\to -1}\\left(\\frac{3}{x+2}+\\frac{2x}{x^2+3}\\right)$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$\\frac{5}{4}$",
+                "explanation": "Compute each term at $x=-1$: $\\frac{3}{1}=3$ and $\\frac{2(-1)}{1+3}=-\\frac12$; sum $=\\frac{5}{2}$, not $\\frac{5}{4}$."
+            },
+            {
+                "id": "B",
+                "text": "$\\frac{5}{2}$",
+                "explanation": "Direct substitution works since denominators are nonzero at $x=-1$."
+            },
+            {
+                "id": "C",
+                "text": "$\\frac{1}{2}$",
+                "explanation": "This is only the second term value, missing the first term."
+            },
+            {
+                "id": "D",
+                "text": "Does not exist",
+                "explanation": "The expression is defined at $x=-1$, so the limit exists."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "Both denominators are nonzero at $x=-1$, so substitute:\n$$\\frac{3}{-1+2}+\\frac{2(-1)}{(-1)^2+3}=\\frac{3}{1}-\\frac{2}{4}=3-\\frac12=\\frac{5}{2}.$$",
+        "micro_explanations": [
+            {
+                "option_id": "A",
+                "text": "Arithmetic slip in the sum."
+            },
+            {
+                "option_id": "B",
+                "text": "Correct: both terms continuous at $x=-1$."
+            },
+            {
+                "option_id": "C",
+                "text": "Forgot the first term."
+            },
+            {
+                "option_id": "D",
+                "text": "Mistakenly assumed nonexistence."
+            }
+        ],
+        "recommendation_reasons": [
+            "Checks denominator-nonzero condition before substituting.",
+            "Reinforces combining rational limits via limit laws."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.05,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_UnitTest",
+        "source": "NewMaoS Unit 1: Limits and Continuity — Unit Test",
+        "source_year": 2026,
+        "notes": "Focus: 1.5 Algebraic properties of limits (sum of rational functions).",
+        "weight_primary": 0.7,
+        "weight_supporting": [
+            {
+                "skill_id": "StrategySelection",
+                "weight": 0.3
+            }
+        ],
+        "title": "UT1-Q05-LimitLawsRationals",
+        "prompt_type": "text",
+        "primary_skill_id": "LimitLaws",
+        "supporting_skill_ids": [
+            "StrategySelection"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_UnitTest_Q06",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 140,
+        "skill_tags": [
+            "AlgebraicLimit",
+            "StrategySelection"
+        ],
+        "error_tags": [
+            "AlgebraicCancelError",
+            "NotationMisread"
+        ],
+        "prompt": "Evaluate the limit.\n\n$$\\lim_{x\\to 0}\\frac{\\sqrt{1+x}-1}{x}$$",
+        "latex": "$$\\lim_{x\\to 0}\\frac{\\sqrt{1+x}-1}{x}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "0",
+                "explanation": "Direct substitution gives $0/0$, which is indeterminate."
+            },
+            {
+                "id": "B",
+                "text": "1",
+                "explanation": "This is the common value for a related form, but the correct limit is $\\frac12$."
+            },
+            {
+                "id": "C",
+                "text": "2",
+                "explanation": "This would come from incorrect rationalization (inverting the factor)."
+            },
+            {
+                "id": "D",
+                "text": "$\\frac12$",
+                "explanation": "Rationalize: multiply by $\\sqrt{1+x}+1$ to simplify and then substitute."
+            }
+        ],
+        "correct_option_id": "D",
+        "tolerance": null,
+        "explanation": "Rationalize:\n$$\\frac{\\sqrt{1+x}-1}{x}\\cdot\\frac{\\sqrt{1+x}+1}{\\sqrt{1+x}+1}=\\frac{(1+x)-1}{x(\\sqrt{1+x}+1)}=\\frac{1}{\\sqrt{1+x}+1}.$$ \nNow substitute $x=0$:\n$$\\lim_{x\\to 0}\\frac{1}{\\sqrt{1+x}+1}=\\frac{1}{2}.$$",
+        "micro_explanations": [
+            {
+                "option_id": "A",
+                "text": "Stopped at indeterminate form."
+            },
+            {
+                "option_id": "B",
+                "text": "Confused with a different standard limit."
+            },
+            {
+                "option_id": "C",
+                "text": "Algebra error in rationalization."
+            },
+            {
+                "option_id": "D",
+                "text": "Correct rationalization and substitution."
+            }
+        ],
+        "recommendation_reasons": [
+            "Core algebraic manipulation limit (rationalization).",
+            "High-frequency AP error: stopping at $0/0$."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.2,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_UnitTest",
+        "source": "NewMaoS Unit 1: Limits and Continuity — Unit Test",
+        "source_year": 2026,
+        "notes": "Focus: 1.6 Algebraic manipulation (rationalizing radicals).",
+        "weight_primary": 0.8,
+        "weight_supporting": [
+            {
+                "skill_id": "StrategySelection",
+                "weight": 0.2
+            }
+        ],
+        "title": "UT1-Q06-RationalizeLimit",
+        "prompt_type": "text",
+        "primary_skill_id": "AlgebraicLimit",
+        "supporting_skill_ids": [
+            "StrategySelection"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_UnitTest_Q07",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 120,
+        "skill_tags": [
+            "StrategySelection"
+        ],
+        "error_tags": [
+            "NotationMisread",
+            "OneSidedVsTwoSided"
+        ],
+        "prompt": "Let\n$$f(x)=\\begin{cases}\n\\frac{x^2-1}{x-1},& x\\ne 1\\\\\n7,& x=1\n\\end{cases}$$\nWhich statement is true?",
+        "latex": "$$f(x)=\\begin{cases}\\frac{x^2-1}{x-1},& x\\ne 1\\\\7,& x=1\\end{cases}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$\\lim_{x\\to 1}f(x)=7$",
+                "explanation": "The limit depends on nearby values, not $f(1)$."
+            },
+            {
+                "id": "B",
+                "text": "$\\lim_{x\\to 1}f(x)=2$ but $f(1)=7$",
+                "explanation": "For $x\\ne 1$, $\\frac{x^2-1}{x-1}=x+1$, so the limit at $1$ is $2$, while the defined value is $7$."
+            },
+            {
+                "id": "C",
+                "text": "$\\lim_{x\\to 1}f(x)$ does not exist because $f(1)$ is defined differently",
+                "explanation": "A redefined point value does not destroy the limit if nearby behavior is consistent."
+            },
+            {
+                "id": "D",
+                "text": "$\\lim_{x\\to 1}f(x)=7$ and $f$ is continuous at $x=1$",
+                "explanation": "Continuity would require $f(1)=\\lim_{x\\to 1}f(x)$, which is false here."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "For $x\\ne 1$, factor $x^2-1=(x-1)(x+1)$ so $f(x)=x+1$. Thus\n$$\\lim_{x\\to 1}f(x)=\\lim_{x\\to 1}(x+1)=2,$$\nwhile $f(1)=7$ by definition. The limit exists but the function is not continuous at $x=1$.",
+        "micro_explanations": [
+            {
+                "option_id": "A",
+                "text": "Confused limit with function value."
+            },
+            {
+                "option_id": "B",
+                "text": "Correct: limit 2, value 7."
+            },
+            {
+                "option_id": "C",
+                "text": "Point redefinition does not force DNE."
+            },
+            {
+                "option_id": "D",
+                "text": "Continuity condition violated."
+            }
+        ],
+        "recommendation_reasons": [
+            "Tests choosing the right method (simplify first, then evaluate).",
+            "Separates $\\lim_{x\\to a}f(x)$ from $f(a)$."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.15,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_UnitTest",
+        "source": "NewMaoS Unit 1: Limits and Continuity — Unit Test",
+        "source_year": 2026,
+        "notes": "Focus: 1.7 Selecting procedures for determining limits (distinguish value vs limit; simplify first).",
+        "weight_primary": 0.9,
+        "weight_supporting": [
+            {
+                "skill_id": "AlgebraicLimit",
+                "weight": 0.1
+            }
+        ],
+        "title": "UT1-Q07-ValueVsLimit",
+        "prompt_type": "text",
+        "primary_skill_id": "StrategySelection",
+        "supporting_skill_ids": [
+            "AlgebraicLimit"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_UnitTest_Q08",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 150,
+        "skill_tags": [
+            "SqueezeTheorem"
+        ],
+        "error_tags": [
+            "SqueezeTheoremMisuse",
+            "InfinityArithmetic"
+        ],
+        "prompt": "Evaluate the limit.\n\n$$\\lim_{x\\to 0} x^2\\sin\\left(\\frac{1}{x}\\right)$$",
+        "latex": "$$\\lim_{x\\to 0} x^2\\sin\\left(\\frac{1}{x}\\right)$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "Does not exist",
+                "explanation": "$\\sin(1/x)$ oscillates, but the $x^2$ factor forces the product to $0$."
+            },
+            {
+                "id": "B",
+                "text": "1",
+                "explanation": "There is no reason the product should approach $1$; the factor $x^2$ tends to $0$."
+            },
+            {
+                "id": "C",
+                "text": "0",
+                "explanation": "Since $-1\\le \\sin(1/x)\\le 1$, we have $-x^2\\le x^2\\sin(1/x)\\le x^2$, and both bounds go to $0$."
+            },
+            {
+                "id": "D",
+                "text": "$-1$",
+                "explanation": "The expression is not trapped near $-1$; the amplitude shrinks to $0$."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": null,
+        "explanation": "Because $-1\\le \\sin(1/x)\\le 1$, multiplying by $x^2\\ge 0$ gives\n$$-x^2\\le x^2\\sin(1/x)\\le x^2.$$ \nAs $x\\to 0$, both $-x^2$ and $x^2$ go to $0$, so by the Squeeze Theorem the limit is $0$.",
+        "micro_explanations": [
+            {
+                "option_id": "A",
+                "text": "Ignored shrinking amplitude."
+            },
+            {
+                "option_id": "B",
+                "text": "No justification; wrong scale."
+            },
+            {
+                "option_id": "C",
+                "text": "Correct squeeze argument to 0."
+            },
+            {
+                "option_id": "D",
+                "text": "Misread oscillation bounds."
+            }
+        ],
+        "recommendation_reasons": [
+            "Canonical squeeze theorem limit.",
+            "High-yield oscillation-with-damping structure."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.2,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_UnitTest",
+        "source": "NewMaoS Unit 1: Limits and Continuity — Unit Test",
+        "source_year": 2026,
+        "notes": "Focus: 1.8 Determining limits using the Squeeze Theorem.",
+        "weight_primary": 1.0,
+        "weight_supporting": [],
+        "title": "UT1-Q08-SqueezeOscillation",
+        "prompt_type": "text",
+        "primary_skill_id": "SqueezeTheorem",
+        "supporting_skill_ids": []
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_UnitTest_Q09",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 105,
+        "skill_tags": [
+            "StrategySelection",
+            "GraphicalLimit",
+            "NumericalLimit"
+        ],
+        "error_tags": [
+            "DirectionConfusion",
+            "OneSidedVsTwoSided"
+        ],
+        "prompt": "A student wants to estimate $\\lim_{x\\to 1} f(x)$.\n\nWhich set of $x$-values is most appropriate for a numerical estimate of the limit?",
+        "latex": "$$\\lim_{x\\to 1} f(x)$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$x=0.5,\\ 0.6,\\ 0.7,\\ 0.8$",
+                "explanation": "These values approach $1$ only from the left and are not very close."
+            },
+            {
+                "id": "B",
+                "text": "$x=1,\\ 1,\\ 1,\\ 1$",
+                "explanation": "A limit is about nearby values; repeatedly using $x=1$ does not estimate approach behavior."
+            },
+            {
+                "id": "C",
+                "text": "$x=1.1,\\ 1.2,\\ 1.3,\\ 1.4$",
+                "explanation": "These values approach $1$ only from the right and are not very close."
+            },
+            {
+                "id": "D",
+                "text": "$x=0.9,\\ 0.99,\\ 0.999,\\ 1.001,\\ 1.01,\\ 1.1$",
+                "explanation": "These values approach $1$ from both sides and get progressively closer to $1$."
+            }
+        ],
+        "correct_option_id": "D",
+        "tolerance": null,
+        "explanation": "To estimate a two-sided limit numerically, choose $x$-values that approach the target from both sides and get very close without being exactly equal to the target. Option D satisfies this.",
+        "micro_explanations": [
+            {
+                "option_id": "A",
+                "text": "Left side only; not close enough."
+            },
+            {
+                "option_id": "B",
+                "text": "Uses only the point, not approach."
+            },
+            {
+                "option_id": "C",
+                "text": "Right side only; not close enough."
+            },
+            {
+                "option_id": "D",
+                "text": "Both sides, increasingly close."
+            }
+        ],
+        "recommendation_reasons": [
+            "Directly tests strategy selection for numerical limits.",
+            "Targets a common misconception: plugging in the point."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.05,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_UnitTest",
+        "source": "NewMaoS Unit 1: Limits and Continuity — Unit Test",
+        "source_year": 2026,
+        "notes": "Focus: 1.9 Connecting multiple representations of limits (appropriate numerical sampling near a point).",
+        "weight_primary": 0.7,
+        "weight_supporting": [
+            {
+                "skill_id": "NumericalLimit",
+                "weight": 0.2
+            },
+            {
+                "skill_id": "GraphicalLimit",
+                "weight": 0.1
+            }
+        ],
+        "title": "UT1-Q09-ChooseXValues",
+        "prompt_type": "text",
+        "primary_skill_id": "StrategySelection",
+        "supporting_skill_ids": [
+            "NumericalLimit",
+            "GraphicalLimit"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_UnitTest_Q10",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 120,
+        "skill_tags": [
+            "DiscontinuityClassification",
+            "GraphicalLimit"
+        ],
+        "error_tags": [
+            "OneSidedVsTwoSided",
+            "ContinuityConditionOmitted"
+        ],
+        "prompt": "Use the graph provided.\n\nAt $x=1$, what type of discontinuity does $h(x)$ have?\n\n(See image.)",
+        "latex": "$$\\text{Type of discontinuity at }x=1$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "Removable discontinuity",
+                "explanation": "The left- and right-hand limits are not equal, so it is not removable."
+            },
+            {
+                "id": "B",
+                "text": "Jump discontinuity",
+                "explanation": "Left-hand limit is $2$ (open circle), right-hand limit is $3$ (horizontal segment), so limits differ."
+            },
+            {
+                "id": "C",
+                "text": "Infinite discontinuity",
+                "explanation": "There is no vertical asymptote behavior here."
+            },
+            {
+                "id": "D",
+                "text": "No discontinuity (continuous)",
+                "explanation": "Continuity would require both one-sided limits match and equal $h(1)$."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "From the graph, as $x\\to 1^-$, $h(x)\\to 2$ (open circle). As $x\\to 1^+$, $h(x)\\to 3$ (right-hand constant segment). Since the one-sided limits are finite but unequal, the discontinuity is a jump discontinuity.",
+        "micro_explanations": [
+            {
+                "option_id": "A",
+                "text": "Would require equal one-sided limits."
+            },
+            {
+                "option_id": "B",
+                "text": "Correct: finite but unequal one-sided limits."
+            },
+            {
+                "option_id": "C",
+                "text": "No unbounded behavior shown."
+            },
+            {
+                "option_id": "D",
+                "text": "Graph shows mismatch at $x=1$."
+            }
+        ],
+        "recommendation_reasons": [
+            "High-frequency classification task from a graph.",
+            "Reinforces one-sided limits as the criterion for jump."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_UnitTest",
+        "source": "NewMaoS Unit 1: Limits and Continuity — Unit Test",
+        "source_year": 2026,
+        "notes": "Focus: 1.10 Exploring types of discontinuities (graph-based classification).",
+        "weight_primary": 0.8,
+        "weight_supporting": [
+            {
+                "skill_id": "GraphicalLimit",
+                "weight": 0.2
+            }
+        ],
+        "title": "UT1-Q10-DiscontinuityGraph",
+        "prompt_type": "image",
+        "primary_skill_id": "DiscontinuityClassification",
+        "supporting_skill_ids": [
+            "GraphicalLimit"
+        ]
+    }
+]

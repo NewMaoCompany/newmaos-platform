@@ -1,0 +1,412 @@
+{
+  "exportedAt": "2026-02-06T02:35:45.029Z",
+  "tables": [
+    "sections",
+    "questions",
+    "skills",
+    "error_tags",
+    "question_skills",
+    "user_section_progress",
+    "user_stats",
+    "recommendations",
+    "forum_channels",
+    "forum_messages"
+  ],
+  "schemas": {
+    "sections": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "sample": "Both_Limits_unit_test"
+        },
+        {
+          "name": "topic_id",
+          "type": "text",
+          "nullable": false,
+          "sample": "Both_Limits"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "nullable": false,
+          "sample": "Unit 1 Test"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": false,
+          "sample": ""
+        },
+        {
+          "name": "course_scope",
+          "type": "text",
+          "nullable": false,
+          "sample": "both"
+        },
+        {
+          "name": "estimated_minutes",
+          "type": "integer",
+          "nullable": false,
+          "sample": 10
+        },
+        {
+          "name": "has_lesson",
+          "type": "boolean",
+          "nullable": false,
+          "sample": true
+        },
+        {
+          "name": "has_practice",
+          "type": "boolean",
+          "nullable": false,
+          "sample": true
+        },
+        {
+          "name": "is_unit_test",
+          "type": "boolean",
+          "nullable": false,
+          "sample": true
+        },
+        {
+          "name": "sort_order",
+          "type": "integer",
+          "nullable": false,
+          "sample": 0
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "nullable": false,
+          "sample": "2026-01-29T21:06:13.523411+00:00"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "nullable": false,
+          "sample": "2026-01-31T19:42:27.29935+00:00"
+        },
+        {
+          "name": "description_2",
+          "type": "text",
+          "nullable": false,
+          "sample": "This is the comprehensive Unit 1 Test. It covers limits, continuity, and the definition of the deriv..."
+        }
+      ],
+      "rowCount": 122,
+      "isEmpty": false
+    },
+    "questions": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "sample": "c351da6f-a1c7-4cc5-aa9f-efed76b3930b"
+        },
+        {
+          "name": "course",
+          "type": "text",
+          "nullable": false,
+          "sample": "Both"
+        },
+        {
+          "name": "topic",
+          "type": "text",
+          "nullable": false,
+          "sample": "Both_Limits"
+        },
+        {
+          "name": "sub_topic_id",
+          "type": "text",
+          "nullable": false,
+          "sample": "1.14"
+        },
+        {
+          "name": "type",
+          "type": "text",
+          "nullable": false,
+          "sample": "MCQ"
+        },
+        {
+          "name": "calculator_allowed",
+          "type": "boolean",
+          "nullable": false,
+          "sample": false
+        },
+        {
+          "name": "difficulty",
+          "type": "integer",
+          "nullable": false,
+          "sample": 5
+        },
+        {
+          "name": "target_time_seconds",
+          "type": "integer",
+          "nullable": false,
+          "sample": 140
+        },
+        {
+          "name": "skill_tags",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            "infinite_limits_asymptotes",
+            "limit_notation"
+          ]
+        },
+        {
+          "name": "error_tags",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            "notation_misread"
+          ]
+        },
+        {
+          "name": "prompt",
+          "type": "text",
+          "nullable": false,
+          "sample": "Which statement correctly interprets $\\lim_{x\\to 3^-} f(x)=-\\infty$?"
+        },
+        {
+          "name": "latex",
+          "type": "text",
+          "nullable": false,
+          "sample": "Which statement correctly interprets $\\lim_{x\\to 3^-} f(x)=-\\infty$?"
+        },
+        {
+          "name": "options",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            {
+              "id": "A",
+              "type": "text",
+              "label": "A",
+              "value": "As $x$ approaches 3 from the left, $f(x)$ decreases without bound.",
+              "explanation": "Correct: left-hand approach and values go down without bound."
+            },
+            {
+              "id": "B",
+              "type": "text",
+              "label": "B",
+              "value": "As $x$ approaches 3 from the right, $f(x)$ decreases without bound.",
+              "explanation": "This incorrectly uses the right-hand side."
+            },
+            {
+              "id": "C",
+              "type": "text",
+              "label": "C",
+              "value": "As $x$ approaches 3 from the left, $f(x)$ approaches 0.",
+              "explanation": "The limit is infinite, not zero."
+            },
+            "..."
+          ]
+        },
+        {
+          "name": "correct_option_id",
+          "type": "text",
+          "nullable": false,
+          "sample": "A"
+        },
+        {
+          "name": "tolerance",
+          "type": "numeric",
+          "nullable": false,
+          "sample": 0.001
+        },
+        {
+          "name": "explanation",
+          "type": "text",
+          "nullable": false,
+          "sample": "The notation $x\\to 3^$- means approaching 3 from values less than 3, and -$\\infty$ means the functio..."
+        },
+        {
+          "name": "micro_explanations",
+          "type": "jsonb",
+          "nullable": false,
+          "sample": {
+            "A": "Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.",
+            "B": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).",
+            "C": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).",
+            "D": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point)."
+          }
+        },
+        {
+          "name": "recommendation_reasons",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            "infinite_limits_asymptotes"
+          ]
+        },
+        {
+          "name": "created_by",
+          "type": "null",
+          "nullable": true,
+          "sample": null
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "nullable": false,
+          "sample": "2026-01-25T22:36:53.242986+00:00"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "nullable": false,
+          "sample": "2026-02-01T02:30:30.035927+00:00"
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "nullable": false,
+          "sample": "published"
+        },
+        {
+          "name": "version",
+          "type": "integer",
+          "nullable": false,
+          "sample": 1
+        },
+        {
+          "name": "reasoning_level",
+          "type": "integer",
+          "nullable": false,
+          "sample": 5
+        },
+        {
+          "name": "mastery_weight",
+          "type": "numeric",
+          "nullable": false,
+          "sample": 1.4
+        },
+        {
+          "name": "representation_type",
+          "type": "text",
+          "nullable": false,
+          "sample": "symbolic"
+        },
+        {
+          "name": "topic_id",
+          "type": "null",
+          "nullable": true,
+          "sample": null
+        },
+        {
+          "name": "section_id",
+          "type": "text",
+          "nullable": false,
+          "sample": "1.14"
+        },
+        {
+          "name": "source",
+          "type": "text",
+          "nullable": false,
+          "sample": "NewMaoS"
+        },
+        {
+          "name": "source_year",
+          "type": "integer",
+          "nullable": false,
+          "sample": 2026
+        },
+        {
+          "name": "notes",
+          "type": "null",
+          "nullable": true,
+          "sample": null
+        },
+        {
+          "name": "weight_primary",
+          "type": "numeric",
+          "nullable": false,
+          "sample": 0.9
+        },
+        {
+          "name": "weight_supporting",
+          "type": "numeric",
+          "nullable": false,
+          "sample": 0.1
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "nullable": false,
+          "sample": "1.14-P5"
+        },
+        {
+          "name": "prompt_type",
+          "type": "text",
+          "nullable": false,
+          "sample": "text"
+        },
+        {
+          "name": "primary_skill_id",
+          "type": "text",
+          "nullable": false,
+          "sample": "infinite_limits_asymptotes"
+        },
+        {
+          "name": "supporting_skill_ids",
+          "type": "array",
+          "nullable": false,
+          "sample": [
+            "limit_notation"
+          ]
+        }
+      ],
+      "rowCount": 755,
+      "isEmpty": false
+    },
+    "skills": {
+      "columns": [],
+      "rowCount": 0,
+      "isEmpty": true
+    },
+    "error_tags": {
+      "columns": [],
+      "rowCount": 0,
+      "isEmpty": true
+    },
+    "question_skills": {
+      "columns": [],
+      "rowCount": 0,
+      "isEmpty": true
+    },
+    "user_section_progress": {
+      "columns": [],
+      "rowCount": 0,
+      "isEmpty": true
+    },
+    "user_stats": {
+      "columns": [],
+      "rowCount": 0,
+      "isEmpty": true
+    },
+    "recommendations": {
+      "columns": [],
+      "rowCount": 0,
+      "isEmpty": true
+    },
+    "forum_channels": {
+      "columns": [],
+      "rowCount": 0,
+      "isEmpty": true
+    },
+    "forum_messages": {
+      "columns": [],
+      "rowCount": 0,
+      "isEmpty": true
+    }
+  },
+  "statistics": {
+    "totalTables": 10,
+    "tablesWithData": 2,
+    "emptyTables": 8,
+    "totalColumns": 50
+  }
+}

@@ -20,18 +20,32 @@ import { initEmailScheduler } from './services/emailScheduler';
 initEmailScheduler();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4005;
 
 // Middleware
 app.use(cors({
-    origin: [
-        'http://localhost:3000',
-        'http://localhost:3001',
-        'http://localhost:5173',
-        'https://newmaos.com',
-        'https://www.newmaos.com',
-        'https://newmaos.vercel.app'
-    ],
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+        // Allow requests with no origin
+        if (!origin) return callback(null, true);
+
+        const allowedHosts = [
+            /^http:\/\/localhost(:\d+)?$/,
+            /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+            /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/,
+            /^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/,
+            /^https:\/\/newmaos\.com$/,
+            /^https:\/\/www\.newmaos\.com$/,
+            /^https:\/\/newmaos\.vercel\.app$/
+        ];
+
+        const isAllowed = allowedHosts.some(regex => regex.test(origin));
+
+        if (isAllowed) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -69,9 +83,9 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Not found' });
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📋 API endpoints available at http://localhost:${PORT}/api`);
+app.listen(Number(PORT), '0.0.0.0', () => {
+    console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
+    console.log(`📋 API endpoints available at http://0.0.0.0:${PORT}/api`);
 });
 
 export default app;

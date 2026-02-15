@@ -1,0 +1,254 @@
+{
+  "tables": [
+    "questions",
+    "skills",
+    "error_tags",
+    "question_skills",
+    "user_section_progress",
+    "recommendations",
+    "forum_channels",
+    "forum_messages"
+  ],
+  "columns": {
+    "questions": [
+      {
+        "name": "id",
+        "type": "string",
+        "sample": "c351da6f-a1c7-4cc5-aa9f-efed76b3930b"
+      },
+      {
+        "name": "course",
+        "type": "string",
+        "sample": "Both"
+      },
+      {
+        "name": "topic",
+        "type": "string",
+        "sample": "Both_Limits"
+      },
+      {
+        "name": "sub_topic_id",
+        "type": "string",
+        "sample": "1.14"
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "sample": "MCQ"
+      },
+      {
+        "name": "calculator_allowed",
+        "type": "boolean",
+        "sample": false
+      },
+      {
+        "name": "difficulty",
+        "type": "number",
+        "sample": 5
+      },
+      {
+        "name": "target_time_seconds",
+        "type": "number",
+        "sample": 140
+      },
+      {
+        "name": "skill_tags",
+        "type": "object",
+        "sample": [
+          "infinite_limits_asymptotes",
+          "limit_notation"
+        ]
+      },
+      {
+        "name": "error_tags",
+        "type": "object",
+        "sample": [
+          "notation_misread"
+        ]
+      },
+      {
+        "name": "prompt",
+        "type": "string",
+        "sample": "Which statement correctly interprets $\\lim_{x\\to 3^-} f(x)=-\\infty$?"
+      },
+      {
+        "name": "latex",
+        "type": "string",
+        "sample": "Which statement correctly interprets $\\lim_{x\\to 3^-} f(x)=-\\infty$?"
+      },
+      {
+        "name": "options",
+        "type": "object",
+        "sample": [
+          {
+            "id": "A",
+            "type": "text",
+            "label": "A",
+            "value": "As $x$ approaches 3 from the left, $f(x)$ decreases without bound.",
+            "explanation": "Correct: left-hand approach and values go down without bound."
+          },
+          {
+            "id": "B",
+            "type": "text",
+            "label": "B",
+            "value": "As $x$ approaches 3 from the right, $f(x)$ decreases without bound.",
+            "explanation": "This incorrectly uses the right-hand side."
+          },
+          {
+            "id": "C",
+            "type": "text",
+            "label": "C",
+            "value": "As $x$ approaches 3 from the left, $f(x)$ approaches 0.",
+            "explanation": "The limit is infinite, not zero."
+          },
+          {
+            "id": "D",
+            "type": "text",
+            "label": "D",
+            "value": "As $x$ approaches 3, $f(3)$ must be undefined.",
+            "explanation": "While true for the graph, this is not what the limit statement says."
+          }
+        ]
+      },
+      {
+        "name": "correct_option_id",
+        "type": "string",
+        "sample": "A"
+      },
+      {
+        "name": "tolerance",
+        "type": "number",
+        "sample": 0.001
+      },
+      {
+        "name": "explanation",
+        "type": "string",
+        "sample": "The notation $x\\to 3^$- means approaching 3 from values less than 3, and -$\\infty$ means the function values decrease without bound."
+      },
+      {
+        "name": "micro_explanations",
+        "type": "object",
+        "sample": {
+          "A": "Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.",
+          "B": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).",
+          "C": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).",
+          "D": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point)."
+        }
+      },
+      {
+        "name": "recommendation_reasons",
+        "type": "object",
+        "sample": [
+          "infinite_limits_asymptotes"
+        ]
+      },
+      {
+        "name": "created_by",
+        "type": "object",
+        "sample": null
+      },
+      {
+        "name": "created_at",
+        "type": "string",
+        "sample": "2026-01-25T22:36:53.242986+00:00"
+      },
+      {
+        "name": "updated_at",
+        "type": "string",
+        "sample": "2026-02-01T02:30:30.035927+00:00"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "sample": "published"
+      },
+      {
+        "name": "version",
+        "type": "number",
+        "sample": 1
+      },
+      {
+        "name": "reasoning_level",
+        "type": "number",
+        "sample": 5
+      },
+      {
+        "name": "mastery_weight",
+        "type": "number",
+        "sample": 1.4
+      },
+      {
+        "name": "representation_type",
+        "type": "string",
+        "sample": "symbolic"
+      },
+      {
+        "name": "topic_id",
+        "type": "object",
+        "sample": null
+      },
+      {
+        "name": "section_id",
+        "type": "string",
+        "sample": "1.14"
+      },
+      {
+        "name": "source",
+        "type": "string",
+        "sample": "NewMaoS"
+      },
+      {
+        "name": "source_year",
+        "type": "number",
+        "sample": 2026
+      },
+      {
+        "name": "notes",
+        "type": "object",
+        "sample": null
+      },
+      {
+        "name": "weight_primary",
+        "type": "number",
+        "sample": 0.9
+      },
+      {
+        "name": "weight_supporting",
+        "type": "number",
+        "sample": 0.1
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "sample": "1.14-P5"
+      },
+      {
+        "name": "prompt_type",
+        "type": "string",
+        "sample": "text"
+      },
+      {
+        "name": "primary_skill_id",
+        "type": "string",
+        "sample": "infinite_limits_asymptotes"
+      },
+      {
+        "name": "supporting_skill_ids",
+        "type": "object",
+        "sample": [
+          "limit_notation"
+        ]
+      }
+    ],
+    "skills": [],
+    "error_tags": [],
+    "question_skills": [],
+    "user_section_progress": [],
+    "recommendations": [],
+    "forum_channels": [],
+    "forum_messages": []
+  },
+  "foreignKeys": [],
+  "primaryKeys": {},
+  "functions": []
+}

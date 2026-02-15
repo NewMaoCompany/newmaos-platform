@@ -75,11 +75,11 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
             {children}
 
             {/* Toast Container */}
-            <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-none">
+            <div className="fixed top-4 left-4 z-[9999] flex flex-col gap-3 pointer-events-none">
                 {toasts.map(toast => (
                     <div
                         key={toast.id}
-                        className="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border-2 shadow-lg min-w-[280px] max-w-[400px] animate-slide-in-right bg-white"
+                        className="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border-2 shadow-lg min-w-[280px] max-w-[400px] animate-slide-in-left bg-white"
                         style={{ borderColor: toast.type === 'success' ? '#22c55e' : toast.type === 'error' ? '#ef4444' : toast.type === 'warning' ? '#f59e0b' : '#3b82f6' }}
                     >
                         <div className={`p-2 rounded-full ${toast.type === 'success' ? 'bg-green-50' : toast.type === 'error' ? 'bg-red-50' : toast.type === 'warning' ? 'bg-amber-50' : 'bg-blue-50'}`}>

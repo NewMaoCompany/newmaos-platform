@@ -1,0 +1,834 @@
+[
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_1.9",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 75,
+        "skill_tags": [
+            {
+                "skill_id": "limit_from_graph",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "one_sided_limits",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "misread_graph_open_closed",
+            "confuse_f_of_a_with_limit",
+            "ignore_one_sided"
+        ],
+        "prompt": {
+            "text": "The graph of $f$ is shown. What is $\\lim_{x\\to 2} f(x)$?",
+            "image": "U1C9Q1_Limit_Consistent_With_Graph.png"
+        },
+        "latex": "$$\\lim_{x\\to 2} f(x)=?$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$3$",
+                "explanation": "From the left, $f(x)$ approaches $3$. From the right, the graph is at $y=3$ near $x=2$. Both one-sided limits match."
+            },
+            {
+                "id": "B",
+                "text": "$1$",
+                "explanation": "$f(2)=1$ is the filled point, but the limit depends on nearby values, not the value at $x=2$."
+            },
+            {
+                "id": "C",
+                "text": "Does not exist",
+                "explanation": "The one-sided limits are equal here, so the two-sided limit exists."
+            },
+            {
+                "id": "D",
+                "text": "$2$",
+                "explanation": "There is no evidence the function approaches $2$ from either side near $x=2$."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0,
+        "explanation": "Read the approach values on both sides of $x=2$. The left-hand limit is $3$ and the right-hand limit is also $3$, so $\\lim_{x\\to 2} f(x)=3$.",
+        "micro_explanations": [
+            "Identify the y-value approached as $x\\to 2^-$.",
+            "Identify the y-value approached as $x\\to 2^+$.",
+            "If they match, that common value is the limit."
+        ],
+        "recommendation_reasons": [
+            "Targets connecting graphical behavior to two-sided limits.",
+            "Reinforces difference between $f(2)$ and $\\lim_{x\\to 2} f(x)$."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.9",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Chapter 1.9 Connecting Multiple Representations of Limits",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C9Q1_Limit_Consistent_With_Graph",
+        "prompt_type": "image",
+        "primary_skill_id": "limit_from_graph",
+        "supporting_skill_ids": [
+            "one_sided_limits"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_1.9",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 90,
+        "skill_tags": [
+            {
+                "skill_id": "limit_from_table",
+                "weight": 0.6
+            },
+            {
+                "skill_id": "limit_algebraic",
+                "weight": 0.4
+            }
+        ],
+        "error_tags": [
+            "table_rounding_assumption",
+            "confuse_f_of_a_with_limit"
+        ],
+        "prompt": {
+            "text": "A function satisfies $f(x)=(x-3)(x+1)$ for $x\\ne 3$, and $f(3)=10$. What is $\\lim_{x\\to 3} f(x)$?",
+            "image": null
+        },
+        "latex": "$$\\lim_{x\\to 3} (x-3)(x+1)$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$10$",
+                "explanation": "$10$ is $f(3)$, but the limit uses values near $3$, and the formula for $x\\ne 3$ controls the approach."
+            },
+            {
+                "id": "B",
+                "text": "$0$",
+                "explanation": "This is the value of $(x-3)(x+1)$ at $x=3$, but $(x-3)$ makes it $0$ only if substituted directly; the expression is defined for $x\\ne 3$, yet the limit can still be found by substitution into the polynomial."
+            },
+            {
+                "id": "C",
+                "text": "$0$",
+                "explanation": "As $x\\to 3$, $(x-3)(x+1)\\to (0)(4)=0$."
+            },
+            {
+                "id": "D",
+                "text": "$4$",
+                "explanation": "$4$ is $x+1$ at $x=3$, but you must multiply by the factor approaching $0$."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "For $x\\ne 3$, $f(x)$ equals a polynomial. Polynomials are continuous, so the limit equals the polynomial value at $x=3$: $(3-3)(3+1)=0$.",
+        "micro_explanations": [
+            "Use the given expression valid for $x\\ne 3$ to analyze approach behavior.",
+            "Polynomials have limits equal to their substituted values.",
+            "Compare with $f(3)$ to avoid confusing value with limit."
+        ],
+        "recommendation_reasons": [
+            "Connects symbolic definition with the idea that the limit can exist even if the function value is redefined.",
+            "Common AP trap: mixing $f(a)$ with $\\lim_{x\\to a} f(x)$."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.9",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Chapter 1.9 Connecting Multiple Representations of Limits",
+        "weight_primary": 0.6,
+        "weight_supporting": 0.4,
+        "title": "U1C9Q2_Limit_Using_Symbolic_With_Redefinition",
+        "prompt_type": "text",
+        "primary_skill_id": "limit_algebraic",
+        "supporting_skill_ids": [
+            "limit_from_table"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_1.9",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 110,
+        "skill_tags": [
+            {
+                "skill_id": "limit_from_table",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "one_sided_limits",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "table_rounding_assumption",
+            "ignore_one_sided"
+        ],
+        "prompt": {
+            "text": "A table gives values of $g(x)$ near $x=1$. For $x<1$, the values trend toward $2$. For $x>1$, the values trend toward $-1$. Which statement is true?",
+            "image": null
+        },
+        "latex": "$$\\text{Choose the correct conclusion about }\\lim_{x\\to 1} g(x).$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$\\lim_{x\\to 1} g(x)=2$",
+                "explanation": "This matches only the left-hand trend, not the right-hand trend."
+            },
+            {
+                "id": "B",
+                "text": "$\\lim_{x\\to 1} g(x)=-1$",
+                "explanation": "This matches only the right-hand trend, not the left-hand trend."
+            },
+            {
+                "id": "C",
+                "text": "$g(1)=2$",
+                "explanation": "The table trends do not determine $g(1)$ unless a value at $x=1$ is provided."
+            },
+            {
+                "id": "D",
+                "text": "$\\lim_{x\\to 1} g(x)$ does not exist",
+                "explanation": "The one-sided limits approach different values ($2$ vs. $-1$), so the two-sided limit does not exist."
+            }
+        ],
+        "correct_option_id": "D",
+        "tolerance": 0,
+        "explanation": "A two-sided limit exists only if the left-hand and right-hand limits are equal. Here they differ, so $\\lim_{x\\to 1} g(x)$ does not exist.",
+        "micro_explanations": [
+            "Identify the left-hand approach value from the table trend.",
+            "Identify the right-hand approach value from the table trend.",
+            "Different one-sided limits imply DNE."
+        ],
+        "recommendation_reasons": [
+            "Forces explicit one-sided reasoning from a representation other than a graph.",
+            "High-frequency error: declaring the more 'stable-looking' side as the limit."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.9",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Chapter 1.9 Connecting Multiple Representations of Limits",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C9Q3_Connect_Table_To_OneSided_Limits",
+        "prompt_type": "text",
+        "primary_skill_id": "limit_from_table",
+        "supporting_skill_ids": [
+            "one_sided_limits"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_1.9",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level1",
+        "target_time_seconds": 60,
+        "skill_tags": [
+            {
+                "skill_id": "limit_from_table",
+                "weight": 0.8
+            },
+            {
+                "skill_id": "limit_from_graph",
+                "weight": 0.2
+            }
+        ],
+        "error_tags": [
+            "table_rounding_assumption",
+            "confuse_f_of_a_with_limit"
+        ],
+        "prompt": {
+            "text": "The table shown gives values of $f(x)$ near $x=2$. Estimate $\\lim_{x\\to 2} f(x)$.",
+            "image": "U1C9Q4_Limit_From_Table_At_2.png"
+        },
+        "latex": "$$\\lim_{x\\to 2} f(x)\\approx ?$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$3.61$",
+                "explanation": "That is $f(1.9)$, not the value approached near $x=2$."
+            },
+            {
+                "id": "B",
+                "text": "$4$",
+                "explanation": "The values $3.9601$ and $4.0401$ cluster around $4$, suggesting the limit is $4$."
+            },
+            {
+                "id": "C",
+                "text": "$4.41$",
+                "explanation": "That is $f(2.1)$, which is farther from $2$ than $2.01$."
+            },
+            {
+                "id": "D",
+                "text": "Does not exist",
+                "explanation": "The table suggests approach toward a single value from both sides, so the limit exists."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "As $x$ gets closer to $2$ from both sides, $f(x)$ gets closer to $4$, so $\\lim_{x\\to 2} f(x)\\approx 4$.",
+        "micro_explanations": [
+            "Focus on inputs closest to $2$ on each side.",
+            "Compare the corresponding outputs.",
+            "Pick the common target value."
+        ],
+        "recommendation_reasons": [
+            "Builds quick table-to-limit estimation used throughout Unit 1.",
+            "Reinforces choosing the closest x-values over farther ones."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 1,
+        "mastery_weight": 1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.9",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Chapter 1.9 Connecting Multiple Representations of Limits",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "U1C9Q4_Limit_From_Table_At_2",
+        "prompt_type": "image",
+        "primary_skill_id": "limit_from_table",
+        "supporting_skill_ids": [
+            "limit_from_graph"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_1.9",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level5",
+        "target_time_seconds": 140,
+        "skill_tags": [
+            {
+                "skill_id": "limit_algebraic",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "one_sided_limits",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "cancel_invalid_at_discontinuity",
+            "ignore_one_sided"
+        ],
+        "prompt": {
+            "text": "Define $h(x)=\\dfrac{|x-2|}{x-2}$ for $x\\ne 2$. Which statement is true?",
+            "image": null
+        },
+        "latex": "$$h(x)=\\frac{|x-2|}{x-2}\\quad (x\\ne 2)$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$\\lim_{x\\to 2} h(x)=0$",
+                "explanation": "The function takes values $-1$ or $1$, never approaching $0$ near $2$."
+            },
+            {
+                "id": "B",
+                "text": "$\\lim_{x\\to 2} h(x)=1$",
+                "explanation": "The right-hand limit is $1$, but the left-hand limit is $-1$."
+            },
+            {
+                "id": "C",
+                "text": "$\\lim_{x\\to 2} h(x)$ does not exist",
+                "explanation": "For $x>2$, $h(x)=1$; for $x<2$, $h(x)=-1$. The one-sided limits differ."
+            },
+            {
+                "id": "D",
+                "text": "$h(x)=1$ for all $x\\ne 2$",
+                "explanation": "For $x<2$, $|x-2|=-(x-2)$ so $h(x)=-1$."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "Compute one-sided behavior: if $x>2$, then $|x-2|=x-2$ so $h(x)=1$. If $x<2$, then $|x-2|=-(x-2)$ so $h(x)=-1$. Since $1\\ne -1$, the two-sided limit does not exist.",
+        "micro_explanations": [
+            "Rewrite $|x-2|$ piecewise for $x>2$ and $x<2$.",
+            "Evaluate left-hand and right-hand limits separately.",
+            "Conclude DNE if they differ."
+        ],
+        "recommendation_reasons": [
+            "Connects symbolic piecewise reasoning to limit existence.",
+            "High-discrimination AP item: absolute value in a limit context."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.9",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Chapter 1.9 Connecting Multiple Representations of Limits",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C9Q5_Connect_AbsoluteValue_To_OneSided",
+        "prompt_type": "text",
+        "primary_skill_id": "one_sided_limits",
+        "supporting_skill_ids": [
+            "limit_algebraic"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_1.10",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 85,
+        "skill_tags": [
+            {
+                "skill_id": "continuity_discontinuity",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "limit_from_graph",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "jump_vs_removable_confusion",
+            "misread_graph_open_closed"
+        ],
+        "prompt": {
+            "text": "The graph of $f$ is shown. What type of discontinuity does $f$ have at $x=1$?",
+            "image": "U1C10Q1_Classify_Discontinuity_From_Graph.png"
+        },
+        "latex": "$$\\text{Classify the discontinuity at }x=1.$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "Removable discontinuity",
+                "explanation": "A removable discontinuity would have matching one-sided limits. Here the left and right behaviors do not approach the same value."
+            },
+            {
+                "id": "B",
+                "text": "Infinite discontinuity",
+                "explanation": "An infinite discontinuity requires unbounded behavior near $x=1$, which is not shown."
+            },
+            {
+                "id": "C",
+                "text": "No discontinuity (continuous at $x=1$)",
+                "explanation": "The left and right sides do not meet at one common value."
+            },
+            {
+                "id": "D",
+                "text": "Jump discontinuity",
+                "explanation": "The left-hand limit and right-hand limit are finite but unequal, indicating a jump."
+            }
+        ],
+        "correct_option_id": "D",
+        "tolerance": 0,
+        "explanation": "At $x=1$, the graph approaches one finite value from the left and a different finite value from the right, so the discontinuity is a jump discontinuity.",
+        "micro_explanations": [
+            "Check whether the left-hand and right-hand limits exist.",
+            "Decide whether they are equal.",
+            "Finite but unequal implies jump."
+        ],
+        "recommendation_reasons": [
+            "Core classification skill for discontinuities.",
+            "Trains reading discontinuity type directly from a graph."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.10",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Chapter 1.10 Exploring Types of Discontinuities",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C10Q1_Classify_Discontinuity_From_Graph",
+        "prompt_type": "image",
+        "primary_skill_id": "continuity_discontinuity",
+        "supporting_skill_ids": [
+            "limit_from_graph"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_1.10",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 100,
+        "skill_tags": [
+            {
+                "skill_id": "continuity_discontinuity",
+                "weight": 0.6
+            },
+            {
+                "skill_id": "limit_algebraic",
+                "weight": 0.4
+            }
+        ],
+        "error_tags": [
+            "cancel_invalid_at_discontinuity",
+            "confuse_f_of_a_with_limit"
+        ],
+        "prompt": {
+            "text": "Consider $p(x)=\\dfrac{x^2-9}{x-3}$ for $x\\ne 3$. What must $p(3)$ be to make $p$ continuous at $x=3$?",
+            "image": null
+        },
+        "latex": "$$p(x)=\\frac{x^2-9}{x-3}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$0$",
+                "explanation": "The limiting value is not $0$; simplify first to find the limit."
+            },
+            {
+                "id": "B",
+                "text": "$6$",
+                "explanation": "After simplification, the limit at $x=3$ is $6$, so setting $p(3)=6$ fills the removable discontinuity."
+            },
+            {
+                "id": "C",
+                "text": "$3$",
+                "explanation": "This is the x-value, not the y-value that continuity requires."
+            },
+            {
+                "id": "D",
+                "text": "No value works",
+                "explanation": "This is a removable discontinuity, so defining the function at $x=3$ can make it continuous."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "Factor: $x^2-9=(x-3)(x+3)$. For $x\\ne 3$, $p(x)=x+3$. Thus $\\lim_{x\\to 3}p(x)=6$. Continuity requires $p(3)=6$.",
+        "micro_explanations": [
+            "Factor the numerator.",
+            "Cancel $(x-3)$ for $x\\ne 3$ to get the simplified form.",
+            "Set $p(3)$ equal to the limit value."
+        ],
+        "recommendation_reasons": [
+            "Classic removable discontinuity completion problem.",
+            "Directly connects algebraic limit to continuity definition."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.10",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Chapter 1.10 Exploring Types of Discontinuities",
+        "weight_primary": 0.6,
+        "weight_supporting": 0.4,
+        "title": "U1C10Q2_Remove_Discontinuity_By_Definition",
+        "prompt_type": "text",
+        "primary_skill_id": "continuity_discontinuity",
+        "supporting_skill_ids": [
+            "limit_algebraic"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_1.10",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 115,
+        "skill_tags": [
+            {
+                "skill_id": "asymptote_infinite_limit",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "one_sided_limits",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "vertical_asymptote_not_infinite_limit",
+            "ignore_one_sided"
+        ],
+        "prompt": {
+            "text": "The graph of $f$ is shown. Which statement is true?",
+            "image": "U1C10Q3_Infinite_Limit_And_Asymptote.png"
+        },
+        "latex": "$$\\text{Choose the correct statement about limits near }x=0.$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$\\lim_{x\\to 0} f(x)=0$",
+                "explanation": "The function values do not approach $0$; they grow without bound in magnitude."
+            },
+            {
+                "id": "B",
+                "text": "$\\lim_{x\\to 0^-} f(x)=+\\infty$ and $\\lim_{x\\to 0^+} f(x)=+\\infty$",
+                "explanation": "On the left side the graph goes to $-\\infty$, not $+\\infty$."
+            },
+            {
+                "id": "C",
+                "text": "$\\lim_{x\\to 0^-} f(x)=-\\infty$ and $\\lim_{x\\to 0^+} f(x)=+\\infty$",
+                "explanation": "The left branch goes downward without bound and the right branch goes upward without bound, indicating a vertical asymptote at $x=0$."
+            },
+            {
+                "id": "D",
+                "text": "$\\lim_{x\\to 0} f(x)$ exists and is finite",
+                "explanation": "The function is unbounded near $x=0$, so a finite two-sided limit cannot exist."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "From the graph, as $x\\to 0^-$ the function decreases without bound, and as $x\\to 0^+$ it increases without bound. So there is an infinite discontinuity (vertical asymptote) at $x=0$.",
+        "micro_explanations": [
+            "Read the end behavior on each side of the vertical line $x=0$.",
+            "Record each one-sided infinite limit with the correct sign.",
+            "Conclude vertical asymptote from infinite behavior."
+        ],
+        "recommendation_reasons": [
+            "Tests sign awareness for infinite limits.",
+            "Common error: assuming both sides go to the same infinity."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.10",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Chapter 1.10 Exploring Types of Discontinuities",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C10Q3_Infinite_Limit_And_Asymptote",
+        "prompt_type": "image",
+        "primary_skill_id": "asymptote_infinite_limit",
+        "supporting_skill_ids": [
+            "one_sided_limits"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_1.10",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level1",
+        "target_time_seconds": 65,
+        "skill_tags": [
+            {
+                "skill_id": "continuity_discontinuity",
+                "weight": 0.8
+            },
+            {
+                "skill_id": "one_sided_limits",
+                "weight": 0.2
+            }
+        ],
+        "error_tags": [
+            "jump_vs_removable_confusion",
+            "confuse_f_of_a_with_limit"
+        ],
+        "prompt": {
+            "text": "At $x=a$, a function has $\\lim_{x\\to a^-} f(x)=5$ and $\\lim_{x\\to a^+} f(x)=5$, but $f(a)$ is not defined. What type of discontinuity is at $x=a$?",
+            "image": null
+        },
+        "latex": "$$\\lim_{x\\to a^-} f(x)=5,\\;\\lim_{x\\to a^+} f(x)=5,\\;f(a)\\text{ undefined}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "Removable discontinuity",
+                "explanation": "The two-sided limit exists and is finite, but the function value is missing, so defining $f(a)=5$ would make it continuous."
+            },
+            {
+                "id": "B",
+                "text": "Jump discontinuity",
+                "explanation": "A jump requires unequal one-sided limits."
+            },
+            {
+                "id": "C",
+                "text": "Infinite discontinuity",
+                "explanation": "Infinite discontinuities involve unbounded limits."
+            },
+            {
+                "id": "D",
+                "text": "No discontinuity",
+                "explanation": "Continuity also requires $f(a)$ to exist and equal the limit."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0,
+        "explanation": "Equal finite one-sided limits imply the (two-sided) limit exists. Because $f(a)$ is undefined, the discontinuity can be removed by defining $f(a)=5$.",
+        "micro_explanations": [
+            "Check whether the one-sided limits match.",
+            "If they match and are finite, the limit exists.",
+            "Missing or mismatched function value implies removable discontinuity."
+        ],
+        "recommendation_reasons": [
+            "Fast classification using limit facts alone.",
+            "Reinforces the 3-part continuity idea implicitly."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 1,
+        "mastery_weight": 1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.10",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Chapter 1.10 Exploring Types of Discontinuities",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "U1C10Q4_Classify_Removable_From_Limit_Facts",
+        "prompt_type": "text",
+        "primary_skill_id": "continuity_discontinuity",
+        "supporting_skill_ids": [
+            "one_sided_limits"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_1.10",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level5",
+        "target_time_seconds": 150,
+        "skill_tags": [
+            {
+                "skill_id": "continuity_discontinuity",
+                "weight": 0.6
+            },
+            {
+                "skill_id": "one_sided_limits",
+                "weight": 0.4
+            }
+        ],
+        "error_tags": [
+            "jump_vs_removable_confusion",
+            "ignore_one_sided",
+            "confuse_f_of_a_with_limit"
+        ],
+        "prompt": {
+            "text": "A function $f$ has $\\lim_{x\\to 4^-} f(x)=2$ and $\\lim_{x\\to 4^+} f(x)=2$. Also $f(4)=7$. Which statement is true?",
+            "image": null
+        },
+        "latex": "$$\\lim_{x\\to 4^-} f(x)=2,\\;\\lim_{x\\to 4^+} f(x)=2,\\;f(4)=7$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$f$ is continuous at $x=4$ because both one-sided limits exist",
+                "explanation": "Continuity also requires $f(4)$ to equal the limit."
+            },
+            {
+                "id": "B",
+                "text": "$\\lim_{x\\to 4} f(x)=7$",
+                "explanation": "The limit is determined by nearby behavior, and both sides approach $2$, not $7$."
+            },
+            {
+                "id": "C",
+                "text": "$f$ has a removable discontinuity at $x=4$",
+                "explanation": "The limit exists and equals $2$, but $f(4)=7\\ne 2$, so redefining $f(4)$ to $2$ would make it continuous."
+            },
+            {
+                "id": "D",
+                "text": "$f$ has a jump discontinuity at $x=4$",
+                "explanation": "A jump requires different left- and right-hand limits; here they are equal."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "Since $\\lim_{x\\to 4^-} f(x)=\\lim_{x\\to 4^+} f(x)=2$, the two-sided limit exists and equals $2$. But $f(4)=7\\ne 2$, so the discontinuity is removable.",
+        "micro_explanations": [
+            "Equal one-sided limits imply $\\lim_{x\\to 4} f(x)=2$.",
+            "Compare $f(4)$ to the limit.",
+            "Mismatch implies discontinuity; since the limit exists, it is removable."
+        ],
+        "recommendation_reasons": [
+            "High-frequency AP concept: removable discontinuity caused by a misdefined point value.",
+            "Separates 'limit exists' from 'function is continuous'."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.10",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Chapter 1.10 Exploring Types of Discontinuities",
+        "weight_primary": 0.6,
+        "weight_supporting": 0.4,
+        "title": "U1C10Q5_Removable_When_Value_Differs_From_Limit",
+        "prompt_type": "text",
+        "primary_skill_id": "continuity_discontinuity",
+        "supporting_skill_ids": [
+            "one_sided_limits"
+        ]
+    }
+]

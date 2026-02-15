@@ -1,11 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { supabase, supabaseAdmin } from '../config/supabase';
-import { Resend } from 'resend';
+import { sendEmail } from '../services/emailService';
 
 const router = Router();
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-// Helper: Generate 6-digit code
 const generateCode = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 // POST /api/auth/register
@@ -53,13 +50,11 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        // 3. Send 6-digit OTP Email via Resend
         try {
-            await resend.emails.send({
-                from: 'NewMaoS <noreply@newmaos.com>',
-                to: email,
-                subject: 'Your Verification Code - NewMaoS',
-                html: `
+            await sendEmail(
+                email,
+                'Your Verification Code - NewMaoS',
+                `
 <!DOCTYPE html>
 <html>
 <head>
@@ -104,10 +99,10 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 </body>
 </html>
                 `
-            });
+            );
             console.log(`✅ Verification code sent to ${email}: ${code}`);
         } catch (emailError: any) {
-            console.error('❌ Resend Error:', emailError?.message || emailError);
+            console.error('❌ Email Error:', emailError?.message || emailError);
             console.log(`📧 [DEV FALLBACK] Verification code for ${email}: ${code}`);
         }
 
@@ -208,7 +203,7 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
             'Parametric/Polar', 'Series'];
 
         for (const topic of topics) {
-            await supabaseAdmin.from('topic_mastery').insert({
+            await supabaseAdmin.from('unit_mastery').insert({
                 user_id: targetUserId,
                 subject: topic,
                 mastery_score: 0,
@@ -216,13 +211,25 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
             });
         }
 
-        // 6. Welcome notification
-        await supabaseAdmin.from('notifications').insert({
-            user_id: targetUserId,
-            text: 'Welcome to NewMaoS! Start your first session.',
-            link: '/practice',
-            unread: true
-        });
+        // 6. Welcome notification (only if no notifications exist for this user)
+        const { data: existingNotifs } = await supabaseAdmin
+            .from('notifications')
+            .select('id')
+            .eq('user_id', targetUserId)
+            .limit(1);
+
+        if (!existingNotifs || existingNotifs.length === 0) {
+            await supabaseAdmin.from('notifications').insert({
+                user_id: targetUserId,
+                text: 'Welcome to NewMaoS! You have a Newcomer Gift Pack waiting for you.',
+                link: '/practice',
+                unread: true,
+                type: 'gift_claim',
+                metadata: { amount: 200 }
+            });
+
+            // Automatic award_points removed to allow frontend "Claim" with animation
+        }
 
         // 7. Initialize course progress
         for (const courseId of ['AB', 'BC']) {
@@ -273,11 +280,10 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
             .upsert({ email, code, expires_at: expiresAt.toISOString() });
 
         try {
-            await resend.emails.send({
-                from: 'NewMaoS <noreply@newmaos.com>',
-                to: email,
-                subject: 'Your Verification Code - NewMaoS',
-                html: `
+            await sendEmail(
+                email,
+                'Your Verification Code - NewMaoS',
+                `
 <!DOCTYPE html>
 <html>
 <head>
@@ -322,16 +328,16 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
 </body>
 </html>
                 `
-            });
+            );
             console.log(`✅ Verification code resent to ${email}: ${code}`);
         } catch (emailError: any) {
-            console.error('❌ Resend Error:', emailError?.message || emailError);
+            console.error('❌ Email Error:', emailError?.message || emailError);
             console.log(`📧 [DEV FALLBACK] Verification code for ${email}: ${code}`);
         }
 
         res.json({ message: 'Verification code sent successfully' });
     } catch (error: any) {
-        console.error('Resend error:', error);
+        console.error('Auth handler error:', error);
         res.status(500).json({ error: 'Failed to resend' });
     }
 });
@@ -340,13 +346,15 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
 router.post('/login', async (req: Request, res: Response): Promise<void> => {
     try {
         const { email, password } = req.body;
+        console.log(`🔐 Login attempt for: ${email}`);
+
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password
         });
 
         if (error) {
-            console.error('Supabase Auth SignIn Error:', error);
+            console.error(`❌ Supabase Auth SignIn Error for ${email}:`, error.message);
             res.status(401).json({ error: error.message });
             return;
         }
@@ -387,7 +395,9 @@ router.post('/logout', async (req: Request, res: Response): Promise<void> => {
 router.post('/forgot-password', async (req: Request, res: Response): Promise<void> => {
     try {
         const { email } = req.body;
+        console.log(`🔑 Forgot password request for: ${email}`);
         if (!email) {
+            console.log('❌ Forgot password: Email is missing');
             res.status(400).json({ error: 'Email is required' });
             return;
         }
@@ -397,9 +407,12 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
         const user = users.find((u: any) => u.email === email);
 
         if (!user) {
+            console.log(`❌ Forgot password: No user found for ${email}`);
             res.status(404).json({ error: 'No account found with this email. Please sign up.' });
             return;
         }
+
+        console.log(`👤 User found: ${user.id}`);
 
         const userName = user.user_metadata?.name || email.split('@')[0];
 
@@ -423,13 +436,11 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
             return;
         }
 
-        // 4. Send Email via Resend
         try {
-            await resend.emails.send({
-                from: 'NewMaoS <noreply@newmaos.com>',
-                to: email,
-                subject: 'Reset Password Verification Code - NewMaoS',
-                html: `
+            await sendEmail(
+                email,
+                'Reset Password Verification Code - NewMaoS',
+                `
 <!DOCTYPE html>
 <html>
 <head>
@@ -474,10 +485,10 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
 </body>
 </html>
                 `
-            });
+            );
             console.log(`✅ Reset code sent to ${email}: ${code}`);
         } catch (emailError: any) {
-            console.error('Resend Error:', emailError);
+            console.error('Email Error:', emailError);
             console.log(`📧 [DEV] Reset code for ${email}: ${code}`);
         }
 
@@ -733,11 +744,10 @@ router.post('/initiate-change-email', async (req: Request, res: Response): Promi
             .upsert({ email, code, expires_at: expiresAt.toISOString() });
 
         try {
-            await resend.emails.send({
-                from: 'NewMaoS <noreply@newmaos.com>',
-                to: email,
-                subject: 'Verify Your New Email - NewMaoS',
-                html: `
+            await sendEmail(
+                email,
+                'Verify Your New Email - NewMaoS',
+                `
 <!DOCTYPE html>
 <html>
 <head>
@@ -775,10 +785,10 @@ router.post('/initiate-change-email', async (req: Request, res: Response): Promi
 </body>
 </html>
                 `
-            });
+            );
             console.log(`✅ Change Email code sent to ${email}: ${code}`);
         } catch (emailError: any) {
-            console.error('❌ Resend Error:', emailError?.message || emailError);
+            console.error('❌ Email Error:', emailError?.message || emailError);
             console.log(`📧 [DEV FALLBACK] Code for ${email}: ${code}`);
         }
 

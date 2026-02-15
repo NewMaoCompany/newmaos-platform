@@ -1,0 +1,800 @@
+0012d0cc-e291-467a-98b5-6d88fa1a2871 | Which is an equivalent separated form of $\\$\frac{dy}{dx}$=\\\frac{x^2}{y}$ (assuming $y\\neq 0$)?
+0015173b-cc1a-4da5-9bd2-4c6aaeecd720 | ["Use the graph provided. What type of discontinuity occurs at $x=1$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769385336198_cdvo8k.jpg"]
+005a84a2-24aa-4633-9e4c-a6871ce2de74 | Which statement best describes what $\int f(x)\,dx$ represents?
+0080dcce-a0de-413a-88ed-331e3e221cc8 | Which is the best first move to solve $\\$\frac{dy}{dx}$=xy$ by separation of variables?
+013022df-2313-41b9-9a86-4509c0306bc5 | Let Δx = 0.5 on the interval [1, 3]. Which summation represents the right-endpoint Riemann sum for ∫ from 1 to 3 of f(x) dx using n = 4 subintervals?
+01dd4c84-50c9-4445-a2c1-4018ab0a24d7 | Refer to Table 10.15-A (U10.15_Practice_Table1_SeriesForms.png). Which function could produce $A(x)=1+2x+4x^2+8x^3+\\cdots$?
+020c11da-da5a-4654-b7ff-6fdcabcf592e | If $f(x)=e^x$, what is $f'(x)$?
+029895ae-b361-44f1-b162-e391e6578fe0 | ["Evaluate $\\lim_{x\\to 3} (2x^2-5x+1)$.","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769385327064_njn3p.jpg"]
+02faf402-a407-4781-9dcc-df442fe7a07a | Which rewrite is correct for completing the square in $x^2+6x+13$?
+0348d1bc-d0c0-43fa-b58a-50360f6110f8 | Which is a sufficient condition to guarantee that a continuous function $f$ attains both an absolute maximum and an absolute minimum?
+040b5ab8-a45a-4b95-b83a-4a33f2cc71a1 | When revolving a region about the $y$-axis using washers (with respect to $y$), what do the radii represent?
+04b65a33-db22-4e56-83f2-ee93a097dae4 | Which series is an example of conditional convergence?
+04feded2-5fed-4e6b-b12e-126331a4138c | Two polar curves are shown. Which value of $\theta$ is an intersection in the first quadrant?
+051cdc2e-fd06-4eb2-b3b1-ba75e807a64a | A rational function has a horizontal asymptote $y=-2$. Which statement must be true?
+0520597a-5a06-4fc1-b495-5aced0b594e7 | A continuous function $f$ is defined on $(0,5)$. Which statement is always true?
+05a91bec-4319-43c9-9174-95660bef2707 | If $f(1)=2$ and $f'(1)=-3$, what is the equation of the tangent line to $y=f(x)$ at $x=1$?
+064151a0-0ebb-4a10-8b79-d93609c59ee9 | Given $f(4)=7$ and $f'(4)=2$, which expression equals $(f^{-1})'(7)$?
+06c6879a-374c-41d2-9e39-caa05bb268dc | Use the provided graph of $f$ on $[0,6]$. Which statement is correct about the absolute extrema on $[0,6]$?
+0739596b-f665-4184-8a88-72611b959d50 | A parametric curve is shown. Which ordered pair corresponds to the point at the largest shown parameter value?
+0753e4bf-6842-45bf-9514-e80e3e8828b7 | Consider the series $\\sum_{n=1}^{\\infty} \\\frac{\\sin(n)}{n}$. Which conclusion is correct based only on the nth-term test?
+082230d0-983b-4e80-9e60-090b7a554d61 | Which integrand is LEAST likely to be efficiently handled by u-substitution and instead suggests a product-focused technique?
+09004717-b58d-4f9e-868a-bf58da087a1e | The average value of $f(x)=kx^2$ on $[0,2]$ is $\\frac{8}{3}$. What is $k$?
+09af0e9c-0e94-4178-8e99-19821f5bb9bd | Let $f(x)=x^3-6x+1$. Which statement is true?
+0a398937-39d1-4a28-ac19-b58a8f0203e5 | Which integrand suggests long division is needed BEFORE integrating?
+0afb802a-fe10-4200-9842-e3272499ad62 | A particle has velocity components given in the table. Using the trapezoidal rule with $\Delta t = 1$, approximate the displacement vector $\int_0^4 \langle v_x(t), v_y(t) \rangle \, dt$.
+0b5ec5e1-c183-4440-b8e5-892fe530ef59 | Let $P(t)$ be the population of a town, measured in thousands of people, where $t$ is measured in years. If $P''(6)=1.8$, which statement is the best interpretation?
+0bc6e4bc-5346-4e54-8fb1-805879fc8eea | A table related to parametric motion is shown. Which choice best matches the correct sign of the second derivative based on the table trend?
+0c01734f-e00f-4327-bbed-c6fe00c87d9e | A separated-and-integrated solution to a DE is $\\ln|y|=\\$\frac{x^2}{2}$+C$. If $y(0)=2$, what is $C$?
+0c0a3f5c-4397-45b3-913b-39f6806bd9b4 | Which expression equals the area between $y=\\sin(x)$ and the $x$-axis on $[0,2\\pi]$?
+0c655690-5192-4960-aa8f-c2af98db7828 | In the open-top box setup (12 in by 18 in, cut out squares of side $x$), which interval gives the full physically meaningful domain for $x$?
+0cef6b26-1021-4e98-bada-72e37794dca2 | A Taylor polynomial centered at $x=0$ is required to match a function’s value, first derivative, and second derivative at $0$. What is the minimum degree needed?
+0d6904ae-a190-4330-bed2-615431a5bc48 | A particle moves along a line with position given by $s(t)=t^2+1$ (meters), where $t$ is measured in seconds. What is the average rate of change of $s(t)$ on the interval $2\le t\le 5$?
+0d7a6634-ab75-4860-ba8b-2cf78455ec41 | The velocity graph $v(t)$ is shown for $0\\le t\\le 4$. What is the total distance traveled on $[0,4]$?
+0deaca7b-8a3f-4cb5-86a9-fbfa269384b1 | If $a(t)$ is measured in $\\text{m}/\\text{s}^2$, what are the units of $\\int_0^T a(t)\\,dt$?
+0e38b63c-dc56-4c17-b47b-b315f12ab916 | A graph shows $y=\ln(x)$ and its tangent line at $x=4$. Which statement is true?
+0e923b8f-3402-405c-aca3-58cdeac9e4c1 | For the logistic differential equation $\\$\frac{dP}{dt}$=kP\\left(1-\\$\frac{P}{K}$\\right)$ with $k>0$ and $K>0$, which equilibrium solution(s) are always present?
+0f167af7-aab5-43ed-9161-969d1f3d923d | The curves $x=y^2$ and $x=y+2$ are shown. What is the area of the region enclosed by the curves?
+0f1685a4-0118-4400-bfa2-63f046bddd3e | If $f(x)=\tan x$, what is $f'(x)$?
+0f685f6a-9fcd-4555-afd2-03d2b1a2e899 | Evaluate $\lim_{x\to 0} |x|\cos\left(\$\frac{1}{x}$\right)$.
+0f872543-a407-4231-b770-7ad215cc0db9 | Suppose $f$ is differentiable and $f'(x)=(x+1)^2(x-3)$. Which statement is true?
+0f8a7302-5790-4b3d-8ce3-46ad6264a000 | The curve $y=\\$\frac{1}{4}$x^2$ on $0\\le x\\le 2$ is shown. Which integral gives its arc length?
+10029da7-2468-440b-929c-92b7c3b8ace2 | The rate at which water flows into a tank is $r(t)=3t^2$ gallons per minute for $0\\le t\\le 2$. How many gallons of water flow into the tank over $[0,2]$?
+1075384f-803f-4bc5-b4a8-cc3eaa45407b | The region $R$ is shown between $x=y^2$ and $x=1$ for $0\\le y\\le 1$. The region is revolved about the $y$-axis. What is the volume?
+114f7c63-13ce-40dc-ad92-f4a96f3aba9f | If $\\sum_{n=1}^{\\infty} a_n$ converges, which must be true?
+11652131-659e-4281-ae3c-af903e5bf9c5 | The provided graph shows the implicit relation $x^2 - y^2 = 4$ with the point $(\\sqrt{5}, 1)$ marked. Which statement is true about the slope of the tangent line at that point?
+11ae027c-0215-4834-aa74-0e88e3ca6b6b | Using the definition of the derivative, find $f'(2)$ for $f(x)=x^2$.
+121b87c2-91f6-45df-84b7-91d7f8959401 | Consider the series $\\sum_{n=1}^{\\infty} \\\frac{n}{n+1}$. What does the nth-term test tell you about this series?
+12429fb2-5293-418d-87bf-140f7b17f6f2 | Find the derivative of $y=\arcsin(x)$.
+12bca92d-b895-4d5c-8c97-1c63b6fb622b | A rectangle has perimeter $20$. Let $x$ be one side length. Which equation correctly expresses the other side length $y$ in terms of $x$?
+140e8637-cefb-4071-961f-dd01e9627f51 | ["A function $f$ is shown in the table. What is the best estimate of $\\lim_{x\\to 2} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383816905_oanfb.jpg"]
+141ebcb4-37bf-41f0-9a6a-3c5a0c9860e3 | For what value of $k$ is $f(x)=\begin{cases} \$\frac{x^2-9}{x-3}$, & x\ne 3 \\ k, & x=3 \end{cases}$ continuous at $x=3$?
+1426bef5-bba5-42ff-bb81-49214c4fa0e5 | The region $R$ is shown: $x^2\\le y\\le 4$ for $-2\\le x\\le 2$. The region is revolved about the line $y=1$. Which integral gives the volume using washers?
+1518dcd4-f36e-49cf-bd91-4e4f0ad18717 | Refer to the provided graph of $f''$ for U5.9-P3. How many inflection points does $f$ have on $(-4,4)$?
+155e396f-f42c-4f20-8bd3-f28285b29d2d | If $\int_a^b f(x)\,dx=3$ and $\int_a^b g(x)\,dx=-2$, what is $\int_a^b (f(x)+g(x))\,dx$?
+15648368-5038-4fcf-ad02-e2258e887161 | A tangent-line estimate produces an approximation error. Which statement is always true?
+15e56497-6963-444b-a54e-4cec0bc1d1ad | A student is deciding how to start $\int \$\frac{2x+3}{x^2+x}$\,dx$. Which is the best first move?
+165c0b5a-2cc7-4b38-82a6-ae753a9573f1 | Evaluate the limit as $x$ approaches $0$ of $\\frac{\sin x}{x}$ using L’Hospital’s Rule.
+174cd8fa-3380-42a3-a78d-fce4079ce5b9 | Which statement best describes why linearization can approximate a function near a point?
+17555163-7087-48a1-b2c9-4dde865d05ec | The region $x^2\\le y\\le 4$ for $-2\\le x\\le 2$ is shown and is revolved about $y=1$. Which integral gives the volume using washers?
+176c1a75-cd6d-4172-b7e8-26d2f4542e1c | Refer to the provided sign chart for $f'$ and $f''$.
+
+Which statement is true?
+17785bcb-75a1-48ae-987e-1012554e7af4 | Find a general solution to $\\$\frac{dy}{dx}$=3xy$ for $y>0$.
+177a2c28-afde-4559-b1e5-4fda248230e3 | Solve the initial value problem $\\$\frac{dy}{dx}$=\\$\frac{2}{x}$y$ for $x>0$ with $y(1)=3$.
+17c52048-f1e4-4f08-8732-13f794ab9668 | Using the limit definition, find $f'(2)$ for $f(x) = x^2 - 4x$.
+1802d153-c90e-4ffa-9f96-9b74b3423d87 | To test $\\sum_{n=1}^{\\infty}\\\frac{n}{n^3+1}$, which comparison is most appropriate?
+183722f0-ac65-43e7-b928-26efdb8654a8 | You know that $\\sum_{n=1}^{\\infty}\\\frac{1}{n^2}$ converges. Which inequality would be most useful to prove that $\\sum_{n=1}^{\\infty}\\\frac{1}{n^2+5}$ also converges by direct comparison?
+184e3ee3-de68-47e6-aaeb-a6acab457ffd | If $f(x)=\\frac{x^2}{x+1}$, what is $f'(x)$?
+189a2d07-8793-45ff-a936-b4fe913d8e43 | A population changes at rate $r(t)=t-2$ (thousand people per year) for $0\\le t\\le 4$. What is the total change in population over $[0,4]$?
+18aec7c0-6b26-4f98-9656-03624432239e | Evaluate $\int 3x^2\cos(x^3)\,dx$.
+18da3d50-8b52-423f-b132-0973ba18f2f8 | To verify that a function $y=f(x)$ is a solution to a differential equation on an interval, what must be shown?
+19215925-6ac3-4652-9eb7-cb0642c2ccbb | A table compares the true value of $\sqrt{x}$ with a linear approximation at $x=9$ for several nearby $x$-values. Which $x$-value should give the most accurate linear approximation?
+1952a965-80b2-49a9-a0b1-18270911be16 | A car’s position is given by $s(t)$ (in miles). Which expression represents the average velocity from $t=2$ to $t=6$?
+196d1013-501e-4b7a-a2a4-1a57d2885f28 | Does $\\sum_{n=1}^{\\infty}\\\frac{n}{n+1}$ converge?
+1b426fb4-0188-4cb3-8bde-df050cd920a7 | A function $P(t)$ gives power output (in kilowatts) over $0\\le t\\le 6$ hours. Which statement best describes the meaning of the average value of $P$ on $[0,6]$?
+1b990acc-b964-4ff3-a93a-7feba98fd2f1 | A table of speed values is shown. Using the trapezoidal rule with the given spacing, approximate total distance over the interval shown.
+1cbf9be0-4580-42cc-99af-8b8e92c9b97b | If $f(x)=(\cos x)(e^x)$, what is $f'(x)$?
+1cfbe8ae-ac74-4029-8acb-4120e6dba17a | The region enclosed by the polar curve $r = 1 + \sin(\theta)$ is traced once as $\theta$ goes from $0$ to $2\pi$. Which expression gives the area of the region?
+1d1df4d4-390a-4763-98ee-9a9154aa7101 | For what value of $a$ is the function $f(x)=\begin{cases} a\sin x, & x<0 \\ x^2+a, & x\ge 0 \end{cases}$ continuous at $x=0$?
+1d9802c3-0bb0-4ee2-b28b-e4c3f9d62d74 | ["The graph of $y=f(x)$ is shown. Is $f$ differentiable at $x=1$?","https://placehold.co/600x400/png?text=Graph+Missing"]
+1e7386ae-1611-4ac5-8530-597cde004fa5 | Let $f$ be differentiable on $(-3,3)$ with $f'(x)=(x-1)(x+2)$. On which interval(s) is $f$ increasing?
+1ea9d9c6-c358-4a09-b6e6-d88f014bc71f | The curve for $0 \le t \le 2$ with $x = t$ and $y = t^2$ is shown. Which point on the graph corresponds to $t = 2$?
+1f6ad600-e62c-489d-ae86-40daf092540a | Let $A(x)=\int_0^x (t^2-4t)\,dt$ for $0\le x\le 5$. On which interval is $A(x)$ decreasing?
+1fa8e481-6628-45e1-8fbf-963bcd9d741d | Refer to the provided graph of $f$ on $[0,6]$.
+
+At which x-value does $f$ attain its absolute maximum on $[0,6]$?
+1fd32a6c-49dd-4024-876a-affb33cb9fbd | Which power series represents $\\\frac{1}{1-x}$ for $|x|<1$?
+1fd9c5f7-1e0d-4335-95e7-6c83aca9a321 | You want the error in an alternating series approximation to be less than $0.0005$. Which setup correctly expresses the goal using the alternating series error bound?
+20276c63-b20b-415b-871c-7f1ab25ca8b1 | A region bounded by $y=f(x)$ and the $x$-axis on $[a,b]$ is revolved about the $x$-axis. Which integral represents the volume using the disc method?
+206da2ab-d968-47a0-b06f-a2d64a795e69 | ["A function $f$ is defined by the table below. Based on the table, what is the best estimate of $f'(2.0)$?\n\n","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383897773_i1sx2n.jpg"]
+20a746ae-7223-4895-8a78-79cbdeaf172a | If $f(x)=4\cos x - 3\sin x$, what is $f'(x)$?
+210db70b-c5f2-424e-9eb0-e22fed144c4f | A particle moves in the plane with velocity $\mathbf{v}(t) = \langle 2t, 1 \rangle$ for $0 \le t \le 2$. What is the displacement vector on $[0, 2]$?
+2136370a-9eb0-41ca-beee-7d833ebecdac | Evaluate $\int_0^{\pi} \sin x\,dx$.
+217431e2-b0ca-42cc-b9c9-2278d5b3825d | If $h(x)=\sin(x)$, what is $h'''(x)$?
+217aa340-4ef3-437a-8ea1-12a6554c40e8 | A geometric series has first term $a_1=9$ and common ratio $r=\\\frac{1}{2}$. What is the smallest integer $N$ such that the partial sum $S_N$ satisfies $S_N>17$?
+219e4573-8a97-4652-b052-fa0040bf6b7b | A circle’s radius is shrinking at $0.3$ cm/s. Which statement about the area’s rate of change is true?
+21f3b314-4620-45b7-b08c-522b1b1b6b3d | The region is bounded by $x=y^2$ and $x=2-y$. Which integral gives the area of the region (with respect to $y$)?
+222cc869-e7c8-401d-bddb-f52bbb58d7cd | Suppose $f''(x)= (x-2)^2(x+1)$. At which x-value(s) can $f$ have an inflection point?
+22333f09-d3e6-4f04-b4ba-a6781c1cb98c | ["The graph of $y=h(x)$ is shown, along with the tangent line at $x=0$. What is the best estimate of $h'(0)$?","https://placehold.co/600x400/png?text=Graph+Missing"]
+2251917e-f73b-4ef9-83fb-4f247f652734 | Use the slope field in file $u7_7_4_slopefield_B.png$ for $\\$\frac{dy}{dx}$=y(1-y)$. A solution has initial condition $y(0)=2$. Which long-term behavior is most consistent with the slope field?
+237cf050-c6e9-417f-82f2-f087c0e64031 | A differentiable function satisfies $f(3)=10$ and $f'(3)=-2$. What is $(f^{-1})'(10)$?
+241f4e20-48e0-4aa1-8162-b57c9be665d3 | Using $\\$\frac{1}{1+x}$=\\sum_{n=0}^{\\infty}(-1)^n x^n$, a correct series for $\\ln(1+x)$ is
+243a4a21-b161-4357-9fe7-c0288508f525 | What is the area of the region between $y=x$ and $y=x^3$ on $[0,1]$?
+24c4c6d2-d7e8-4467-997e-a66d596d79aa | Using the limit definition, find $f'(x)$ if $f(x)=x^2$.
+24e9f4f8-695b-4ced-a7ca-d192f49a1a48 | For $f(x)=x^2+3$, what is the difference quotient $\\frac{f(x+h)-f(x)}{h}$ simplified?
+2559d603-7240-4e2b-b7fd-e2eb2a8650c7 | Which integral is MOST likely to require splitting a rational expression into simpler terms (rather than u-substitution)?
+2582d2df-1b90-4ece-b829-a57fd20ee833 | A quantity satisfies $\\$\frac{dy}{dt}$=ky$ and doubles in $5$ hours. What is $k$?
+2613fa22-95e9-4756-864c-0a3d94fdabed | If $f''(x) > 0$ for all $x$ in $(a,b)$, what is true about $f$ on $(a,b)$?
+26751124-e856-4c63-9d30-95808c4da0cd | A cup of coffee cools at a rate proportional to the difference between its temperature $T(t)$ and the room temperature $T_r$ (a constant). Which differential equation best models this situation?
+26c57f87-799d-4e6a-a786-96f77b64d5c9 | Evaluate $\lim_{x\to 3} (2x^2-5x+1)$.
+271d5001-ab77-40ee-863d-ecb908e00ee7 | ["The graph of $f$ is provided. Estimate $f'(1)$.","https://placehold.co/600x400/png?text=Graph+Missing"]
+27e1b417-3cbf-453b-b67d-d674a2651572 | The table gives the volume $V(t)$ of water (in liters) remaining in a tank $t$ minutes after draining begins. Which value is the best estimate of $V''(6)$?
+2812d7e8-6aa7-492d-8c60-d4ef49f2f8c6 | Refer to Table 10.14-A (U10.14_Practice_Table1_Coefficients.png). The shown coefficients match the beginning of which series?
+283bcdcd-da4d-4ec7-b0f5-a8931e63f8ac | Use the provided substitution map. If $u=3x+1$, which integral in $u$ is equivalent to $\int_{0}^{2} \$\frac{1}{3x+1}$\\,dx$?
+28b9e55f-47cd-4797-b14b-127f3656400b | For what value of $k$ is the function $f(x)=\begin{cases} \$\frac{x^2-1}{x-1}$, & x\ne 1 \\ k, & x=1 \end{cases}$ continuous at $x=1$?
+299cb297-5567-460f-b85a-c679498d17d7 | Before integrating $\int \$\frac{1}{x^2+6x+13}$\,dx$, what preparation is most helpful?
+2a469a95-1cff-4b59-9048-ba7705573654 | Given $\int_0^2 f(x)\,dx=5$ and $\int_2^6 f(x)\,dx=-1$, what is $\int_0^6 f(x)\,dx$?
+2ab50910-fd85-4325-9555-0c09b4f2b8b3 | A quantity satisfies $\\$\frac{dy}{dt}$=ky$ and $y(0)=12$. If $y(5)=24$, what is the value of $k$?
+2abf3b03-3490-4e15-a969-92326903d26f | The rate function $r(t)$ is shown on $0\\le t\\le 6$. What is the net change in the quantity over $[0,6]$?
+2ac1b654-d16b-4d75-aff8-5608ad04cbff | A particle has velocity $\mathbf{v}(t) = \langle -3, 4 \rangle$. What is its speed?
+2c04142c-7ae9-4f17-b8fd-e08212579543 | The table shows values for $r = 2\cos\theta$ at $\theta = 0, \pi/6, \pi/3, \pi/2$. Using the trapezoidal rule on $\frac{1}{2}$ \int_0^{\pi/2} r(\theta)^2 \, d\theta$, approximate the area inside $r = 2\cos\theta$ for $0 \le \theta \le \\frac{\pi}{2}$.
+2c20fb9c-e5de-43e8-82b3-75d6cf47aa8c | The region $R$ is shown: $0\\le x\\le y^2$ for $0\\le y\\le 2$. The region is revolved about the $y$-axis. What is the volume of the solid?
+2c272e31-a5ac-4638-92a6-06c7a0bf7570 | If $\int_0^2 f(x)\,dx=5$ and $\int_2^5 f(x)\,dx=-1$, what is $\int_0^5 f(x)\,dx$?
+2c2b3da0-f358-43bd-8ccd-d3c1c92e32d4 | For large $n$, $\\\frac{2n^2+1}{n^3-4n}$ behaves most like which term, making it a good choice for limit comparison?
+2c689f9b-7fc2-470a-9237-5b69245cfcba | The region $R$ is shown: $0\\le y\\le 2-x$ for $0\\le x\\le 2$. The region is revolved about the $x$-axis. What is the volume of the solid?
+2c8a01b6-04cf-4640-8859-1e7693ddff10 | The graph of $f$ is shown. The tangent line at $x=3$ is drawn. What is $(f^{-1})'(1)$?
+2dea2b9d-58ed-4b14-920a-865585406c6a | Which condition is necessary for $x=c$ to be an inflection point of $f$?
+2e98cf8d-5a65-45d0-93e5-7cd3e34cc0e9 | Refer to Table 10.8-A (U10.8_Practice_Table1_RatioValues.png) for $a_n=\\\frac{n!}{2^n}$. Based on the ratio test, what is the behavior of $\\sum_{n=1}^{\\infty} a_n$?
+2ea0946c-eb50-4d2c-9ca9-708cd201359a | Suppose $f'(x) < 0$ for all $x$ in $(2,7)$. What can be concluded about $f$ on $(2,7)$?
+2ebdfdda-162a-4aea-887f-57dd3f9b4fb3 | For the region $x^2\\le y\\le 4$ on $-2\\le x\\le 2$ revolved about $y=1$, what is the volume?
+2ed209be-7a0d-473b-b3b8-3f254cf47513 | Suppose $S_N=\\sum_{n=1}^{N} a_n$ satisfies $S_{2k}=1$ and $S_{2k-1}=0$ for all integers $k\\ge 1$. Which statement is correct about $\\sum_{n=1}^{\\infty} a_n$?
+2ede702e-fcf0-4906-be41-9c2d8fdc64a7 | Refer to the provided sign chart table for U5.9-P4. Which statement is true?
+2f1454f2-8e5d-4a7e-beb6-709f5fab1daa | A region is revolved about the horizontal line $y=c$ and forms washers. If the top curve is $y=\\text{top}(x)$ and the bottom curve is $y=\\text{bot}(x)$ with $\\text{bot}(x)\\le \\text{top}(x)\\le c$, what are the outer and inner radii?
+2f702f96-d980-42b2-bf98-46084d3b4cb5 | A student tries to split an improper integral at a point where the integrand is undefined but forgets to treat each piece separately. What is the best correction?
+2fef7887-51c2-448b-8cc2-9a07376f4867 | Refer to Figure U6 6.2-P5. Without computing an exact value, what is the sign of the net area (signed area) under g(x) from x = -2 to x = 3?
+30177030-4a4c-4155-92fd-3cdd1f07a5f4 | Let $f(x)=\sqrt{x-1}$ on the interval $[1,5]$. Does the Mean Value Theorem apply on $[1,5]$?
+
+Choose the best justification.
+30247f6c-c5ac-40e7-9057-909944b38a42 | If $f(x)=3x^4+7x$, what is $f'(x)$?
+304b711c-69e9-4052-adb3-8f09af6d01c2 | Which limit form is directly appropriate for applying L’Hospital’s Rule (assuming conditions are met)?
+3051cc8e-6fc5-4f86-9234-f7d665fbc81c | The path of a particle is shown for $0\\le t\\le \\pi$. The particle’s position is $\\mathbf{r}(t)=\\langle \\cos(t),\\,\\sin(t)\\rangle$. Which statement is true?
+30572517-70d6-4e48-9829-347311411348 | A student wants to find the derivative of $f(x)=7x^3-4x+6$. Which approach is most efficient?
+30581f46-5b19-48c5-a4de-6e4dd97110ad | The curves $r = 2\cos\theta$ and $r = 1$ are shown. Which integral gives the area of the region inside $r = 2\cos\theta$ and outside $r = 1$ in the first quadrant?
+32dad1dc-44f2-4d16-8891-658a35c6949a | Find the derivative of $y=\arctan(3x)$.
+33222e06-f4f2-4d45-a436-6f360289bb30 | Evaluate $\int_0^2 (3x^2-4)\,dx$.
+33417a9d-1493-4c9e-a5d0-ea936767a6b7 | A particle has velocity $\mathbf{v}(t) = \langle \cos t, \sin t \rangle$. What is the speed $\|\mathbf{v}(t)\|$?
+33421970-4324-4bd1-82b3-c9d57ce2617a | Which statement is always true?
+33834e0b-ccaa-4ed4-aa1a-214f4b38864b | A car’s position $s(t)$ is measured in miles, where $t$ is measured in hours. If $s''(2)=45$, which statement is correct?
+339a56d1-cfac-477a-afc0-3a63d2203052 | A candidates table is provided for the fencing-against-a-wall area problem, listing $A(x)$ at several key x-values including endpoints. Which choice correctly identifies the maximizing $x$ and the maximum area shown in the table?
+340f40ac-7ecd-41f2-a128-1ac98f227d6a | Determine whether the series $\\sum_{n=1}^{\\infty} \\\frac{1}{n^{\$\frac{3}{2}$}}$ converges or diverges.
+3421ebd1-1cd7-4034-827d-816461063c96 | Which method is most efficient for finding the derivative of $f(x)=(x^3-2x+1)$?
+343860ca-2242-4961-a770-3245dec9450c | A population $P(t)$ grows but slows down as it approaches a maximum sustainable size $K$. Which differential equation best models this situation?
+344ef49b-3cfb-49ea-bbab-99057779bd4f | The region $R$ is shown between $y=x$ and $y=2$ for $0\\le x\\le 2$. The region is revolved about the $x$-axis. What is the volume?
+349834af-f515-42db-ac6a-7eb43fdf272a | Two polar curves are $r = 2\cos\theta$ and $r = 1$. At which angle in $[0, \pi]$ do they intersect with $r > 0$?
+34b950cd-3e01-4236-acf4-9985a39744bf | Evaluate $\lim_{x\to \infty} \\frac{3x^2+1}{x^2-5}$.
+352c7ca7-544c-4f9e-992f-d2b4afc24e9b | A rate function $r(t)$ can be positive or negative. Which expression represents the total amount of change accumulated over $[a,b]$, regardless of direction?
+35d4bd67-50cb-407c-a77a-8ec853aed927 | Use the table of temperature $T(t)$ to best estimate the instantaneous rate of change at $t=4$ minutes.
+363cfb89-5f9e-4ee8-920f-73eb4add4d23 | Find the exact area of the region inside $r = 2\cos\theta$ and outside $r = 1$ in the first quadrant.
+3733383c-7480-4fcb-814e-0a6afe057944 | ![Table](/assets/U2_UT_Q7_table.png)
+
+A table of values for $f$ is provided. Estimate $f'(2)$.
+3792835e-6f77-4104-805b-298a4d38a869 | A particle has velocity $v(t)$ (in m/s) on $0\le t\le 4$. Suppose \int_0^4 v(t)\,dt=0$ and \int_0^4 |v(t)|\,dt=10$. Which statement is true?
+37b207d5-829d-4863-bcca-611285028ba3 | The graph shows the revenue rate $R(t)$ (dollars per day) of a business $t$ days after opening. Which value best represents $R'(3)$?
+37c1ed76-a81c-4b6b-88f6-abe75f39ee73 | Cross-sections perpendicular to the $x$-axis are semicircles whose diameter is $d(x)$. Which expression is the cross-sectional area $A(x)$?
+3828181b-4115-4bf0-bc85-5f5813ca1857 | If $f(x)=\\frac{\ln x}{x}$, what is $f'(x)$?
+382aa404-ba83-4409-b250-937e085ae233 | Values of $f$ are given in the table for $x=0,1,2,3,4$. Use the trapezoidal rule with $\\Delta x=1$ to approximate the average value of $f$ on $[0,4]$.
+385d5ac4-2781-4c5c-bd88-28504b5a619c | Use the provided table of integral values. What is $\int_{-2}^{6} f(x)\,dx$?
+38960934-90f1-4cfe-aae4-d187650a9db4 | Refer to the provided graph of $f'$.
+
+How many local extrema does $f$ have on $(-3,3)$?
+3adff39e-5c18-435e-b3fc-5b7e6dcca221 | Let $\Delta x=\\frac{3}{n}$ and $x_i=0+i\Delta x$. Which definite integral is represented by $\sum_{i=1}^n \left(x_i^2\right)\Delta x$?
+3b256f9c-ea97-4bf2-8dda-1eaedfd54b26 | At $x=c$, suppose $f'(c)=0$ and $f''(c)>0$. Which statement is most accurate?
+3b29f4ec-ca55-439b-b075-6a54545873ae | A $10$-ft ladder leans against a wall. The bottom of the ladder slides away from the wall at $2$ ft/s. When the bottom is $6$ ft from the wall, how fast is the top sliding down the wall?
+3bfd36b8-5ea0-4ce1-b54c-f01b57a865a9 | Over a time interval, the signed area above the t-axis under a rate graph is 10 units and the signed area below the t-axis is 4 units (meaning 4 units of negative area). Which is correct?
+
+A. Net change is 6 units, total change is 14 units.
+B. Net change is 14 units, total change is 6 units.
+C. Net change is 10 units, total change is 4 units.
+D. Net change is 0 units, total change is 14 units.
+3c939d8b-af89-4b07-8f27-b0bc5b32393f | For the logistic differential equation $\\$\frac{dP}{dt}$=kP\\left(1-\\$\frac{P}{K}$\\right)$ with $k>0$ and $K>0$, which equilibrium solutions are always present?
+3dfb37b2-bd9d-49a2-92b3-88e1eb012b0f | The graph shows the temperature $T(t)$ of a chemical solution (in $°C$) as a function of time $t$ (in hours). Which value best represents $T''(4)$?
+3e540910-6619-4e61-ae43-75aad6b4e66e | Consider the series $\\sum_{n=1}^{\\infty} (-1)^n\\\frac{n}{n+1}$. Which conclusion is correct?
+3e58de54-6305-4181-a4a3-983be470de3e | A student sees an integrand that looks like a function times the derivative of an inside expression. What is the best first move?
+3e778fee-ed46-4ce9-9957-0f98aab05d85 | ["Use the graph provided. What is $\\lim_{x\\to 2^-} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384393933_ri07rf.jpg"]
+3e8de532-f3da-4d86-aeb0-16147bcba5b3 | Refer to Figure U6 6.1-P2. The graph shows the rate r(t) (liters/hour) at which water is flowing into a tank (positive means in, negative means out). What is the net change in the amount of water in the tank from t = 0 to t = 6 hours?
+3ea7901d-f58e-4aa4-85ad-70591e7a639d | Refer to the provided table of $f(x)$ on unequal intervals. Use midpoint rectangles to approximate $\int_0^6 f(x)\,dx$.
+3ec78f14-e26e-4053-a70c-353a5215811b | A correct Lagrange error bound for a degree-$n$ Taylor approximation about $a$ uses
+3ed0605e-79c0-4239-bbbd-a263a437f3af | For the implicit relation $x^2 + x y + y^2 = 7$, which expression correctly gives $\\frac{dy}{dx}$?
+3f678293-e82d-4368-8577-0717a129a045 | Let $f(x) = x^2$. Which expression is equal to the derivative $f'(a)$ using the definition of derivative?
+3f6ac70c-f6c6-46fb-babe-76094ded8654 | A tank contains $30$ gallons of water at time $t=0$ minutes. Which is the correct initial condition?
+3f92f0dc-2b38-4563-8a4b-2dbc2203027e | If $f(x)=3\tan x - 2\cos x$, what is $f'(x)$?
+400d0056-1257-426f-aadc-581d77a45a57 | Acceleration values are given in the table for $t=0,1,2,3,4$. If $v(0)=3$ m/s, use the trapezoidal rule with $\\Delta t=1$ to approximate $v(4)$.
+400ea1f9-d6e4-4e2c-b64d-cb31b3636df3 | For the implicit relation $x^2 + x y + y^2 = 7$, what is the slope of the tangent line at the point $(2,1)$?
+40887447-7672-4fda-9f7a-648689a3d4e2 | Which power series represents $\\\frac{1}{1+x}$ for $|x|<1$?
+408aed1b-0bf7-4b20-9168-ce3048175967 | ["The graph of $y=f(x)$ is shown. Which statement is true about $f$ at $x=2$?","https://placehold.co/600x400/png?text=Graph+Missing"]
+40c78a87-ea5c-467e-a798-7716bbb3b281 | A particle’s position is $\mathbf{r}(t) = \langle t^2, 3-t \rangle$. What is its velocity vector $\mathbf{v}(t)$?
+41d4eb24-965a-48b2-bcd3-36df3f25eb18 | A particle has velocity $v(t)=t^2-2t$ (m/s). If $s(0)=5$ meters, what is $s(3)$?
+4201d232-25c3-4ceb-9f77-cb07fa1d6665 | For which value of $p$ does the series $\\sum_{n=1}^{\\infty}\\\frac{1}{n^p}$ diverge?
+42aacaf5-0631-49b3-ae54-46805526a3ac | ["Use the table provided. What is the best estimate of $\\lim_{x\\to 0} h(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384247365_jsyzs.jpg"]
+43221cdd-7f62-4284-9545-9463cca07d1b | Let $F$ be an antiderivative of $f$, so $F'(x)=f(x)$. If $F(2)=5$ and $F(6)=-1$, what is $\int_2^6 f(x)\,dx$?
+432288c0-0c3b-456a-aeef-07a638861fa8 | If $f(x)=2x^3-4x+\sin x$, what is $f'(x)$?
+439358d2-4501-4999-b077-fa52a56b0ba5 | Refer to Table 10.10-A (U10.10_Practice_Table1_ErrorBounds.png). For which listed $N$ is the guaranteed error bound less than $0.01$?
+43f54028-932d-4324-93bd-bc7b66d4aa60 | The table below gives values of $f$ and $f'$. What is $(f^{-1})'(5)$?
+445f6e73-44fc-40ad-be2e-a3037ba3030a | A particle has velocity $\\mathbf{v}(t)=\\langle 3,\\,-4\\rangle$. What is its speed?
+44be7b91-8d7b-41b6-bd2f-0cba68e75d42 | A cooling liquid has temperature $T(t)$ (in $^\\circ\\!\\!F$) at time $t$ (in minutes). The statement “at $t=10$ minutes, the temperature is $80^\\circ\\!\\!F$” corresponds to which condition?
+44e18621-fe3a-4a50-85f5-a24af76806d9 | A quantity changes at rate $r(t)$ (units/hr). Values are given for $t=0,1,2,3,4$. Use the trapezoidal rule with $\\Delta t=1$ to approximate the change in the quantity over $[0,4]$.
+44f58c63-78f3-4a23-91d4-0e6e48196efe | If $f(x)=\sin x$, what is $f'(x)$?
+45053b2f-bb1a-40db-ba92-8b4cb8d8b544 | ["Use the table provided. What is the best description of $\\lim_{x\\to 2} p(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769382292241_xooofv.jpg"]
+452acda8-7126-4f62-b564-9c3e57622317 | For what values of $p$ does $\\sum_{n=1}^{\\infty}\\\frac{1}{n^p}$ converge?
+45c7fa2f-01e9-40fa-9952-9e5174deb197 | Find the derivative of $f(x)=(3x-2)^5$.
+45d9bc53-5afc-4f55-bc35-ebbf25dba13e | Use the Euler steps shown in file $u7_7_5_euler_table_B.png$ for $\\$\frac{dy}{dt}$=-0.4y$ with $y(0)=50$ and $h=1$. What is the Euler approximation for $y(2)$?
+4692d815-c08d-4b45-be0e-8b85174fe986 | A polar curve is given by $r = f(\theta)$ on $\alpha \le \theta \le \beta$. Which integrand is used to compute the arc length of the curve (with respect to $\theta$)?
+472264dc-3c8b-491d-a714-6738bccc26f8 | If $\\ln|y|=x^2+C$, which explicit form is equivalent for $y\\neq 0$?
+4729980a-9415-4a3f-af6d-472796592a91 | Which statement is always true on an interval where $f$ is concave down?
+475ba097-a67d-4b5b-bd7a-846abc4aaf8f | Let $A(x)=\int_0^x t(t-2)\,dt$. At which $x$ does $A(x)$ have a local minimum?
+47b30eec-a645-47ae-8618-4b49f1b50c7c | Approximate $\\sin(0.1)$ using the 1st-degree Maclaurin polynomial $T_1(x)=x$. A Lagrange error bound is $|R_1(0.1)|\\le M\\\frac{0.1^2}{2!}$ on $[0,0.1]$. For $\\sin x$, what is a valid choice for $M$ on this interval?
+4823b93a-40eb-4dc5-bd37-d1b2fd59209e | The curve shown is given by $x(t)=t^2$ and $y(t)=t^3-t$. The point corresponding to $t=1$ is marked. What is the equation of the tangent line at $t=1$?
+484483f3-2d2c-4b36-be4b-c993094bd87d | If $x = t^2$ and $y = t^3 - 3t$, which expression equals $\\frac{d^2y}{dx^2}$ (in terms of $t$)?
+489db17c-15b1-4b1b-943c-308806d5c54f | At time $t=4$ seconds, the instantaneous rate of change of the position $s(t)$ is $12$ meters per second. Which statement best describes what this means?
+48a8a702-ebca-4765-a98c-590c06e4aa78 | Refer to the provided graph of $f$.
+
+At $x=1$, which combination of signs is most consistent with the graph?
+48c81e29-b753-405e-a4ef-3928781a602e | Let $f(x)=3x+2$. What is the average value of $f$ on $[1,5]$?
+48ff88e2-4be0-406e-b3dc-9e143a76b037 | Which method is most appropriate to find the derivative of $y=(5x-1)^6$?
+49185dae-c4b0-4acd-ac13-d1a5118919a4 | Refer to the provided data table for U5.10-P4 showing several values of $x$ and the corresponding objective value $A(x)$. Based on the table, which $x$ gives the largest $A(x)$ among the listed choices?
+49678ba5-dbe4-4ef2-93e5-a8678d1a35e7 | Find the interval of convergence of $\\sum_{n=1}^{\\infty}\\\frac{(x-1)^n}{n}$.
+49ffed08-b8a5-4150-9d19-26f614aff6c2 | Evaluate $\int_{0}^{1} 2x\,(x^2+1)^3\,dx$ using substitution and changing limits in $u$.
+4a20b9f3-7002-470a-b576-e8a4850d729c | ["Use the graph provided. Which statement is correct?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384224211_xnrzy.jpg"]
+4a6a2096-8f92-432b-9a6b-9b3695cf8df6 | A student tries to use integral properties to evaluate an indefinite integral without actually finding an antiderivative. What is the best correction?
+4ab23ec2-7fee-4ecc-a197-8b7d7573d46d | Evaluate $\lim_{x\to 0} \\frac{\sqrt{1+x}-1}{x}$.
+4ac07956-9445-4ba7-8503-887545eccf85 | Find the derivative of $y=(x^2+1)^5$.
+4ae5ad52-fd2a-45fb-8299-9c496d49fbad | If $f(5)=2$ and $f'(5)=7$, what is $(f^{-1})'(2)$?
+4b832987-d059-4273-9bd7-131e14f980f8 | ["Use the graph provided. Is $f$ continuous on the interval $[-2,2]$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384299329_1p7mo.jpg"]
+4baf1eb7-ed4e-4f8e-a9bf-6159da6a053e | Which statement best describes how to decide whether an improper integral converges?
+4bdd2d46-60b1-4739-a662-2f94515d39be | Which method is the most appropriate to guarantee that a continuous function $f$ has an absolute maximum on an interval?
+4be50f42-dfe8-46b0-a397-ce4bcb1d0402 | Evaluate $\lim_{x\to 0} \\frac{\sqrt{1+x}-1}{x}$.
+4be6030f-c191-4c55-84b7-3c1dc9d3777a | Refer to the provided sign chart for $f'(x)$.
+
+On which interval is $f$ decreasing?
+4cf08aad-480a-4ee7-8ad3-aa81da9665a5 | ["The graph of $y=f(x)$ is shown, along with the tangent line at $x=2$. What is the best estimate of $f'(2)$?","https://placehold.co/600x400/png?text=Graph+Missing"]
+4d48005d-3b78-408b-b01c-3b4db3667c46 | Let G(x)=∫ from 1 to (x^2) of f(t) dt. Which expression equals G'(x)?
+4d6ae2c6-93a4-4a6f-85f0-3d30b41d2e68 | After separating variables for $\\$\frac{dy}{dx}$=xy$ as $\\$\frac{1}{y}$\\,dy=x\\,dx$, which integrated equation is correct?
+4d978e0f-f3bc-4f7f-81b7-a0c1d533662e | Refer to Figure 10.13-A (U10.13_Practice_Image1_Interval.png). Which interval is shown?
+4dc9f63b-711d-4eeb-9893-07dfc03a2b71 | ["Use the graph provided. What is the horizontal asymptote of the function?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383151027_04utwk.jpg"]
+4e9c9519-4cdb-4bf5-8f4c-e093b5551f0f | Which method is most appropriate to evaluate $\int \$\frac{2x}{x^2+1}$\\,dx$?
+4eb3349b-6d4c-469f-9a3b-aada3e83c2c1 | ["The graph of $g$ is provided. At $x=0$, which is true?","https://placehold.co/600x400/png?text=Graph+Missing"]
+4f2cc00a-2274-4362-8594-fe05da5ceb9c | Use $T_2(x)=1+x+\\\frac{x^2}{2}$ to approximate $e^{0.2}$. A valid Lagrange error bound is $|R_2(0.2)|\\le M\\\frac{0.2^3}{3!}$ on $[0,0.2]$. What is $M$ for $f(x)=e^x$ on this interval?
+4f878f79-52c8-473d-9719-a045b77900d9 | Which integral most clearly requires long division before evaluating?
+4fcdb293-25e2-46f2-b889-0899197211c0 | ["Use the graph provided. What value should be assigned to $f(2)$ to make $f$ continuous at $x=2$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383730760_67wzyj.jpg"]
+506b994f-5fb3-41c3-8391-c58357ae20a1 | Which statement is always true if the series $\\sum_{n=1}^{\\infty} a_n$ converges?
+50a69703-cdb9-4851-b0d1-cef99283efb3 | Completing the square is the most helpful preparation for integrating which expression?
+50cb47c5-da06-4715-ace2-6cf0c53d829f | Given $\\$\frac{1}{1-x}$=\\sum_{n=0}^{\\infty}x^n$ for $|x|<1$, what series represents $\\\frac{1}{(1-x)^2}$ for $|x|<1$?
+50dc7717-1196-4f84-b25d-87e3585d92af | Determine the type of convergence of $\\sum_{n=1}^{\\infty}(-1)^n\\\frac{1}{n^2}$.
+512e4ef2-cfb6-48ac-91da-fae6d237ea84 | ["The table gives values of $f(x)$. Use the table to estimate $f'(3)$.","https://placehold.co/600x400/png?text=Graph+Missing"]
+51448cae-3144-4bde-b809-392cdfe4dfa2 | Evaluate $\lim_{x\to 2} \\frac{x^2-5x+6}{x-2}$.
+517f0d4c-d735-47fc-bbac-90231c61b275 | Evaluate $\lim_{x\to 3} \\frac{x^2-9}{x-3}$.
+519452b6-7812-47b0-b6b9-f0aa3f44fe36 | A radioactive sample decays at a rate proportional to the amount present. Which differential equation model is appropriate?
+51c1e088-3b52-46b7-b417-adac48d51631 | Which statement about the p-series $\\sum_{n=1}^{\\infty}\\\frac{1}{n^p}$ is correct?
+52e3c523-69a2-4dbc-a166-174a0a01ab9d | A quantity $y(t)$ satisfies $\\$\frac{dy}{dt}$=ky$ with $k<0$. Which statement is true if $y(0)>0$?
+52fe8fe2-8729-4d93-a390-97f661acfd9a | If $f(x)=\\frac{\tan x}{x}$, what is $f'(x)$?
+5324f337-963b-4a8c-a9e4-8be0df4cd6e0 | Euler’s method updates a solution from $t_n$ to $t_{n+1}$ by using which idea?
+536f4071-8710-49ae-acb2-2ded8272c83a | Verify whether $y=Ce^{\\$\frac{x^2}{2}$}$ is a solution to $\\$\frac{dy}{dx}$=xy$. Which statement is correct?
+538306cb-d42a-4efc-8876-a384d638b5c8 | Use the Euler-method table in file $u7_ut_euler_table.png$ for $\\$\frac{dy}{dx}$=x+y$ with $y(0)=1$ and step size $h=0.5$. What is the Euler approximation for $y(1)$?
+5449d335-13a7-405c-bbcf-3b2720b6c5f7 | A particle’s velocity is $v(t)=3t^2-4$ (meters/second). What is the net change in position from $t=0$ to $t=2$?
+54582b8f-de15-48cd-8f11-af7480321207 | If $\lim_{x\to 2} f(x)=5$ and $f(2)=1$, which statement is true?
+55fdca60-3ae2-47cf-87ad-2da7ae7413db | If $\int_2^7 f(x)\,dx=-3$, what is $\int_7^2 f(x)\,dx$?
+56541f46-f0a5-40c5-9d6a-55a39efe0c80 | Consider $f(x)=\\frac{1}{x}$ on $(0,1]$. Which statement is true?
+5692b215-8191-4b07-be69-fcc4c13f11a2 | ["Use the graph provided. Which statement is true at $x=1$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769382316513_67oqf.jpg"]
+56b15438-b17b-428d-8ff0-8f566d20129b | A differentiable function $f$ satisfies $f'(x)<0$ for $x<0$ and $f'(x)>0$ for $x>0$. Which statement must be true?
+572c2d87-7911-4c17-9f2a-a9b3d4ff98cf | Refer to Table 10.9-A (U10.9_Practice_Table1_AbsVsCond.png) for $a_n=\\\frac{(-1)^{n+1}}{\\sqrt{n}}$. Which statement is correct?
+57840a2a-07a0-4355-8c06-e23b1bdf5348 | Refer to Table U6 6.2-P3. Use a left Riemann sum to approximate the area under f(x) from x = 0 to x = 3 using the subintervals indicated by the x-values in the table (note: the widths are not all equal).
+57a7fa38-095b-4444-a828-7d47de27a4c3 | Let $f(x)=4x-x^2$ and $g(x)=x^2$. Which integral represents the area of the region enclosed by $f$ and $g$?
+57d30721-0abe-45a6-96be-8f381262537e | Which method is most efficient for finding the derivative of $f(x)=\sin x + e^x + \ln x$?
+5804e3a3-d1bf-4492-be1b-85ed1178e1e2 | A differential equation is $\\$\frac{dy}{dx}$=\\\frac{1}{y}$ (with $y\\neq 0$). Which implicit relation is a correct general solution?
+580aeca3-7d91-4996-bac7-46105e97edd6 | Which integral is MOST naturally handled by u-substitution (not a product-focused technique)?
+5896dce4-e74f-4ab3-a6c9-2495b0d9db19 | Using the table values at $t = 3$, the velocity is $\mathbf{v}(3) = \langle 1, -1 \rangle$. What is the speed at $t = 3$?
+5913ba03-f895-428e-8bb6-d6c9dc9995f7 | Which sequence is the most reliable plan for solving a related rates problem?
+592e892f-714a-4087-8b54-bb152d91e99d | Refer to the provided graph of $f''(x)$.
+
+On which interval is $f$ concave down?
+5942e552-036d-4e8a-a205-5ca7132911e0 | A polar curve is $r = 1 + \sin\theta$. Which expression equals $\\frac{dr}{d\theta}$?
+59ef59bc-c73f-499e-9eb5-4572d8ac5352 | If $x^2+y^2=25$, find $\\frac{dy}{dx}$.
+5ba089cb-f6b9-427f-8b66-dec62446e2f6 | Find the derivative of $h(x)=\sqrt{x^2+1}$.
+5c35d208-6df2-4317-a62c-65bbe0e57970 | Use the slope field in file $u7_7_3_slopefield_A.png$. A solution passes through $\\left(1,3\\right)$. Which description best matches the slope of the solution at that point?
+5c62be24-43b3-4597-a213-1a41a88e53ae | Use limit comparison to determine the behavior of $\\sum_{n=1}^{\\infty}\\\frac{3n+1}{n^2+5}$ by comparing to $\\sum_{n=1}^{\\infty}\\\frac{1}{n}$.
+5ce67712-d4ec-4720-aaae-f070ae630b07 | For the solid from rotating the region $y^2\\le x\\le 1$ on $-1\\le y\\le 1$ about $x=1$, what is the volume?
+5d1ae77d-f99c-4d57-8a34-4ec2bf1372f2 | Use file $u7_7_11_slopefield_candidates.png$ for $\\$\frac{dy}{dx}$=x-y$. What is the slope at the point $(1,0)$?
+5d33cace-d80f-4c93-9d38-b3c8b5f3cb5c | The graphs of $y=\\sin x$ and $y=\\sin(2x)$ on $[0,2\\pi]$ are shown. Which expression represents the area between the curves on $[0,2\\pi]$?
+5dabb2e1-5bd2-40f8-9485-d5b6c46fea30 | Evaluate the limit as $x$ approaches $0$ of $\\\frac{\\sin x - x}{x^3}$ using L’Hospital’s Rule.
+5e169ee0-6316-4280-a797-5682e5a61493 | Consider the geometric series $\\sum_{n=0}^{\\infty} 5\\left(\\$\frac{1}{3}$\\right)^n$. What is its sum?
+5e620428-3fe0-4c61-a644-8f749e2041be | If $f(x)=6-2x^3+x$, what is $f'(x)$?
+5ea5cae2-3aae-4de0-8e70-6a8c164f8203 | Use the sign chart in file $u7_7_9_logistic_sign_table.png$ for $\\$\frac{dP}{dt}$=0.2P\\left(1-\\$\frac{P}{500}$\\right)$. Which statement is correct?
+5f28158d-416c-4237-b617-427fdd4fac14 | If $f(x)=\\frac{3x^2 - 1}{x}$, what is $f'(x)$?
+5f960cac-a4ff-458c-a372-995fcb81d7f9 | Given $\lim_{x\to 1} f(x)=2$ and $\lim_{x\to 1} g(x)=0$, which statement must be true?
+603adacd-60af-4530-822d-09a41b3dfc9c | ["Use the graph provided. What is $\\lim_{x\\to 0} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384204044_eq36cs.jpg"]
+60aea1df-a460-485b-8013-12ddffdcf88c | Let $f(x)=x^2-1$. What is the average value of $f$ on $[0,2]$?
+611edbd4-1826-4642-a521-d60d3e536164 | Refer to Table U6 6.1-P4. The table gives values of a rate r(t) in meters per minute at equally spaced times t (in minutes). Use the trapezoidal rule on each 1-minute subinterval to approximate the net change from t = 0 to t = 5 minutes.
+61431c58-5f91-4526-aeb4-56966039a60f | A table of values at $t=2$ is shown. Using $\\$\frac{d^2y}{dx^2}$=\\\frac{\\$\frac{d}{dt}$(\$\frac{dy}{dx}$)}{\$\frac{dx}{dt}$}$, what is $\\\frac{d^2y}{dx^2}$ at $t=2$?
+6167e1bd-a902-4601-b3c5-c85be7e49ef4 | A differentiable function $f$ has $f'(x)>0$ on $(-5,-1)$, $f'(x)<0$ on $(-1,2)$, and $f'(x)<0$ on $(2,5)$. Which statement is true?
+621c3822-cafe-47b0-ab32-bf321ed2fb48 | Find the radius of convergence of $\\sum_{n=1}^{\\infty} n\\left(\\$\frac{x}{3}$\\right)^n$.
+6437c89c-ffff-4f06-84e7-db84847b05dd | Evaluate $\lim_{x\to -1} \\frac{x^2+3x+2}{x+1}$.
+64b6c4bb-1d86-41fe-a563-f8cb13bc617a | A measurement changes from $x=10$ to $x=10.2$. If the linear approximation gives an estimated change of $+0.6$ in $f$, which statement is always true?
+64ef3c49-fd16-4f5d-8af2-d26917bfe4e8 | When using a Lagrange error bound for a Taylor approximation from $a$ to $x$, which interval must be used to choose $M$ (a maximum of the next derivative)?
+657988f9-e8d7-4cea-b466-87dcff445639 | Which method is most appropriate to evaluate $\lim_{x\to 2} (x^3-4x+1)$?
+65e7f3b7-9dac-42e5-bafa-f2beac943bac | A circle expands so that its radius changes over time. When differentiating an area formula to relate the rate of change of area to the rate of change of radius, which rule is essential?
+65f2104c-b6a9-4779-8ba7-c0b69ff96576 | What is the area of the region bounded by $y=x^2$ and $y=2x$?
+66325853-9fdb-4d14-950a-a5f88a160fc2 | A particle moves along a line. Which statement is correct?
+6652be9a-371e-442b-a7c2-aa4275d789b8 | A quantity $y(t)$ is decreasing at a rate proportional to its current value. Which differential equation models this situation for some constant $k>0$?
+672114f3-4c91-40ff-97fe-ff2929909282 | Use a tangent-line approximation at $x=8$ to estimate the value of $\sqrt[3]{8.3}$.
+6730bca8-9888-4331-882c-fa137257ccb0 | Find the interval of convergence of $\\sum_{n=0}^{\\infty}(-1)^n\\\frac{(x-3)^{2n}}{2n+1}$.
+677d688f-31c0-4733-b9eb-77aa4991f2a2 | A table of speed values is shown. Using the trapezoidal rule, approximate $\int_0^4 |\mathbf{v}(t)| \, dt$.
+68155b09-054b-4b23-a58c-10c2556aa329 | If $f(2)=7$ and $f''(2)=-4$, which linear model best estimates $f(x)$ near $x=2$?
+6838d020-97d2-499b-abda-a204e72b6efd | The graph of $f$ is shown on $[0,4]$. What is the average value of $f$ on $[0,4]$?
+68e20850-4913-4f14-b767-b7bafe0f078e | If $f(x)=4x^2-3x+1$, what is $f''(x)$?
+6928a8f7-0a71-4d57-a74e-d27967da8782 | Assume the temperature function $T(t)$ is continuous on $[0,6]$ and differentiable on $(0,6)$. Using your result from the average rate of change on $[0,6]$, what does MVT guarantee?
+693e3865-f241-4f57-8dd8-3b4c1c3ba5f6 | Find the derivative of $y=e^{\sin x}$.
+696465c2-6522-4744-a3e6-88dfd40f4b83 | Let $g(x)=|x|$ on the interval $[-1,2]$. Can the Mean Value Theorem be applied on $[-1,2]$?
+
+Choose the best answer.
+69737486-d14c-40e6-8c8c-f71c5e557aca | If $f(x)=x^2\sin x$, what is $f'(x)$?
+697d690a-6a83-4c72-a1bb-57b8db0c8306 | Refer to Table 10.3-A (U10.3_Practice_Table1_Terms.png), which lists terms $a_n$. What can you conclude about $\\sum_{n=1}^{\\infty} a_n$ using the nth-term test?
+698353bd-c4ec-4f0d-bf01-e062565671a8 | Let $H(x)=\int_0^{x^2} (1+t^3)\,dt$. What is $H'(x)$?
+69a48f75-ec8c-4aa3-8603-29a32c45e72e | A solid has base between $y=f(x)$ and $y=g(x)$ on $[a,b]$. Cross-sections perpendicular to the $x$-axis are rectangles whose height is $3$ times their base (the base is the vertical distance $f(x)-g(x)$). Which integral gives the volume?
+6a1c14d9-bc6e-4211-8803-1b3bfa9f475a | For the autonomous differential equation $\\$\frac{dy}{dx}$=y(1-y)$, which values of $y$ give equilibrium solutions?
+6a301382-316f-4d02-9f5f-15f014a2e777 | A particle’s position $\mathbf{r}(t) = \langle x(t), y(t) \rangle$ is given in the table. What is the displacement vector from $t = 0$ to $t = 3$?
+6a3cd460-a07e-45f6-86ff-c7f8272cde07 | The base region $R$ is shown: $0\\le y\\le x$ for $0\\le x\\le 2$. Cross-sections perpendicular to the $x$-axis are right isosceles triangles whose legs equal the vertical width of $R$. What is the volume?
+6a4560b7-0b79-42f6-9172-fa3c82561e8d | In related rates problems, why is it usually best to substitute numerical values after differentiating?
+6a70ff57-aff2-4d70-ad1e-1e4eabdb2f7b | A function $f$ is continuous on $(0,5)$ but is not defined at $x=0$ and $x=5$. Which interval is guaranteed to have $f$ continuous on it?
+6a8211d0-14d6-4294-8ac3-2065b42cecad | For the series $\\sum_{n=1}^{\\infty} 12\\left(-\\$\frac{2}{3}$\\right)^{n-1}$, which statement is true?
+6ac83bfa-085f-49f7-808f-c72c6608a50c | Let $F'(x)=2x$ and $F(3)=5$. What is $F(x)$?
+6b264ee1-498b-4f69-9594-0eaf952e8564 | Use the slope field in file $u7_7_3_slopefield_A.png$. Along which line do the direction segments appear horizontal (slope $0$) most consistently?
+6b7a2074-faa9-4942-96db-1e5de6d14c41 | Use the data table in file $u7_7_8_data_table.png$. Assume $P(t)$ follows $\\$\frac{dP}{dt}$=kP$. Which value of $k$ is most consistent with the data?
+6b7bb29a-de3d-4830-9095-62bceed17123 | The curves $y=x^2$ and $y=4x-x^2$ are shown on $[0,2]$. What is the area of the region between the curves on $[0,2]$?
+6bb7c325-f7c4-438f-b109-01de5e203065 | A function $r(t)$ gives a water flow rate in gallons per hour. Which statement best describes the meaning and units of $\\int_2^5 r(t)\\,dt$?
+6bd8cbb5-d228-485c-89bd-91faa5c3d805 | A curve is given by $x(t)=\\cos(t)$ and $y(t)=\\sin(t)$. As $t$ increases from $0$ to $\\\frac{\\pi}{2}$, which statement is true about the motion along the curve?
+6c28814b-a841-476c-826b-79f1bb72338b | Which integrand is used to compute the arc length of $y=\\sin(x)$ on an interval (with respect to $x$)?
+6c619343-3297-49f3-ae60-2e872bbbf542 | The graph shows acceleration $a(t)$ (in ft/s$^2$) for $0 \le t \le 8$. At which time $t$ is acceleration most likely positive and large?
+6cecf201-69f2-4a72-8433-a98b8f411bbf | The provided graph is $f'(x)$. On which interval is $f$ increasing?
+6d0ae77d-f1ad-4445-b420-6d5b88b87f8e | A student sees a $\\frac{0}{0}$ limit and immediately applies L’Hospital’s Rule, even though factoring would cancel a common factor in one step. Which best describes the AP-style strategy?
+6d17abb7-94c3-4b6c-8645-61f01c7c0d9d | For what value of $k$ is the function $f(x)=\begin{cases} \$\frac{x^2-4}{x-2}$, & x\ne 2 \\ k, & x=2 \end{cases}$ continuous at $x=2$?
+6d1f1f2e-5090-4f8f-a00d-16a85041bf56 | If $f(x)=\ln x$, what is $f'(x)$?
+6d8ccce8-090a-40be-8e25-03c4c9cbd0f4 | If $f(x)=5(x^3-2x+4)$, what is $f'(x)$?
+6f60db4b-bc51-44d4-bab8-af2ff6706945 | Refer to Table 10.12-A (U10.12_Practice_Table1_LagrangeBound.png), which lists bounds for using $T_2$ at $0$ to approximate $e^x$. Which statement is correct?
+6f768c3d-dd63-41ea-9c26-5eb51354e217 | A function $f$ satisfies $f(0)=2$ and $f(4)=-6$. Which additional condition is needed to guarantee there exists $c$ in $(0,4)$ such that $f(c)=0$?
+701bf98b-cd27-4087-a79b-91671756f49e | Use the Euler table in file $u7_7_5_euler_table_A.png$ (step size $h=1$) for $\\$\frac{dy}{dt}$=t-y$. What value completes the table entry for $y_2$ (the approximation at $t=2$)?
+7058cd3c-5344-4ab5-bb92-e893c36a8c31 | Suppose a function $f$ is continuous on $[a,b]$ and differentiable on $(a,b)$. Which statement must be true?
+709c4140-d2ea-43ba-bbb5-f3adf368ec13 | On $[0,2\\pi]$, the curves $y=\\sin x$ and $y=\\sin(2x)$ intersect at which $x$-values?
+70d4ddc4-0403-4783-bc6c-4c92b4a17850 | For an alternating series that satisfies the alternating series test, which statement about the error after $N$ terms is correct?
+71100bea-cb03-4644-a5a6-2eaa984aa501 | The table gives the amount of medication $A(t)$ (mg) in a patient’s bloodstream $t$ hours after a dose is given. Which is the best estimate of $A'(6)$?
+71e7d4b1-ae1e-4c40-a3c4-491615482fde | A student rewrites an improper integral by reversing bounds and forgets the sign change. What correction is most accurate?
+7241dd8c-c26b-4261-9a4b-2e9f8556b1de | A bacteria culture grows at a rate proportional to its current size. Which expression best represents the instantaneous rate of change of the population $P(t)$?
+726a89a7-aea6-4a2d-a58b-4b0f2e4347fe | Solve the initial value problem $\\$\frac{dy}{dx}$=\\\frac{x}{y}$ with $y(0)=2$ and $y>0$.
+72dd142e-bef9-4f05-b426-56c2c61e8c27 | ["The graph of $y=p(x)$ is shown, along with the tangent line at $x=4$. What is the best estimate of $p'(4)$?","https://placehold.co/600x400/png?text=Graph+Missing"]
+73c6b115-5fb3-4030-a85f-135b917a8000 | The table gives values of $s(t)$. Use the table to estimate the instantaneous rate of change of $s$ at $t=4$.
+73ed8215-1dbc-437f-892e-1af41c082796 | Use Euler’s method with step size $h=0.5$ to approximate $y(0.5)$ for $\\$\frac{dy}{dt}$=t+y$ with $y(0)=1$.
+73fa8c73-5409-41cc-92bf-4e6dd7ec9d57 | If $f(x)=(x^2)(\cos x)$, what is $f'(x)$?
+73fc26d0-de90-4ffd-8ff8-b7dedccf0ae9 | The region $R$ is shown: $0\\le y\\le \\sin(x)$ for $0\\le x\\le \\pi$. The region is revolved about the line $y=2$. Using washers and the trapezoidal rule with 4 subintervals, approximate the volume.
+7411bef6-0477-4631-924b-b38afc3d2ecb | ["Use the graph provided. What is $\\lim_{x\\to -2} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384273436_gly0o.jpg"]
+74215b1c-0e6e-411a-a45e-56e454dfbc4e | If $\\ln|y|=\\$\frac{x^2}{2}$+C$, which explicit form is correct (for nonzero $y$)?
+74e0c96c-df19-4166-9e7b-efb526f85bcc | Determine the type of convergence of $\\sum_{n=1}^{\\infty}(-1)^{n+1}\\\frac{1}{n}$.
+74f9ad60-45c5-43cc-a37b-0addd0270ffc | Which statement must be true?
+74fa373c-38cf-4ab5-862e-108565996548 | Refer to the provided Second Derivative Test data table.
+
+Which statement is true?
+754f482a-844c-422c-b23d-aff2d66ca4fc | The tangent line to $y=f(x)$ at $x=2$ has slope 4, and $f(2)=5$. What is the equation of the normal line at $x=2$?
+75e5fa48-b47f-4bf4-b2ab-65a3dfd8e00f | Which expression produces a $\\frac{0}{0}$ form as $x$ approaches $2$?
+75ea714c-6f10-448f-ba7e-cf16563bb8e6 | Refer to Table 10.2-A (U10.2_Practice_Table1_GeometricTerms.png). The listed terms have common ratio $r$. Which expression gives the sum to infinity (when it exists) if the first term is $a$?
+75fec008-8348-4ecc-a5a3-7ba55ceeb0fc | The graph of f(x) is piecewise linear. Using geometry, approximate ∫ from 0 to 4 of f(x) dx.
+7652e004-cf70-41cd-9681-f2a8a76ddfee | A student is told to 'complete the square' before integrating but does it in a way that changes the expression. What is the best guidance?
+76612946-d553-43b6-9814-4f1effddd06d | A tank is being filled. The amount of water $W(t)$ is measured in gallons and time $t$ is measured in minutes. If $W'(10)=6$, which statement is correct?
+76b55854-854f-420c-ae6f-9d9fbaab2ecb | Which power series represents $\\\frac{1}{1-2x}$ for $|x|<\\$\frac{1}{2}$$?
+76fed5b3-e163-4e8f-806a-ac9813228f04 | A function $f$ is continuous on $[1,5]$ and differentiable on $(1,5)$. Which statement is guaranteed by the Mean Value Theorem?
+7794304a-14a7-421b-b325-c554ea6b66da | Which expression gives the area inside a polar curve $r = f(\theta)$ from $\theta = a$ to $\theta = b$?
+7795d469-1c92-4f1f-9f18-88b9af7c41c5 | Find $\int (6x^5-4x^{-2})\,dx$.
+7852b305-5521-476c-8f83-a3e330ac8e50 | Which method is most appropriate to find the derivative of $y=\ln(\sin x)$?
+78779b1b-59fd-4aea-965a-52b1579635b7 | Let $x(t)=t^2+1$ and $y(t)=t^3$. What is $\\\frac{d^2y}{dx^2}$ when $t=1$?
+799a24f2-d9e9-4ec7-84b6-e9d0bba1beed | A company tracks the number of subscribers $N(t)$ over time. Which method is most appropriate to estimate the instantaneous subscriber growth rate at a specific time when only a data table is provided?
+79d3b548-9971-405a-a634-9f96b6d2faa3 | Which list includes all possible x-values that can be critical points of $f$ on an interval?
+7a1a7a65-e279-4b2c-9e47-d67a2bf23549 | A population $y(t)$ satisfies $\\$\frac{dy}{dt}$=-0.2y$. If $y(5)=100$, what is $\\\frac{dy}{dt}$ at $t=5$?
+7a4898c5-ea34-49e9-8bf6-d2c5bf729c20 | Use the Ratio Test to determine $\\sum_{n=1}^{\\infty}\\\frac{n!}{3^n}$.
+7aea56b5-f262-47c1-a5ae-bd14e49c3cab | Refer to the provided graph of $f$ for U5.9-P1 (marked at $x=1$). At $x=1$, which combination of signs is most consistent with the graph?
+7b2a990b-362a-4e30-945a-62143fb5feec | Find the derivative of $y=\sin\left((x^2+1)^3\right)$.
+7b3d2dba-b960-4bf7-a060-6c46a37be0fc | Find the area of the region inside $r = 2\cos\theta$ and outside $r = 1$ in the first quadrant.
+7c19f463-35e8-4cb2-b56f-3778f6bd60a9 | Consider the series $\\sum_{n=1}^{\\infty} \\\frac{(-1)^{n+1}}{n}$. Which statement is correct?
+7c8368dd-0ea5-455b-8154-293369c9fbe0 | A curve is given by $x(t)=t$ and $y(t)=t^3-3t$. At which point does the curve have an inflection point?
+7d93eb66-2134-4e3d-bf1c-2ec8ffe177a2 | Refer to the provided graph of $f'$ for U5.9-P2. How many local extrema does $f$ have on $(-3,4)$?
+7daf559e-f727-4d2c-8a0b-9bf6901c3bde | Apply the ratio test to $\\sum_{n=1}^{\\infty} \\\frac{n!}{3^n}$. Which limit is used?
+7e1b0164-2ec4-4bad-ad4e-3b65aec2534b | For the function $g(x)=\\frac{|x|}{x}$, what is true about $\lim_{x\to 0} g(x)$?
+7e1fe3de-5a9c-422d-b076-42dd8a6de041 | Let $f(x)=x^3-3x$ on $[-2,2]$. At which $x$-values must you evaluate $f$ to find the absolute maximum and minimum on $[-2,2]$?
+7e5e4219-1a50-4b7c-8f66-caf8a4aca5db | Which method is most appropriate to evaluate $\lim_{x\to 3} \\frac{x^2-9}{x-3}$?
+7ef4532d-228f-44b6-ab6f-56dfa7450562 | In the model $\\$\frac{dy}{dt}$=ky$, time $t$ is measured in hours. What are the units of $k$?
+7f6d1929-542e-4efa-9385-e56cfcada878 | Use limit comparison to determine $\\sum_{n=1}^{\\infty}\\\frac{3n^2+1}{n^3-4}$.
+7fbb7ea2-ee5c-4d46-8c39-b0c8289d6dbe | Use the rate table in file $u7_7_1_rate_table.png$. Which differential equation best matches the data?
+7fd74b25-e4f8-407f-94fa-265512b30791 | For $\\$\frac{dy}{dt}$=t^2-y$, what is $\\\frac{dy}{dt}$ at the point $(t,y)=(1,3)$?
+8065a6df-5f3c-4726-bbc0-e329b543a055 | If $\int_0^2 f(x)\,dx=3$, what is $\int_2^0 5f(x)\,dx$?
+80c62aaf-d83c-40b3-b2ab-9cca15eac2e8 | Which expression represents the instantaneous rate of change of $f$ at $x=3$?
+80e69951-2031-4d24-98ac-ede383db8f81 | An alternating series satisfies the alternating series test. Which statement about the remainder $R_N$ after $N$ terms is correct?
+81053a67-a243-4df9-a902-fab4533825ae | Refer to Table 10.5-A (U10.5_Practice_Table1_Harmonic_vs_p2.png). Which statement is correct?
+813fb837-2d2c-496e-a3d0-9d2aabd140cc | Given $xy=x+y$, find $\\frac{dy}{dx}$.
+819027ac-a51f-4f1d-81d5-bfa34752667e | A particle has velocity $\mathbf{v}(t) = \langle 2, -1 \rangle$ for $0 \le t \le 5$. What is the displacement vector on $[0, 5]$?
+8323f25c-f6f3-4de0-b12b-9c2ab6d1c66f | A particle has acceleration $\mathbf{a}(t) = \langle 2, 0 \rangle$ and velocity $\mathbf{v}(0) = \langle 1, 3 \rangle$. What is $\mathbf{v}(t)$?
+8429180f-c1e6-48d2-932f-a3b88eea96b6 | The region $R$ is shown: $y^2\\le x\\le 1$ for $-1\\le y\\le 1$. The region is revolved about the line $x=1$. Which integral gives the volume using discs (with respect to $y$)?
+84e8c37e-3c65-4769-9f2e-5f0cbf0fdc49 | Let $C(t)$ be the cost (in dollars) to produce $t$ items. If $C'(50)=3.2$, what is the best interpretation?
+85bda686-1664-4841-b4fc-81ef3370758f | If $f(x)=(\tan x)(x^2)$, what is $f'(x)$?
+85f6c038-5fcc-439a-8e0c-7e7d42f83092 | For the circle $x^2 + y^2 = 9$, what is true about the tangent line at the point $(3,0)$?
+866720da-cafa-4f06-a648-aee393ee7f3e | Evaluate the limit as $x$ approaches $0$ of $\\frac{1 - \cos x}{x^2}$ using L’Hospital’s Rule.
+86680f08-64ab-4f61-a111-db531c5e6da0 | A student claims that a Riemann sum with n=6 must be more accurate than a Riemann sum with n=4 for approximating ∫ from a to b of f(x) dx. Which statement is always true?
+86837242-90a3-4798-9437-be1a6f837518 | A base region is bounded by $y=x$ and $y=2$ for $0\\le x\\le 2$. Cross-sections perpendicular to the $x$-axis are squares. What is the correct area function $A(x)$?
+871a0bfb-bd0d-4f94-92ea-8279509d9b52 | Which series equals $\\arctan(x)$ for $|x|\\le 1$ (with convergence at endpoints in the usual sense)?
+878d6f75-6746-419a-9dfd-5a10fae3966f | Which statement must be true if a function $f$ is differentiable at $x=a$?
+878f40cf-d90f-4112-a418-15a46a710606 | Evaluate $\lim_{x\to 0} \\frac{x^2\cos\left(\$\frac{1}{x}$\right)}{|x|}$.
+8793b52b-d9b8-4aac-b13b-830afc6d6abf | If $f$ has a horizontal tangent at $x=1$ and is increasing immediately to the left of 1 and decreasing immediately to the right of 1, what must be true about $f'(x)$ near $x=1$?
+879c54fd-c100-4a8d-8555-a809c3a4eb67 | Which statement about the condition $a_n\\to 0$ is correct for an infinite series $\\sum_{n=1}^{\\infty} a_n$?
+87bb0416-c251-46f0-8a1e-a02e9ada217d | A particle moves with velocity $v(t)=2t-5$ (m/s) for $0\\le t\\le 4$. What is the displacement on $[0,4]$?
+8819d62b-11ae-4131-9a73-f9060b516421 | ["The graph of $y=f(x)$ is shown. Which statement is true about $f$ at $x=0$?","https://placehold.co/600x400/png?text=Graph+Missing"]
+8823710e-ebdc-4df6-ad52-29c428493194 | If $g(x)=\cos(x)$, what is $g'''(x)$?
+88ae6803-0699-487d-8c33-45c2bf06f10c | A student wants to find the derivative of $f(x)=\tan x + \sin x$. Which approach is most efficient?
+88cd43fc-e772-4cde-8771-29d3228fd517 | A region is revolved about the $x$-axis using discs. Which step is necessary to set correct bounds and radius before integrating?
+88fa7ab9-c412-41be-be20-0c1ccd0c66a0 | If $f(x)=\\frac{x^2+1}{x-1}$, what is $f'(x)$?
+891d304e-8db9-44e3-8b7c-f0dab0c25a78 | ![Graph](/assets/U2_1769403109_2.2-P4_graph.png)
+
+The graph of $y=f(x)$ is shown, along with the tangent line at $x=1$. What is the value of $f'(1)$?
+89417aeb-e2c3-4535-940c-1b4d2484e9c0 | ["Use the graph provided. Which value best matches $\\lim_{x\\to 0} \\\\frac{\\sin x}{x}$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769385368818_u0wz7o.jpg"]
+894a84ba-27bf-4d8c-acd0-78f35015bc1e | Evaluate the limit as $x$ approaches $0$ of $\\\frac{e^x - 1}{x}$ using L’Hospital’s Rule.
+897e129e-4492-4730-a82f-cb9ce2fc9288 | Find the derivative of $y=\arccos(x^3)$.
+89d0b652-4b58-48b9-af44-d7ea14e0769a | Refer to the provided rectangle diagram for U5.10-P3. A rectangle has perimeter 20. If $x$ and $y$ are side lengths, which interval correctly describes the feasible domain of $x$?
+8a0ad35f-00a0-488e-875e-e3cc3be3279e | ["Use the graph provided. What is $\\lim_{x\\to 1} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384447980_vr7lyo.jpg"]
+8a284217-7c14-4f3b-876f-f2d56e95ca85 | Which method is most appropriate to evaluate $\lim_{x\to 0} \\frac{\sqrt{x+9}-3}{x}$?
+8a5a8c88-80f4-400b-90f4-87883453669a | Water is poured into a cone-shaped cup. The cup has height $12$ cm and radius $3$ cm. The water is poured in at a volume rate of $2$ cm$^3$/s. When the water depth is $4$ cm, how fast is the water depth increasing?
+8acd8514-e063-407b-8559-b87300662014 | Suppose $\lim_{x\to 3} f(x)=7$, but $f(3)$ is not defined. Which statement is true?
+8b0a2216-2fb3-4cba-9c01-a9f502ca1b61 | The graph shows two functions near $x=0$: $y = e^x - 1 - x$ and $y = x^2$. What does their behavior suggest about the limit of $\\\frac{e^x - 1 - x}{x^2}$ as $x$ approaches $0$?
+8b341210-b4d4-4d0b-8d48-ddb29b0a4e87 | Which first step is most appropriate for $\int \$\frac{x^2+1}{x-1}$\,dx$?
+8b4545b5-6796-4b46-aaa6-a0861f15f762 | The region under $y=\\sqrt{x}$ from $x=0$ to $x=4$ is revolved about the $x$-axis. What is the volume?
+8be225a9-8234-468f-bf07-8a16f882cfa3 | A slope field for $\\$\frac{dy}{dx}$=f(x,y)$ is made by drawing short line segments. At the point $\\left(x_0,y_0\\right)$, what should the slope of the segment be?
+8c2ddb77-9a6b-4212-aec1-fb9c0f558733 | Which series is geometric?
+8c308e5c-d345-4cca-9fc3-9e433dadf50d | For an alternating series with decreasing $b_n$ and $\\lim b_n=0$, the error after using $n$ terms satisfies
+8c4724a4-1bdf-4c88-a925-cdf2a9f9ccad | Let $g(x)=|x-2|$. Which statement is true about the instantaneous rate of change of $g$ at $x=2$?
+8d676d26-b96a-4f4b-8b5e-6b034eabc24a | If $f(x)=\\frac{\sin x}{x^2}$, what is $f'(x)$?
+8dc2bf96-8dc5-46e3-8248-80395a37273b | If the average value of $f$ on $[a,b]$ is $m$, which statement must be true?
+8e262c67-ff27-4f11-95dc-28c34952296e | Refer to the provided graph of the objective function $A(x)$ for U5.10-P5. On the feasible interval $0<x<12$, at approximately what x-value does $A(x)$ attain its maximum?
+8ecbf18e-f7d8-4bd1-a813-36872f5c9367 | A region is revolved about the line $y=1$. If a boundary curve is $y=x^2$, which expression correctly gives the distance from the curve to the axis (a radius) at a given $x$?
+8f5c5672-f562-453c-802c-d79b2c05185f | Which statement best represents $\lim_{x\to 5} f(x)=2$?
+8fd55577-13d9-4257-a531-e22466aba681 | Use the provided graph of $f(x)$. What is $\int_{-2}^{5} |f(x)|\,dx$?
+8fde1ef5-209b-4ef7-aa9f-1d6d8abff1da | Use the slope field in file $u7_7_3_slopefield_A.png$. A solution curve passes through $\\left(0,2\\right)$. Which statement must be true at that point?
+91021dbf-3f38-431a-a003-f82eb3d54442 | Find the derivative of $y=\arctan(x)$.
+91bf8896-5379-493e-99e3-bf8ab3f53665 | A twice-differentiable function $f$ satisfies $f''(x)>0$ on $(1,4)$. Which statement is true on $(1,4)$?
+91e575ac-d954-4834-9b2f-92b384c33240 | Two polar curves are $r = 2\cos\theta$ and $r = 1$. Which value is the correct first-quadrant intersection angle?
+91f0812a-b5de-4d0f-97c9-4e1777ef18a6 | Refer to the provided concavity summary table.
+
+On which interval is $f$ concave down?
+92067e1f-2ca7-43cf-b08c-265573e35955 | The graph of $s(t)$ is shown. The secant line from $t=1$ to $t=3$ and the tangent line at $t=2$ are also shown. Which value best represents the instantaneous rate of change of $s$ at $t=2$?
+92758f87-f757-4e3e-bba0-ab612ee8044e | Evaluate $\int_{0}^{2} 6x\\,(3x^2+1)^4\\,dx$ using substitution.
+92bae04d-d00c-4bc0-b282-d26745ea0354 | In an optimization problem, which is the best first step?
+92db6ddb-3bb0-42cb-9087-6a9cca80e8ad | Given $x = \sin t$ and $y = \cos t$, what is $\\frac{dy}{dx}$ at $t = \\frac{\pi}{4}$?
+92dc088a-1f90-4f0e-ac26-79d44bcf8829 | The region bounded by $y=x^2$, $y=4$, and the $y$-axis is revolved about the $y$-axis. Which integral gives the volume using disks (with respect to $y$)?
+9341e84d-13ef-4339-b540-3be3de4ae6b2 | Find $\\frac{dy}{dx}$ if $x^2y+\cos(y)=4$.
+937cd308-c65f-4779-99cf-ea818eb70a4c | Refer to the provided graph of $f'(x)$.
+
+At which x-value does $f$ have a local maximum?
+939dfb2e-8385-44e1-ba31-6082bb84a178 | Suppose $a_n=f(n)$ where $f$ is positive, continuous, and decreasing on $[1,\\infty)$. Which statement about the integral test is correct?
+93cff0de-5d7c-40ed-8492-2b741df23cad | Evaluate $\lim_{x\to 1} \\frac{x-1}{x^2-1}$.
+94aa3d0b-aa16-4d51-802d-bd3b10fff058 | A student tries to start $\int x\ln x\,dx$ with long division. What is the best correction?
+9585041c-4ca3-4e3f-aceb-5988630a190e | A tank’s net flow rate is $r(t)$ (L/hr). A table of $r(t)$ values is shown for $0\\le t\\le 4$. Using the trapezoidal rule with $\\Delta t=1$, approximate the net change in volume over $[0,4]$.
+95cc5be2-c051-4a13-b977-ca61cea001d1 | An implicit solution to a differential equation is $\\ln|y|=x+C$. If $y(1)=-2$, which explicit solution is correct?
+95d44d41-9676-4b09-a9da-15dca49aa221 | A car’s velocity is $v(t)$ on $0\le t\le 5$. Which expression gives the total distance traveled on $[0,5]$?
+95d9689b-ac70-4d5d-ba7e-8d58947e3b71 | Refer to the Unit 10 Test Table (U10_UT_Table1_Coeffs.png) for $f(x)=\\sum_{n=0}^{\\infty} a_n x^n$. What is the coefficient of $x^4$ in $x^2 f(x)$?
+95e59a49-62f2-4046-9522-47ce60796905 | Use the graph in file $u7_7_9_logistic_curve.png$. Suppose this graph represents the solution to a logistic model. Which initial condition is most consistent with the graph?
+96138cdc-b2b2-4f5e-b04e-50c283db5e65 | Which integral represents the arc length of $y=f(x)$ on $[a,b]$?
+9636a22c-3a19-4c2a-a3c5-a8463714ad61 | Which series is typically best matched to the ratio test as a first choice?
+965e82a6-505e-4854-8bc4-925baecd03ff | A particle's position is given by $s(t)$ in meters. What does $s'(t)=-3$ represent?
+97146b56-a7f9-43b4-a468-97e60063dc7d | Which statement correctly identifies the horizontal asymptote of $f(x)=\\frac{2x-3}{x+4}$?
+97628e7f-77de-4ae2-ae85-49d31db57702 | Refer to Table 10.6-A (U10.6_Practice_Table1_LimitComparison.png), which lists $a_n$, $b_n$, and $\\\frac{a_n}{b_n}$ where $b_n=\\\frac{3}{n}$. Which conclusion is correct?
+97eec5a9-a1f7-4ef3-accb-77d0b9449762 | Which expression represents the total distance traveled by a particle on $[a, b]$ if its velocity is $\mathbf{v}(t)$?
+9823692e-26d8-4e6d-9d33-9eeed60e4ff3 | A particle moves along a line so that its position is given by $s(t)=t^2+3t$ (in meters). What is the average velocity on the interval $[2,4]$?
+98554787-e879-4f8c-a643-94dd8e4875bd | The region is bounded by $x=y^2$ and $x=y+2$. Which integral represents the area of the region?
+98fa533e-edaf-4c99-bee2-5d9df04aa0ac | Suppose $\lim_{x\to 2} f(x)=5$. Which statement must be true?
+9948ca83-d7e5-436a-9732-7a0459aa8485 | If $x^2+xy+y^2=7$, what is $\\frac{dy}{dx}$ at the point $(1,2)$?
+995d20ab-7ad4-4fc2-aa05-06031445ebb2 | ["Use the table provided. What is the best estimate of $\\lim_{x\\to 0^+} g(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384317428_ot45lo.jpg"]
+9967eef0-6d9e-424f-a2ed-091ea53e0f43 | A function $v(t)$ gives velocity in meters per second. Which statement is correct about the units of $\\int_0^5 |v(t)|\\,dt$?
+997b15cc-b985-4c56-a08a-8ae4cf99dfc6 | If $f(x)=\cos x$, what is $f'(x)$?
+99bbe365-98de-4892-b610-cf18278e527f | A solid’s cross-sections are taken perpendicular to the $y$-axis. Which setup is always consistent with computing its volume?
+9a18403a-4400-4c99-ab36-56fb784ff0d4 | The polar curve $r = 2\cos(\theta)$ is shown. Which statement is true about the graph?
+9b07fc35-5de4-4266-b87a-9d432894e95b | The curves $r = 2$ and $r = 1 + \cos(\theta)$ are shown. Which integral gives the area inside $r = 2$ and outside $r = 1 + \cos(\theta)$?
+9b8a1428-e64e-4826-93cf-3167497f581d | ["Use the table provided. What is the best estimate of $\\lim_{x\\to 1} q(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769382246411_8uvw0f.jpg"]
+9b8d4c33-47ea-4faa-bf45-191e0c1e20ce | A Taylor polynomial of degree $n$ is used to approximate $f(x)$ near $x=a$. Which expression is the Lagrange error bound form?
+9badf103-d691-4ef4-9661-329f25cdcdc3 | At $x=3$, $f'(x)$ changes from positive to negative. What must be true about $f$ at $x=3$?
+9c3013b3-c834-410f-a038-14a7b3a3a375 | Refer to Table 10.6-A (U10.6_Practice_Table1_LimitComparison.png). The table suggests $\\lim\\$\frac{a_n}{b_n}$=L$ with $0<L<\\infty$. What conclusion is valid?
+9c76c106-ed10-4b8c-aac0-666dc7d9420f | Which expression is equivalent to ∫ from 2 to 5 of (3g(x) − 4) dx?
+9d2daeb3-4f0c-49c4-b903-3d383c9d2c68 | Which substitution is most appropriate to start evaluating $\int x\,(x^2+1)^5\,dx$?
+9da2ee27-997a-45fe-890e-8bbb1a4e3329 | Suppose $f$ is differentiable and $f'$ is increasing on $(a,b)$. Which statement must be true on $(a,b)$?
+9de35a25-9aec-45a4-a67a-184e7d8ab26e | What is the 3rd-degree Maclaurin polynomial for $\\sin x$?
+9e7bd368-3169-4ab7-bb7c-e9fbb0fbd911 | Which choice best explains why completing the square is NOT the first step for $\int \$\frac{1}{x(x+1)}$\,dx$?
+9f00e0af-6a55-43bc-9ebc-3789d248d1bb | In a related rates problem involving a volume $V$ that depends on radius $r$, where $r$ depends on time, which rule is essential when differentiating with respect to time?
+9ff23780-37ea-4674-be7b-bd964ddd913c | Let $a_n=(-1)^n$. What does the nth-term test imply about $\\sum_{n=1}^{\\infty} a_n$?
+a0560070-6ec7-4a6e-b560-7ee9b36d8ce2 | A closed cylinder has radius $r$ and height $h$. Its volume is fixed at 1000 cubic centimeters. Which expression gives the surface area $S$ as a function of $r$ only?
+a06cb3fb-a197-4c7c-a5fc-06e8232b25f0 | A table is provided showing approximate $\\\frac{dy}{dx}$ values for the implicit relation $x^2 + x y + y^2 = 7$ at several points. Which point has the greatest (most positive) slope among those listed?
+a09c349b-3fc7-4841-96b0-8aa26a78f0b4 | Find the interval of convergence of $\\sum_{n=1}^{\\infty}\\\frac{(x-2)^n}{n}$.
+a16483b4-f4a1-484b-ba15-d49bb794eb2a | A curve is given by $x(t)=1-t$ and $y(t)=t^2$. The curve is traced from the point $(1,0)$ to the point $(-2,9)$. Which $t$-interval should be used for arc length?
+a1929b91-9cb1-490f-92b9-6f814c232c49 | Find the derivative of $g(x)=\ln(5x^2-1)$.
+a1f651c4-75de-4ba2-aa34-65e69faf54f8 | For the region bounded by $x=y^2$ and $x=y+2$, the table gives $x_{\\text{left}}$, $x_{\\text{right}}$, and width for several $y$-values. Using the trapezoidal rule with $\\Delta y=1$, approximate the area of the region.
+a21d2655-f3a7-481f-9c33-b4eec9928136 | In an applied setting, a student evaluates an improper integral of a rate over time and reports a number with no units. What is the best critique?
+a2a450ef-9de9-405b-a9ce-0fd06a62c7ec | Which method is most appropriate to find the derivative of $y=\sqrt{1+\cos x}$?
+a2aa6a41-719e-4001-81a6-a19038d23153 | Let $f(x)=x^4-4x^2$. Which statement is correct about the critical point $x=0$?
+a2ee2cd1-6734-4fcc-8665-ec0e3d3dabd2 | Evaluate $\lim_{x\to 0} \\frac{|x|}{x}$.
+a2f02b08-a73a-4b87-86df-bab41e4e5cc8 | Refer to the provided graph of $f'(x)$ on the interval $[-4,4]$.
+
+On which interval(s) is $f$ increasing?
+a369bcb2-e6c1-4404-b527-52fe5f13f4de | Given $\\$\frac{1}{1+x}$=\\sum_{n=0}^{\\infty}(-1)^n x^n$ for $|x|<1$, a series for $\\ln(1+x)$ is
+a3d4039d-b209-4027-9fd1-093c022401d0 | Which method is most appropriate to evaluate $\lim_{x\to 2} \\frac{x^2-4}{x-2}$?
+a42d9d06-35ba-410c-95ba-7f036ef1a11b | Let $f(x)=\sqrt{x+4}$. Using the limit definition, what is $f'(0)$?
+a42f296d-1ba8-4e0b-a145-62988c59870c | Is the function $h(x)=\\frac{x^2-4}{x-2}$ continuous at $x=2$??
+a4321137-6af8-407b-a198-c4e51643b63b | Find the derivative of $y=\arccos(2x-1)$.
+a484a84d-07b5-435a-a497-308d7069756e | Find the radius of convergence of $\\sum_{n=1}^{\\infty}\\\frac{(x+2)^n}{n^2\\,5^n}$.
+a4e20b4d-0d0c-47db-a041-2342655e4b9e | A student wants to evaluate an improper definite integral with an infinite bound. What is the correct first step?
+a5249bf3-7689-4fc9-ba07-6cc4d6026e53 | A particle’s position is $\mathbf{r}(t) = \langle t^2, t^3 \rangle$. What is the speed at $t = 1$?
+a5266a5e-801a-42eb-b4a8-035d81680c60 | The base region $R$ is shown between $y=x$ and $y=2$ for $0\\le x\\le 2$. Cross-sections perpendicular to the $x$-axis are squares. What is the volume?
+a5d6591e-0998-4d61-b454-ec3a9b9a54c4 | Which condition is required for the Alternating Series Test to guarantee convergence of $\\sum (-1)^n b_n$?
+a5d9e4e6-c292-4abf-9cdc-d2b548770797 | Using the provided graph of $r(t)$, let $A(x)=\int_0^x r(t)\,dt$. On which interval is $A(x)$ concave down?
+a61c18fd-d82b-440f-8d19-c8e9406491c7 | Let A(x)=∫ from 0 to x of f(t) dt. Use the table to approximate A(4) with the trapezoidal rule using subintervals of length 1.
+a621e024-4133-4c53-aa01-043d473c67fd | Which value of $x$ gives a vertical asymptote for $f(x)=\\frac{x+1}{x^2-4}$?
+a633bc58-29ba-4dd7-b2b0-b7b06880ad5a | Let $R$ be the region inside $r = 2$ and outside $r = 1 + \cos(\theta)$ for $0 \le \theta \le 2\pi$. Which expression gives the area of $R$?
+a688da17-9c1d-4fb7-acfa-85ec1be736f9 | On which interval is $r = 2\cos\theta$ the outer curve compared to $r = 1$ (with $r \ge 0$) for the first-quadrant region where they intersect?
+a6e38b84-164f-47d8-9795-57aebf867316 | ["Use the graph provided. Which statement is true?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383915448_byyhpf.jpg"]
+a7018ceb-3cad-4609-9972-38ca922657a9 | The region between $y=4-x^2$ and $y=x$ is shown. Which integral gives the area of the shaded region (with respect to $x$)?
+a7551acd-9ec0-4b1f-80b9-5588244d4b62 | A curve is given by $x(t)=t^3-3t$ and $y(t)=t^2$. For which value(s) of $t$ does the curve have a vertical tangent line?
+a7c27dfd-4986-4ee5-9278-6b3221965db9 | Diameters $d(x)$ for semicircle cross-sections are given at $x=0,1,2,3,4$. Using the trapezoidal rule with $\\Delta x=1$, approximate the volume of the solid.
+a7df3e74-ec18-4233-9124-7ad24fc1796f | Refer to Figure U6 6.2-P1. Use a left Riemann sum with 4 subintervals of equal width on the interval [0, 4] to approximate the area under f(x).
+a80c0b86-0167-403d-b31d-74fb4b0a39ea | If $f'(4)=-2$, which statement is correct?
+a818cca3-a112-414c-bab8-1a59e1131065 | A particle’s position is $s(t)=t^3-6t^2+9t$ (meters) for $0 \le t \le 3$. At what time $t$ in $(0,3)$ is the instantaneous velocity equal to the average velocity on $[0,3]$?
+a823f4a2-1879-462b-898a-0e9012dc13a3 | The provided graph is $f''(x)$. At which x-value does $f$ have an inflection point?
+a9661213-f76b-4a26-a817-e5416aee74da | Given $\\$\frac{1}{1-x}$=\\sum_{n=0}^{\\infty}x^n$, which series equals $\\\frac{1}{(1-x)^2}$?
+a9a0fccf-f389-4a51-90ed-6bfc52b6b1c9 | A car’s velocity v(t) is measured in miles per hour, and time t is measured in hours. Which best describes the units of the net change found by accumulating velocity over a time interval?
+aa6aa321-4400-4643-9f05-b934831070b9 | A general solution to $\\$\frac{dy}{dx}$=2y$ is $y=Ce^{2x}$. If $y(0)=5$, what is the particular solution?
+aa958cac-bb36-4906-81e0-f962563d7266 | Find the derivative of $y=\arcsin(5x)$.
+aaecf8d8-17f7-446d-938e-2c6bdebacde1 | If $\lim_{x\to a} f(x)=4$, what is $\lim_{x\to a} \left(3f(x)-7\right)$?
+ab0a99e4-7fa2-4633-b6ba-7846588fef95 | Which method is most appropriate to find $\\frac{dy}{dx}$ if $x^2+y^2=10$?
+ab64c787-e399-48d4-bfee-fbd4d89a334c | The graph shows velocity $v(t)$ (in ft/s) of a moving object for $0 \le t \le 10$ seconds. During which time interval is the object moving backward?
+aba62706-c5e8-4b65-889d-567b46443a58 | Given $f(2)=9$ and $f'(2)=5$, what is $(f^{-1})'(9)$?
+abaf3722-b983-4100-9912-80b38d064984 | Which is the most common incorrect move in related rates problems?
+abbb138c-907d-4035-9dc5-8f505f8edff7 | A function $f$ has a critical point at $x=1$ with $f'(1)=0$. If $f''(1)=0$, what can be concluded from the Second Derivative Test?
+abc23348-c024-424f-a267-69f7f9abc944 | A tank’s water level changes according to a rate r(t) that is sometimes positive and sometimes negative. Which statement is always true?
+
+I. Net change over a time interval equals (final amount) − (initial amount).
+II. Total change over a time interval ignores whether the rate is positive or negative.
+III. If the net change is 0, then the total change must be 0.
+abe28423-4854-4a34-83c3-4dd9d0fc88a0 | If $f(x)=5x^4$, what is $f'(x)$?
+ad734da9-97cd-49e3-b713-50bd7bbbfc3e | A curve is given by $x = t$ and $y = t^2$. What is $\\frac{dy}{dx}$ at $t = \\frac{3}{2}$?
+ad9b29d7-485b-43d8-956c-8770a3f580c5 | Evaluate $\lim_{x\to 0} x^2\sin\left(\$\frac{1}{x}$\right)$.
+ad9dbdb9-13fe-4108-8cd6-d9d665153ee6 | Evaluate $\int_2^0 (x^2+1)\,dx$.
+adc81ac2-cfc7-4e33-b3df-345b6e79ae16 | ["Use the graph provided. What is $\\lim_{x\\to -1^+} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769382269562_9facwy.jpg"]
+add0bc6f-e828-405d-87ea-f5e224796bf1 | If $f(x)=x^{\$\frac{1}{2}$}$, what is $f'(x)$?
+aeb5eac1-664f-4a4d-8bfb-d9d50d4175e1 | Which statement correctly distinguishes a local maximum from an absolute maximum?
+aec34f1c-1ed9-4dd8-a80a-eae2e091722e | ["Use the table provided for $f(x)$. What is the most likely value of $\\lim_{x\\to \\infty} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383749138_ypmb6u.jpg"]
+afcd22f1-edc2-4d3e-86db-ca417bf118b6 | In a related rates setup, why do we differentiate a geometric equation with respect to time?
+b06360c6-c478-442e-956b-41b946d58257 | ["Use the graph provided. What is $\\lim_{x\\to 2} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383775068_nhfm4.jpg"]
+b06e5bba-2b83-4c37-97ca-9532b76345b1 | If $g(x)=(2x-1)^4$, what is $g''(x)$?
+b0746c49-7371-46d0-9cfc-7d3c1500cfd5 | A particle’s position is $\mathbf{r}(t) = \langle t, t^2 \rangle$. What is the velocity vector $\mathbf{v}(t)$?
+b0fb72ce-126e-4c41-96e9-dcf4f96e3af0 | Which statement best describes $\lim_{x\to 0} \\frac{1}{x^2}$?
+b1c77136-6321-4ebc-a48e-77c4df7e2982 | A vector-valued path $\mathbf{r}(t)$ is shown. Which statement is true about the direction of motion as $t$ increases?
+b1d50a83-ca4c-4198-a784-fb80940e42e6 | Water is poured into a cone-shaped container. The cone has fixed height $5$ ft and fixed radius $2$ ft. The water level rises so that the water surface always forms a similar cone. Which relationship correctly connects the water radius $r$ and water height $h$?
+b1d6955e-0181-4c4b-b8c6-d7182886ffb4 | Use the provided temperature table. What is the average rate of change of temperature from $t=0$ to $t=6$ minutes, in degrees per minute?
+b1fdc896-1b99-4753-b986-7ee1fcdb27ac | The function $f$ represents position (in meters) as a function of time $t$ (in seconds). If $f(2)=5$ and $f(6)=17$, what is the average rate of change of $f$ from $t=2$ to $t=6$?
+b23e9a3e-70de-46bf-aa8c-12774fef5dc5 | Which function satisfies both $\\$\frac{dy}{dx}$=y$ and the initial condition $y(0)=3$?
+b24bb9d4-e702-48df-bc3d-9273302d1302 | Let $f(x)=\arcsin(x^2)$. Which is $f'(x)$?
+b29e18a2-4bfb-4bb9-9c06-35c4d7c985cd | A function $f$ has a critical point at $x=2$ with $f'(2)=0$, but $f''(2)$ does not exist. What can be concluded from the second derivative test at $x=2$?
+b2d3bb71-074f-4c5c-b345-1d137f262c02 | Find the area of the region between $y=\\sin x$ and $y=\\cos x$ on $\\left[0,\\$\frac{\\pi}{2}$\\right]$.
+b32ee741-8962-4d97-8364-9570478428af | Refer to Table 10.11-A (U10.11_Practice_Table1_TaylorApprox.png), where $T_2(x)=1+x+\\\frac{x^2}{2}$ approximates $e^x$. Which statement is best supported by the table?
+b3441422-6e24-4132-9b60-debee1a1116c | Which is the most general antiderivative of $f(x)=3x^2$?
+b47292a2-5ca2-486b-af57-cabf8ff5f4fe | Evaluate $\lim_{x\to \infty} \\frac{\sin x}{x}$.
+b4ad19f8-a5d0-4c8e-b9fb-11d75c7457ec | Use the 2nd-degree Maclaurin polynomial for $e^x$ to approximate $e^{0.2}$.
+b4ba378d-3528-445c-8767-93a76089fa54 | Use the graph in file $u7_7_9_logistic_curve.png$. Which statement best describes the long-term behavior of $y(t)$?
+b4d2bc8b-4579-4990-b6e7-764f7e9ebbe3 | A sequence of partial sums is defined by $S_N=2-\\\frac{1}{N}$. Let $\\sum_{n=1}^{\\infty} a_n$ be the series with these partial sums. What is the value of $\\sum_{n=1}^{\\infty} a_n$?
+b4eda2e2-3cd4-4c4f-90db-3a1f1c6ab904 | Let $f(x)=x^3-3x$ on the interval $[-2,2]$. Using the candidates test, which x-value gives the absolute maximum of $f$ on $[-2,2]$?
+b508b1f0-b367-48a5-bae0-60e817f1bd36 | Use the graph in file $u7_7_9_logistic_curve.png$. Which statement best describes the long-term behavior of $y(t)$?
+b512ef70-c34c-44bc-a74b-636a5e48f66e | Which derivative is correct?
+b5c1de91-9989-4018-899f-0bb60f2a46eb | A region bounded by $x=1$, $x=y^2$, $y=0$, and $y=1$ is revolved about the $y$-axis. Using washers, which setup is correct (in terms of $y$)?
+b60d837d-eb10-4788-9fc8-c4a069fd1084 | If $f$ is odd, what is $\int_{-4}^4 f(x)\,dx$?
+b6995059-a35c-4d1d-8534-c6a400cecc8c | Determine the behavior of $\\sum_{n=1}^{\\infty}\\\frac{1}{n^2+1}$.
+b70c8248-2a30-4756-8b84-0ea68ec97f26 | A particle has velocity $v(t)$ on $[a,b]$. Which expression gives the total distance traveled?
+b843f3e1-0b11-4e1b-b743-508f87f91217 | A student wants to evaluate $\int x e^x\,dx$. Which strategy choice is most appropriate?
+b916692b-b088-4d8b-a58e-435aef8e94d4 | Let $f(x)=(2x+1)^4$. What is $f'(0)$?
+b961c6ba-5b7a-43c0-9f8a-6244590197aa | A model is $\\$\frac{dP}{dt}$=0.3P$, where $P$ is measured in thousands of people and $t$ is measured in days. What are the units of $0.3$?
+b96cd360-58fe-46d9-acc7-d4f901c06ca7 | Use the graph in file $u7_7_8_exp_graph.png$. The model shown is exponential growth. Which statement best matches the meaning of a larger positive $k$ in $\\$\frac{dP}{dt}$=kP$?
+ba3f16c0-8b0c-4f94-9500-0afd823b569b | Let $x(t)=t^2+1$ and $y(t)=3t-2$. What is $\\\frac{dy}{dx}$ when $t=2$?
+ba9b6523-8207-4cae-8cc6-7d1955a32c07 | ["Use the graph provided. What is $\\lim_{x\\to 2} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769385350374_pd2ytk.jpg"]
+bae2f1fc-ce42-4bdd-b9d0-45cf31f0149f | If $f(x)=x^7$, what is $f'(x)$?
+bb2f71dd-19d8-4741-bd50-4266a8cdcd50 | Use the table of given integral values. What is $\int_0^6 \left(2f(x)-g(x)\right)\,dx$?
+bb3a763a-590e-4f5a-bada-b8027b30c07f | A curve is given by $x(t)=\\cos(t)$ and $y(t)=\\sin(t)$ for $0\\le t\\le \\\frac{\\pi}{2}$. What is the arc length?
+bbdafb05-9f3f-4b9d-8962-10edf3438b1a | A company’s revenue rate is $R(t)$ measured in dollars per day. What are the units of $\\int_0^{10} R(t)\\,dt$?
+bc798f16-fc48-4db1-bcf5-41b57770ff85 | If $f(x)=4x^5-3x^2$, what is $f'(x)$?
+bd190d6c-24f6-48a2-a1f4-c49857c58c01 | Which series is best suited to be tested first with the alternating series test?
+bdd8a7c1-5f50-40d8-9e3e-82f4ce5b4ba3 | Evaluate $\int_1^3 (3x^2-4)\,dx$.
+be23b386-a992-48b9-82f3-79ecc9fdeced | Consider the series $\\sum_{n=1}^{\\infty} \\\frac{1}{n^2+1}$. Using $f(x)=\\\frac{1}{x^2+1}$, which conclusion is correct?
+be843ba8-e25b-41bf-b022-6c9b580e372d | The ratio test gives $L=\\lim_{n\\to\\infty}\\left|\\\frac{a_{n+1}}{a_n}\\right|=1$. What can you conclude?
+beab9937-2e0a-420e-a540-3e46624c7188 | Let $f(x) = x^2 - 3x$. Which expression represents the average rate of change of $f$ on the interval $[a, a+h]$?
+bf065117-eb0c-4308-aa8b-5f75fcf20431 | Let $f$ be differentiable on $(-5,5)$ except possibly at $x=-2$ and $x=2$, and suppose
+
+$f'(x)=\\frac{x-2}{x^2-4}$.
+
+On which interval(s) is $f$ increasing?
+bf21d218-2889-4069-adc3-0b23c487ad55 | A particle moves along a line. Its position $s(t)$ is measured in meters and time $t$ is measured in seconds. Which quantity represents the particle’s velocity at time $t=5$?
+bf2f23f3-cca4-4e41-82f6-1ca19597f176 | The region is bounded by $y=x^2$ and $y=2x$. Which integral uses $dy$ to compute the area of the region?
+bfebb5d9-55c3-4dc1-88a7-862eb85f539d | Refer to Table 10.4-A (U10.4_Practice_Table1_FunctionValues.png), where $f(x)=\\\frac{x-1}{x}$ is listed at integer inputs. Which condition needed for the integral test fails for $f$ on $[1,\\infty)$?
+c0ba1851-09b6-4f2d-8a7f-3f8fad647278 | If H'(x)=p(x) and H(2)=7, which expression gives H(6)?
+c10ecac2-d45e-4889-a2e4-138c7ee3c760 | If $f(x)=x^3-5x$, what is $f''(x)$?
+c1b75290-daeb-4489-a3d3-bb72835900e7 | A table of speed values $\\left|\\mathbf{v}(t)\\right|$ is shown for $0\\le t\\le 4$ with $\\Delta t=1$. Using the trapezoidal rule, approximate the arc length on $[0,4]$.
+c1bb5c0e-d814-4b96-adce-368cf62b6cb0 | Which statement best describes $\int_a^b f(x)\,dx$?
+c1e0cc2d-5cb8-46c2-b7e5-75e757beb2fc | A curve is given by $x(t)=2t+1$ and $y(t)=t^2$. Which equation relates $x$ and $y$ (eliminating $t$)?
+c207f06e-4de5-4ce8-a445-976ef78ae13d | Find the derivative of $y=\arctan(x^3)$.
+c20eecb5-45a2-4fe9-846d-8475d78b2582 | Refer to Figure 10.13-A (U10.13_Practice_Image1_Interval.png). Which interval is shown?
+c22d56eb-21de-4fd4-8aea-3ac092fdd75d | Use the data in file $u7_7_14_decay_table.png$. Assume $A(t)$ follows $\\$\frac{dA}{dt}$=kA$. Which value of $k$ is most consistent with the table?
+c256c221-d33b-437e-b5b9-e9e5f9cfa85a | A region is revolved about a line and the cross-sections perpendicular to the axis of rotation have a hole. Which method matches this situation?
+c2767b81-d922-4d44-82f9-ebc804e30b26 | Let $f(x)=x^2-4x$ on $[1,3]$. Find a value $c$ in $(1,3)$ such that $f'(c)$ equals the average rate of change of $f$ on $[1,3]$.
+c2f6f7da-f599-4b53-b171-f647fab31ad6 | For $a_n=\\\frac{n!}{3^n}$, compute $\\left|\\\frac{a_{n+1}}{a_n}\\right|$.
+c351da6f-a1c7-4cc5-aa9f-efed76b3930b | Which statement correctly interprets $\lim_{x\to 3^-} f(x)=-\infty$?
+c3669987-04fa-4ec6-95dc-10fbc820f207 | The velocity $v(t)$ (m/s) is shown on $0\\le t\\le 6$. What is the total distance traveled on $[0,6]$?
+c3c2e6b5-216c-4f19-9681-7465a7b6a01b | Evaluate $\int \$\frac{x^2}{x+1}$\,dx$.
+c47718c9-0fce-43d6-b659-10083653ae99 | An object moves along a line. At time $t=4$, the velocity is negative and the acceleration is also negative. Which statement is true at $t=4$?
+c4a32c8f-9e04-4279-81e2-c6dc63599733 | A student tries to use definite-integral symmetry rules to evaluate an indefinite integral of a rational function. What is the best correction?
+c4d65874-de94-4951-8bc0-7d4aa7458965 | Use the table in file $u7_7_14_decay_table.png$. Which initial condition is directly supported by the data?
+c4fcc3e6-5d54-46bf-8cce-de473e19ebd6 | Which statement best describes what it means for an infinite series $\\sum_{n=1}^{\\infty} a_n$ to converge?
+c5013f1b-d22c-40ac-9b2a-04cce9be4846 | Find the derivative of $y=\sqrt{5x^2-1}$.
+c51dff4b-9a2e-4a4a-9eb1-c4d47bbb6534 | Which expression is already in a form where L’Hospital’s Rule can be applied directly (assuming conditions are satisfied)?
+c5246fab-da2c-4f2b-a719-b7831b4d40aa | The height of water in a tank is $h(t)$ feet, where $t$ is measured in minutes. Suppose $h''(5)=-0.6$. Which statement best describes the situation at $t=5$?
+c59e6b78-2259-4480-ab21-1078ebe83e12 | The graph shows position $s$ versus time $t$. During which interval is the velocity negative?
+c5cbcbe4-d2e7-4511-831a-14edc9073c7d | The base region $R$ is shown: $0\\le y\\le \\sin x$ for $0\\le x\\le \\pi$. Cross-sections perpendicular to the $x$-axis are semicircles with diameter $\\sin x$. What is the volume?
+c60cde02-5979-43df-a804-8d1240d029bd | What is the area of the region bounded by $y=\\ln x$, $y=0$, $x=1$, and $x=e$?
+c61a6ca0-8f6b-4b08-abc2-b3ea89479a00 | What is the area between $y=\\sin x$ and $y=\\sin(2x)$ on $[0,2\\pi]$?
+c6474d52-305b-4c38-be47-c56f0451e44c | A region is revolved about the horizontal line $y=c$ (not the $x$-axis). Which expression correctly represents the radius if the curve is $y=f(x)$ and the axis is above the curve on the interval?
+c6542f5f-130c-40af-8d35-f076a169a5ae | A family of solutions to $\\$\frac{dy}{dx}$=2xy$ is $y=Ce^{x^2}$. Which value of $C$ makes the solution satisfy $y(1)=e^3$?
+c6901684-f363-49ff-acc3-41c1f0d64737 | A function $R(t)$ gives the amount of rainwater in a tank (in gallons) after $t$ minutes. What does $R''(12)=5$ represent?
+c699e95f-3db4-41b5-a270-b225c5dd4f86 | Refer to Table 10.7-A (U10.7_Practice_Table1_AlternatingTerms.png), where $a_n=\\\frac{(-1)^{n+1}}{n}$. Which condition is needed (in addition to $|a_n|\\to 0$) to apply the alternating series test?
+c69f05e1-07ab-455a-8c29-82271ec51f70 | Suppose $f$ is differentiable and $f'(x)$ changes sign from positive to negative at $x=2$. What does the First Derivative Test imply about $f$ at $x=2$?
+c77f5c65-81f0-44ce-905f-f62f1c9a89da | For the differential equation $\\$\frac{dy}{dx}$=x-y$, what is the slope at the point $\\left(2,1\\right)$?
+c7c3aeeb-414f-4947-a0ac-b2cc775ae5d6 | The graph of $r(t)$ is provided. Let $A(x)=\int_0^x r(t)\,dt$ for $0\le x\le 6$. For which values of $x$ is $A(x)$ decreasing?
+c7e2157f-3b11-430a-944f-da89fcc8e729 | The curve shown is given by $x(t)=t^2-1$ and $y(t)=t^3-3t$. The point corresponding to $t=1$ is marked. At $t=1$, is the curve concave up or concave down (with respect to $x$)?
+c7fc9c97-240f-40df-a0cb-a7188349c5cc | Let $f(x)=\arctan(x^2)$. Which process is most appropriate to find $f''(x)$?
+c8512468-74c6-4d5b-861c-72f6ed11cb61 | Which method is most appropriate to find the derivative of $y=\arctan(\ln x)$?
+c89d6f58-94bb-4419-b946-51a74f246164 | A function $f$ is continuous on the interval $[0,2]$. If $f(0)=-1$ and $f(2)=3$, which statement must be true?
+c9f2ebf0-c91a-48ed-af89-cb117b185b75 | ["Use the graph provided. Which statement is correct?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384368976_i0c3x.jpg"]
+ca6b2eda-8919-4bff-9da7-84bdb3322cb2 | ["The graph of $y=g(x)$ is shown, along with the tangent line at $x=1$. What is $g'(1)$?","https://placehold.co/600x400/png?text=Graph+Missing"]
+ca7b241f-f31f-4270-94cf-769fb44fd3b2 | A position table is shown. Approximate the average rate of change of the $x$-coordinate over the full time interval.
+cb107e44-7ff0-4408-9fb2-aed8568bbb99 | A student tries to integrate a rational function where the numerator degree is at least the denominator degree. What is the best correction?
+cb4e1f66-2fc1-4ec8-a37a-16d6371fab80 | ["A function $f$ is shown in the table and it is known that $f(2)=7$. What can be concluded about $\\lim_{x\\to 2} f(x)$ and continuity at $x=2$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383131456_s332e.jpg"]
+cb762c89-6ad1-4ee5-aea6-e8b13539a38d | Refer to Table 10.11-A (U10.11_Practice_Table1_TaylorApprox.png). Based on the table, for which $x$ is $T_2(x)$ the most accurate approximation to $e^x$?
+cb96d608-8cf3-4653-862d-037e39493960 | For a differentiable function $f$, which limit expression represents the instantaneous rate of change of $f$ at $x=3$?
+cbaff80f-3bfc-4eac-aa14-52978407d24b | Consider the series $\\sum_{n=2}^{\\infty} \\\frac{1}{n\\ln(n)}$. If $f(x)=\\\frac{1}{x\\ln(x)}$, which statement best matches the integral test conclusion?
+cbfc7bee-a1c8-44a0-9250-06fd686a8cfd | A particle has velocity $v(t)=2t-1$ and position $s(0)=5$. What is $s(3)$?
+cc5c3e35-bda4-45f7-b7e4-f7b2c30e6ecf | Which value of $r$ makes the geometric series $\\sum_{n=0}^{\\infty} 7r^n$ converge?
+cc958eaa-b680-4f65-8610-90cbbc9a7976 | The region between $y=x^2$ and $y=2$ is revolved about $y=2$ for $-\\sqrt{2}\\le x\\le \\sqrt{2}$. What is the volume?
+ccac23a4-de5b-4e29-a10c-d1fa5b31e307 | What is the 2nd-degree Maclaurin polynomial for $e^x$?
+ccb60045-f70b-43cd-aacd-1e661deb9045 | A curve is given by $x(t)=t^2$ and $y(t)=e^t$ for $0\\le t\\le 1$. Which integral gives the arc length?
+cce12eb3-a477-4d78-b0b0-9eb767064903 | Which method is most efficient for $\int \$\frac{5x}{x^2+4}$\,dx$?
+cd269e62-6001-427b-81c6-eb91e87e5516 | A function $f$ satisfies $f(5)=12$ and $f'(5)=3$. Which linear approximation $L(x)$ best estimates $f(x)$ near $x=5$?
+cd2f5536-8076-4d9a-9d8a-4d2f54c3a2a6 | A curve is given by $x = t^2 + 1$ and $y = 3t - 2$. Find $\\frac{dy}{dx}$.
+cd685f61-7b8b-4bb8-b637-349deaf4d681 | Let $f(x)=\\frac{x^2-1}{x-1}$ for $x\ne 1$. What is $\lim_{x\to 1} f(x)$?
+cd70d579-e02e-4b40-b8f4-94d6a4269f75 | A solid has base in the region between $y=f(x)$ and $y=g(x)$ on $[a,b]$. Cross-sections perpendicular to the $x$-axis are squares. Which integral gives the volume?
+ce013efd-dec8-49e0-8794-80deb344430a | Which method is most appropriate to find $\\frac{dy}{dx}$ if $y=\\frac{x^2+1}{x-1}$?
+ce1e242b-4f11-46b9-9e2b-f21b21afc3bd | The provided graph shows the implicit curve $x^2 + y^2 = 9$ with the points $(3,0)$ and $(-3,0)$ marked. Which statement is true about the tangent line at $(3,0)$?
+ce84ec70-73b1-459c-b382-a3d6f599ab60 | Evaluate $\lim_{x\to \infty} \\frac{5x^3+2}{x^3-7x}$.
+ce964153-685a-48ee-b45d-ee090d6f2fae | A function $f$ is twice differentiable near $x=3$, with $f'(3)=0$ and $f''(3)<0$. What can be concluded about $f$ at $x=3$?
+cef4bd26-bf3d-415e-b17d-fd1baca75abb | In an optimization setup, which choice is the best example of correctly defining the decision variable?
+d0ef430f-434b-48b8-b7e2-003a4c1a695d | A vector-valued function is $\mathbf{r}(t) = \langle t^2, 3-t \rangle$. What is $\mathbf{r}(2)$?
+d10d386b-09ab-4640-a890-a8d539079078 | A spherical snowball melts so that its radius decreases at $0.05$ cm/min. When the radius is $3$ cm, which statement best describes the sign of the volume’s rate of change?
+d284a0ec-a98f-4349-aec0-2e4f0d394005 | If $p(x)=(x^2-1)^3$, what is $p''(x)$?
+d28d772a-f986-4e1c-9d43-eca1932375a2 | Find the area of the region between $y=x^3-x$ and $y=0$ on $[-1,1]$.
+d30dabf3-0395-41bf-a97f-e69a46e401af | A region is revolved about the $x$-axis and forms washers. If the outer radius is $R(x)$ and inner radius is $r(x)$, which integral gives the volume?
+d316a9a3-6487-497d-a3b7-84cf86731c9c | A puddle of oil forms a circular spill. The radius of the spill is increasing at $0.4$ m/min. Which statement about the area’s rate of change is always true?
+d318fc58-5c23-43b0-9d6d-f277f567c543 | A curve is given by $x(t)=3t$ and $y(t)=4t$ for $0\\le t\\le 2$. What is the arc length on this interval?
+d3ca74be-e13a-4e47-ad7d-137bdbdbc842 | ["Use the graph provided. Is $f$ continuous on the interval $[0,3]$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384181260_ahig7q.jpg"]
+d4a2f98b-4a93-4279-800a-955f52dbe1ef | Let $e^x=1+x+\\$\frac{x^2}{2}$+\\$\frac{x^3}{6}$+\\cdots$. In the Maclaurin expansion of $x^2e^x$, what is the coefficient of $x^3$?
+d52be690-9c99-43fa-bc11-50debe357dc6 | Using the table of values for f(x), approximate ∫ from 0 to 4 of f(x) dx with a left-endpoint Riemann sum using 4 equal subintervals.
+d5394b68-91d3-431f-b00b-49be645f13fe | Which statement best describes $\lim_{x\to 0} \\frac{1}{x^2}$?
+d59b784d-995b-4b67-8fc4-ae8cab832f9d | If $f(2)=5$ and $f'(2)=3$, what is $(f^{-1})'(5)$?
+d5b94c55-6dfe-4f97-97bc-e3856e44c8f8 | A 12 in by 18 in rectangle of cardboard is used to make an open-top box by cutting out congruent squares of side length $x$ from each corner and folding up the sides. Which expression gives the volume $V(x)$ of the box?
+d5f80928-0418-4ae8-ab5a-557330c547b0 | The curve $y=\\ln(x+1)$ on $0\\le x\\le 3$ is shown. Which integral gives the arc length of the curve on this interval?
+d6c1b20f-2337-4d14-bbf2-19e6971b708d | Suppose a slope field shows positive slopes in a region of the plane. What does that tell you about solution curves passing through that region (locally)?
+d74df51d-7560-47d3-a984-c3fc4fcff2e5 | The graph of $g(x)$ is provided. Let $B(x)=\int_1^x g(t)\,dt$. What is $B'(5)$?
+d7505719-2f65-44ea-b539-f42cee277fe1 | Let A(x)=∫ from 0 to x of f(t) dt. Using the graph of f(t), what is A'(3)?
+d7dd0758-3140-41d3-b41e-7ee36c8756cb | For Euler’s method on the same differential equation and time interval, which change usually makes the approximation more accurate?
+d7f5b853-f6d2-4d12-b043-787faef79f35 | If $f'(3) = -5$, which statement is true?
+d874a11a-9cd3-479f-a5d2-b0ccb90c1325 | A particle has position $\\mathbf{r}(t)=\\langle t,\\,t^2\\rangle$. What is its velocity vector $\\mathbf{v}(2)$?
+d8a68996-14c8-4607-b4eb-331d34541461 | A rectangle has perimeter $40$. Which area is the greatest possible?
+d8cda7cb-cb3d-42a6-9c36-db920d4ee677 | The plotted points show sampled positions of a particle at $t = 0, 1, 2, 3$. Which statement best describes the motion from $t = 0$ to $t = 3$?
+d90169b7-1b2d-4b99-b142-5fbf168c4e47 | Let $f$ be differentiable and invertible. If $f(3)=4$ and $f'(3)=5$, find $\frac{d}{dx}$\left[f^{-1}(x^2)\right]$ at $x=2$.
+d90dc96e-148d-4ac8-a406-2903dbd38e8a | ["The graph of $y=f(x)$ is shown. Which statement is true about $f$ at $x=1$?","https://placehold.co/600x400/png?text=Graph+Missing"]
+d938642b-9344-4467-ab9b-72853a0f6845 | A function has $f'(2)=0$ and $f''(2)<0$. Which statement must be true about $f$ at $x=2$?
+da68ef47-039a-48ac-ad1f-ba65dd4434fa | At $x=2$, $f'(2)=0$ and $f''(2)<0$. What conclusion is supported by the second derivative test?
+db269d76-4ce6-48f6-bb2e-138cc79ef3e8 | If $f(x)=\$\frac{1}{2}$x^6-x^2+9$, what is $f'(x)$?
+db2802e3-31d3-4502-83ca-91d57bbc827a | A midpoint Riemann sum uses n = 6 equal subintervals on the interval [2, 5]. Which is correct for Δx and the first midpoint?
+dbc7fdf0-87a5-4611-ac9f-895147a576f4 | The base region $R$ is shown: $0\\le y\\le \\sqrt{x}$ for $0\\le x\\le 4$. Cross-sections perpendicular to the $x$-axis are squares. What is the volume of the solid?
+dcfc4e82-0e48-4eba-81f2-0b0d75e0f9a4 | Which method is most appropriate to evaluate $\lim_{x\to \infty} \\frac{7x-5}{x^2+1}$?
+dd3a2c56-664a-458c-9a3e-905e58aad0a4 | A curve is given by $x(t)=t$ and $y(t)=t^3-3t$. At $t=-1$, is the curve concave up or concave down (with respect to $x$)?
+ddab50a0-a3fc-4ea4-910d-0b38bf5de730 | ["Use the graph provided. What is $\\lim_{x\\to 0} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384414639_ai2sh8.jpg"]
+ddd27b7b-19ad-4540-8b4e-644ed93bd859 | Which method is most appropriate to find $\\frac{dy}{dx}$ if $x^2y+\sin(y)=3$?
+ddd4ee5e-66fa-4959-a070-c6c3edcf2b66 | A student uses u-substitution on a definite integral but mixes u-limits with an x-expression at the end. What is the best correction?
+dde972b3-8ff0-44ef-94c0-7551944318f7 | If $f(x)=x\ln x$, what is $f'(x)$?
+de4e8d68-db18-4bc8-b282-21fcb614344f | Consider $\\$\frac{dy}{dx}$=y(y-1)$. If you separate variables by dividing both sides by $y(y-1)$, which constant solution(s) could be lost and must be checked separately?
+dea4fa4e-088e-42cb-a25e-bd633e8871c3 | ["Use the graph provided. What type of discontinuity does $f$ have at $x=1$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384355370_shemo.jpg"]
+df17f9f8-3246-4d5d-b856-336ae493e0d4 | The velocity graph $v(t)$ is shown. The particle moves from $t=0$ to $t=3$. What is the total distance traveled?
+e0135e56-e24f-4463-9023-2d2d38bf7cdc | Which function is a solution to $\\$\frac{dy}{dx}$=2x$?
+e03729bf-05fc-4da6-98e8-8ca758c1131b | Let $\\sum_{n=1}^{\\infty}(-1)^{n+1}\\\frac{1}{n^2+1}$ satisfy the alternating series test. What is the smallest $N$ that guarantees the alternating series approximation error is less than $0.01$?
+e1ccd149-62f7-4418-a18c-6c850e37dcb2 | Which method is most efficient for finding the derivative of $f(x)=x^9-5x$ at $x=2$?
+e1e8385f-557c-49d4-bd29-b5180bf2f599 | Evaluate $\lim_{x\to 0} x^2\sin\left(\$\frac{1}{x}$\right)$.
+e218920c-de93-4c6a-a1de-143b7a59b817 | Use the data in file $u7_7_12_pop_table.png$. The population is leveling off. Which statement is most reasonable about the rate of change $\\\frac{dP}{dt}$ at later times?
+e225840b-7f71-4a71-a1a3-c2951f79fc3f | Find the derivative of $y=\arcsin(x^2)$.
+e24d1fdf-9d44-4d41-bb25-158916db2bb1 | Use the sign chart in file $u7_7_9_logistic_sign_table.png$ for $\\$\frac{dP}{dt}$=0.2P\\left(1-\\$\frac{P}{500}$\\right)$. Which equilibrium is stable for nearby positive populations?
+e2aa6f5f-ec38-4946-b76f-126689ef1fde | The region bounded by $x=y^2$, $y=0$, and $y=2$ is revolved about the $y$-axis. Which integral represents the volume using discs?
+e2bd356a-d403-4c86-97fc-9a08281f4748 | Which condition is required to apply the Integral Test to $\\sum a_n$ with $a_n=f(n)$?
+e2dbe0c5-c426-455d-bb28-5165d0b7d59b | The curves $r = 2\cos\theta$ and $r = 1$ are shown. Which interval correctly describes where $r = 2\cos\theta$ is outside $r = 1$ in the first quadrant?
+e432e2fb-7cd6-4257-bbb4-d503e8ca9056 | ["A function $f$ is shown in the table. What is the best estimate of $\\lim_{x\\to 5} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383793329_vma7ec.jpg"]
+e44ba877-af7d-49b5-98bd-270d2fa2d35a | Use the slope field in file $u7_7_4_slopefield_B.png$ for $\\$\frac{dy}{dx}$=y(1-y)$. If a solution starts with $0<y<1$, what happens to $y$ as $x$ increases?
+e509e60b-3f80-48a3-9147-b882295def64 | The region $R$ is shown: $x^2\\le y\\le 2$ for $-\\sqrt{2}\\le x\\le \\sqrt{2}$. The region is revolved about the line $y=2$. Which integral gives the volume using discs?
+e512544e-8525-4460-8146-04c6f444e658 | Refer to the provided candidates table.
+
+What is the absolute minimum value of $f$ on $[-2,4]$?
+e5bfc943-7601-4e22-ad58-283a5e336f49 | Which method is most efficient for finding the derivative of $f(x)=(x^2+1)(\sin x)$?
+e5dba277-8737-4ae1-b68b-65ba01e5fb08 | A function satisfies $f'(1)=0$ and $f''(1)>0$. Which statement must be true about $f$ at $x=1$?
+e5e544b7-f580-4ba8-9c91-99a252ab4ecc | L’Hospital’s Rule is most directly applicable when a limit produces which type of indeterminate form?
+e60d81e0-4425-4572-9928-c7dcfe2002d3 | Which choice explains when a tangent-line approximation tends to be most accurate?
+e61a29e9-ebc2-46e4-a381-0097dc4da83b | Refer to the provided graph of $f$.
+
+On which interval is $f$ increasing?
+e62e164c-44bf-4540-9c66-3921fa16efa6 | Suppose $f$ is an odd function. What must be true about $\int_{-2}^{2} f(x)\,dx$?
+e68dd7c9-97ac-4f4c-8db8-1647243b049a | If $\int_0^6 f(x)\,dx=4$, what is $\int_6^0 f(x)\,dx$?
+e75e1786-e15d-43b8-a759-038b5d77adc5 | A function $f$ is continuous on $[2,6]$. If $f(2)=-1$ and $f(6)=4$, what must be true?
+e7e2561d-5502-476b-9f39-f26e2216c5ce | A particle’s position is given by $s(t) = t^2 + 1$, where $s$ is measured in meters and $t$ is measured in seconds. What is the average rate of change of $s$ over the interval $2 \le t \le 5$?
+e83c7313-4921-4d24-bfd9-5cb3c28fc38b | If $f(1)=4$ and $f'(1)=-2$, what is $(f^{-1})'(4)$?
+e83ef46c-4fe7-4bbc-b867-0719e990a87d | A bacteria culture has population $P(t)$. If $P'(t)$ is positive and decreasing, which statement is true?
+e8484a49-598c-464e-8765-9bba307a9337 | Use the table provided for $f(x)$. What is the best estimate of $\lim_{x\to 1} f(x)$?
+e87db5fb-fd83-4ca6-b12e-c2a8d02b4f23 | The table gives position $s(t)$ (in feet) of a runner at times $t$ (in minutes). Which is the best estimate of the runner’s velocity at $t=3.0$ minutes?
+e97d9f47-cd92-4659-8656-39a7fa1c88b7 | Which statement is sufficient to guarantee that a function $f$ has both an absolute maximum and an absolute minimum on $[a,b]$?
+e9fb6754-c538-4767-9f9d-ba15d1c2b851 | Refer to the provided graph of $r(t)$ (piecewise linear through $(0,1),(2,3),(4,-1),(6,2)$). Approximate $\int_0^6 r(t)\,dt$ using the trapezoidal rule on the three subintervals $[0,2],[2,4],[4,6]$.
+ea4f2084-2b81-429b-b5e9-d1c69b40b83c | A table of speed values $|\mathbf{v}(t)|$ is shown for $0 \le t \le 3$. Using the trapezoidal rule with $\Delta t = 1$, approximate the total distance traveled on $[0, 3]$.
+ea511a78-2b62-4d07-9573-a16f6180335a | Evaluate $\lim_{x\to 0} \\frac{\sqrt{x+9}-3}{x}$.
+ead92a67-4eb0-42af-8f2f-0dd065eb3f56 | Suppose $\lim_{x\to 1} f(x)=3$ and $f(1)=8$. What can be concluded?
+eb07f125-18ae-4a62-a465-805109fb0042 | You find that an alternating series converges by the alternating series test. What is the correct next step to determine whether it is absolute or conditional?
+eb432132-45c2-4c67-a8dc-b16e3e885d16 | If $3x^2+2y=xy$, find $\\frac{dy}{dx}$.
+ebdcf9bf-cc03-4b4e-ba2d-49dc62e535c9 | A function $f$ satisfies $\lim_{x\to 5} f(x)=12$ and $f(5)$ exists. Which condition is still needed to conclude $f$ is continuous at $x=5$?
+ec11e644-7d02-40b2-8533-878258709ccb | Which method is most appropriate to find $\\frac{dy}{dx}$ if $x\sin(y)=1$?
+ec27c3b6-dda8-4c93-909b-cdc99b1d50cb | Evaluate $\lim_{h\to 0} \\frac{(2+h)^2-4}{h}$.
+ec9c3034-0e0b-4c16-92c8-2825d2fd9553 | A spherical balloon is being inflated. Which pair of quantities must be directly related by a geometric formula before differentiating with respect to time?
+ed37296f-ebee-40e6-86ab-4e7265ae61a9 | Let $f(x)=|x-2|+\\frac{1}{x}$ with domain $x\ne 0$. Which $x$-values are critical numbers of $f$?
+ed4b4584-0d83-4c1d-b439-52edfce9e94f | A curve is given by $x = t^2$ and $y = \ln(t+1)$ for $0 \le t \le 2$. Which integral represents the arc length?
+ed51ebae-5d9e-4960-b07c-6bfff943307d | A particle has velocity $\mathbf{v}(t) = \langle 3, 4t \rangle$. What is the speed at $t = 2$?
+ed7dddc1-2ffc-4a21-a080-f07f60e14e3f | Find $\\frac{dy}{dx}$ if $x^2+y^2=25$.
+ed9ed524-ace7-4e8f-831d-f9afe6fc1812 | Evaluate $\lim_{x\to 2} \\frac{(x^2-4)}{(x-2)}$.
+ede710aa-de54-479d-8da4-86f1a10b88c7 | Determine the type of convergence of $\\sum_{n=1}^{\\infty}(-1)^{n+1}\\\frac{1}{\\sqrt{n}}$.
+ede9ce0c-1d22-49d6-a995-208f49ef89c3 | Which set of conditions is sufficient to guarantee that $f$ is continuous at $x=a$?
+ee05cd56-783f-48e2-b2a5-3134c3b55c37 | Given $\lim_{x\to 2} f(x)=3$ and $\lim_{x\to 2} g(x)=-1$, find $\lim_{x\to 2} \left(f(x)+g(x)\right)$.
+eeb274f9-c080-4af0-a682-a4762474cf90 | Suppose two continuous curves intersect at $x=a<b<c<d$ on an interval and switch which one is on top at each intersection. Which approach is guaranteed to produce the total area between them on $[a,d]$?
+ef4f083e-929a-4e18-8757-cd4e398e0d3c | Which method is most appropriate to evaluate $\lim_{x\to \infty} \\frac{5x^3-2}{2x^3+7x}$?
+ef57750a-04fe-4568-acfb-b9006785b543 | In file $u7_7_13_slopefield_xy_candidates.png$ for $\\$\frac{dy}{dx}$=xy$, which labeled curve matches $y(0)=1$?
+ef9eb6a7-d358-4817-b018-a06f38d840ad | Let $f(x)=2x^5-3x^4+x^2-7$. What is $f'(x)$?
+efdf6412-1289-4538-9ce6-acd1b67bafad | If $f(x)=\ln x$, what is $f'(x)$?
+f04b3e25-07c5-4b20-889f-3ebb72a715ae | In file $u7_7_11_slopefield_candidates.png$ for $\\$\frac{dy}{dx}$=x-y$, which labeled curve matches the initial condition $y(0)=1$?
+f1338cd1-d950-4097-b27c-aea987acd445 | Evaluate $\int \\frac{4x}{\sqrt{x^2+9}}\,dx$.
+f14b7f23-cc0a-43eb-900e-e62e63268b82 | Which rational integrand suggests long division as the needed preparation step?
+f1639eb1-66f7-4ae0-ac51-668d017b92b6 | For the implicit relation $x^2 + x y + y^2 = 7$, which expression correctly gives $\\frac{dy}{dx}$?
+f1bbd9af-c033-45d5-82bc-b45fff0e4248 | For what value of $a$ is $f(x)=\begin{cases} ax+3, & x<2 \\ x^2+a, & x\ge 2 \end{cases}$ continuous at $x=2$?
+f1bd14a2-40f6-419e-9d08-589c611f57bb | A function $f$ is continuous on $[1,5]$. If $f(1)=-3$ and $f(5)=2$, which statement must be true?
+f2158552-ce7a-43c0-a13d-1da8103a5a5b | Evaluate $\lim_{x\to \infty} \\frac{4x^2-3}{2x^2+7x}$.
+f21fd267-cdeb-4bf3-9cae-b4bb0a62153d | Consider the differential equation $\\$\frac{dy}{dx}$=-\\\frac{x}{y}$ for $y\\neq 0$. Is the implicit relation $x^2+y^2=25$ a solution on any interval where $y\\neq 0$?
+f2766202-2b57-422a-929f-fd4b7d83516c | You have found a critical point $c$ where $f'(c)=0$. Which additional information makes the second derivative test immediately usable to classify the point?
+f31cc2b4-fa53-4012-aa37-73263175e165 | Evaluate $\lim_{x\to 0} x\sin\left(\$\frac{1}{x^2}$\right)$.
+f3451cc2-031f-4440-b416-770d3cbfe4b3 | What is the 2nd-degree Maclaurin polynomial for $\\ln(1+x)$?
+f3ddbcd3-9929-4fd9-9fdd-065e17da100d | A function $f$ is continuous on $[-1,3]$. If $f(-1)=4$ and $f(3)=-2$, which statement must be true?
+f3f62212-b5e2-49c2-92f9-bb8a4838845f | A student plans to complete the square to evaluate $\int x\\sin x\\,dx$. Which statement is best?
+f46acf9f-9f89-41d0-9dcd-c554c39e246d | Let $f(x)=x^3-3x^2+2$. Which statement about local extrema is correct?
+f4a8b441-6671-46a8-af4b-fffbd3b44763 | Find $\int \$\frac{1}{x}$\,dx$ for $x>0$.
+f4d01517-39c2-459a-82cb-00808ce9d450 | A particle has position $\mathbf{r}(t) = \langle e^t, t \rangle$. What is the speed at time $t$?
+f51602e6-ecf7-46ea-8f9c-4a726ebb1a75 | If $f(x)=(x^3-1)(x^2+4)$, what is $f'(x)$?
+f5bb8ad8-302b-47ad-8ab0-6c6458df9b29 | Let $\\mathbf{r}(t)=\\langle t^2-1,\\,3t,\\,\\sin(t)\\rangle$. What is $\\mathbf{r}'(t)$?
+f60e26b6-b238-4d1c-9540-5174ebd4f98f | Which statement is true about continuity on an interval?
+f625c885-89ec-4710-97bd-12c5b697f4be | ["Use the table provided. What is the best estimate of $\\lim_{x\\to 3} f(x)$?","https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769382210497_m3da1f.jpg"]
+f6999aff-67ac-4f9a-935a-f810e071630f | The base region is bounded by $y=x$ and $y=2$ on $0\\le x\\le 2$. Cross-sections perpendicular to the $x$-axis are semicircles with diameter equal to the vertical distance in the base. What is the volume?
+f6e6fd46-cd9a-44ad-9f8a-4fc135e1112b | Let $a_n=\\\frac{1}{n(n+1)}$ and $S_N=\\sum_{n=1}^{N} a_n$. Which expression for $S_N$ is correct?
+f7736271-34ba-4f37-a844-c69297d05892 | Let $f$ be continuous on $[-2,1]$ with $f(-2)=5$ and $f(1)=5$. Which statement must be true?
+f79aa212-a98d-46e3-b9c8-ac3bbfde36f4 | A solid has cross-sectional area $A(x)=(x+1)^2$ for $0\\le x\\le 2$ (areas are in square units). What is the volume?
+f7c82732-afba-4e9f-90b2-a2b9686812f1 | For what value of $k$ is $f(x)=\\frac{x^2-1}{x-1}$ for $x\ne 1$ and $f(1)=k$ an extension of $f$ that is continuous at $x=1$?
+f81101d0-5204-4707-85c4-c9b3d1993e3f | Let $G(x)=\int_{-2}^{x} f(t)\,dt$. Refer to the provided graph of $f(x)$ (piecewise linear through $(-2,1),(-1,2),(0,0),(1,-1),(2,1),(3,2)$). What is $G'(1)$?
+f81a04ee-b98a-47f7-af1e-74cab63186c3 | Use the slope field in file $u7_7_4_slopefield_B.png$ for $\\$\frac{dy}{dx}$=y(1-y)$. Which statement about equilibria and stability is correct?
+f88c9356-ce62-47a9-acbc-f67953b5d60c | Let $\\$\frac{1}{1-x}$=\\sum_{n=0}^{\\infty}x^n$. In the power series for $\\\frac{x^2}{1-x}$, what is the coefficient of $x^5$?
+f8b5fead-9cb7-4857-b7ac-0bd35befaabc | Which method is most efficient for finding the derivative of $f(x)=\\frac{x^2+1}{x-3}$?
+f8cda24a-c64d-43d8-8848-d978318dd686 | If $f(x)=2^x$, what is $f'(x)$?
+f974bbf4-173d-4d31-93e6-03f39cb216e6 | If $\lim_{x\to 4^-} f(x)=2$ and $\lim_{x\to 4^+} f(x)=7$, what is $\lim_{x\to 4} f(x)$?
+f9d2fa17-d0e0-4712-892f-dad2169e34d4 | Consider the series $\\sum_{n=1}^{\\infty} \\\frac{1}{n^2}$. Which statement is correct?
+f9f485e4-316d-47e9-a2f1-6f9a60241ed2 | Which sigma expression represents the right Riemann sum for $f(x)=x^2$ on $[0,2]$ using $n$ equal subintervals?
+fa0fcc32-64fe-4bd5-9684-67ed0ad9ffac | Which series is the harmonic series?
+fa8b3065-6c60-4b7e-8c45-fa68fa79fcbf | The base region $R$ is shown in the first quadrant, bounded by $x=y^2$, $x=4$, and $y=0$. Cross-sections perpendicular to the $y$-axis are rectangles with height $2$. What is the volume?
+fb65bf6c-808f-4231-902e-e02dd392509e | A rectangular region is fenced on three sides using 30 units of fencing, with the fourth side along a wall (no fence needed). Let $x$ be the length of each side perpendicular to the wall. Use the provided graph of area $A(x)$ to determine which $x$ gives the maximum area.
+fbf71205-f3fb-4f8e-ad1b-6d874bfc8ee9 | A particle has velocity $\\mathbf{v}(t)=\\langle 2t,\\,\\cos(t)\\rangle$ and position $\\mathbf{r}(0)=\\langle 1,\\,0\\rangle$. What is $\\mathbf{r}(\\pi)$?
+fca9dfc7-9f43-4d82-8627-bbf1cccb0eb6 | Which method is most efficient for finding the derivative of $f(x) = x^2 + 3x$ at $x=5$?
+fcacc153-0283-435f-b0fe-e955d1d665db | In a related rates problem, what should be done first?
+fd1cfd71-973b-46ed-8be3-8fec56c4d3a7 | A limit problem can be solved either by algebraic simplification or by L’Hospital’s Rule. Which statement best describes a good strategy choice on the AP exam?
+fd425984-8054-4ea6-b0ea-63f75d0f075c | A(x) is an accumulation function defined by A(x)=∫ from 0 to x of f(t) dt. The graph of A(x) is shown. What is f(5) approximately?
+fd68ffa8-f867-472f-b04d-7e9298e31aec | Which situation does NOT allow you to conclude that there exists $c$ in $(a,b)$ such that $f(c)=0$?
+ff83bab9-0152-4fc4-ac85-d42f8cf2e8bd | An alternating series satisfies AST, and you compute the partial sum $S_N$. Which statement is correct about where the true sum $S$ lies relative to $S_N$?
+ffa716d6-6dfa-4e60-aef7-f7a2abad2420 | A table of $f(x)$ values on $[0,4]$ is shown. Using the trapezoidal rule with $\\Delta x=1$, approximate the average value of $f$ on $[0,4]$.
+ffa99911-ca73-4e4e-8871-d43eac06be80 | Use the graph provided. What is $\lim_{x\to 1} f(x)$?

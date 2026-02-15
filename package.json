@@ -4,13 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:all": "concurrently \"npm run dev\" \"cd server && npm run dev\"",
+    "dev:frontend": "vite",
+    "dev": "concurrently \"npm run dev:frontend\" \"cd server && npm run dev\"",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.90.1",
+    "@supabase/supabase-js": "^2.93.3",
+    "@types/canvas-confetti": "^1.9.0",
+    "canvas-confetti": "^1.9.4",
+    "dotenv": "^17.2.3",
     "katex": "^0.16.27",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

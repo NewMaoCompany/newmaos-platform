@@ -1,0 +1,816 @@
+[
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C3_Q1",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 75,
+        "skill_tags": [
+            {
+                "skill_id": "SK_READ_LIMIT_FROM_GRAPH",
+                "weight": 0.8
+            },
+            {
+                "skill_id": "SK_ONE_SIDED_LIMIT",
+                "weight": 0.2
+            }
+        ],
+        "error_tags": [
+            "ERR_MISREAD_OPEN_CLOSED_DOT",
+            "ERR_CONFUSE_LIMIT_WITH_VALUE",
+            "ERR_IGNORE_ONE_SIDED"
+        ],
+        "prompt": "Use the graph to evaluate the limit.\n\nFind $\\displaystyle \\lim_{x\\to 2^-} f(x)$.",
+        "latex": "Find $\\displaystyle \\lim_{x\\to 2^-} f(x)$.",
+        "options": [
+            {
+                "id": "A",
+                "text": "$3$",
+                "explanation": "Approaching $x=2$ from the left follows the left linear branch, which approaches $y=3$ at the open circle."
+            },
+            {
+                "id": "B",
+                "text": "$4$",
+                "explanation": "$4$ is the function value shown by the filled point at $x=2$, not the left-hand limit."
+            },
+            {
+                "id": "C",
+                "text": "The limit does not exist",
+                "explanation": "A one-sided limit can exist even if the two-sided limit fails; from the left the values approach a single number."
+            },
+            {
+                "id": "D",
+                "text": "$2$",
+                "explanation": "$2$ confuses the $x$-value being approached with the $y$-value of the limit."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0,
+        "explanation": "As $x\\to 2^-$, the graph follows the left branch. The $y$-values approach $3$ (the open circle at $(2,3)$). Therefore, $\\lim_{x\\to 2^-} f(x)=3$.",
+        "micro_explanations": {
+            "A": "Left branch approaches $3$.",
+            "B": "Filled point is $f(2)$, not the left limit.",
+            "C": "One-sided limit exists here.",
+            "D": "Limit is a $y$-value, not the $x$-value."
+        },
+        "recommendation_reasons": [
+            "Targets one-sided limit reading from a graph.",
+            "Reinforces open vs closed circle meaning."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07",
+        "updated_at": "2026-02-07",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.3",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Prompt uses an image (graph). Common traps: using the filled point, ignoring one-sided notation.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "C3Q1_LeftHandLimitAt2",
+        "prompt_type": "image",
+        "primary_skill_id": "SK_READ_LIMIT_FROM_GRAPH",
+        "supporting_skill_ids": [
+            "SK_ONE_SIDED_LIMIT"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C3_Q2",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 90,
+        "skill_tags": [
+            {
+                "skill_id": "SK_READ_LIMIT_FROM_GRAPH",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "SK_LIMIT_DNE_FROM_GRAPH",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "ERR_ASSUME_TWO_SIDED_EXISTS",
+            "ERR_CONFUSE_LIMIT_WITH_VALUE",
+            "ERR_MISREAD_OPEN_CLOSED_DOT"
+        ],
+        "prompt": "Use the graph to evaluate the limit.\n\nFind $\\displaystyle \\lim_{x\\to 1} f(x)$.",
+        "latex": "Find $\\displaystyle \\lim_{x\\to 1} f(x)$.",
+        "options": [
+            {
+                "id": "A",
+                "text": "$1$",
+                "explanation": "$1$ matches the right-hand approach (and the filled point), but the left-hand approach is different."
+            },
+            {
+                "id": "B",
+                "text": "$3$",
+                "explanation": "$3$ matches the left-hand approach (open circle), but the right-hand approach is different."
+            },
+            {
+                "id": "C",
+                "text": "The limit does not exist",
+                "explanation": "Left-hand and right-hand limits are different ($3$ from the left and $1$ from the right), so the two-sided limit does not exist."
+            },
+            {
+                "id": "D",
+                "text": "$2$",
+                "explanation": "$2$ is not approached from either side; it results from averaging or guessing."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "From the left, $f(x)$ approaches $3$ (open circle at $(1,3)$). From the right, $f(x)$ approaches $1$ (horizontal segment). Since $\\lim_{x\\to 1^-} f(x)\\neq \\lim_{x\\to 1^+} f(x)$, $\\lim_{x\\to 1} f(x)$ does not exist.",
+        "micro_explanations": {
+            "A": "Only right-hand behavior.",
+            "B": "Only left-hand behavior.",
+            "C": "Mismatch of one-sided limits.",
+            "D": "Not supported by the graph."
+        },
+        "recommendation_reasons": [
+            "Tests DNE via mismatch of one-sided limits.",
+            "Builds discipline: two-sided requires both sides match."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07",
+        "updated_at": "2026-02-07",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.3",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Prompt uses an image (graph). Emphasize comparing one-sided limits rather than using $f(1)$.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "C3Q2_TwoSidedLimitJumpAt1",
+        "prompt_type": "image",
+        "primary_skill_id": "SK_READ_LIMIT_FROM_GRAPH",
+        "supporting_skill_ids": [
+            "SK_LIMIT_DNE_FROM_GRAPH"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C3_Q3",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 105,
+        "skill_tags": [
+            {
+                "skill_id": "SK_INFINITE_LIMIT_FROM_GRAPH",
+                "weight": 0.8
+            },
+            {
+                "skill_id": "SK_ONE_SIDED_LIMIT",
+                "weight": 0.2
+            }
+        ],
+        "error_tags": [
+            "ERR_SIGN_ERROR_INFINITY",
+            "ERR_IGNORE_ONE_SIDED",
+            "ERR_ASSUME_ASYMPTOTE_MEANS_DNE_ALWAYS"
+        ],
+        "prompt": "Use the graph to evaluate the limit.\n\nFind $\\displaystyle \\lim_{x\\to 0^+} f(x)$.",
+        "latex": "Find $\\displaystyle \\lim_{x\\to 0^+} f(x)$.",
+        "options": [
+            {
+                "id": "A",
+                "text": "$-\\infty$",
+                "explanation": "The branch shown for $x>0$ rises upward as $x\\to 0^+$, not downward."
+            },
+            {
+                "id": "B",
+                "text": "$\\infty$",
+                "explanation": "As $x\\to 0^+$, the graph increases without bound, so the one-sided limit is $\\infty$."
+            },
+            {
+                "id": "C",
+                "text": "$0$",
+                "explanation": "The $x$-axis is not being approached; the $y$-values grow large."
+            },
+            {
+                "id": "D",
+                "text": "The limit does not exist",
+                "explanation": "An infinite limit is a valid limit description; here the behavior is unbounded in a single direction."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "Near $x=0$ on the right, the graph shoots upward without bound. Therefore, $\\lim_{x\\to 0^+} f(x)=\\infty$.",
+        "micro_explanations": {
+            "A": "Wrong sign: graph goes up.",
+            "B": "Unbounded upward as $x\\to 0^+$.",
+            "C": "Not approaching $y=0$.",
+            "D": "Infinite limit is a type of limit."
+        },
+        "recommendation_reasons": [
+            "Reinforces interpreting vertical asymptote behavior.",
+            "Targets sign of infinity with one-sided approach."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07",
+        "updated_at": "2026-02-07",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.3",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Prompt uses an image (graph). Common error: writing DNE instead of $\\infty$ or choosing wrong sign.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "C3Q3_InfiniteLimitAt0Plus",
+        "prompt_type": "image",
+        "primary_skill_id": "SK_INFINITE_LIMIT_FROM_GRAPH",
+        "supporting_skill_ids": [
+            "SK_ONE_SIDED_LIMIT"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C3_Q4",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 80,
+        "skill_tags": [
+            {
+                "skill_id": "SK_READ_LIMIT_FROM_GRAPH",
+                "weight": 0.85
+            },
+            {
+                "skill_id": "SK_LIMIT_EXISTS_GRAPHICALLY",
+                "weight": 0.15
+            }
+        ],
+        "error_tags": [
+            "ERR_CONFUSE_HOLE_WITH_DNE",
+            "ERR_CONFUSE_LIMIT_WITH_VALUE",
+            "ERR_MISREAD_OPEN_CLOSED_DOT"
+        ],
+        "prompt": "Use the graph to evaluate the limit.\n\nFind $\\displaystyle \\lim_{x\\to -1} f(x)$.",
+        "latex": "Find $\\displaystyle \\lim_{x\\to -1} f(x)$.",
+        "options": [
+            {
+                "id": "A",
+                "text": "The limit does not exist",
+                "explanation": "A hole does not prevent a limit from existing; the surrounding values can still approach one number."
+            },
+            {
+                "id": "B",
+                "text": "$-1$",
+                "explanation": "$-1$ is the $x$-value being approached, not the $y$-value of the limit."
+            },
+            {
+                "id": "C",
+                "text": "$1$",
+                "explanation": "Near $x=-1$, the graph lies on the horizontal line $y=1$ with a hole at $(-1,1)$, so the limit is $1$."
+            },
+            {
+                "id": "D",
+                "text": "$0$",
+                "explanation": "The graph is not approaching $y=0$ near $x=-1$."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "Approaching $x=-1$ from either side, the graph stays at $y=1$. Even though there is a hole at $(-1,1)$, the approaching value is $1$, so $\\lim_{x\\to -1} f(x)=1$.",
+        "micro_explanations": {
+            "A": "Hole ≠ DNE.",
+            "B": "Confuses $x$ with limit value.",
+            "C": "Both sides approach $1$.",
+            "D": "Not supported by the graph."
+        },
+        "recommendation_reasons": [
+            "Differentiates limit existence from function value.",
+            "Targets removable discontinuity interpretation."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07",
+        "updated_at": "2026-02-07",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.3",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Prompt uses an image (graph). Common error: claiming DNE because of the hole.",
+        "weight_primary": 0.85,
+        "weight_supporting": 0.15,
+        "title": "C3Q4_RemovableDiscontinuityAtMinus1",
+        "prompt_type": "image",
+        "primary_skill_id": "SK_READ_LIMIT_FROM_GRAPH",
+        "supporting_skill_ids": [
+            "SK_LIMIT_EXISTS_GRAPHICALLY"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C3_Q5",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level1",
+        "target_time_seconds": 60,
+        "skill_tags": [
+            {
+                "skill_id": "SK_ONE_SIDED_LIMIT",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "SK_READ_LIMIT_FROM_GRAPH",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "ERR_ASSUME_TWO_SIDED_REQUIRED",
+            "ERR_IGNORE_DOMAIN_ENDPOINT",
+            "ERR_IGNORE_ONE_SIDED"
+        ],
+        "prompt": "Use the graph to evaluate the limit.\n\nFind $\\displaystyle \\lim_{x\\to 0^+} f(x)$.",
+        "latex": "Find $\\displaystyle \\lim_{x\\to 0^+} f(x)$.",
+        "options": [
+            {
+                "id": "A",
+                "text": "$1$",
+                "explanation": "At $x=0$, the graph begins at $y=0$, not $1$."
+            },
+            {
+                "id": "B",
+                "text": "$0$",
+                "explanation": "As $x\\to 0^+$ along the curve, $y\\to 0$."
+            },
+            {
+                "id": "C",
+                "text": "The limit does not exist",
+                "explanation": "A right-hand limit can exist even if there is no left side shown."
+            },
+            {
+                "id": "D",
+                "text": "$\\infty$",
+                "explanation": "The curve does not blow up near $x=0$; it approaches $0$."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "The graph is defined for $x\\ge 0$ and approaches the point $(0,0)$ from the right. Therefore, $\\lim_{x\\to 0^+} f(x)=0$.",
+        "micro_explanations": {
+            "A": "Start point is at $0$.",
+            "B": "Right-hand approach gives $0$.",
+            "C": "One-sided limit is valid.",
+            "D": "No unbounded behavior."
+        },
+        "recommendation_reasons": [
+            "Builds comfort with endpoint/right-hand limits.",
+            "Reinforces meaning of $0^+$."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07",
+        "updated_at": "2026-02-07",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 1,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.3",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "Prompt uses an image (graph). Common error: forcing a two-sided limit when only right side is relevant.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "C3Q5_RightHandLimitAt0",
+        "prompt_type": "image",
+        "primary_skill_id": "SK_ONE_SIDED_LIMIT",
+        "supporting_skill_ids": [
+            "SK_READ_LIMIT_FROM_GRAPH"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C4_Q1",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 80,
+        "skill_tags": [
+            {
+                "skill_id": "SK_ESTIMATE_LIMIT_FROM_TABLE",
+                "weight": 1.0
+            }
+        ],
+        "error_tags": [
+            "ERR_USE_NEAREST_VALUE_ONLY",
+            "ERR_CONFUSE_LIMIT_WITH_VALUE",
+            "ERR_IGNORE_BOTH_SIDES_TABLE"
+        ],
+        "prompt": "A function $f$ is defined near $x=3$. Use the table to estimate $\\displaystyle \\lim_{x\\to 3} f(x)$.\n\n$$\n\\begin{array}{c|cccccc}\nx & 2.9 & 2.99 & 2.999 & 3.001 & 3.01 & 3.1\\\\ \\hline\nf(x) & 5.7 & 5.97 & 5.997 & 6.003 & 6.03 & 6.3\n\\end{array}\n$$",
+        "latex": "$$\\begin{array}{c|cccccc}x & 2.9 & 2.99 & 2.999 & 3.001 & 3.01 & 3.1\\\\ \\hline f(x) & 5.7 & 5.97 & 5.997 & 6.003 & 6.03 & 6.3\\end{array}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$5.997$",
+                "explanation": "This is just one value from the left side; the limit should reflect values from both sides approaching the same number."
+            },
+            {
+                "id": "B",
+                "text": "$6$",
+                "explanation": "Values approach $6$ from both sides: $5.997$ (left) and $6.003$ (right) get closer to $6$ as $x$ nears $3$."
+            },
+            {
+                "id": "C",
+                "text": "$6.003$",
+                "explanation": "This is just one value from the right side; it is not the best estimate of the limiting value."
+            },
+            {
+                "id": "D",
+                "text": "The limit does not exist",
+                "explanation": "Both sides trend toward the same value, so the limit exists."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "As $x$ approaches $3$ from the left, $f(x)$ moves from $5.97$ to $5.997$. From the right, it moves from $6.03$ to $6.003$. These values cluster around $6$, so $\\lim_{x\\to 3} f(x)\\approx 6$.",
+        "micro_explanations": {
+            "A": "Single left-side entry.",
+            "B": "Both sides approach $6$.",
+            "C": "Single right-side entry.",
+            "D": "Trends indicate existence."
+        },
+        "recommendation_reasons": [
+            "Trains reading two-sided behavior from tables.",
+            "Counters the habit of picking one nearby entry."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07",
+        "updated_at": "2026-02-07",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.4",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; table provided in KaTeX.",
+        "weight_primary": 1.0,
+        "weight_supporting": 0.0,
+        "title": "C4Q1_TableLimitApproaches6",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_ESTIMATE_LIMIT_FROM_TABLE",
+        "supporting_skill_ids": []
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C4_Q2",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 95,
+        "skill_tags": [
+            {
+                "skill_id": "SK_ESTIMATE_LIMIT_FROM_TABLE",
+                "weight": 0.75
+            },
+            {
+                "skill_id": "SK_LIMIT_DNE_FROM_TABLE",
+                "weight": 0.25
+            }
+        ],
+        "error_tags": [
+            "ERR_IGNORE_BOTH_SIDES_TABLE",
+            "ERR_AVERAGE_TWO_SIDES",
+            "ERR_ASSUME_TWO_SIDED_EXISTS"
+        ],
+        "prompt": "Use the table to determine $\\displaystyle \\lim_{x\\to 2} f(x)$.\n\n$$\n\\begin{array}{c|cccccc}\nx & 1.9 & 1.99 & 1.999 & 2.001 & 2.01 & 2.1\\\\ \\hline\nf(x) & -1.1 & -1.01 & -1.001 & 3.001 & 3.01 & 3.1\n\\end{array}\n$$",
+        "latex": "$$\\begin{array}{c|cccccc}x & 1.9 & 1.99 & 1.999 & 2.001 & 2.01 & 2.1\\\\ \\hline f(x) & -1.1 & -1.01 & -1.001 & 3.001 & 3.01 & 3.1\\end{array}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$1$",
+                "explanation": "This is an average of the one-sided behaviors, but limits are not found by averaging."
+            },
+            {
+                "id": "B",
+                "text": "$-1$",
+                "explanation": "This matches the left-hand trend, but the right-hand trend approaches a different value."
+            },
+            {
+                "id": "C",
+                "text": "$3$",
+                "explanation": "This matches the right-hand trend, but the left-hand trend approaches a different value."
+            },
+            {
+                "id": "D",
+                "text": "The limit does not exist",
+                "explanation": "Left-hand values approach $-1$ while right-hand values approach $3$, so the two-sided limit does not exist."
+            }
+        ],
+        "correct_option_id": "D",
+        "tolerance": 0,
+        "explanation": "From the left of $2$, $f(x)$ approaches $-1$ (e.g., $-1.001$). From the right of $2$, $f(x)$ approaches $3$ (e.g., $3.001$). Since the one-sided limits are unequal, $\\lim_{x\\to 2} f(x)$ does not exist.",
+        "micro_explanations": {
+            "A": "Averaging is invalid for limits.",
+            "B": "Only left-hand limit.",
+            "C": "Only right-hand limit.",
+            "D": "One-sided limits differ."
+        },
+        "recommendation_reasons": [
+            "Directly tests DNE using left vs right trends in a table.",
+            "Targets the common averaging mistake."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07",
+        "updated_at": "2026-02-07",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.4",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; table provided in KaTeX.",
+        "weight_primary": 0.75,
+        "weight_supporting": 0.25,
+        "title": "C4Q2_TableTwoSidedLimitDNE",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_ESTIMATE_LIMIT_FROM_TABLE",
+        "supporting_skill_ids": [
+            "SK_LIMIT_DNE_FROM_TABLE"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C4_Q3",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 110,
+        "skill_tags": [
+            {
+                "skill_id": "SK_INFINITE_LIMIT_FROM_TABLE",
+                "weight": 0.8
+            },
+            {
+                "skill_id": "SK_LIMIT_NOTATION_INFINITE",
+                "weight": 0.2
+            }
+        ],
+        "error_tags": [
+            "ERR_WRITE_DNE_INSTEAD_OF_INFINITY",
+            "ERR_SIGN_ERROR_INFINITY",
+            "ERR_ASSUME_ALWAYS_FINITE"
+        ],
+        "prompt": "Use the table to evaluate the limit.\n\n$$\n\\begin{array}{c|cccccc}\nx & -0.1 & -0.01 & -0.001 & 0.001 & 0.01 & 0.1\\\\ \\hline\nf(x) & 10 & 100 & 1000 & 1000 & 100 & 10\n\\end{array}\n$$\n\nFind $\\displaystyle \\lim_{x\\to 0} f(x)$.",
+        "latex": "$$\\begin{array}{c|cccccc}x & -0.1 & -0.01 & -0.001 & 0.001 & 0.01 & 0.1\\\\ \\hline f(x) & 10 & 100 & 1000 & 1000 & 100 & 10\\end{array}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$0$",
+                "explanation": "The values grow larger as $x$ gets closer to $0$, not smaller."
+            },
+            {
+                "id": "B",
+                "text": "$-\\infty$",
+                "explanation": "All listed function values are positive and increasing in magnitude near $0$, so the trend is not toward $-\\infty$."
+            },
+            {
+                "id": "C",
+                "text": "$\\infty$",
+                "explanation": "As $x$ approaches $0$ from both sides, $f(x)$ increases without bound, indicating an infinite limit of $\\infty$."
+            },
+            {
+                "id": "D",
+                "text": "The limit does not exist",
+                "explanation": "Here the function grows without bound in the same direction on both sides, so describing the limit as $\\infty$ is appropriate."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "When $x$ is closer to $0$ (e.g., $\\pm 0.001$), $f(x)$ is much larger (1000) than when $x$ is farther (e.g., $\\pm 0.1$ gives 10). The values increase without bound as $x\\to 0$, so $\\lim_{x\\to 0} f(x)=\\infty$.",
+        "micro_explanations": {
+            "A": "Opposite trend.",
+            "B": "Wrong sign.",
+            "C": "Unbounded growth both sides.",
+            "D": "Infinite limit is a valid description here."
+        },
+        "recommendation_reasons": [
+            "Reinforces recognizing infinite limits from numerical data.",
+            "Targets the DNE vs $\\infty$ misconception."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07",
+        "updated_at": "2026-02-07",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.4",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; table provided in KaTeX.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "C4Q3_TableInfiniteLimit",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_INFINITE_LIMIT_FROM_TABLE",
+        "supporting_skill_ids": [
+            "SK_LIMIT_NOTATION_INFINITE"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C4_Q4",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 100,
+        "skill_tags": [
+            {
+                "skill_id": "SK_ESTIMATE_LIMIT_FROM_TABLE",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "SK_AVERAGE_RATE_LIMIT",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "ERR_SUBSTITUTE_POINT_VALUE",
+            "ERR_MIX_UP_DIFFERENCE_QUOTIENT",
+            "ERR_USE_NEAREST_VALUE_ONLY"
+        ],
+        "prompt": "A function $f$ is defined near $x=2$. Use the table to estimate\n$$\\displaystyle \\lim_{x\\to 2}\\frac{f(x)-f(2)}{x-2}.$$\n\n$$\n\\begin{array}{c|cccccc}\nx & 1.9 & 1.99 & 1.999 & 2.001 & 2.01 & 2.1\\\\ \\hline\nf(x) & 4.61 & 4.9601 & 4.996001 & 5.004001 & 5.0401 & 5.41\n\\end{array}\n$$\n\nAssume $f(2)=5$.",
+        "latex": "$$\\lim_{x\\to 2}\\frac{f(x)-f(2)}{x-2}$$ with $f(2)=5$.",
+        "options": [
+            {
+                "id": "A",
+                "text": "$0$",
+                "explanation": "The quotient is not near $0$; the changes in $f(x)$ relative to changes in $x$ suggest a slope near $4$."
+            },
+            {
+                "id": "B",
+                "text": "$4$",
+                "explanation": "Using nearby values: for $x=2.001$, $(5.004001-5)/0.001\\approx 4.001$; for $x=1.999$, $(4.996001-5)/(-0.001)\\approx 3.999$."
+            },
+            {
+                "id": "C",
+                "text": "$5$",
+                "explanation": "$5$ is $f(2)$, but the expression is about the rate of change (slope), not the function value."
+            },
+            {
+                "id": "D",
+                "text": "The limit does not exist",
+                "explanation": "Left and right quotients both approach about $4$, indicating the limit exists."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "Compute the difference quotient near $2$. From the right: $(5.004001-5)/0.001\\approx 4.001$. From the left: $(4.996001-5)/(-0.001)\\approx 3.999$. Both sides approach $4$, so the limit is approximately $4$.",
+        "micro_explanations": {
+            "A": "Slope is not near $0$.",
+            "B": "Both sides approach $4$.",
+            "C": "Confuses value with slope.",
+            "D": "Trends show existence."
+        },
+        "recommendation_reasons": [
+            "Connects tabular estimation with the key limit form for instantaneous rate of change.",
+            "Trains correct setup using $f(2)$ and $(x-2)$."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07",
+        "updated_at": "2026-02-07",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.4",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; table provided in KaTeX. This stays within Chapter 1.4 by estimating a limit from a table.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "C4Q4_DifferenceQuotientFromTable",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_ESTIMATE_LIMIT_FROM_TABLE",
+        "supporting_skill_ids": [
+            "SK_AVERAGE_RATE_LIMIT"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C4_Q5",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": "Level5",
+        "target_time_seconds": 120,
+        "skill_tags": [
+            {
+                "skill_id": "SK_LIMIT_DNE_FROM_TABLE",
+                "weight": 0.6
+            },
+            {
+                "skill_id": "SK_ESTIMATE_LIMIT_FROM_TABLE",
+                "weight": 0.4
+            }
+        ],
+        "error_tags": [
+            "ERR_USE_NEAREST_VALUE_ONLY",
+            "ERR_ASSUME_PATTERN_CONTINUES_TO_LIMIT",
+            "ERR_IGNORE_OSCILLATION"
+        ],
+        "prompt": "Use the table to determine $\\displaystyle \\lim_{x\\to 0} f(x)$.\n\n$$\n\\begin{array}{c|cccccc}\nx & -0.1 & -0.01 & -0.001 & 0.001 & 0.01 & 0.1\\\\ \\hline\nf(x) & 1 & -1 & 1 & -1 & 1 & -1\n\\end{array}\n$$",
+        "latex": "$$\\begin{array}{c|cccccc}x & -0.1 & -0.01 & -0.001 & 0.001 & 0.01 & 0.1\\\\ \\hline f(x) & 1 & -1 & 1 & -1 & 1 & -1\\end{array}$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$0$",
+                "explanation": "Averaging the two values is not justified; the function values do not trend toward $0$."
+            },
+            {
+                "id": "B",
+                "text": "$1$",
+                "explanation": "Values near $0$ are sometimes $1$ and sometimes $-1$; there is no single value approached."
+            },
+            {
+                "id": "C",
+                "text": "$-1$",
+                "explanation": "Values near $0$ are sometimes $-1$ and sometimes $1$; there is no single value approached."
+            },
+            {
+                "id": "D",
+                "text": "The limit does not exist",
+                "explanation": "The function values oscillate between $1$ and $-1$ near $0$, so they do not approach a single number."
+            }
+        ],
+        "correct_option_id": "D",
+        "tolerance": 0,
+        "explanation": "As $x$ gets closer to $0$, the outputs keep switching between $1$ and $-1$. Since the values do not settle on a single number, $\\lim_{x\\to 0} f(x)$ does not exist.",
+        "micro_explanations": {
+            "A": "Averaging is not a limit rule.",
+            "B": "Not consistently approaching $1$.",
+            "C": "Not consistently approaching $-1$.",
+            "D": "Oscillation prevents a limit."
+        },
+        "recommendation_reasons": [
+            "Tests a high-frequency misconception: 'nearby values' can alternate and still fail to have a limit.",
+            "Builds recognition of oscillation as a DNE pattern."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07",
+        "updated_at": "2026-02-07",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 4,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "1.4",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; table provided in KaTeX. Designed as a discrimination item (Level5).",
+        "weight_primary": 0.6,
+        "weight_supporting": 0.4,
+        "title": "C4Q5_TableOscillationDNE",
+        "prompt_type": "text",
+        "primary_skill_id": "SK_LIMIT_DNE_FROM_TABLE",
+        "supporting_skill_ids": [
+            "SK_ESTIMATE_LIMIT_FROM_TABLE"
+        ]
+    }
+]

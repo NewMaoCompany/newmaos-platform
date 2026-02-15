@@ -21,30 +21,42 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     cancelText = "Cancel",
     isDestructive = false
 }) => {
-    // Prevent scrolling when modal is open
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [isOpen]);
+    const [isClosing, setIsClosing] = React.useState(false);
+    const [render, setRender] = React.useState(false);
 
-    if (!isOpen) return null;
+    // Sync render state with isOpen
+    React.useEffect(() => {
+        if (isOpen) {
+            setRender(true);
+            setIsClosing(false);
+            document.body.style.overflow = 'hidden';
+        } else if (render) {
+            setIsClosing(true);
+            const timer = setTimeout(() => {
+                setRender(false);
+                setIsClosing(false);
+                document.body.style.overflow = 'unset';
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen, render]);
+
+    if (!render) return null;
+
+    const handleCancel = () => {
+        onCancel();
+    };
 
     return (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 ${isClosing ? 'pointer-events-none' : ''}`}>
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
-                onClick={onCancel}
+                className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-all duration-300 ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}`}
+                onClick={handleCancel}
             />
 
             {/* Modal */}
-            <div className="relative bg-white dark:bg-[#2c2c2e] rounded-2xl shadow-2xl max-w-sm w-full p-6 animate-fade-in-up border border-gray-100 dark:border-gray-700">
+            <div className={`relative bg-white dark:bg-[#2c2c2e] rounded-2xl shadow-2xl max-w-sm w-full p-6 transition-all duration-300 border border-gray-100 dark:border-gray-700 ${isClosing ? 'animate-modal-out' : 'animate-modal-in'}`}>
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${isDestructive ? 'bg-red-50 text-red-500' : 'bg-primary/10 text-primary'}`}>
                     <span className="material-symbols-outlined text-2xl">
                         {isDestructive ? 'warning' : 'info'}
@@ -69,8 +81,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     <button
                         onClick={onConfirm}
                         className={`flex-1 px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-gray-200 dark:shadow-none transition-transform active:scale-95 ${isDestructive
-                                ? 'bg-red-500 hover:bg-red-600 text-white shadow-red-200'
-                                : 'bg-primary hover:bg-primary-dark text-black shadow-yellow-200'
+                            ? 'bg-red-500 hover:bg-red-600 text-white shadow-red-200'
+                            : 'bg-primary hover:bg-primary-dark text-black shadow-yellow-200'
                             }`}
                     >
                         {confirmText}

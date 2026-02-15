@@ -1,0 +1,729 @@
+[
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 75,
+        "skill_tags": [
+            "AverageRateOfChange",
+            "SecantSlope",
+            "DifferenceQuotient"
+        ],
+        "error_tags": [
+            "UsingPointInsteadOfInterval",
+            "SlopeSignConfusion",
+            "UnitsMismatch"
+        ],
+        "prompt_type": "text",
+        "prompt": "A particle’s position is given by $s(t)=t^2+2t$ (meters), where $t$ is in seconds. What is the average velocity on the interval $[1,3]$?",
+        "latex": "s(t)=t^2+2t,\\ \\text{Average velocity on }[1,3]=\\frac{s(3)-s(1)}{3-1}",
+        "options": [
+            {
+                "id": "A",
+                "text": "$6\\ \\text{m/s}$"
+            },
+            {
+                "id": "B",
+                "text": "$4\\ \\text{m/s}$"
+            },
+            {
+                "id": "C",
+                "text": "$8\\ \\text{m/s}$"
+            },
+            {
+                "id": "D",
+                "text": "$10\\ \\text{m/s}$"
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": null,
+        "explanation": "Average velocity on $[1,3]$ is the slope of the secant line: $$\\frac{s(3)-s(1)}{3-1}=\\frac{(9+6)-(1+2)}{2}=\\frac{15-3}{2}=6.$$",
+        "micro_explanations": {
+            "A": "Correct: secant slope over $[1,3]$ is $6$.",
+            "B": "This can happen if you mistakenly compute $s(3)-s(1)$ as $8$ or divide by the wrong interval length.",
+            "C": "This can happen if you use $\\frac{s(3)}{3}$ or a point-slope confusion instead of a difference quotient.",
+            "D": "This can happen if you divide by $1$ (forgetting $3-1=2$)."
+        },
+        "recommendation_reasons": [
+            "Core Chapter 1.1 skill: average rate of change as secant slope",
+            "Builds correct difference-quotient setup"
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Procedural",
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_1.1",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; purely symbolic average rate-of-change computation.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C1.1_AverageVelocity_SecantSlope",
+        "primary_skill_id": "SKL_AverageRateOfChange",
+        "supporting_skill_ids": [
+            "SKL_DifferenceQuotient"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 90,
+        "skill_tags": [
+            "DifferenceQuotient",
+            "InstantaneousRateIdea",
+            "LimitConcept"
+        ],
+        "error_tags": [
+            "PluggingHInsteadOfLimiting",
+            "DistributingErrors",
+            "SignErrorInSubstitution"
+        ],
+        "prompt_type": "text",
+        "prompt": "Let $f(x)=3x^2-5x$. Which expression represents the slope of the tangent line to $y=f(x)$ at $x=2$ using the definition of derivative?",
+        "latex": "\\text{Slope at }x=2=\\lim_{h\\to 0}\\frac{f(2+h)-f(2)}{h}",
+        "options": [
+            {
+                "id": "A",
+                "text": "$\\displaystyle \\lim_{h\\to 0}\\frac{f(2)-f(2-h)}{h}$"
+            },
+            {
+                "id": "B",
+                "text": "$\\displaystyle \\lim_{h\\to 0}\\frac{f(h)-f(2)}{h-2}$"
+            },
+            {
+                "id": "C",
+                "text": "$\\displaystyle \\lim_{h\\to 0}\\frac{f(2+h)-f(2)}{h}$"
+            },
+            {
+                "id": "D",
+                "text": "$\\displaystyle \\lim_{x\\to 0}\\frac{f(2)-f(x)}{2-x}$"
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": null,
+        "explanation": "By definition, the slope of the tangent at $x=2$ is $$\\lim_{h\\to 0}\\frac{f(2+h)-f(2)}{h}.$$ This is the limit of secant slopes as the interval shrinks to zero.",
+        "micro_explanations": {
+            "A": "This equals $\\lim_{h\\to 0}\\frac{f(2)-f(2-h)}{h}$ which is not the standard form; it also introduces a sign issue unless rewritten carefully.",
+            "B": "This is not anchored at $x=2$ correctly; it mixes $h$ as an $x$-value rather than an increment.",
+            "C": "Correct: increment form at $x=2$.",
+            "D": "This can be correct if written as $\\lim_{x\\to 2}\\frac{f(x)-f(2)}{x-2}$, but the given form has mismatched limit variable ($x\\to 0$)."
+        },
+        "recommendation_reasons": [
+            "Core Chapter 1.1: instantaneous rate as limit of secant slopes",
+            "Focuses on correct limit setup rather than computation"
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Conceptual",
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_1.1",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; checks correct derivative-as-limit expression.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "U1C1.1_TangentSlope_DefinitionForm",
+        "primary_skill_id": "SKL_DifferenceQuotient",
+        "supporting_skill_ids": [
+            "SKL_LimitConcept"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 120,
+        "skill_tags": [
+            "DifferenceQuotient",
+            "AlgebraSimplification",
+            "InstantaneousRateIdea"
+        ],
+        "error_tags": [
+            "FactoringMistake",
+            "CancelingNoncommonFactors",
+            "SignErrorInExpansion"
+        ],
+        "prompt_type": "text",
+        "prompt": "Compute the instantaneous rate of change of $g(x)=\\sqrt{x}$ at $x=9$ using the limit definition $$g'(9)=\\lim_{h\\to 0}\\frac{\\sqrt{9+h}-3}{h}.$$",
+        "latex": "g'(9)=\\lim_{h\\to 0}\\frac{\\sqrt{9+h}-3}{h}",
+        "options": [
+            {
+                "id": "A",
+                "text": "$\\displaystyle \\frac{1}{3}$"
+            },
+            {
+                "id": "B",
+                "text": "$\\displaystyle \\frac{1}{6}$"
+            },
+            {
+                "id": "C",
+                "text": "$\\displaystyle \\frac{1}{9}$"
+            },
+            {
+                "id": "D",
+                "text": "$\\displaystyle \\frac{1}{18}$"
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "Rationalize: $$\\frac{\\sqrt{9+h}-3}{h}\\cdot\\frac{\\sqrt{9+h}+3}{\\sqrt{9+h}+3}=\\frac{(9+h)-9}{h(\\sqrt{9+h}+3)}=\\frac{1}{\\sqrt{9+h}+3}.$$ Taking $h\\to 0$ gives $\\frac{1}{3+3}=\\frac{1}{6}.$",
+        "micro_explanations": {
+            "A": "This can happen if you incorrectly cancel $h$ without rationalizing fully.",
+            "B": "Correct: rationalization leads to $\\frac{1}{\\sqrt{9+h}+3}\\to \\frac{1}{6}$.",
+            "C": "This can happen if you substitute $h=0$ too early and treat the expression as $\\frac{\\sqrt{9}-3}{h}$.",
+            "D": "This can happen if you mistakenly get $\\sqrt{9+h}+3\\to 9+3=12$."
+        },
+        "recommendation_reasons": [
+            "Chapter 1.1: concrete computation from instantaneous-rate limit form",
+            "Requires correct conjugate technique"
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Algebraic",
+        "mastery_weight": 1.2,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_1.1",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; emphasizes conjugate/rationalization within limit definition context.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C1.1_InstantRate_Sqrt_Rationalize",
+        "primary_skill_id": "SKL_AlgebraicManipulation",
+        "supporting_skill_ids": [
+            "SKL_DifferenceQuotient"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level1",
+        "target_time_seconds": 60,
+        "skill_tags": [
+            "AverageRateOfChange",
+            "UnitsInterpretation"
+        ],
+        "error_tags": [
+            "UnitsMismatch",
+            "UsingPointInsteadOfInterval",
+            "SlopeSignConfusion"
+        ],
+        "prompt_type": "text",
+        "prompt": "A car’s distance from home (in miles) after $t$ hours is $D(t)$. Which quantity best represents the average speed of the car from $t=2$ to $t=5$?",
+        "latex": "\\text{Average speed on }[2,5]=\\frac{D(5)-D(2)}{5-2}",
+        "options": [
+            {
+                "id": "A",
+                "text": "$D(5)-D(2)$"
+            },
+            {
+                "id": "B",
+                "text": "$\\displaystyle \\frac{D(5)-D(2)}{5-2}$"
+            },
+            {
+                "id": "C",
+                "text": "$\\displaystyle \\frac{D(5)}{5}$"
+            },
+            {
+                "id": "D",
+                "text": "$D'(2)$"
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "Average speed over an interval is change in distance divided by change in time: $$\\frac{D(5)-D(2)}{5-2}.$$ The units are miles per hour.",
+        "micro_explanations": {
+            "A": "This is total change in distance, not per hour.",
+            "B": "Correct: secant slope (miles per hour).",
+            "C": "This averages from $0$ to $5$, not from $2$ to $5$.",
+            "D": "This is an instantaneous rate at $t=2$, not an average over $[2,5]$."
+        },
+        "recommendation_reasons": [
+            "Chapter 1.1: interprets average rate as slope and correct units",
+            "Targets common confusion between average and instantaneous"
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Conceptual",
+        "mastery_weight": 0.8,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_1.1",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; language-based interpretation of average rate.",
+        "weight_primary": 0.9,
+        "weight_supporting": 0.1,
+        "title": "U1C1.1_AverageSpeed_Interpretation",
+        "primary_skill_id": "SKL_AverageRateOfChange",
+        "supporting_skill_ids": [
+            "SKL_UnitsInterpretation"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level5",
+        "target_time_seconds": 135,
+        "skill_tags": [
+            "DifferenceQuotient",
+            "AlgebraSimplification",
+            "LimitConcept"
+        ],
+        "error_tags": [
+            "CancelingNoncommonFactors",
+            "FactoringMistake",
+            "PluggingHInsteadOfLimiting"
+        ],
+        "prompt_type": "text",
+        "prompt": "Let $p(x)=x^3$. Evaluate $$\\lim_{h\\to 0}\\frac{p(2+h)-p(2)}{h}.$$",
+        "latex": "\\lim_{h\\to 0}\\frac{(2+h)^3-8}{h}",
+        "options": [
+            {
+                "id": "A",
+                "text": "$12$"
+            },
+            {
+                "id": "B",
+                "text": "$6$"
+            },
+            {
+                "id": "C",
+                "text": "$8$"
+            },
+            {
+                "id": "D",
+                "text": "$4$"
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": null,
+        "explanation": "Expand: $(2+h)^3=8+12h+6h^2+h^3$. Then $$\\frac{(2+h)^3-8}{h}=\\frac{12h+6h^2+h^3}{h}=12+6h+h^2.$$ Taking $h\\to 0$ gives $12$.",
+        "micro_explanations": {
+            "A": "Correct: difference quotient limit equals $12$.",
+            "B": "This can happen if you drop the $6h^2+h^3$ terms too early and then incorrectly simplify.",
+            "C": "This can happen if you confuse $p(2)=8$ with the limit value.",
+            "D": "This can happen if you only keep the linear term as $4h$ due to an expansion mistake."
+        },
+        "recommendation_reasons": [
+            "Chapter 1.1: connects secant-slope limit to a concrete value",
+            "Checks careful algebra in difference quotient"
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Algebraic",
+        "mastery_weight": 1.3,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_1.1",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; purely symbolic limit of a difference quotient.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C1.1_DifferenceQuotient_CubicAt2",
+        "primary_skill_id": "SKL_DifferenceQuotient",
+        "supporting_skill_ids": [
+            "SKL_AlgebraicManipulation"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 75,
+        "skill_tags": [
+            "LimitNotation",
+            "LimitConcept"
+        ],
+        "error_tags": [
+            "ConfusingFunctionValueWithLimit",
+            "LeftRightMixUp",
+            "AssumingLimitExists"
+        ],
+        "prompt_type": "text",
+        "prompt": "Suppose $\\lim_{x\\to 4} f(x)=7$. Which statement must be true?",
+        "latex": "\\lim_{x\\to 4}f(x)=7",
+        "options": [
+            {
+                "id": "A",
+                "text": "$f(4)=7$"
+            },
+            {
+                "id": "B",
+                "text": "$f(x)=7$ for all $x$ near $4$"
+            },
+            {
+                "id": "C",
+                "text": "For values of $x$ close to $4$ (but not necessarily equal to $4$), $f(x)$ can be made arbitrarily close to $7$."
+            },
+            {
+                "id": "D",
+                "text": "$\\lim_{x\\to 7} f(x)=4$"
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": null,
+        "explanation": "The meaning of $\\lim_{x\\to 4} f(x)=7$ is that as $x$ approaches $4$, the outputs $f(x)$ approach $7$; this does not force $f(4)$ to equal $7$ or $f$ to be constant near $4$.",
+        "micro_explanations": {
+            "A": "Not required: the limit can exist even if $f(4)$ is different or undefined.",
+            "B": "Not required: $f(x)$ can vary and still approach $7$ as $x\\to 4$.",
+            "C": "Correct: this is the core interpretation of a limit.",
+            "D": "Unrelated reversal; not implied by the given limit statement."
+        },
+        "recommendation_reasons": [
+            "Chapter 1.2: interprets limit notation precisely",
+            "Targets the common confusion between limit value and function value"
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Conceptual",
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_1.2",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; focuses on correct interpretation of limit notation.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "U1C1.2_LimitNotation_Interpretation",
+        "primary_skill_id": "SKL_LimitNotation",
+        "supporting_skill_ids": [
+            "SKL_LimitConcept"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 90,
+        "skill_tags": [
+            "OneSidedLimits",
+            "LimitExistence"
+        ],
+        "error_tags": [
+            "LeftRightMixUp",
+            "AssumingLimitExists",
+            "ConfusingFunctionValueWithLimit"
+        ],
+        "prompt_type": "text",
+        "prompt": "For $x\\ne 1$, define $$f(x)=\\frac{|x-1|}{x-1}.$$ Which statement is correct?",
+        "latex": "f(x)=\\frac{|x-1|}{x-1},\\ x\\ne 1",
+        "options": [
+            {
+                "id": "A",
+                "text": "$\\displaystyle \\lim_{x\\to 1} f(x)=1$"
+            },
+            {
+                "id": "B",
+                "text": "$\\displaystyle \\lim_{x\\to 1} f(x)=-1$"
+            },
+            {
+                "id": "C",
+                "text": "$\\displaystyle \\lim_{x\\to 1^-} f(x)=-1$ and $\\displaystyle \\lim_{x\\to 1^+} f(x)=1$"
+            },
+            {
+                "id": "D",
+                "text": "$f(1)=0$"
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "For $x>1$, $|x-1|=x-1$ so $f(x)=1$. For $x<1$, $|x-1|=-(x-1)$ so $f(x)=-1$. Thus $$\\lim_{x\\to 1^-}f(x)=-1,\\quad \\lim_{x\\to 1^+}f(x)=1,$$ so the two-sided limit does not exist.",
+        "micro_explanations": {
+            "A": "Two-sided limit does not exist because left and right limits differ.",
+            "B": "Incorrect: the two-sided limit does not equal $-1$; only the left-hand limit is $-1$.",
+            "C": "Correct: left-hand is $-1$, right-hand is $1$.",
+            "D": "$f(1)$ is not defined by the given definition ($x\\ne 1$)."
+        },
+        "recommendation_reasons": [
+            "Chapter 1.2: distinguishes one-sided vs two-sided limits",
+            "Classic absolute-value sign analysis"
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Conceptual",
+        "mastery_weight": 1.1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_1.2",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; sign analysis for one-sided limits.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C1.2_OneSidedLimits_AbsRatio",
+        "primary_skill_id": "SKL_OneSidedLimits",
+        "supporting_skill_ids": [
+            "SKL_LimitExistence"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 105,
+        "skill_tags": [
+            "LimitNotation",
+            "LimitLaws",
+            "DirectSubstitution"
+        ],
+        "error_tags": [
+            "DomainRestrictionIgnored",
+            "ConfusingFunctionValueWithLimit",
+            "ArithmeticSlip"
+        ],
+        "prompt_type": "text",
+        "prompt": "If $\\lim_{x\\to 2} (f(x)-3)=5$, what is $\\lim_{x\\to 2} f(x)$?",
+        "latex": "\\lim_{x\\to 2}(f(x)-3)=5",
+        "options": [
+            {
+                "id": "A",
+                "text": "$2$"
+            },
+            {
+                "id": "B",
+                "text": "$8$"
+            },
+            {
+                "id": "C",
+                "text": "$5$"
+            },
+            {
+                "id": "D",
+                "text": "$-8$"
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "Use limit laws: $$\\lim_{x\\to 2}(f(x)-3)=\\lim_{x\\to 2}f(x)-3=5,$$ so $\\lim_{x\\to 2}f(x)=8$.",
+        "micro_explanations": {
+            "A": "This can happen if you subtract instead of add back the $3$.",
+            "B": "Correct: add $3$ to both sides of the limit equation.",
+            "C": "This is the given limit value of $f(x)-3$, not of $f(x)$.",
+            "D": "This can happen from sign mistakes (treating $-3$ incorrectly)."
+        },
+        "recommendation_reasons": [
+            "Chapter 1.2: fluent translation between limit statements using laws",
+            "Targets a common algebra/sign slip"
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Procedural",
+        "mastery_weight": 1.1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_1.2",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; pure limit-law manipulation.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C1.2_LimitLaws_ShiftByConstant",
+        "primary_skill_id": "SKL_LimitLaws",
+        "supporting_skill_ids": [
+            "SKL_LimitNotation"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level1",
+        "target_time_seconds": 60,
+        "skill_tags": [
+            "LimitNotation",
+            "OneSidedLimits"
+        ],
+        "error_tags": [
+            "LeftRightMixUp",
+            "AssumingLimitExists",
+            "ConfusingArrowDirection"
+        ],
+        "prompt_type": "text",
+        "prompt": "Which notation correctly describes “the left-hand limit of $f(x)$ as $x$ approaches $5$”?",
+        "latex": "\\text{Left-hand limit at }x=5",
+        "options": [
+            {
+                "id": "A",
+                "text": "$\\displaystyle \\lim_{x\\to 5^+} f(x)$"
+            },
+            {
+                "id": "B",
+                "text": "$\\displaystyle \\lim_{x\\to 5^-} f(x)$"
+            },
+            {
+                "id": "C",
+                "text": "$\\displaystyle \\lim_{x\\to 5} f(5)$"
+            },
+            {
+                "id": "D",
+                "text": "$\\displaystyle \\lim_{f(x)\\to 5^-} x$"
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "Approaching from the left uses $5^-$, so the left-hand limit is $$\\lim_{x\\to 5^-} f(x).$$",
+        "micro_explanations": {
+            "A": "$5^+$ is the right-hand limit, not left-hand.",
+            "B": "Correct: $x\\to 5^-$ means values less than $5$ approaching $5$.",
+            "C": "This incorrectly treats $f(5)$ as varying and misuses limit notation.",
+            "D": "This reverses the roles of input and output and is not standard for one-sided limits."
+        },
+        "recommendation_reasons": [
+            "Chapter 1.2: precise limit notation fluency",
+            "Quick check for left/right symbol accuracy"
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Recall",
+        "mastery_weight": 0.7,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_1.2",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; notation recognition.",
+        "weight_primary": 0.9,
+        "weight_supporting": 0.1,
+        "title": "U1C1.2_Notation_LeftHandLimit",
+        "primary_skill_id": "SKL_LimitNotation",
+        "supporting_skill_ids": [
+            "SKL_OneSidedLimits"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "Unit1_1.2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level5",
+        "target_time_seconds": 120,
+        "skill_tags": [
+            "LimitExistence",
+            "OneSidedLimits",
+            "PiecewiseAnalysis"
+        ],
+        "error_tags": [
+            "LeftRightMixUp",
+            "AssumingLimitExists",
+            "ConfusingFunctionValueWithLimit"
+        ],
+        "prompt_type": "text",
+        "prompt": "Define $$f(x)=\\begin{cases}2x+1,& x<0\\\\ x^2,& x\\ge 0\\end{cases}$$ What is $\\lim_{x\\to 0} f(x)$?",
+        "latex": "f(x)=\\begin{cases}2x+1,& x<0\\\\ x^2,& x\\ge 0\\end{cases}",
+        "options": [
+            {
+                "id": "A",
+                "text": "$0$"
+            },
+            {
+                "id": "B",
+                "text": "$1$"
+            },
+            {
+                "id": "C",
+                "text": "Does not exist"
+            },
+            {
+                "id": "D",
+                "text": "$2$"
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": null,
+        "explanation": "Compute one-sided limits: for $x\\to 0^-$, $f(x)=2x+1\\to 1$. For $x\\to 0^+$, $f(x)=x^2\\to 0$. Since $1\\ne 0$, the two-sided limit does not exist.",
+        "micro_explanations": {
+            "A": "This is the right-hand limit ($x\\to 0^+$), not the two-sided limit.",
+            "B": "This is the left-hand limit ($x\\to 0^-$), not the two-sided limit.",
+            "C": "Correct: unequal one-sided limits imply the two-sided limit does not exist.",
+            "D": "This can happen if you mistakenly substitute $x=1$ or confuse expressions across branches."
+        },
+        "recommendation_reasons": [
+            "Chapter 1.2: tests existence via matching one-sided limits",
+            "High-value piecewise limit skill for AP-style questions"
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "Conceptual",
+        "mastery_weight": 1.3,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_1.2",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image needed; piecewise one-sided limit comparison.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "U1C1.2_LimitExistence_PiecewiseAt0",
+        "primary_skill_id": "SKL_LimitExistence",
+        "supporting_skill_ids": [
+            "SKL_PiecewiseAnalysis",
+            "SKL_OneSidedLimits"
+        ]
+    }
+]

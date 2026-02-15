@@ -10,7 +10,7 @@ router.get('/mastery', authMiddleware, async (req: Request, res: Response): Prom
         const userId = req.user!.id;
 
         const { data, error } = await supabaseAdmin
-            .from('topic_mastery')
+            .from('unit_mastery')
             .select('*')
             .eq('user_id', userId);
 

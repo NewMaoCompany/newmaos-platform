@@ -1,0 +1,913 @@
+[
+  {
+    "id": "439358d2-4501-4999-b077-fa52a56b0ba5",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.10",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "alternating_series_error_bound",
+      "alternating_series_test"
+    ],
+    "error_tags": [
+      "alt_error_bound_misapplied",
+      "next_term_not_used_for_error"
+    ],
+    "prompt": "Refer to Table 10.10-A. For which listed $N$ is the guaranteed error bound less than $0.01$?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "$N=2$ only"
+      },
+      {
+        "id": "B",
+        "value": "$N=4$ and $N=6$ only"
+      },
+      {
+        "id": "C",
+        "value": "$N=6$ and $N=8$ only"
+      },
+      {
+        "id": "D",
+        "value": "All listed $N$ values"
+      }
+    ],
+    "correct_option_id": "D",
+    "tolerance": null,
+    "explanation": "Each listed value shows |$a_{N+1}$| (the error $bound$). In the table, all listed bounds are below 0.01, so each listed $N$ guarantees error less than 0.01.",
+    "micro_explanations": {
+      "A": "Incorrect. Check if you used the Next Term for alternating series or the Lagrange formula for general Taylor series error.",
+      "B": "Incorrect. Check if you used the Next Term for alternating series or the Lagrange formula for general Taylor series error.",
+      "C": "Incorrect. Check if you used the Next Term for alternating series or the Lagrange formula for general Taylor series error.",
+      "D": "Correct. Error bounds provide a maximum possible difference between a function and its series approximation."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "table",
+    "topic_id": "BC_Series",
+    "section_id": "10.10",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.10_Practice_Table1_ErrorBounds.png",
+    "weight_primary": 0.7,
+    "weight_supporting": 0.3,
+    "title": "U10.10-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "alternating_series_error_bound",
+    "supporting_skill_ids": [
+      "alternating_series_test"
+    ]
+  },
+  {
+    "id": "b32ee741-8962-4d97-8364-9570478428af",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.11",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "taylor_approximation_eval",
+      "taylor_polynomial_approximation"
+    ],
+    "error_tags": [
+      "center_mismatch",
+      "overgeneralizing_accuracy"
+    ],
+    "prompt": "Refer to Table 10.11-A, where $T_2(x) = 1 + x + \\frac{x^2}{2}$ approximates $e^x$. Which statement is best supported by the table?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "The approximation is most accurate when $x$ is closest to 0."
+      },
+      {
+        "id": "B",
+        "value": "The approximation is equally accurate for all shown $x$ values."
+      },
+      {
+        "id": "C",
+        "value": "The approximation always overestimates $e^x$."
+      },
+      {
+        "id": "D",
+        "value": "The approximation becomes more accurate as |$x$| increases."
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "A Maclaurin polynomial is centered at 0, so accuracy is typically best near $x=0$. The table\u2019s smallest errors occur for the smallest |$x$| values.",
+    "micro_explanations": {
+      "A": "Correct. Taylor polynomials approximate functions near a point by matching derivatives at that point.",
+      "B": "Incorrect. Ensure the derivatives and the (x-c)^n terms are correctly calculated for the Taylor expansion.",
+      "C": "Incorrect. Ensure the derivatives and the (x-c)^n terms are correctly calculated for the Taylor expansion.",
+      "D": "Incorrect. Ensure the derivatives and the (x-c)^n terms are correctly calculated for the Taylor expansion."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "table",
+    "topic_id": "BC_Series",
+    "section_id": "10.11",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.11_Practice_Table1_TaylorApprox.png",
+    "weight_primary": 0.7,
+    "weight_supporting": 0.3,
+    "title": "U10.11-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "taylor_polynomial_approximation",
+    "supporting_skill_ids": [
+      "taylor_approximation_eval"
+    ]
+  },
+  {
+    "id": "6f60db4b-bc51-44d4-bab8-af2ff6706945",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.12",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "lagrange_error_bound",
+      "interpret_error_bound_direction"
+    ],
+    "error_tags": [
+      "lagrange_bound_max_derivative_misidentified",
+      "power_factor_error"
+    ],
+    "prompt": "Refer to Table 10.12-A, which lists bounds for using $T_2$ at $0$ to approximate $e^x$. Which statement is correct?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "The bound depends on |$x|^2$ because the polynomial degree is 2."
+      },
+      {
+        "id": "B",
+        "value": "For $x>0$, a valid choice is $M=e^x$ on $[0,x]$."
+      },
+      {
+        "id": "C",
+        "value": "For $x<0$, M must be $e^x$ because that is always largest."
+      },
+      {
+        "id": "D",
+        "value": "The bound is exact, so it equals the true error."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "For degree 2, the remainder uses the 3rd derivative and |$x|^\\frac{3}{3}$!. For $e^x$ on $[0,x]$ with $x>0$, the maximum occurs at the right endpoint, so $M=e^x$ is valid.",
+    "micro_explanations": {
+      "A": "Incorrect. Check if you used the Next Term for alternating series or the Lagrange formula for general Taylor series error.",
+      "B": "Correct. Error bounds provide a maximum possible difference between a function and its series approximation.",
+      "C": "Incorrect. Check if you used the Next Term for alternating series or the Lagrange formula for general Taylor series error.",
+      "D": "Incorrect. Check if you used the Next Term for alternating series or the Lagrange formula for general Taylor series error."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "table",
+    "topic_id": "BC_Series",
+    "section_id": "10.12",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.12_Practice_Table1_LagrangeBound.png",
+    "weight_primary": 0.7,
+    "weight_supporting": 0.3,
+    "title": "U10.12-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "lagrange_error_bound",
+    "supporting_skill_ids": [
+      "interpret_error_bound_direction"
+    ]
+  },
+  {
+    "id": "c20eecb5-45a2-4fe9-846d-8475d78b2582",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.13",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "interval_notation_interpretation",
+      "power_series_radius_interval",
+      "radius_interval_convergence"
+    ],
+    "error_tags": [
+      "interval_notation_error",
+      "endpoint_open_closed_confusion"
+    ],
+    "prompt": "Refer to Figure 10.13-A. Which interval is shown?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "($0$, $2$)"
+      },
+      {
+        "id": "B",
+        "value": "$[0$, $2$)"
+      },
+      {
+        "id": "C",
+        "value": "($0$, $2]$"
+      },
+      {
+        "id": "D",
+        "value": "$[0$, $2]$"
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "The left endpoint at 0 is closed $(()$ and the right endpoint at 2 is open $(()$, so the interval is $[0,2$).",
+    "micro_explanations": {
+      "A": "Incorrect. This option contains an error in series testing, expansion, or interval determination.",
+      "B": "Correct. This option follows the mathematical principles of sequences and series convergence and representation.",
+      "C": "Incorrect. This option contains an error in series testing, expansion, or interval determination.",
+      "D": "Incorrect. This option contains an error in series testing, expansion, or interval determination."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "graph",
+    "topic_id": "BC_Series",
+    "section_id": "10.13",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.13_Practice_Image1_Interval.png",
+    "weight_primary": 0.6,
+    "weight_supporting": 0.4,
+    "title": "U10.13-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "radius_interval_convergence",
+    "supporting_skill_ids": [
+      "interval_notation_interpretation",
+      "power_series_radius_interval"
+    ]
+  },
+  {
+    "id": "2812d7e8-6aa7-492d-8c60-d4ef49f2f8c6",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.14",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 4,
+    "target_time_seconds": 210,
+    "skill_tags": [
+      "identify_series_from_coefficients",
+      "maclaurin_series_known",
+      "power_series_functions"
+    ],
+    "error_tags": [
+      "sign_error_series",
+      "pattern_misread"
+    ],
+    "prompt": "Refer to Table 10.14-A. The shown coefficients match the beginning of which series?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "$\\ln(1+x) = x - \\frac{x^2}{2} + \\frac{x^3}{3} - \\dots$"
+      },
+      {
+        "id": "B",
+        "value": "$\\frac{1}{1-x} = 1 + x + x^2 + \\dots$"
+      },
+      {
+        "id": "C",
+        "value": "$e^x = 1 + x + \\frac{x^2}{2} + \\dots$"
+      },
+      {
+        "id": "D",
+        "value": "$\\sin x = x - \\frac{x^3}{6} + \\frac{x^5}{120} - \\dots$"
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "The coefficients $1,-\\frac{1}{2},\\frac{1}{3},-\\frac{1}{4},\\\\dots$ for powers $x,x^2,x^3,x^4,\\\\dots$ match the Maclaurin series for $\\ln(1+x)$.",
+    "micro_explanations": {
+      "A": "Correct. Taylor polynomials approximate functions near a point by matching derivatives at that point.",
+      "B": "Incorrect. Ensure the derivatives and the (x-c)^n terms are correctly calculated for the Taylor expansion.",
+      "C": "Incorrect. Ensure the derivatives and the (x-c)^n terms are correctly calculated for the Taylor expansion.",
+      "D": "Incorrect. Ensure the derivatives and the (x-c)^n terms are correctly calculated for the Taylor expansion."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "table",
+    "topic_id": "BC_Series",
+    "section_id": "10.14",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.14_Practice_Table1_Coefficients.png",
+    "weight_primary": 0.6,
+    "weight_supporting": 0.4,
+    "title": "U10.14-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "power_series_functions",
+    "supporting_skill_ids": [
+      "identify_series_from_coefficients",
+      "maclaurin_series_known"
+    ]
+  },
+  {
+    "id": "01dd4c84-50c9-4445-a2c1-4018ab0a24d7",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.15",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 4,
+    "target_time_seconds": 210,
+    "skill_tags": [
+      "identify_series_from_coefficients",
+      "known_series_transform",
+      "taylor_series_common_functions"
+    ],
+    "error_tags": [
+      "pattern_misread",
+      "index_shift_error"
+    ],
+    "prompt": "Refer to Table 10.15-A. Which function could produce $A(x) = 1 + 2x + 4x^2 + 8x^3 + \\dots$?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "$\\frac{1}{1-2x}$"
+      },
+      {
+        "id": "B",
+        "value": "$\\frac{1}{1-x}$"
+      },
+      {
+        "id": "C",
+        "value": "$\\ln(1+x)$"
+      },
+      {
+        "id": "D",
+        "value": "$e^x$"
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "The coefficients match $\\sum (2x)^n=1+2x+4x^2+8x^3+\\cdots$, which equals $\\frac{1}{1-2x}$.",
+    "micro_explanations": {
+      "A": "Correct. Taylor polynomials approximate functions near a point by matching derivatives at that point.",
+      "B": "Incorrect. Ensure the derivatives and the (x-c)^n terms are correctly calculated for the Taylor expansion.",
+      "C": "Incorrect. Ensure the derivatives and the (x-c)^n terms are correctly calculated for the Taylor expansion.",
+      "D": "Incorrect. Ensure the derivatives and the (x-c)^n terms are correctly calculated for the Taylor expansion."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "table",
+    "topic_id": "BC_Series",
+    "section_id": "10.15",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.15_Practice_Table1_SeriesForms.png",
+    "weight_primary": 0.6,
+    "weight_supporting": 0.4,
+    "title": "U10.15-P2",
+    "prompt_type": "text",
+    "primary_skill_id": "taylor_series_common_functions",
+    "supporting_skill_ids": [
+      "identify_series_from_coefficients",
+      "known_series_transform"
+    ]
+  },
+  {
+    "id": "697d690a-6a83-4c72-a1bb-57b8db0c8306",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.3",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "nth_term_test_divergence",
+      "series_definition_partial_sums"
+    ],
+    "error_tags": [
+      "nth_term_test_misused",
+      "partial_sum_definition_missing"
+    ],
+    "prompt": "Refer to Table 10.3-A, which lists terms $a_n$. What can you conclude about $\\sum_{n=1}^{\\infty} a_n$ using the $n$th-term test?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "The series converges because the terms are decreasing."
+      },
+      {
+        "id": "B",
+        "value": "The series converges because $a_n \\to$ 0."
+      },
+      {
+        "id": "C",
+        "value": "The series diverges because $a_n$ does not approach 0."
+      },
+      {
+        "id": "D",
+        "value": "The nth-term test is inconclusive because the terms are bounded."
+      }
+    ],
+    "correct_option_id": "C",
+    "tolerance": null,
+    "explanation": "From the table, $a_n$ approaches a value near 1 rather than 0, so the series must diverge by the nth-term test.",
+    "micro_explanations": {
+      "A": "Incorrect. Re-evaluate the conditions for the specific convergence test being applied.",
+      "B": "Incorrect. Re-evaluate the conditions for the specific convergence test being applied.",
+      "C": "Correct. This convergence test was applied correctly to determine the behavior of the series.",
+      "D": "Incorrect. Re-evaluate the conditions for the specific convergence test being applied."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "BC_Series",
+    "section_id": "10.3",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.3_Practice_Table1_Terms.png",
+    "weight_primary": 0.7,
+    "weight_supporting": 0.3,
+    "title": "U10.3-P4",
+    "prompt_type": "text",
+    "primary_skill_id": "nth_term_test_divergence",
+    "supporting_skill_ids": [
+      "series_definition_partial_sums"
+    ]
+  },
+  {
+    "id": "bfebb5d9-55c3-4dc1-88a7-862eb85f539d",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.4",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "integral_test_setup",
+      "nth_term_test_divergence",
+      "integral_test_convergence"
+    ],
+    "error_tags": [
+      "integral_test_conditions_missed",
+      "nth_term_test_misused"
+    ],
+    "prompt": "Refer to Table 10.4-A, where $f(x) = \\frac{x-1}{x}$ is listed at integer inputs. Which condition needed for the Integral Test fails for $f$ on $[1, \\infty)$?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "$f$ is not positive on $[1, \\infty)$."
+      },
+      {
+        "id": "B",
+        "value": "$f$ is not continuous on $[1, \\infty)$."
+      },
+      {
+        "id": "C",
+        "value": "$f$ is not decreasing on $[1, \\infty)$."
+      },
+      {
+        "id": "D",
+        "value": "$f$ does not satisfy $\\lim_{x \\to \\infty} f(x) = 0$."
+      }
+    ],
+    "correct_option_id": "C",
+    "tolerance": null,
+    "explanation": "The table shows $f(x)$ increases toward 1, so f is not decreasing; that violates an integral test requirement.",
+    "micro_explanations": {
+      "A": "Incorrect. Re-evaluate the conditions for the specific convergence test being applied.",
+      "B": "Incorrect. Re-evaluate the conditions for the specific convergence test being applied.",
+      "C": "Correct. This convergence test was applied correctly to determine the behavior of the series.",
+      "D": "Incorrect. Re-evaluate the conditions for the specific convergence test being applied."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "BC_Series",
+    "section_id": "10.4",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.4_Practice_Table1_FunctionValues.png",
+    "weight_primary": 0.6,
+    "weight_supporting": 0.4,
+    "title": "U10.4-P4",
+    "prompt_type": "text",
+    "primary_skill_id": "integral_test_convergence",
+    "supporting_skill_ids": [
+      "integral_test_setup",
+      "nth_term_test_divergence"
+    ]
+  },
+  {
+    "id": "81053a67-a243-4df9-a902-fab4533825ae",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.5",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "p_series_test",
+      "harmonic_series_recognize"
+    ],
+    "error_tags": [
+      "harmonic_vs_pseries_confusion",
+      "p_series_threshold_error"
+    ],
+    "prompt": "Refer to Table 10.5-A. Which statement is correct?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "Both $\\sum \\frac{1}{n}$ and $\\sum \\frac{1}{n^2}$ diverge because their terms approach $0$."
+      },
+      {
+        "id": "B",
+        "value": "$\\sum \\frac{1}{n}$ converges and $\\sum \\frac{1}{n^2}$ diverges."
+      },
+      {
+        "id": "C",
+        "value": "$\\sum \\frac{1}{n}$ diverges and $\\sum \\frac{1}{n^2}$ converges."
+      },
+      {
+        "id": "D",
+        "value": "Both series converge because the terms decrease."
+      }
+    ],
+    "correct_option_id": "C",
+    "tolerance": null,
+    "explanation": "The harmonic series $\\sum \\frac{1}{n}$ diverges $(p=1)$, while $\\sum \\frac{1}{n^2}$ converges because it is a p-series with $p=2>1$.",
+    "micro_explanations": {
+      "A": "Incorrect. Verify the exponent p. Convergence only occurs if p is strictly greater than 1.",
+      "B": "Incorrect. Verify the exponent p. Convergence only occurs if p is strictly greater than 1.",
+      "C": "Correct. A p-series converges if p > 1 and diverges if p <= 1.",
+      "D": "Incorrect. Verify the exponent p. Convergence only occurs if p is strictly greater than 1."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "BC_Series",
+    "section_id": "10.5",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.5_Practice_Table1_Harmonic_vs_p2.png",
+    "weight_primary": 0.7,
+    "weight_supporting": 0.3,
+    "title": "U10.5-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "p_series_test",
+    "supporting_skill_ids": [
+      "harmonic_series_recognize"
+    ]
+  },
+  {
+    "id": "97628e7f-77de-4ae2-ae85-49d31db57702",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.6",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 4,
+    "target_time_seconds": 210,
+    "skill_tags": [
+      "limit_comparison_test",
+      "convergence_strategy_selection",
+      "comparison_tests_convergence"
+    ],
+    "error_tags": [
+      "limit_comparison_limit_error",
+      "choose_wrong_comparison_series"
+    ],
+    "prompt": "Refer to Table 10.6-A, which lists $a_n$, $b_n$, and $\\frac{a_n}{b_n}$ where $b_n = \\frac{3}{n}$. Which conclusion is correct?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "$\\sum a_n$ converges because $\\frac{a_n}{b_n} < 1$ for the shown $n$."
+      },
+      {
+        "id": "B",
+        "value": "$\\sum a_n$ diverges because $\\frac{a_n}{b_n}$ approaches a finite positive constant and $\\sum b_n$ diverges."
+      },
+      {
+        "id": "C",
+        "value": "$\\sum a_n$ converges because $\\frac{a_n}{b_n} \\to 0$."
+      },
+      {
+        "id": "D",
+        "value": "No conclusion can be drawn because the table uses only finitely many terms."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "The ratio column is trending toward a positive constant $(()$, so by limit comparison $\\sum a_n$ has the same behavior as $\\sum \\frac{3}{n}$, which diverges.",
+    "micro_explanations": {
+      "A": "Incorrect. Re-evaluate the conditions for the specific convergence test being applied.",
+      "B": "Correct. This convergence test was applied correctly to determine the behavior of the series.",
+      "C": "Incorrect. Re-evaluate the conditions for the specific convergence test being applied.",
+      "D": "Incorrect. Re-evaluate the conditions for the specific convergence test being applied."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "BC_Series",
+    "section_id": "10.6",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.6_Practice_Table1_LimitComparison.png",
+    "weight_primary": 0.6,
+    "weight_supporting": 0.4,
+    "title": "U10.6-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "comparison_tests_convergence",
+    "supporting_skill_ids": [
+      "limit_comparison_test",
+      "convergence_strategy_selection"
+    ]
+  },
+  {
+    "id": "c699e95f-3db4-41b5-a270-b225c5dd4f86",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.7",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "alternating_series_test",
+      "monotonicity_check_sequence"
+    ],
+    "error_tags": [
+      "ast_conditions_missed",
+      "monotonicity_assumed_not_verified"
+    ],
+    "prompt": "Refer to Table 10.7-A, where $a_n = \\frac{(-1)^{n+1}}{n}$. Which condition is needed (in addition to $|a_n| \\to 0$) to apply the alternating series test?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "The terms must be positive (no alternating signs)."
+      },
+      {
+        "id": "B",
+        "value": "The absolute values $|a_n|$ must be eventually decreasing."
+      },
+      {
+        "id": "C",
+        "value": "The partial sums must be increasing."
+      },
+      {
+        "id": "D",
+        "value": "The series must be geometric."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "AST requires alternating signs, |$a_n$| eventually decreasing, and |$a_n|\\\\to$ 0.",
+    "micro_explanations": {
+      "A": "Incorrect. Check if the terms satisfy both conditions: decreasing magnitude and limit of zero as n goes to infinity.",
+      "B": "Correct. An alternating series converges if the terms decrease in magnitude and their limit is zero.",
+      "C": "Incorrect. Check if the terms satisfy both conditions: decreasing magnitude and limit of zero as n goes to infinity.",
+      "D": "Incorrect. Check if the terms satisfy both conditions: decreasing magnitude and limit of zero as n goes to infinity."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "BC_Series",
+    "section_id": "10.7",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.7_Practice_Table1_AlternatingTerms.png",
+    "weight_primary": 0.7,
+    "weight_supporting": 0.3,
+    "title": "U10.7-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "alternating_series_test",
+    "supporting_skill_ids": [
+      "monotonicity_check_sequence"
+    ]
+  },
+  {
+    "id": "2e98cf8d-5a65-45d0-93e5-7cd3e34cc0e9",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.8",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 4,
+    "target_time_seconds": 210,
+    "skill_tags": [
+      "ratio_test",
+      "interpret_ratio_test_outcome",
+      "ratio_test_convergence"
+    ],
+    "error_tags": [
+      "ratio_test_rule_misread",
+      "inconclusive_case_misread"
+    ],
+    "prompt": "Refer to Table 10.8-A for $a_n = \\frac{n!}{2^n}$. Based on the Ratio Test, what is the behavior of $\\sum_{n=1}^{\\infty} a_n$?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "Converges because $|\\frac{a_{n+1}}{a_n}| < 1$ for the shown values."
+      },
+      {
+        "id": "B",
+        "value": "Diverges because $|\\frac{a_{n+1}}{a_n}|$ grows beyond $1$ as $n$ increases."
+      },
+      {
+        "id": "C",
+        "value": "Converges absolutely because the terms are positive."
+      },
+      {
+        "id": "D",
+        "value": "The Ratio Test is inconclusive because the ratio is not constant."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "Here $\\left|\\frac{a_{n+1}}{a_n}\\right| = \\frac{n+1}{2} \\to \\infty$, so $L > 1$ and the series diverges by the Ratio Test.",
+    "micro_explanations": {
+      "A": "Incorrect. Remember the Ratio Test is inconclusive if the limit equals 1. If the limit > 1, the series diverges.",
+      "B": "Correct. The Ratio Test uses the limit of |a_{n+1}/a_n|. If the limit is < 1, the series converges absolutely.",
+      "C": "Incorrect. Remember the Ratio Test is inconclusive if the limit equals 1. If the limit > 1, the series diverges.",
+      "D": "Incorrect. Remember the Ratio Test is inconclusive if the limit equals 1. If the limit > 1, the series diverges."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "BC_Series",
+    "section_id": "10.8",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.8_Practice_Table1_RatioValues.png",
+    "weight_primary": 0.6,
+    "weight_supporting": 0.4,
+    "title": "U10.8-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "ratio_test_convergence",
+    "supporting_skill_ids": [
+      "ratio_test",
+      "interpret_ratio_test_outcome"
+    ]
+  },
+  {
+    "id": "572c2d87-7911-4c17-9f2a-a9b3d4ff98cf",
+    "course": "BC",
+    "topic": "BC_Series",
+    "sub_topic_id": "10.9",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 4,
+    "target_time_seconds": 210,
+    "skill_tags": [
+      "convergence_strategy_selection",
+      "alternating_series_test",
+      "absolute_conditional_convergence"
+    ],
+    "error_tags": [
+      "strategy_test_choice_wrong",
+      "limit_to_zero_not_checked"
+    ],
+    "prompt": "Refer to Table 10.9-A for $a_n = \\frac{(-1)^{n+1}}{\\sqrt{n}}$. Which statement is correct?",
+    "latex": null,
+    "options": [
+      {
+        "id": "A",
+        "value": "Because |$a_n$| $\\to$ 0,  $\\sum$  |$a_n$| converges."
+      },
+      {
+        "id": "B",
+        "value": "Because |$a_n$| decreases to 0,  $\\sum a_n$ converges by AST."
+      },
+      {
+        "id": "C",
+        "value": "Because $a_n$ alternates,  $\\sum a_n$ converges absolutely."
+      },
+      {
+        "id": "D",
+        "value": "Because |$a_n$| is positive,  $\\sum a_n$ diverges."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "The table supports that |$a_n$| decreases and approaches 0, so $\\sum a_n$ converges by the alternating series test $(AST)$. This does not imply absolute convergence.",
+    "micro_explanations": {
+      "A": "Incorrect. This option contains an error in series testing, expansion, or interval determination.",
+      "B": "Correct. This option follows the mathematical principles of sequences and series convergence and representation.",
+      "C": "Incorrect. This option contains an error in series testing, expansion, or interval determination.",
+      "D": "Incorrect. This option contains an error in series testing, expansion, or interval determination."
+    },
+    "recommendation_reasons": [],
+    "created_by": null,
+    "created_at": "2026-01-30T22:15:50.723676+00:00",
+    "updated_at": "2026-02-01T02:30:30.035927+00:00",
+    "status": "published",
+    "version": 1,
+    "reasoning_level": 3,
+    "mastery_weight": 1,
+    "representation_type": "table",
+    "topic_id": "BC_Series",
+    "section_id": "10.9",
+    "source": "self",
+    "source_year": null,
+    "notes": "Uses image file: U10.9_Practice_Table1_AbsVsCond.png",
+    "weight_primary": 0.6,
+    "weight_supporting": 0.4,
+    "title": "U10.9-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "absolute_conditional_convergence",
+    "supporting_skill_ids": [
+      "convergence_strategy_selection",
+      "alternating_series_test"
+    ]
+  }
+]

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useApp } from '../AppContext';
 import { authApi } from '../src/services/api';
 import { supabase } from '../src/services/supabaseClient';
@@ -60,7 +60,7 @@ export const Privacy = () => (
                 <p>We automatically collect information about how you interact with our Service:</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
                     <li>Practice session data and performance metrics</li>
-                    <li>Learning progress and topic mastery scores</li>
+                    <li>Learning progress and unit mastery scores</li>
                     <li>Time spent on the platform</li>
                     <li>Device information and browser type</li>
                     <li>IP address and approximate location</li>
@@ -232,7 +232,7 @@ export const Support = () => (
                     </div>
                     <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
                         <h3 className="font-bold text-lg mb-2">How is my mastery score calculated?</h3>
-                        <p className="text-gray-500">Your mastery score is based on your accuracy and consistency across practice problems in each topic. The more you practice correctly, the higher your mastery.</p>
+                        <p className="text-gray-500">Your mastery score is based on your accuracy and consistency across practice problems in each unit. The more you practice correctly, the higher your mastery.</p>
                     </div>
                     <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
                         <h3 className="font-bold text-lg mb-2">Can I delete my account?</h3>
@@ -264,14 +264,24 @@ export const Support = () => (
 export const Signup = () => {
     const { login } = useApp();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    // Referral code from URL param
+    const refCode = searchParams.get('ref') || '';
     // Verification state
     const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
     const [step, setStep] = useState<'details' | 'verify' | 'success'>('details');
     const [error, setError] = useState('');
+
+    // Inline toast state (standalone page, not wrapped in ToastProvider)
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+    const showInlineToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 4000);
+    };
 
     // Password validation
     const passwordChecks = {
@@ -355,6 +365,23 @@ export const Signup = () => {
                 if (loginRes.session) {
                     await supabase.auth.setSession(loginRes.session);
                     localStorage.setItem('auth_token', loginRes.session.access_token);
+
+                    // Process referral if ref code exists
+                    if (refCode) {
+                        try {
+                            const { data: refResult, error: refError } = await supabase.rpc('process_referral', {
+                                p_referral_code: refCode
+                            });
+                            if (refError) {
+                                console.error('Referral RPC error:', refError);
+                            } else {
+                                console.log('Referral result:', refResult);
+                            }
+                        } catch (refErr) {
+                            console.error('Referral processing error:', refErr);
+                        }
+                    }
+
                     login(email, name, loginRes.session.user.id);
                     navigate('/dashboard');
                 } else {
@@ -362,8 +389,8 @@ export const Signup = () => {
                 }
             } catch {
                 // If auto-login fails, send to login page
-                alert('Verification successful! Please sign in.');
-                navigate('/login');
+                showInlineToast('Verification successful! Redirecting to sign in...', 'success');
+                setTimeout(() => navigate('/login'), 1500);
             }
         } catch (err: any) {
             setError(err.message || 'Verification failed. Please check the code.');
@@ -595,7 +622,7 @@ export const Signup = () => {
                                         setIsLoading(true);
                                         try {
                                             await authApi.resendVerification(email);
-                                            alert('New code sent!');
+                                            showInlineToast('New verification code sent!', 'success');
                                         } catch (err: any) {
                                             setError(err.message || 'Failed to resend code.');
                                         } finally {
@@ -613,6 +640,31 @@ export const Signup = () => {
                 )}
 
             </div>
+
+            {/* Inline Toast Notification */}
+            {toast && (
+                <div className="fixed top-4 left-4 z-[9999] animate-slide-in-left">
+                    <div
+                        className={`flex items-center gap-3 px-5 py-3.5 rounded-xl border-2 shadow-lg min-w-[280px] max-w-[400px] bg-white dark:bg-gray-900 ${toast.type === 'success' ? 'border-green-400' : toast.type === 'error' ? 'border-red-400' : 'border-blue-400'
+                            }`}
+                    >
+                        <div className={`p-1.5 rounded-full ${toast.type === 'success' ? 'bg-green-100 dark:bg-green-900/40' : toast.type === 'error' ? 'bg-red-100 dark:bg-red-900/40' : 'bg-blue-100 dark:bg-blue-900/40'
+                            }`}>
+                            <span className={`material-symbols-outlined text-xl ${toast.type === 'success' ? 'text-green-500' : toast.type === 'error' ? 'text-red-500' : 'text-blue-500'
+                                }`}>
+                                {toast.type === 'success' ? 'check_circle' : toast.type === 'error' ? 'error' : 'info'}
+                            </span>
+                        </div>
+                        <p className="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200">{toast.message}</p>
+                        <button
+                            onClick={() => setToast(null)}
+                            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-lg">close</span>
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <footer className="mt-12 text-center relative z-10">
                 <p className="text-xs font-medium text-neutral-400 dark:text-neutral-600">

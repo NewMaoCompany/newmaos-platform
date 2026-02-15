@@ -7,7 +7,7 @@ const router = Router();
 // GET /api/questions - Get questions with optional filters
 router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
-        const { course, topic, subTopicId, difficulty, limit = 50 } = req.query;
+        const { course, topic, subTopicId, difficulty, limit = 10000 } = req.query;
 
         let query = supabaseAdmin
             .from('questions')
@@ -76,6 +76,7 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
                 title: q.title || `Question ${q.id.substr(0, 8)}`, // Fallback for old questions
                 course: q.course,
                 topic: q.topic,
+                topicId: q.topic_id,
                 subTopicId: q.sub_topic_id,
                 sectionId: q.section_id,
                 type: q.type,
@@ -85,8 +86,9 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
 
                 skillTags: q.skill_tags || [],
                 errorTags: q.error_tags || [],
-                primarySkillId: primary?.skill_id,
-                supportingSkillIds: supporting,
+                // PREFER Explicit Columns (faster/cleaner), fallback to Join
+                primarySkillId: q.primary_skill_id || primary?.skill_id,
+                supportingSkillIds: (q.supporting_skill_ids && q.supporting_skill_ids.length > 0) ? q.supporting_skill_ids : supporting,
                 errorPatternIds: errorPatterns.length > 0 ? errorPatterns : (q.error_tags || []),
 
                 prompt: q.prompt,
@@ -215,7 +217,10 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
                 source_year: sourceYear,
                 notes: notes,
                 weight_primary: weightPrimary || 1.0,
-                weight_supporting: weightSupporting || 0.5
+                weight_supporting: weightSupporting || 0.5,
+                // DUAL WRITE: Write to new columns
+                primary_skill_id: primarySkillId,
+                supporting_skill_ids: supportingSkillIds || []
             })
             .select()
             .single();
@@ -360,6 +365,10 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
         if (status !== undefined) updates.status = status;
         if (weightPrimary !== undefined) updates.weight_primary = weightPrimary;
         if (weightSupporting !== undefined) updates.weight_supporting = weightSupporting;
+
+        // DUAL WRITE: Update new columns
+        if (primarySkillId !== undefined) updates.primary_skill_id = primarySkillId;
+        if (supportingSkillIds !== undefined) updates.supporting_skill_ids = supportingSkillIds;
 
         // 1. Update question
         const { data, error } = await supabaseAdmin

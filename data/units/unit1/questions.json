@@ -1,0 +1,2312 @@
+[
+  {
+    "id": "9b8a1428-e64e-4826-93cf-3167497f581d",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.4",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "limit_estimation_table",
+      "limit_concept"
+    ],
+    "error_tags": [
+      "limit_vs_value"
+    ],
+    "prompt": "[\"Use the table provided. What is the best estimate of $\\\\lim_{x\\\\to 1} q(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769382246411_8uvw0f.jpg\"]",
+    "latex": "Use the table provided. What is the best estimate of $\\lim_{x\\to 1} q(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$-0.01$",
+        "explanation": "This is only one nearby value, not the two-sided trend."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "0",
+        "explanation": "Correct: the values get closer to 0 on both sides."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "0.01",
+        "explanation": "This is only one nearby value, not the two-sided trend."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "1",
+        "explanation": "This is the x-value being approached, not the limit value."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "As $x$ approaches 1, the values of $q(x)$ approach 0 from both sides, so the limit is 0.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_table"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:51:25.585959+00:00",
+    "updated_at": "2026-01-25T23:04:12.276+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.4",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 3 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.4-P5",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_table",
+    "supporting_skill_ids": [
+      "limit_concept"
+    ]
+  },
+  {
+    "id": "45053b2f-bb1a-40db-ba92-8b4cb8d8b544",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.4",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "infinite_limits_asymptotes",
+      "limit_estimation_table"
+    ],
+    "error_tags": [
+      "infinite_limit_meaning"
+    ],
+    "prompt": "[\"Use the table provided. What is the best description of $\\\\lim_{x\\\\to 2} p(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769382292241_xooofv.jpg\"]",
+    "latex": "Use the table provided. What is the best description of $\\lim_{x\\to 2} p(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$\\lim_{x\\to 2} p(x)=0$",
+        "explanation": "The table values are not approaching 0."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$\\lim_{x\\to 2} p(x)=10$",
+        "explanation": "10 appears only farther from 2; near 2 the values get much larger."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "$\\lim_{x\\to 2} p(x)=\\infty$",
+        "explanation": "Correct: the trend suggests the function increases without bound near 2."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "$\\lim_{x\\to 2} p(x)$ does not exist because it is infinite",
+        "explanation": "An infinite limit is still a valid limit description on AP."
+      }
+    ],
+    "correct_option_id": "C",
+    "tolerance": null,
+    "explanation": "The values grow very large near $x=2$ from both sides, indicating the limit increases without bound, so the limit is $\\infty$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "infinite_limits_asymptotes"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:51:25.585959+00:00",
+    "updated_at": "2026-01-25T23:05:00.914+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.4",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.4-P4",
+    "prompt_type": "image",
+    "primary_skill_id": "infinite_limits_asymptotes",
+    "supporting_skill_ids": [
+      "limit_estimation_table"
+    ]
+  },
+  {
+    "id": "42aacaf5-0631-49b3-ae54-46805526a3ac",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.4",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "limit_estimation_table",
+      "limit_notation"
+    ],
+    "error_tags": [
+      "two_sided_requires_match"
+    ],
+    "prompt": "[\"Use the table provided. What is the best estimate of $\\\\lim_{x\\\\to 0} h(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384247365_jsyzs.jpg\"]",
+    "latex": "Use the table provided. What is the best estimate of $\\lim_{x\\to 0} h(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$-1$",
+        "explanation": "This matches only the left-side trend."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "1",
+        "explanation": "This matches only the right-side trend."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "0",
+        "explanation": "0 is not supported by the table’s left or right trends."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "Correct: the left and right behaviors differ, so the limit is DNE."
+      }
+    ],
+    "correct_option_id": "D",
+    "tolerance": null,
+    "explanation": "From the table, values approach $-1$ from the left and 1 from the right, so the two-sided limit does not exist.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_table"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:51:25.585959+00:00",
+    "updated_at": "2026-01-25T23:37:30.183+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.4",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.4-P3",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_table",
+    "supporting_skill_ids": [
+      "limit_notation"
+    ]
+  },
+  {
+    "id": "a6e38b84-164f-47d8-9795-57aebf867316",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.9",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "limit_estimation_graph",
+      "discontinuity_types"
+    ],
+    "error_tags": [
+      "open_vs_closed_point"
+    ],
+    "prompt": "[\"Use the graph provided. Which statement is true?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383915448_byyhpf.jpg\"]",
+    "latex": "Use the graph provided. Which statement is true?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$\\lim_{x\to 1} f(x)=5$ and $f(1)=5$",
+        "explanation": "This confuses the function value with the limit value."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$\\lim_{x\to 1} f(x)=2$ and $f(1)=5$",
+        "explanation": "Correct: limit is 2 (hole), but function value is 5 (filled dot)."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "$\\lim_{x\to 1} f(x)=5$ and $f(1)=2$",
+        "explanation": "This swaps the limit and function value."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "The limit does not exist at $x=1$",
+        "explanation": "The left and right approaches match, so the limit exists."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "From the graph, the curve approaches 2 as $x\\to 1$, but the filled point shows $f(1)=5$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_graph"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:01:23.069125+00:00",
+    "updated_at": "2026-01-25T23:31:57.711+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.9",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 3 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.9-P2",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_graph",
+    "supporting_skill_ids": [
+      "discontinuity_types"
+    ]
+  },
+  {
+    "id": "7411bef6-0477-4631-924b-b38afc3d2ecb",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.14",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 4,
+    "target_time_seconds": 300,
+    "skill_tags": [
+      "infinite_limits_asymptotes",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "infinite_limit_meaning"
+    ],
+    "prompt": "[\"Use the graph provided. What is $\\\\lim_{x\\\\to -2} f(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384273436_gly0o.jpg\"]",
+    "latex": "Use the graph provided. What is $\\lim_{x\\to -2} f(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$\\infty$",
+        "explanation": "Correct: both sides approach positive infinity."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$-\\infty$",
+        "explanation": "The graph does not go downward without bound."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "0",
+        "explanation": "The graph does not approach 0 near $x=-2$."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "An infinite limit here is a valid limit statement ($\\infty$)."
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "The graph shows a vertical asymptote at $x=-2$ and both sides rise upward without bound, so the limit is $\\infty$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "infinite_limits_asymptotes"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:36:53.242986+00:00",
+    "updated_at": "2026-01-25T23:37:58.246+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 4,
+    "mastery_weight": 1.3,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.14",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 5 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.14-P4",
+    "prompt_type": "image",
+    "primary_skill_id": "infinite_limits_asymptotes",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "603adacd-60af-4530-822d-09a41b3dfc9c",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.10",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "limit_estimation_graph",
+      "limit_concept"
+    ],
+    "error_tags": [
+      "graph_jump_confusion"
+    ],
+    "prompt": "[\"Use the graph provided. What is $\\\\lim_{x\\\\to 0} f(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384204044_eq36cs.jpg\"]",
+    "latex": "Use the graph provided. What is $\\lim_{x\\to 0} f(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "1",
+        "explanation": "1 is the left-hand limit only, not the two-sided limit."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "3",
+        "explanation": "3 is the right-hand limit only, not the two-sided limit."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "2",
+        "explanation": "2 is not approached from either side in the graph."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "Correct: left and right limits do not match, so the limit does not exist."
+      }
+    ],
+    "correct_option_id": "D",
+    "tolerance": null,
+    "explanation": "From the graph, $\\lim_{x\\to 0^-} f(x)=1$ and $\\lim_{x\\to 0^+} f(x)=3$. Since these one-sided limits are not equal, the two-sided limit does not exist.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_graph"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:28:03.795144+00:00",
+    "updated_at": "2026-01-25T23:36:46.42+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.10",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 3 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.10-P2",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_graph",
+    "supporting_skill_ids": [
+      "limit_concept"
+    ]
+  },
+  {
+    "id": "140e8637-cefb-4071-961f-dd01e9627f51",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.2",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "limit_estimation_table",
+      "limit_notation"
+    ],
+    "error_tags": [
+      "table_trend_misread"
+    ],
+    "prompt": "[\"A function $f$ is shown in the table. What is the best estimate of $\\\\lim_{x\\\\to 2} f(x)$?\\n\\n\\\\[\\n\\\\begin{array}{c|cccc}\\n x & 1.9 & 1.99 & 2.01 & 2.1 \\\\\\\\\\n\\\\hline\\n f(x) & 3.61 & 3.9601 & 4.0401 & 4.41\\n\\\\end{array}\\n\\\\]\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383816905_oanfb.jpg\"]",
+    "latex": "A function $f$ is shown in the table. What is the best estimate of $\\lim_{x\\to 2} f(x)$?\n\n\\[\n\\begin{array}{c|cccc}\n x & 1.9 & 1.99 & 2.01 & 2.1 \\\\\n\\hline\n f(x) & 3.61 & 3.9601 & 4.0401 & 4.41\n\\end{array}\n\\]",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "3.96",
+        "explanation": "This is a nearby value but not the best two-sided estimate."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "4",
+        "explanation": "Correct: values near $x=2$ approach 4 from both sides."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "4.04",
+        "explanation": "This is a nearby value but not the best two-sided estimate."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "The table shows both sides approaching the same value, so the limit exists."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "As $x$ approaches 2 from both sides, the values of $f(x)$ approach 4. The best estimate is 4.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_table"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:38:15.282793+00:00",
+    "updated_at": "2026-01-25T23:30:20.597+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 4,
+    "mastery_weight": 1.3,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.2",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 5 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.2-P4",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_table",
+    "supporting_skill_ids": [
+      "limit_notation"
+    ]
+  },
+  {
+    "id": "3e778fee-ed46-4ce9-9957-0f98aab05d85",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.3",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "infinite_limits_asymptotes",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "infinite_limit_meaning"
+    ],
+    "prompt": "[\"Use the graph provided. What is $\\\\lim_{x\\\\to 2^-} f(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384393933_ri07rf.jpg\"]",
+    "latex": "Use the graph provided. What is $\\lim_{x\\to 2^-} f(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$-\\infty$",
+        "explanation": "Correct: the graph falls downward without bound as $x\\to 2^-$."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$\\infty$",
+        "explanation": "This has the wrong sign; the left side goes downward, not upward."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "1",
+        "explanation": "1 is the horizontal asymptote value, not the behavior near $x=2$."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "The limit is infinite, but it still has a well-defined behavior ($-\\infty$)."
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "As $x$ approaches 2 from the left, the graph decreases without bound. Therefore, the limit is $-\\\\infty$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "infinite_limits_asymptotes"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:38:25.461289+00:00",
+    "updated_at": "2026-01-25T23:39:56.484+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.3",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.3-P3",
+    "prompt_type": "image",
+    "primary_skill_id": "infinite_limits_asymptotes",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "ddab50a0-a3fc-4ea4-910d-0b38bf5de730",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.3",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "limit_estimation_graph",
+      "discontinuity_types"
+    ],
+    "error_tags": [
+      "graph_jump_confusion"
+    ],
+    "prompt": "[\"Use the graph provided. What is $\\\\lim_{x\\\\to 0} f(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384414639_ai2sh8.jpg\"]",
+    "latex": "Use the graph provided. What is $\\lim_{x\\to 0} f(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "1",
+        "explanation": "This is the left-hand limit only."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "3",
+        "explanation": "This is the right-hand limit only."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "2",
+        "explanation": "A two-sided limit is not found by averaging unequal one-sided limits."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "Correct: one-sided limits differ, so the limit is DNE."
+      }
+    ],
+    "correct_option_id": "D",
+    "tolerance": null,
+    "explanation": "From the graph, $\\lim_{x\\to 0^-} f(x)=1$ and $\\lim_{x\\to 0^+} f(x)=3$. Since they are not equal, the two-sided limit does not exist.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_graph"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:38:25.461289+00:00",
+    "updated_at": "2026-01-25T23:40:16.54+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.3",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 3 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.3-P2",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_graph",
+    "supporting_skill_ids": [
+      "discontinuity_types"
+    ]
+  },
+  {
+    "id": "8a0ad35f-00a0-488e-875e-e3cc3be3279e",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.3",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "limit_estimation_graph",
+      "discontinuity_types"
+    ],
+    "error_tags": [
+      "open_vs_closed_point"
+    ],
+    "prompt": "[\"Use the graph provided. What is $\\\\lim_{x\\\\to 1} f(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384447980_vr7lyo.jpg\"]",
+    "latex": "Use the graph provided. What is $\\lim_{x\\to 1} f(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "2",
+        "explanation": "Correct: the y-values approach 2 from both sides."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "4",
+        "explanation": "This is the function value shown at $x=1$, not the limit."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "1",
+        "explanation": "This confuses the x-value being approached with the limit value."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "The left-hand and right-hand approaches match, so the limit exists."
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "From the graph, the curve approaches $y=2$ as $x\\to 1$ from both sides, so the limit is 2.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_graph"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:38:25.461289+00:00",
+    "updated_at": "2026-01-25T23:40:49.872+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 1,
+    "mastery_weight": 0.9,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.3",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 2 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.3-P1",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_graph",
+    "supporting_skill_ids": [
+      "discontinuity_types"
+    ]
+  },
+  {
+    "id": "d3ca74be-e13a-4e47-ad7d-137bdbdbc842",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.12",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 270,
+    "skill_tags": [
+      "continuity_concept",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "endpoint_domain_issue"
+    ],
+    "prompt": "[\"Use the graph provided. Is $f$ continuous on the interval $[0,3]$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384181260_ahig7q.jpg\"]",
+    "latex": "Use the graph provided. Is $f$ continuous on the interval $[0,3]$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "Yes, it is continuous on $[0,3]$ ",
+        "explanation": "Continuity on $[0,3]$ requires $f(0)$ to be defined."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "No, because $\\lim_{x\\to 0} f(x)$ does not exist",
+        "explanation": "Right-hand limit may exist, but the main issue is $f(0)$ is undefined."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "No, because $f(0)$ is not defined",
+        "explanation": "Correct: the open circle at $x=0$ means $f(0)$ does not exist."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "No, because $f(3)$ is not defined",
+        "explanation": "The graph shows the curve exists at $x=3$."
+      }
+    ],
+    "correct_option_id": "C",
+    "tolerance": null,
+    "explanation": "The interval includes the endpoint $x=0$, but the graph shows an open circle at $x=0$, so $f(0)$ is not defined. Therefore $f$ is not continuous on $[0,3]$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "continuity_concept"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:32:24.676231+00:00",
+    "updated_at": "2026-01-25T23:36:28.526+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.12",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4.5 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.12-P4",
+    "prompt_type": "image",
+    "primary_skill_id": "continuity_concept",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "f625c885-89ec-4710-97bd-12c5b697f4be",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.4",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "limit_estimation_table",
+      "limit_concept"
+    ],
+    "error_tags": [
+      "table_trend_misread"
+    ],
+    "prompt": "[\"Use the table provided. What is the best estimate of $\\\\lim_{x\\\\to 3} f(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769382210497_m3da1f.jpg\"]",
+    "latex": "Use the table provided. What is the best estimate of $\\lim_{x\\to 3} f(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "8.94",
+        "explanation": "This is a nearby left-side value, not the best two-sided estimate."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "9",
+        "explanation": "Correct: the trend from both sides approaches 9."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "9.06",
+        "explanation": "This is a nearby right-side value, not the best two-sided estimate."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "The table suggests a single approaching value, so the limit exists."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "Values of $f(x)$ approach 9 as $x$ approaches 3 from both sides, so the best estimate is 9.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_table"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:51:25.585959+00:00",
+    "updated_at": "2026-01-25T23:03:35.122+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.4",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 3 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.4-P1",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_table",
+    "supporting_skill_ids": [
+      "limit_concept"
+    ]
+  },
+  {
+    "id": "adc81ac2-cfc7-4e33-b3df-345b6e79ae16",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.3",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "limit_estimation_graph",
+      "limit_concept"
+    ],
+    "error_tags": [
+      "endpoint_domain_issue"
+    ],
+    "prompt": "[\"Use the graph provided. What is $\\\\lim_{x\\\\to -1^+} f(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769382269562_9facwy.jpg\"]",
+    "latex": "Use the graph provided. What is $\\lim_{x\\to -1^+} f(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "0",
+        "explanation": "Correct: the curve approaches the endpoint value $y=0$ from the right."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$-1$",
+        "explanation": "This confuses the x-value approached ($-1$) with the y-value."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "1",
+        "explanation": "This is not consistent with the y-values shown near $x=-1$."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "A one-sided limit can exist at an endpoint; here it approaches 0."
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "From the graph, as $x$ approaches $-1$ from the right, the y-values approach 0. Therefore, the limit is 0.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_graph"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:38:25.461289+00:00",
+    "updated_at": "2026-01-25T23:04:33.718+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 4,
+    "mastery_weight": 1.3,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.3",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 5 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.3-P4",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_graph",
+    "supporting_skill_ids": [
+      "limit_concept"
+    ]
+  },
+  {
+    "id": "5692b215-8191-4b07-be69-fcc4c13f11a2",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.11",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "limit_estimation_graph",
+      "continuity_concept"
+    ],
+    "error_tags": [
+      "limit_vs_value"
+    ],
+    "prompt": "[\"Use the graph provided. Which statement is true at $x=1$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769382316513_67oqf.jpg\"]",
+    "latex": "Use the graph provided. Which statement is true at $x=1$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$\\lim_{x\\to 1} f(x)=0$ and $f(1)=0$",
+        "explanation": "The graph approaches 1 at $x=1$, not 0."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$\\lim_{x\\to 1} f(x)=1$ and $f(1)=0$",
+        "explanation": "Correct: the limit is 1 but the function value is 0."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "$\\lim_{x\\to 1} f(x)=0$ and $f(1)=1$",
+        "explanation": "This swaps the limit and function value."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "$\\lim_{x\\to 1} f(x)$ does not exist",
+        "explanation": "The left and right approaches match, so the limit exists."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "The curve approaches the hole at $(1,1)$ so $\\lim_{x\\to 1} f(x)=1$, but the filled point shows $f(1)=0$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_graph"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:28:15.83026+00:00",
+    "updated_at": "2026-01-25T23:05:19.102+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.11",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.11-P2",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_graph",
+    "supporting_skill_ids": [
+      "continuity_concept"
+    ]
+  },
+  {
+    "id": "cb4e1f66-2fc1-4ec8-a37a-16d6371fab80",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.9",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "limit_estimation_table",
+      "continuity_concept"
+    ],
+    "error_tags": [
+      "limit_vs_value"
+    ],
+    "prompt": "[\"A function $f$ is shown in the table and it is known that $f(2)=7$. What can be concluded about $\\\\lim_{x\\\\to 2} f(x)$ and continuity at $x=2$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383131456_s332e.jpg\"]",
+    "latex": "A function $f$ is shown in the table and it is known that $f(2)=7$. What can be concluded about $\\lim_{x\\to 2} f(x)$ and continuity at $x=2$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$\\lim_{x\to 2} f(x)=7$ and $f$ is continuous at $x=2$",
+        "explanation": "7 is the function value at $x=2$, not the limit from nearby x-values."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$\\lim_{x\to 2} f(x)=3$ and $f$ is continuous at $x=2$",
+        "explanation": "Continuity would require $f(2)=3$, but it is 7."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "$\\lim_{x\to 2} f(x)=3$ and $f$ is not continuous at $x=2$",
+        "explanation": "Correct: the limit is 3 but the function value is 7, so not continuous."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "The limit does not exist",
+        "explanation": "The table shows a clear two-sided approach to 3, so the limit exists."
+      }
+    ],
+    "correct_option_id": "C",
+    "tolerance": null,
+    "explanation": "The table shows $f(x)$ approaches 3 as $x\\to 2$. Since $f(2)=7\\ne 3$, the function is not continuous at $x=2$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_table"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:01:23.069125+00:00",
+    "updated_at": "2026-01-25T23:18:53.864+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.9",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.9-P1",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_table",
+    "supporting_skill_ids": [
+      "continuity_concept"
+    ]
+  },
+  {
+    "id": "4dc9f63b-711d-4eeb-9893-07dfc03a2b71",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.15",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "infinite_limits_asymptotes",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "asymptote_confusion"
+    ],
+    "prompt": "[\"Use the graph provided. What is the horizontal asymptote of the function?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383151027_04utwk.jpg\"]",
+    "latex": "Use the graph provided. What is the horizontal asymptote of the function?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$y=0$",
+        "explanation": "The graph does not level off at 0."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$y=1$",
+        "explanation": "The graph levels off higher than 1."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "$y=2$",
+        "explanation": "Correct: end behavior approaches 2."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "$y=5$",
+        "explanation": "The graph does not approach 5 for large $|x|$."
+      }
+    ],
+    "correct_option_id": "C",
+    "tolerance": null,
+    "explanation": "From the graph, as $x\\to \\pm\\infty$, the curve levels off at $y=2$. That is the horizontal asymptote.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "infinite_limits_asymptotes"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:37:34.491168+00:00",
+    "updated_at": "2026-01-25T23:19:18.178+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.15",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.15-P2",
+    "prompt_type": "image",
+    "primary_skill_id": "infinite_limits_asymptotes",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "4fcdb293-25e2-46f2-b889-0899197211c0",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.13",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 210,
+    "skill_tags": [
+      "discontinuity_types",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "open_vs_closed_point"
+    ],
+    "prompt": "[\"Use the graph provided. What value should be assigned to $f(2)$ to make $f$ continuous at $x=2$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383730760_67wzyj.jpg\"]",
+    "latex": "Use the graph provided. What value should be assigned to $f(2)$ to make $f$ continuous at $x=2$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$0$",
+        "explanation": "0 is not the limiting value shown by the hole."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$2$",
+        "explanation": "Correct: set $f(2)$ equal to the limit value 2."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "$4$",
+        "explanation": "4 is not the y-value approached near $x=2$."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "No value will make it continuous",
+        "explanation": "A removable discontinuity can be fixed by defining the function at the hole."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "The graph has a hole at $(2,2)$, meaning $\\lim_{x\\to 2} f(x)=2$. Assigning $f(2)=2$ removes the removable discontinuity.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "discontinuity_types"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:36:45.377577+00:00",
+    "updated_at": "2026-01-25T23:28:52.262+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.13",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 3.5 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.13-P2",
+    "prompt_type": "image",
+    "primary_skill_id": "discontinuity_types",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "aec34f1c-1ed9-4dd8-a80a-eae2e091722e",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.15",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "limit_estimation_table",
+      "limits_at_infinity"
+    ],
+    "error_tags": [
+      "table_trend_misread"
+    ],
+    "prompt": "[\"Use the table provided for $f(x)$. What is the most likely value of $\\\\lim_{x\\\\to \\\\infty} f(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383749138_ypmb6u.jpg\"]",
+    "latex": "Use the table provided for $f(x)$. What is the most likely value of $\\lim_{x\\to \\infty} f(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "0",
+        "explanation": "The values are close to 3, not 0."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "1",
+        "explanation": "The values are much larger than 1."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "3",
+        "explanation": "Correct: the table indicates the function approaches 3."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "It increases without bound",
+        "explanation": "The values are not growing without bound; they level off near 3."
+      }
+    ],
+    "correct_option_id": "C",
+    "tolerance": null,
+    "explanation": "The values in the table are approaching 3 as $x$ becomes large, so the limit at infinity is most likely 3.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_table"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:37:34.491168+00:00",
+    "updated_at": "2026-01-25T23:29:16.5+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.15",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.15-P4",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_table",
+    "supporting_skill_ids": [
+      "limits_at_infinity"
+    ]
+  },
+  {
+    "id": "b06360c6-c478-442e-956b-41b946d58257",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.10",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "infinite_limits_asymptotes",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "infinite_limit_meaning"
+    ],
+    "prompt": "Use the graph provided. What is $\\lim_{x\\to 2} f(x)$?",
+    "latex": "Use the graph provided. What is $\\lim_{x\\to 2} f(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "image",
+        "label": "A",
+        "value": "[\"$\\\\infty$\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383775068_nhfm4.jpg\"]",
+        "explanation": "Correct: both sides rise upward without bound as $x$ approaches 2."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$-\\infty$",
+        "explanation": "The graph does not decrease without bound; it increases."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "0",
+        "explanation": "The graph does not approach 0 near $x=2$."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "The limit is an infinite limit ($\\infty$), which is a valid limit statement here."
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "The graph shows a vertical asymptote at $x=2$ and the function increases without bound on both sides as $x\\to 2$. Therefore $\\lim_{x\\to 2} f(x)=\\infty$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "infinite_limits_asymptotes"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:28:03.795144+00:00",
+    "updated_at": "2026-01-25T23:29:37.715+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.10",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.10-P3",
+    "prompt_type": "text",
+    "primary_skill_id": "infinite_limits_asymptotes",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "e432e2fb-7cd6-4257-bbb4-d503e8ca9056",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.3",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "limit_estimation_table",
+      "limit_concept"
+    ],
+    "error_tags": [
+      "table_trend_misread"
+    ],
+    "prompt": "[\"A function $f$ is shown in the table. What is the best estimate of $\\\\lim_{x\\\\to 5} f(x)$?\\n\\n\\\\[\\n\\\\begin{array}{|c|c|c|c|c|}\\n\\\\hline\\n x & 4.9 & 4.99 & 5.01 & 5.1 \\\\\\\\\\n\\\\hline\\n f(x) & -2.10 & -2.01 & -1.99 & -1.90 \\\\\\\\\\n\\\\hline\\n\\\\end{array}\\n\\\\]\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383793329_vma7ec.jpg\"]",
+    "latex": "A function $f$ is shown in the table. What is the best estimate of $\\lim_{x\\to 5} f(x)$?\n\n\\[\n\\begin{array}{|c|c|c|c|c|}\n\\hline\n x & 4.9 & 4.99 & 5.01 & 5.1 \\\\\n\\hline\n f(x) & -2.10 & -2.01 & -1.99 & -1.90 \\\\\n\\hline\n\\end{array}\n\\]",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$-2$",
+        "explanation": "Correct: nearby values from both sides are very close to $-2$."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$-1.9$",
+        "explanation": "This is a nearby value, but not the limit approached from both sides."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "0",
+        "explanation": "0 is not supported by any of the table values."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "The table indicates both sides approach the same value, so the limit exists."
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "Values of $f(x)$ near $x=5$ approach $-2$ from both sides, so the best estimate is $-2$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_table"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:38:25.461289+00:00",
+    "updated_at": "2026-01-25T23:29:56.284+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 5,
+    "mastery_weight": 1.4,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.3",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 6 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.3-P5",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_table",
+    "supporting_skill_ids": [
+      "limit_concept"
+    ]
+  },
+  {
+    "id": "206da2ab-d968-47a0-b06f-a2d64a795e69",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.1",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "limit_estimation_table",
+      "avg_vs_instant_rate"
+    ],
+    "error_tags": [
+      "table_trend_misread"
+    ],
+    "prompt": "[\"A function $f$ is defined by the table below. Based on the table, what is the best estimate of $f'(2.0)$?\\n\\n\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769383897773_i1sx2n.jpg\"]",
+    "latex": "A function $f$ is defined by the table below. Based on the table, what is the best estimate of $f'(2.0)$?\n\n\\[\n\\begin{array}{|c|c|c|c|}\n\\hline\n t & 1.9 & 2.0 & 2.1 \\\\\n\\hline\n f(t) & 6.86 & 8.00 & 9.26 \\\\\n\\hline\n\\end{array}\n\\]",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "11.4",
+        "explanation": "This is the backward difference: $\\frac{f(2.0)-f(1.9)}{0.1}=11.4$."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "12.0",
+        "explanation": "Correct: symmetric estimate $\\frac{f(2.1)-f(1.9)}{0.2}=12.0$ best matches $f'(2.0)$."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "12.6",
+        "explanation": "This is the forward difference: $\\frac{f(2.1)-f(2.0)}{0.1}=12.6$."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "2.4",
+        "explanation": "This is $f(2.1)-f(1.9)=2.4$, but it forgets to divide by the time interval $0.2$."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "Use a symmetric difference around $t=2.0$: $\\frac{f(2.1)-f(1.9)}{2.1-1.9}=\\frac{9.26-6.86}{0.2}=\\frac{2.40}{0.2}=12.0$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_table"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:37:58.472559+00:00",
+    "updated_at": "2026-01-25T23:31:39.684+00:00",
+    "status": "published",
+    "version": 3,
+    "reasoning_level": 5,
+    "mastery_weight": 1.4,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.1",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 6 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.1-P5",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_table",
+    "supporting_skill_ids": [
+      "avg_vs_instant_rate"
+    ]
+  },
+  {
+    "id": "4a20b9f3-7002-470a-b576-e8a4850d729c",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.14",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "infinite_limits_asymptotes",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "asymptote_confusion"
+    ],
+    "prompt": "Use the graph provided. Which statement is correct?",
+    "latex": "Use the graph provided. Which statement is correct?",
+    "options": [
+      {
+        "id": "A",
+        "type": "image",
+        "label": "A",
+        "value": "[\"$\\\\lim_{x\\\\to 1^-} f(x)=\\\\infty$ and $\\\\lim_{x\\\\to 1^+} f(x)=\\\\infty$\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384224211_xnrzy.jpg\"]",
+        "explanation": "Left side goes downward, not upward."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$\\lim_{x\\to 1^-} f(x)=-\\infty$ and $\\lim_{x\\to 1^+} f(x)=\\infty$",
+        "explanation": "Correct: opposite infinite behavior on the two sides."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "$\\lim_{x\\to 1^-} f(x)=0$ and $\\lim_{x\\to 1^+} f(x)=0$",
+        "explanation": "The function does not approach 0 near the asymptote."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "$\\lim_{x\\to 1} f(x)$ exists and equals 1",
+        "explanation": "With opposite infinite behavior, the two-sided limit does not exist."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "The graph shows a vertical asymptote at $x=1$. The left side decreases without bound ($-\\infty$) and the right side increases without bound ($\\infty$).",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "infinite_limits_asymptotes"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:36:53.242986+00:00",
+    "updated_at": "2026-01-25T23:37:07.471+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.14",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.14-P1",
+    "prompt_type": "text",
+    "primary_skill_id": "infinite_limits_asymptotes",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "4b832987-d059-4273-9bd7-131e14f980f8",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.12",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 210,
+    "skill_tags": [
+      "continuity_concept",
+      "discontinuity_types"
+    ],
+    "error_tags": [
+      "endpoint_domain_issue"
+    ],
+    "prompt": "[\"Use the graph provided. Is $f$ continuous on the interval $[-2,2]$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384299329_1p7mo.jpg\"]",
+    "latex": "Use the graph provided. Is $f$ continuous on the interval $[-2,2]$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "Yes, it is continuous on $[-2,2]$ ",
+        "explanation": "Continuity on a closed interval requires the function to be defined at both endpoints."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "No, because $f$ is not defined at $x=-2$",
+        "explanation": "The graph shows a filled point at $x=-2$, so it is defined there."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "No, because $f$ is not defined at $x=2$",
+        "explanation": "Correct: the open circle at $x=2$ means $f(2)$ is not defined."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "No, because there is a jump at $x=0$",
+        "explanation": "There is no jump at $x=0$ in the graph."
+      }
+    ],
+    "correct_option_id": "C",
+    "tolerance": null,
+    "explanation": "The left endpoint at $x=-2$ is included and defined, but the right endpoint at $x=2$ is shown as an open circle, meaning $f(2)$ is not defined. Therefore $f$ is not continuous on $[-2,2]$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "continuity_concept"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:32:24.676231+00:00",
+    "updated_at": "2026-01-25T23:38:21.837+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.12",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 3.5 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.12-P1",
+    "prompt_type": "image",
+    "primary_skill_id": "continuity_concept",
+    "supporting_skill_ids": [
+      "discontinuity_types"
+    ]
+  },
+  {
+    "id": "995d20ab-7ad4-4fc2-aa05-06031445ebb2",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.4",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 180,
+    "skill_tags": [
+      "limit_estimation_table",
+      "limit_notation"
+    ],
+    "error_tags": [
+      "one_sided_from_data"
+    ],
+    "prompt": "[\"Use the table provided. What is the best estimate of $\\\\lim_{x\\\\to 0^+} g(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384317428_ot45lo.jpg\"]",
+    "latex": "Use the table provided. What is the best estimate of $\\lim_{x\\to 0^+} g(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "0",
+        "explanation": "0 is the x-value approached, not the y-value trend."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "2",
+        "explanation": "Correct: the values approach 2 as $x\\to 0^+$."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "2.1",
+        "explanation": "2.1 is only the value at $x=0.1$, not the limit trend."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "A one-sided limit can exist; the table shows it approaches 2."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "As $x$ approaches 0 from the right, the values of $g(x)$ approach 2.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_estimation_table"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T21:51:25.585959+00:00",
+    "updated_at": "2026-01-25T23:38:39.437+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.4",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 3 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.4-P2",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_estimation_table",
+    "supporting_skill_ids": [
+      "limit_notation"
+    ]
+  },
+  {
+    "id": "dea4fa4e-088e-42cb-a25e-bd633e8871c3",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.10",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 210,
+    "skill_tags": [
+      "discontinuity_types",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "open_vs_closed_point"
+    ],
+    "prompt": "[\"Use the graph provided. What type of discontinuity does $f$ have at $x=1$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384355370_shemo.jpg\"]",
+    "latex": "Use the graph provided. What type of discontinuity does $f$ have at $x=1$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "Removable discontinuity",
+        "explanation": "Correct: the limit exists but $f(1)$ does not match the limiting value."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "Jump discontinuity",
+        "explanation": "A jump would require different left and right limits, which is not the case here."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "Infinite discontinuity",
+        "explanation": "An infinite discontinuity would involve a vertical asymptote, which is not shown."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "No discontinuity (continuous)",
+        "explanation": "The function is not continuous because the filled point does not match the hole."
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "The left- and right-hand limits agree at $x=1$ (there is a hole), but the function value at $x=1$ is defined at a different $y$-value. That is a removable discontinuity.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "discontinuity_types"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:28:03.795144+00:00",
+    "updated_at": "2026-01-25T23:39:18.017+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.10",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 3.5 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.10-P1",
+    "prompt_type": "image",
+    "primary_skill_id": "discontinuity_types",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "c9f2ebf0-c91a-48ed-af89-cb117b185b75",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "1.9",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 240,
+    "skill_tags": [
+      "infinite_limits_asymptotes",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "asymptote_confusion"
+    ],
+    "prompt": "[\"Use the graph provided. Which statement is correct?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769384368976_i0c3x.jpg\"]",
+    "latex": "Use the graph provided. Which statement is correct?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$\\lim_{x\\to 2^-} f(x)=\\infty$ and $\\lim_{x\\to 2^+} f(x)=\\infty$",
+        "explanation": "The left side goes downward, not upward."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$\\lim_{x\\to 2^-} f(x)=-\\infty$ and $\\lim_{x\\to 2^+} f(x)=\\infty$",
+        "explanation": "Correct: left-hand limit is $-\\infty$ and right-hand limit is $\\infty$."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "$\\lim_{x\\to 2^-} f(x)=0$ and $\\lim_{x\\to 2^+} f(x)=0$",
+        "explanation": "The graph does not approach 0 near $x=2$."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "$\\lim_{x\\to 2} f(x)$ exists and equals 1",
+        "explanation": "With opposite infinite behaviors, the two-sided limit does not exist."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "From the graph, the function decreases without bound as $x\\to 2^-$ and increases without bound as $x\\to 2^+$, so the one-sided infinite limits have opposite signs.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "infinite_limits_asymptotes"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T22:01:23.069125+00:00",
+    "updated_at": "2026-01-25T23:39:31.076+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "1.9",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Target time: 4 minutes.",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "1.9-P5",
+    "prompt_type": "image",
+    "primary_skill_id": "infinite_limits_asymptotes",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "029895ae-b361-44f1-b162-e391e6578fe0",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "unit_test",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 120,
+    "skill_tags": [
+      "limit_laws",
+      "algebraic_simplification"
+    ],
+    "error_tags": [
+      "illegal_substitution_0over0"
+    ],
+    "prompt": "[\"Evaluate $\\\\lim_{x\\\\to 3} (2x^2-5x+1)$.\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769385327064_njn3p.jpg\"]",
+    "latex": "Evaluate $\\lim_{x\\to 3} (2x^2-5x+1)$.",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "4",
+        "explanation": "Correct: direct substitution yields 4."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "5",
+        "explanation": "This comes from arithmetic error."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "6",
+        "explanation": "Incorrect. This might come from an arithmetic error."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "7",
+        "explanation": "This is incorrect due to arithmetic; correct result is 4."
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "Polynomials are continuous, so substitute directly: $2(3)^2-5(3)+1=18-15+1=4$. Wait: $18-15+1=4$, so the correct answer is 4.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "limit_laws"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T23:53:21.256452+00:00",
+    "updated_at": "2026-01-25T23:55:30.661+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "unit_test",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Ch 1.5 substitution (CORRECT OPTION FIX APPLIED)",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "Unit1-UT-Q7",
+    "prompt_type": "image",
+    "primary_skill_id": "limit_laws",
+    "supporting_skill_ids": [
+      "algebraic_simplification"
+    ]
+  },
+  {
+    "id": "0015173b-cc1a-4da5-9bd2-4c6aaeecd720",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "unit_test",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 2,
+    "target_time_seconds": 90,
+    "skill_tags": [
+      "discontinuity_types",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "graph_jump_confusion"
+    ],
+    "prompt": "[\"Use the graph provided. What type of discontinuity occurs at $x=1$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769385336198_cdvo8k.jpg\"]",
+    "latex": "Use the graph provided. What type of discontinuity occurs at $x=1$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "Removable",
+        "explanation": "Removable would require the two-sided limit to exist."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "Jump",
+        "explanation": "Correct: different one-sided limits indicates a jump."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "Infinite",
+        "explanation": "Infinite discontinuity occurs near a vertical asymptote."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "No discontinuity",
+        "explanation": "The function is not continuous at the point."
+      }
+    ],
+    "correct_option_id": "B",
+    "tolerance": null,
+    "explanation": "The left-hand and right-hand limits at $x=1$ approach different values (1 and 3), so there is a jump discontinuity.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "discontinuity_types"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T23:53:21.256452+00:00",
+    "updated_at": "2026-01-25T23:55:38.057+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 2,
+    "mastery_weight": 1,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "unit_test",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Uses unit1_UT_Q4_graph.png",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "Unit1-UT-Q4",
+    "prompt_type": "image",
+    "primary_skill_id": "discontinuity_types",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "ba9b6523-8207-4cae-8cc6-7d1955a32c07",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "unit_test",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 120,
+    "skill_tags": [
+      "infinite_limits_asymptotes",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "infinite_limit_meaning"
+    ],
+    "prompt": "[\"Use the graph provided. What is $\\\\lim_{x\\\\to 2} f(x)$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769385350374_pd2ytk.jpg\"]",
+    "latex": "Use the graph provided. What is $\\lim_{x\\to 2} f(x)$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "$\\infty$",
+        "explanation": "Correct: both sides approach positive infinity."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "$-\\infty$",
+        "explanation": "The graph does not go downward near the asymptote."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "0",
+        "explanation": "It does not approach 0 near $x=2$."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "An infinite limit here is described by $\\infty$."
+      }
+    ],
+    "correct_option_id": "A",
+    "tolerance": null,
+    "explanation": "The graph shows a vertical asymptote at $x=2$ and both sides rise without bound, so the limit is $\\infty$.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "infinite_limits_asymptotes"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T23:53:21.256452+00:00",
+    "updated_at": "2026-01-25T23:55:53.871+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "unit_test",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Uses unit1_UT_Q12_graph.png (Ch 1.14)",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "Unit1-UT-Q12",
+    "prompt_type": "image",
+    "primary_skill_id": "infinite_limits_asymptotes",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  },
+  {
+    "id": "89417aeb-e2c3-4535-940c-1b4d2484e9c0",
+    "course": "Both",
+    "topic": "Both_Limits",
+    "sub_topic_id": "unit_test",
+    "type": "MCQ",
+    "calculator_allowed": false,
+    "difficulty": 3,
+    "target_time_seconds": 120,
+    "skill_tags": [
+      "squeeze_theorem",
+      "limit_estimation_graph"
+    ],
+    "error_tags": [
+      "squeeze_bounds_incorrect"
+    ],
+    "prompt": "[\"Use the graph provided. Which value best matches $\\\\lim_{x\\\\to 0} \\\\frac{\\\\sin x}{x}$?\",\"https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/public/images/questions/b55d71f0-0649-4ca1-ab0e-2bb06e7f286a/1769385368818_u0wz7o.jpg\"]",
+    "latex": "Use the graph provided. Which value best matches $\\lim_{x\\to 0} \\frac{\\sin x}{x}$?",
+    "options": [
+      {
+        "id": "A",
+        "type": "text",
+        "label": "A",
+        "value": "-1",
+        "explanation": "Near 0 the values approach 1, not -1."
+      },
+      {
+        "id": "B",
+        "type": "text",
+        "label": "B",
+        "value": "0",
+        "explanation": "It does not approach 0; it approaches 1."
+      },
+      {
+        "id": "C",
+        "type": "text",
+        "label": "C",
+        "value": "1",
+        "explanation": "Correct: the limit is 1."
+      },
+      {
+        "id": "D",
+        "type": "text",
+        "label": "D",
+        "value": "DNE",
+        "explanation": "The limit exists even though the function may be undefined at 0."
+      }
+    ],
+    "correct_option_id": "C",
+    "tolerance": null,
+    "explanation": "As $x\\to 0$, the function $\\sin x / x$ approaches 1. This is consistent with the squeeze theorem and the graph trend near the origin.",
+    "micro_explanations": null,
+    "recommendation_reasons": [
+      "squeeze_theorem"
+    ],
+    "created_by": null,
+    "created_at": "2026-01-25T23:53:21.256452+00:00",
+    "updated_at": "2026-01-25T23:56:11.443+00:00",
+    "status": "published",
+    "version": 2,
+    "reasoning_level": 3,
+    "mastery_weight": 1.15,
+    "representation_type": "symbolic",
+    "topic_id": "Both_Limits",
+    "section_id": "unit_test",
+    "source": "NewMaoS",
+    "source_year": 2026,
+    "notes": "Uses unit1_UT_Q18_graph.png",
+    "weight_primary": 0.8,
+    "weight_supporting": 0.2,
+    "title": "Unit1-UT-Q18",
+    "prompt_type": "image",
+    "primary_skill_id": "squeeze_theorem",
+    "supporting_skill_ids": [
+      "limit_estimation_graph"
+    ]
+  }
+]

@@ -353,6 +353,12 @@ export const notificationsApi = {
             method: 'PUT',
         });
     },
+
+    async acceptFriend(notifId: number) {
+        return apiRequest<{ success: boolean }>(`/notifications/${notifId}/accept-friend`, {
+            method: 'POST',
+        });
+    },
 };
 
 // =====================================
@@ -376,5 +382,36 @@ export default {
     progress: progressApi,
     content: contentApi,
     notifications: notificationsApi,
+    upload: {
+        async uploadImage(file: File) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            // We need to use raw fetch here because apiRequest assumes JSON content-type by default usually, 
+            // or we need to update apiRequest to handle FormData. 
+            // Let's just use the helper but we need to handle the headers carefully.
+            // Actually, if we pass body as FormData, fetch usually sets Content-Type to multipart/form-data automatically 
+            // WITH the boundary. If we manually set Content-Type to 'multipart/form-data', it might fail because of missing boundary.
+            // So we should probably override the default Content-Type header to undefined/null for this request.
+
+            const token = localStorage.getItem('auth_token') ||
+                JSON.parse(localStorage.getItem(Object.keys(localStorage).find(k => k.includes('-auth-token')) || '') || '{}').access_token;
+
+            const res = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/upload/image`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({ error: 'Upload failed' }));
+                throw new Error(err.error || 'Upload failed');
+            }
+
+            return res.json() as Promise<{ url: string; path: string }>;
+        }
+    },
     checkHealth: checkApiHealth,
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useApp } from '../AppContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { COURSE_CONTENT_DATA } from '../constants';
@@ -8,6 +8,9 @@ import { AdvancedCalculator } from '../components/AdvancedCalculator';
 import { SessionSummary } from '../components/SessionSummary';
 import { useToast } from '../components/Toast';
 import { MathRenderer } from '../components/MathRenderer';
+import { questionsApi, practiceApi, contentApi, sectionsApi } from '../src/services/api';
+import { supabase } from '../src/services/supabaseClient';
+import { QuestionCommentSection } from '../components/QuestionCommentSection';
 
 // Markdown-ish renderer for the lesson content
 // Markdown-ish renderer for the lesson content
@@ -16,11 +19,23 @@ import { MathRenderer } from '../components/MathRenderer';
 // Replaced ContentRenderer with direct usage or wrapper if needed
 const LessonRenderer = ({ content }: { content: string }) => {
     return (
-        <div className="space-y-4 text-text-main dark:text-gray-200">
-            <MathRenderer content={content} className="text-lg leading-relaxed" />
+        <div className="space-y-4 text-text-main dark:text-gray-200 font-sans [&_*]:font-sans [&_p]:font-sans [&_li]:font-sans">
+            <MathRenderer content={content} className="text-lg leading-relaxed font-medium" />
         </div>
     )
 }
+
+// Helper function to convert numbers to ordinals (Second, Third, Fourth, etc.)
+const getOrdinal = (n: number): string => {
+    if (n === 1) return 'First';
+    if (n === 2) return 'Second';
+    if (n === 3) return 'Third';
+    if (n === 4) return 'Fourth';
+    if (n === 5) return 'Fifth';
+    return `${n}th`;
+};
+
+
 
 
 
@@ -28,83 +43,390 @@ const LessonRenderer = ({ content }: { content: string }) => {
 
 
 export const Practice = () => {
-    const { user, completePractice, questions: allQuestions, topicContent, submitAttempt, getTopicProgress, saveSectionProgress, completeSectionSession, getSectionProgress, sections } = useApp();
+    const { user, completePractice, questions: allQuestions, topicContent, submitAttempt, getTopicProgress, saveSectionProgress, completeSectionSession, getSectionProgress, sections, incorrectQuestionIds, resetSectionProgress, getSectionProgressData, fetchAllUserProgress, logUserActivity, getUserActivities } = useApp();
     const navigate = useNavigate();
     const { showToast } = useToast();
     const location = useLocation();
-    const topicParam = location.state?.topic || 'General'; // This might be "AB_Limits" or just "Limits"
-    const subTopicId = location.state?.subTopicId;
-    const sessionMode: SessionMode = location.state?.mode || 'Adaptive';
+
+    // Session Recovery Logic (Safe Mode)
+    const effectiveState = useMemo(() => {
+        if (location.state) return location.state;
+
+        // Only attempt recovery if state is missing (e.g. refresh)
+        if (typeof sessionStorage !== 'undefined') {
+            try {
+                const saved = sessionStorage.getItem('last_practice_session');
+                return saved ? JSON.parse(saved) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+        return null;
+    }, [location.state]);
+
+    const topicParamRaw = effectiveState?.topic || 'General';
+    // Case-insensitive match to find valid DB topic ID
+    const topicParam = useMemo(() => {
+        const keys = Object.keys(COURSE_CONTENT_DATA);
+        return keys.find(k => k.toLowerCase() === topicParamRaw.toLowerCase()) || topicParamRaw;
+    }, [topicParamRaw]);
+
+    const subTopicId = effectiveState?.subTopicId;
+    const sessionMode: SessionMode = effectiveState?.mode || 'Adaptive';
 
     // Derived Clean Topic - available to all functions in component
     const cleanTopic = topicParam.includes('_') ? topicParam.split('_')[1] : topicParam;
 
     // If subTopicId exists AND it is NOT 'unit_test', we start in 'Lesson' view, otherwise 'Practice'
+    // Exception: If mode is 'Review', Resuming, or Force Start, skip lesson
     const [viewState, setViewState] = useState<'lesson' | 'practice'>(
-        subTopicId && subTopicId !== 'unit_test' ? 'lesson' : 'practice'
+        sessionMode === 'Review' || effectiveState?.isResuming === true || effectiveState?.forceStartNew === true || !subTopicId
+            ? 'practice'
+            : 'lesson'
     );
 
+    // Track session start time for accurate duration logging
+    const sessionStartTimeRef = useRef<number>(Date.now());
+
+    // Reset start time when valid questions are loaded or practice starts
+    useEffect(() => {
+        if (viewState === 'practice') {
+            sessionStartTimeRef.current = Date.now();
+        }
+    }, [viewState]);
+
     // UNIQUE ID LOGIC: Prefix unit_test with topic to avoid collisions across units
+    // Ensure we use the case-corrected topicParam
     const effectiveSectionId = subTopicId === 'unit_test' ? `${topicParam}_unit_test` : subTopicId;
 
-    const [subTopicData, setSubTopicData] = useState<any>(null);
+
+    // -------------------------------------------------------------------------
+    // REFACTOR: Derive Static Data Synchronously to prevent content mismatch flicker
+    // -------------------------------------------------------------------------
+    const currentStaticData = useMemo(() => {
+        if (topicParam && COURSE_CONTENT_DATA[topicParam]) {
+            return COURSE_CONTENT_DATA[topicParam].subTopics.find(s => s.id === subTopicId) || null;
+        }
+        return null;
+    }, [topicParam, subTopicId]);
+
+    // Derived Forum Slug for "Discuss" button
+    const discussSlug = useMemo(() => {
+        const coursePrefix = (user?.currentCourse || 'AB').toLowerCase();
+        return `ap-calculus-${coursePrefix}`;
+    }, [user?.currentCourse]);
+
+    // Only store DB overrides in state, not the full data
+    const [dbSubTopicData, setDbSubTopicData] = useState<any>(null);
+
+    // NEW: Frozen snapshot of incorrect question IDs for Review mode
+    // This prevents questions from disappearing when user answers correctly during review
+    const [frozenReviewQuestionIds, setFrozenReviewQuestionIds] = useState<Set<string>>(new Set());
+
+    // UI States
+    const [showComments, setShowComments] = useState(false);
+
+    // Merge Static + DB Data (DB wins if ID matches)
+    const subTopicData = useMemo(() => {
+        if (dbSubTopicData && (dbSubTopicData.id === subTopicId || dbSubTopicData.id === effectiveSectionId)) {
+            return { ...currentStaticData, ...dbSubTopicData };
+        }
+        return currentStaticData;
+    }, [currentStaticData, dbSubTopicData, subTopicId, effectiveSectionId]);
+
+    // Robust numbering fix for Practice Hub & Header
+    const correctedSubTopicTitle = useMemo(() => {
+        if (!subTopicData || !subTopicData.title || subTopicId === 'unit_test') return subTopicData?.title || (subTopicId === 'unit_test' ? 'Unit Test' : '');
+
+        const allSubTopics = COURSE_CONTENT_DATA[topicParam]?.subTopics || [];
+
+        const BC_ONLY_IDS = [
+            '6.11', '6.12', '6.13',
+            '7.5', '7.9',
+            '8.13',
+            '9.1', '9.2', '9.3', '9.4', '9.5', '9.6', '9.7', '9.8', '9.9',
+            '10.1', '10.2', '10.3', '10.4', '10.5', '10.6', '10.7', '10.8', '10.9', '10.10', '10.11', '10.12', '10.13', '10.14', '10.15'
+        ];
+
+        const filtered = allSubTopics.filter(s => {
+            if (s.id === 'unit_test' || s.id === 'overview') return false;
+            if (user.currentCourse === 'AB' && BC_ONLY_IDS.includes(s.id)) return false;
+            if (!s.courseScope || s.courseScope === 'both') return true;
+            if (user.currentCourse === 'AB') return s.courseScope !== 'bc_only';
+            if (user.currentCourse === 'BC') return s.courseScope !== 'ab_only';
+            return true;
+        });
+
+        const index = filtered.findIndex(s => s.id === subTopicId);
+        if (index === -1) return subTopicData.title;
+
+        const cleanTitle = subTopicData.title.replace(/^\d+\.\d+\s*/, '');
+        const unitPrefix = subTopicData.title.match(/^\d+/)?.[0] || '';
+        return unitPrefix ? `${unitPrefix}.${index + 1} ${cleanTitle}` : subTopicData.title;
+    }, [subTopicData, topicParam, subTopicId, user.currentCourse]);
+
+    // AUTO-SKIP LESSON: DISABLED - User wants to see intro page always
+    /*
+    useEffect(() => {
+        if (subTopicData && subTopicData.hasLesson === false && viewState === 'lesson') {
+            // Only skip if we haven't already made a choice (e.g. implicitly)
+            // But if user WANTS to see intro, we might keep it? 
+            // For now, respect the "Has Lesson" flag. If false, go strictly to practice.
+            setViewState('practice');
+        }
+    }, [subTopicData, viewState]);
+    */
+
+    // RENDER-PHASE RESET: Force state reset immediately when subTopicId changes
+    // This runs BEFORE paint, preventing any frame of stale content
+    const [prevSubTopicId, setPrevSubTopicId] = useState(subTopicId);
+    if (subTopicId !== prevSubTopicId) {
+        setPrevSubTopicId(subTopicId);
+        setDbSubTopicData(null); // Reset async data immediately
+        // Note: We don't return null; we let it render with static data (which is correct)
+    }
+
+    // Check for previous progress or saved session
 
     // Check for previous progress or saved session
     useEffect(() => {
         const checkProgress = async () => {
-            if (effectiveSectionId && topicParam) {
-                // 1. Check for Saved Session (In Progress OR Completed)
-                const savedSession = await getSectionProgress(effectiveSectionId);
+            try {
+                if (effectiveSectionId && topicParam) {
+                    // 1. Check for Saved Session (In Progress OR Completed)
+                    const savedSession = await getSectionProgress(effectiveSectionId);
 
-                // Check if there is actual data to resume (regardless of status)
-                // User requirement: "Allow resuming even if tag is completed"
-                if (savedSession && savedSession.data && Object.keys(savedSession.data.userAnswers || {}).length > 0) {
-                    setPendingResumeData(savedSession.data);
-                    // setPendingResumeData makes the "Start Over / Resume" buttons appear inline
-                    // Do NOT auto-load. Wait for user input on the buttons.
-                }
+                    // --- NEW: Load History from Main Section (for Review Mode access) or Current ---
+                    const mainId = subTopicId.endsWith('_review') ? subTopicId.replace('_review', '') : subTopicId;
 
-                // 2. Initialize new session tracking if NOT resuming (handled by default state)
-                // But we still want to ensure DB record exists for "in_progress" tracking if we are starting fresh?
-                // Actually, let's wait until they answer the prompt.
-                // If they say "Start New", we should probably init the "in_progress" status?
-                // For now, let's leave the auto-init logic below alone, but it might run in parallel?
-                // Wait, if we set showResumePrompt, we are technically "waiting".
-                // But the code below runs immediately.
+                    // Helper function to rebuild history from old data structure
+                    const rebuildHistoryFromData = (data: any): any[] => {
+                        if (data?.summaryHistory?.length > 0) {
+                            return data.summaryHistory;
+                        }
 
-                // Refined Logic:
-                // If we found a session, we prompt. Use `pendingResumeData` flag to skip auto-init?
-                // Actually, if we found a session, we set `showResumePrompt`.
-                // If we don't return here, the code below runs.
-                // If we return, we stop.
+                        // Backward compatibility: rebuild from firstAttempt if exists
+                        const history: any[] = [];
+                        const fa = data?.firstAttempt;
+                        if (fa?.status === 'completed') {
+                            const faResults = fa.questionResults || data.questionResults || {};
+                            const faCorrect = Object.values(faResults).filter((r: any) => r === 'correct').length;
+                            const faTotal = fa.questionIds?.length || Object.keys(faResults).length || 5;
+                            history.push({
+                                type: 'first_attempt',
+                                attemptNumber: 1,
+                                label: 'First Attempt',
+                                timestamp: fa.completedAt || data.timestamp || new Date().toISOString(),
+                                score: faTotal > 0 ? Math.round((faCorrect / faTotal) * 100) : 0,
+                                userAnswers: fa.userAnswers || data.userAnswers || {},
+                                questionResults: faResults
+                            });
+                        }
+                        return history;
+                    };
 
-                if (savedSession && savedSession.data && Object.keys(savedSession.data.userAnswers || {}).length > 0) {
-                    return; // Stop here, wait for prompt interaction
-                }
-
-                // 3. If NO session exists, initialize as 'in_progress' immediately
-                if (!savedSession) {
-                    // Save SECTION progress
-                    await saveSectionProgress(effectiveSectionId, {
-                        userAnswers: {},
-                        currentQuestionIndex: 0
-                    }, 0, 'section');
-
-                    // Save UNIT progress (bubbling up)
-                    if (topicParam) {
-                        await saveSectionProgress(topicParam, {}, 0, 'unit');
+                    if (mainId !== effectiveSectionId) {
+                        // We are in Review/Unit Test with suffix? Fetch Main for History
+                        getSectionProgress(mainId).then(mainP => {
+                            if (mainP?.data) setSessionHistory(rebuildHistoryFromData(mainP.data));
+                        });
+                    } else if (savedSession?.data) {
+                        setSessionHistory(rebuildHistoryFromData(savedSession.data));
                     }
 
-                    // Save COURSE progress (bubbling up)
-                    if (user.currentCourse) {
-                        await saveSectionProgress(user.currentCourse, {}, 0, 'course');
+                    // --- NEW: Handle Summary Mode (View Last Results) ---
+                    if (sessionMode === 'Summary' && savedSession) {
+                        if (savedSession.data) {
+                            setUserAnswers(savedSession.data.userAnswers || {});
+                            setQuestionResults(savedSession.data.questionResults || {});
+                            setSessionResults({
+                                correct: savedSession.correct_questions || 0,
+                                total: savedSession.total_questions || (savedSession.data.questions?.length || 0)
+                            });
+                            // Ensure history is set from rebuilt data
+                            const rebuiltHistory = rebuildHistoryFromData(savedSession.data);
+                            console.log('🔍 [Summary Mode] rebuiltHistory:', rebuiltHistory.map(h => ({ type: h.type, label: h.label, round: h.round })));
+                            setSessionHistory(rebuiltHistory);
+                        }
+                        setShowSummary(true);
+                        setViewState('practice');
+                        setIsInitializing(false);
+                        return;
+                    }
+
+                    // Allow resume if there are answers OR we are past the first question
+                    // === NEW STATE MACHINE RESTORATION ===
+                    const data = savedSession?.data;
+                    const firstAttempt = data?.firstAttempt;
+                    const review = data?.review;
+
+                    // Check for progress using new structure (with legacy fallback)
+                    const hasFirstAttemptProgress = firstAttempt?.status === 'in_progress' || (
+                        !firstAttempt && (
+                            Object.keys(data?.userAnswers || {}).length > 0 ||
+                            (data?.currentQuestionIndex || 0) > 0
+                        )
+                    );
+
+                    // Restore marked questions if they exist
+                    if (data?.markedQuestionIds) {
+                        setMarkedQuestions(new Set(data.markedQuestionIds));
+                    }
+
+                    const hasReviewProgress = review?.status === 'in_progress';
+
+                    if (sessionMode === 'Review') {
+                        // --- REVIEW MODE ---
+                        if (hasReviewProgress && effectiveState?.isResuming) {
+                            // Resume existing review
+                            setUserAnswers(review.userAnswers || {});
+                            setQuestionResults(review.questionResults || {});
+                            setCurrentQuestionIndex(review.currentQuestionIndex || 0);
+                            // Accuracy Fix: Count correct answers ONLY within this review round
+                            const reviewCorrect = Object.values(review.questionResults || {}).filter(r => r === 'correct').length;
+                            setSessionResults({
+                                correct: reviewCorrect,
+                                total: review.targetQuestionIds?.length || questions.length || 0
+                            });
+                            // NEW: Ensure isSubmitted is synced immediately for the resumed review question
+                            const reviewTargetIds = review.targetQuestionIds || [];
+                            const resumeIdx = review.currentQuestionIndex || 0;
+                            const currentQId = reviewTargetIds[resumeIdx];
+                            const reviewResults = review.questionResults || {};
+                            if (currentQId && (reviewResults[currentQId] === 'correct' || reviewResults[currentQId] === 'incorrect')) {
+                                setIsSubmitted(true);
+                                setFeedback(reviewResults[currentQId]);
+                            } else {
+                                setIsSubmitted(false);
+                                setFeedback(null);
+                            }
+
+                            // Use saved target question IDs as frozen set
+                            if (review.targetQuestionIds?.length > 0) {
+                                setFrozenReviewQuestionIds(new Set(review.targetQuestionIds));
+                            }
+                            setShowResumePrompt(false);
+                            setIsInitializing(false);
+                            return;
+                        } else {
+                            // --- FRESH REVIEW ---
+                            setUserAnswers({});
+                            setQuestionResults({});
+                            setMarkedQuestions(new Set());
+                            setCurrentQuestionIndex(0);
+                            setShowSummary(false);
+
+                            // Use currentIncorrectIds from saved data, or fall back to global incorrectQuestionIds
+                            const targetIds = data?.currentIncorrectIds?.length > 0
+                                ? new Set(data.currentIncorrectIds as string[])
+                                : incorrectQuestionIds;
+                            setFrozenReviewQuestionIds(targetIds);
+                            // Continue to init logic below
+                        }
+                    }
+
+                    // --- NORMAL/ADAPTIVE RESTORATION (Explicit Resume) ---
+                    if (hasFirstAttemptProgress && effectiveState?.isResuming) {
+                        // Directly apply data and SKIP pending state to avoid any prompts
+                        // Use new structure if available, fallback to legacy
+                        const resumeAnswers = firstAttempt?.userAnswers || data?.userAnswers || {};
+                        const resumeResults = firstAttempt?.questionResults || data?.questionResults || {};
+                        const resumeIndex = firstAttempt?.currentQuestionIndex ?? data?.currentQuestionIndex ?? 0;
+
+                        setUserAnswers(resumeAnswers);
+                        setCurrentQuestionIndex(resumeIndex);
+                        setQuestionResults(resumeResults);
+
+                        // NEW: Ensure isSubmitted is synced immediately for the resumed question
+                        const currentQuestionId = firstAttempt?.questionIds?.[resumeIndex] || data?.questionIds?.[resumeIndex];
+                        if (currentQuestionId && (resumeResults[currentQuestionId] === 'correct' || resumeResults[currentQuestionId] === 'incorrect')) {
+                            setIsSubmitted(true);
+                            setFeedback(resumeResults[currentQuestionId]);
+                        } else {
+                            setIsSubmitted(false);
+                            setFeedback(null);
+                        }
+
+                        setShowResumePrompt(false);
+                        setIsInitializing(false);
+                        return;
+                    }
+
+                    // If we have progress but we are NOT resuming (e.g. Start Over or Review mode), 
+                    // we show the data in pending but don't return, allowing a new session to init if needed
+                    if (hasFirstAttemptProgress) {
+                        setPendingResumeData(savedSession.data);
+                        // Special Case: In Review mode or Start Over, we ignore the old session's answers
+                        if ((sessionMode as SessionMode) === 'Review' || effectiveState?.forceStartNew) {
+                            // Continue to init new session logic
+                            // CRITICAL: Clear locally frozen IDs so we don't carry over old questions
+                            if (effectiveState?.forceStartNew) {
+                                console.log('🔄 [checkProgress] Force Start New: Clearing frozen IDs');
+                                setFrozenReviewQuestionIds(new Set());
+                                setMarkedQuestions(new Set());
+                            }
+                        } else {
+                            setIsInitializing(false); // Fix: Ensure loading state is cleared
+                            return; // Show prompt (since isResuming is false)
+                        }
+                    }
+
+                    // 2. Initialize new session if NOT resuming
+                    // Refined Logic warning: if hasFirstAttemptProgress is true, we returned above.
+                    if (effectiveState?.forceStartNew && effectiveSectionId && sessionMode !== 'Review') {
+                        await resetSectionProgress(effectiveSectionId);
+                    }
+
+                    // 3. If NO session exists or we just reset, initialize as 'in_progress' immediately
+                    // But don't do this for 'Summary' mode which should only READ.
+                    // CRITICAL CHANGE: Only initialize if we are actually in PRACTICE mode (user clicked Start)
+                    if (viewState === 'practice' && sessionMode !== 'Summary' && (!savedSession || effectiveState?.forceStartNew)) {
+                        const initData = {
+                            ...(savedSession?.data || {}),
+                            userAnswers: {},
+                            currentQuestionIndex: 0,
+                            questionIds: savedSession?.data?.questionIds || questions.map(q => q.id)
+                        };
+
+                        // If starting fresh Review, preserve history but reset review object
+                        if (sessionMode === 'Review') {
+                            // Use empty set if we just cleared, otherwise use current incorrect
+                            // Note: frozenReviewQuestionIds might be empty here due to async set above.
+                            // We should recalculate targets here or let the useEffect handle it.
+                            console.log('🔄 [checkProgress] Init Review. Frozen Size:', frozenReviewQuestionIds.size);
+
+                            initData.review = {
+                                status: 'in_progress' as const,
+                                round: (savedSession?.data?.review?.round || 0) + 1,
+                                targetQuestionIds: [], // Start empty, let useEffect populate from incorrect
+                                userAnswers: {},
+                                questionResults: {},
+                                currentQuestionIndex: 0
+                            };
+                        }
+
+                        await saveSectionProgress(effectiveSectionId, initData, { completed: 0, total: 0, score: 0 }, 'section', (sessionMode as SessionMode) === 'Review');
+
+                        // Save UNIT progress (bubbling up) - Only if not Review
+                        if (topicParam && (sessionMode as SessionMode) !== 'Review') {
+                            await saveSectionProgress(topicParam, {}, { completed: 0, total: 0, score: 0 }, 'unit');
+                        }
+
+                        // Save COURSE progress (bubbling up)
+                        if (user.currentCourse) {
+                            await saveSectionProgress(user.currentCourse, {}, { completed: 0, total: 0, score: 0 }, 'course');
+                        }
                     }
                 }
+            } catch (err) {
+                console.error("Error checking progress:", err);
+            } finally {
+                setIsInitializing(false);
             }
         };
-        // Only run once on mount per subtopic
+        // Only run when subTopicId/topicParam changes OR when viewState changes (to trigger init on start)
         checkProgress();
-    }, [subTopicId, topicParam]);
+    }, [subTopicId, topicParam, viewState, sessionMode, location.key]);
     // State for Sidebar Tools
     const [activeTool, setActiveTool] = useState<'none' | 'calculator' | 'formula' | 'scratchpad'>('none');
 
@@ -121,7 +443,7 @@ export const Practice = () => {
 
     // State for Modals
     const [showExitConfirm, setShowExitConfirm] = useState(false);
-    const [showReportModal, setShowReportModal] = useState(false);
+    // const [showReportModal, setShowReportModal] = useState(false); // REMOVED
     const [isSaving, setIsSaving] = useState(false);
     const [isReporting, setIsReporting] = useState(false);
     const [reportReason, setReportReason] = useState('content_error');
@@ -135,6 +457,7 @@ export const Practice = () => {
     const [submitMode, setSubmitMode] = useState<'immediate' | 'batch'>('immediate');
     const [userAnswers, setUserAnswers] = useState<Record<string, string>>({}); // qId -> selectedOptionId for batch mode
     const [showSummary, setShowSummary] = useState(false);
+    const [justCompletedSessionLabel, setJustCompletedSessionLabel] = useState<string | null>(null);
     const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
 
     // Agent Insight: Track time spent on each question
@@ -150,13 +473,16 @@ export const Practice = () => {
                 setUserAnswers(pendingResumeData.userAnswers);
             }
             if (pendingResumeData.currentQuestionIndex !== undefined) {
-                setCurrentQuestionIndex(pendingResumeData.currentQuestionIndex);
+                // Ensure index is within bounds of current question set
+                const index = Math.min(pendingResumeData.currentQuestionIndex, questions.length - 1);
+                setCurrentQuestionIndex(index >= 0 ? index : 0);
             }
             if (pendingResumeData.questionResults) {
                 setQuestionResults(pendingResumeData.questionResults);
             }
-            showToast('Session resumed successfully', 'success');
+            // User requested: "不需要右上角出现弹窗" (Remove toast)
         }
+        setViewState('practice'); // Directly enter practice view as requested
         setShowResumePrompt(false);
     };
 
@@ -166,11 +492,35 @@ export const Practice = () => {
         setViewState('practice');
     };
 
+    // Fix flicker by enforcing loading state during transition
+    const handleStartPractice = () => {
+        setIsInitializing(true); // Force loading spinner
+        setViewState('practice');
+        // useEffect [subTopicId, topicParam, viewState] will run checkProgress
+        // checkProgress finally block will set isInitializing(false)
+    };
+
     const toggleMark = (qId: string) => {
         const newSet = new Set(markedQuestions);
         if (newSet.has(qId)) newSet.delete(qId);
         else newSet.add(qId);
         setMarkedQuestions(newSet);
+
+        // Persistent save on toggle
+        const markedArray = Array.from(newSet);
+        if (effectiveSectionId) {
+            // MERGE with existing data to prevent wiping history/results
+            getSectionProgress(effectiveSectionId).then(p => {
+                const existing = p?.data || {};
+                const newData = {
+                    ...existing,
+                    userAnswers,
+                    currentQuestionIndex,
+                    markedQuestionIds: markedArray
+                };
+                saveSectionProgress(effectiveSectionId, newData, { completed: Object.keys(userAnswers).length, total: questions.length, score: 0 });
+            });
+        }
     };
 
     const toggleEliminate = (qId: string, optId: string, e: React.MouseEvent) => {
@@ -186,13 +536,19 @@ export const Practice = () => {
     };
 
     // Filter questions based on topic/course dynamically
-    const [questions, setQuestions] = useState<Question[]>([]);
+
+    // Debounce empty state to prevent flash of "No Questions" during rapid transitions
+    const [showEmptyState, setShowEmptyState] = useState(false);
+    const [isInitializing, setIsInitializing] = useState(false);
 
     // Helper to determine display title
     const getTopicDisplayTitle = () => {
         // Special case for Unit Test
         if (subTopicId === 'unit_test') {
-            return 'Unit Test';
+            if (COURSE_CONTENT_DATA[topicParam]) {
+                return COURSE_CONTENT_DATA[topicParam].title;
+            }
+            return cleanTopic;
         }
 
         // If valid unit in content data, use its title
@@ -203,93 +559,174 @@ export const Practice = () => {
         return cleanTopic;
     };
 
+    // Local state to fetch questions if global store is missing them (e.g. API limits)
+    const [localQuestions, setLocalQuestions] = useState<Question[]>([]);
+
     useEffect(() => {
-        if (!allQuestions || allQuestions.length === 0) return;
-
-        let filtered = [];
-
-        // Base Filter: Match Course Context (AB sees 'AB'|'Both', BC sees 'BC'|'Both')
-        // and Match Topic string (using topicParam which is the unit ID like 'AB_Limits')
-        const baseQuestions = allQuestions.filter(q => {
-            const isCourseMatch = q.course === user.currentCourse || q.course === 'Both';
-
-            // Derive base topic from question (e.g., AB_Limits -> Limits)
-            const qBase = q.topic.includes('_') ? q.topic.split('_')[1] : q.topic;
-
-            // Match topic by:
-            // 1. Exact match (AB_Limits === AB_Limits)
-            // 2. Legacy clean match (AB_Limits === Limits) - rarely used but kept
-            // 3. Shared Match: If course is Both, match base ID (AB_Limits base=Limits === BC_Limits base=Limits)
-            const isTopicMatch =
-                q.topic === topicParam ||
-                q.topic === cleanTopic ||
-                (q.course === 'Both' && qBase === cleanTopic);
-
-            // Only allow Published questions (or legacy ones with no status)
-            const isStatusValid = q.status === 'published' || !q.status;
-            return isCourseMatch && isTopicMatch && isStatusValid;
-        });
-
-        // 1. Filter by SubTopic if provided (Strict Subdivision)
-        if (subTopicId) {
-            if (subTopicId === 'unit_test') {
-                // Filter questions explicitly tagged as 'unit_test'
-                // OR include all questions from the unit if we want the test to be comprehensive?
-                // The requirement was: "add questions directly under the Unit column, it should be classified into unit test"
-                // This implies a specific classification.
-                // Let's filter for questions that are specifically 'unit_test' OR have no subTopicId set (legacy behavior for "Unit level" questions)
-                filtered = baseQuestions.filter(q => q.subTopicId === 'unit_test' || !q.subTopicId);
-            } else {
-                // First try to match questions specifically tagged with this subTopicId
-                filtered = baseQuestions.filter(q => q.subTopicId === subTopicId);
-
-                if (subTopicId) {
-                    // Debug Log
-                    console.log('DEBUG: Practice useEffect running');
-                    console.log('DEBUG: topicParam:', topicParam);
-                    console.log('DEBUG: subTopicId:', subTopicId);
-
-                    const dbUnit = topicContent[topicParam];
-                    console.log('DEBUG: Found dbUnit:', !!dbUnit);
-
-                    if (dbUnit) {
-                        const dbSubTopic = dbUnit.subTopics?.find((s: any) => s.id === subTopicId);
-                        console.log('DEBUG: Found dbSubTopic:', dbSubTopic);
-                        if (dbSubTopic) {
-                            setSubTopicData(dbSubTopic);
-                        }
-                        // Fallback to static if DB content exists but specific subtopic not found (shouldn't happen if structure matches)
-                        else {
-                            console.warn('DEBUG: dbSubTopic not found in dbUnit, falling back to static');
-                            if (COURSE_CONTENT_DATA[topicParam]) {
-                                const sub = COURSE_CONTENT_DATA[topicParam].subTopics.find(s => s.id === subTopicId);
-                                setSubTopicData(sub);
-                            }
-                        }
-                    } else {
-                        console.warn('DEBUG: dbUnit not found, falling back to static');
-                        if (COURSE_CONTENT_DATA[topicParam]) {
-                            const sub = COURSE_CONTENT_DATA[topicParam].subTopics.find(s => s.id === subTopicId);
-                            setSubTopicData(sub);
-                        }
+        const fetchLocal = async () => {
+            if (topicParam && (!allQuestions || allQuestions.length < 1000)) { // aggressive fetch if global seems limited
+                try {
+                    // Try specific subtopic first for speed
+                    const qData = await questionsApi.getQuestions({
+                        topic: topicParam,
+                        limit: 200 // Fetch plenty for this topic
+                    });
+                    if (qData && qData.length > 0) {
+                        setLocalQuestions(qData);
                     }
+                } catch (err) {
+                    console.error("Local fetch failed", err);
                 }
             }
         }
-        // 2. Otherwise filter by Unit Topic (General Practice)
+        fetchLocal();
+    }, [topicParam, allQuestions.length]);
+
+    // -------------------------------------------------------------------------
+    // REFACTOR: Use useMemo for synchronous filtering to eliminate render flash
+    // -------------------------------------------------------------------------
+    const questions = React.useMemo(() => {
+        // Merge global questions with locally fetched ones, deduplicating by ID
+        const combinedRaw = [...allQuestions, ...localQuestions];
+        const uniqueMap = new Map();
+        combinedRaw.forEach(q => uniqueMap.set(q.id, q));
+        const combined = Array.from(uniqueMap.values());
+
+        if (combined.length === 0) return [];
+
+        let filtered = [];
+
+        // Base Filter
+        const baseQuestions = combined.filter(q => {
+            // NEW: Support for Unit 10 (BC_Series) which is BC only.
+            // If the user's current course is BC, they should see everything.
+            // If the question is 'Both', everyone sees it.
+            const isCourseMatch = user.currentCourse === 'BC' || q.course === user.currentCourse || q.course === 'Both';
+
+            const qBase = q.topic.includes('_') ? q.topic.split('_')[1] : q.topic;
+            const isTopicMatch =
+                q.topic === topicParam ||
+                q.topicId === topicParam || // NEW: Check unified ID field
+                q.topic === cleanTopic ||
+                qBase === cleanTopic ||
+                // NEW: Handle cases where the database uses the full human title
+                q.topic === 'Infinite Sequences and Series' && topicParam === 'BC_Series';
+
+            // Relax status check for Unit 10/BC content to avoid "draft" items being hidden accidentally
+            // or if the status field is missing.
+            const isStatusValid = q.status === 'published' || !q.status || q.status === 'draft';
+
+            return isCourseMatch && isTopicMatch && isStatusValid;
+        });
+
+        if (baseQuestions.length > 0 && combined.length > 0 && baseQuestions.length === 0) {
+            console.log('⚠️ [Practice] Questions were found in combined but filtered out by base filter:', {
+                count: combined.length,
+                topicParam,
+                cleanTopic,
+                course: user.currentCourse
+            });
+        }
+
+        // 1. Filter by SubTopic
+        if (subTopicId) {
+            if (subTopicId === 'unit_test') {
+                filtered = baseQuestions.filter(q => q.subTopicId === 'unit_test' || !q.subTopicId);
+            } else {
+                // Robustly strip '_review' suffix to find questions for the underlying section
+                const realSubTopicId = subTopicId.replace('_review', '');
+                filtered = baseQuestions.filter(q => q.subTopicId === realSubTopicId);
+            }
+        }
+        // 2. Otherwise filter by Unit Topic
         else {
             filtered = baseQuestions;
         }
 
-        // --- APPLY MODE LOGIC (Only if not in strict subtopic mode, or randomize order within subtopic) ---
-        if (sessionMode === 'Random') {
-            filtered = [...filtered].sort(() => Math.random() - 0.5);
+        // --- APPLY MODE LOGIC ---
+        // NEW: If showing summary (overlay), strictly return ALL relevant questions for the section
+        // This ensures the SessionSummary component can render ANY historical attempt, even if
+        // the current session was just a small subset.
+        if (sessionMode === 'Summary' || showSummary) {
+            return filtered;
+        } else if (sessionMode === 'Random') {
+            return [...filtered].sort(() => Math.random() - 0.5);
         } else if (sessionMode === 'Review') {
-            filtered = [...filtered].reverse();
+            // NEW STATE MACHINE: Use review.targetQuestionIds first
+            const savedData = getSectionProgressData(effectiveSectionId)?.data;
+            const reviewData = savedData?.review;
+
+            // Priority 1: Use review.targetQuestionIds (new structure) if resuming
+            if (!effectiveState?.forceStartNew && reviewData?.targetQuestionIds?.length > 0) {
+                const orderMap = new Map(reviewData.targetQuestionIds.map((id: string, index: number) => [id, index]));
+                return baseQuestions.filter(q => orderMap.has(q.id))
+                    .sort((a, b) => (Number(orderMap.get(a.id)) || 0) - (Number(orderMap.get(b.id)) || 0));
+            }
+
+            // Priority 2: Use frozen snapshot (set in checkProgress or fresh start)
+            if (frozenReviewQuestionIds.size > 0) {
+                return filtered.filter(q => frozenReviewQuestionIds.has(q.id));
+            }
+
+            // Priority 3: Use currentIncorrectIds from saved data
+            if (savedData?.currentIncorrectIds?.length > 0) {
+                const incorrectSet = new Set(savedData.currentIncorrectIds);
+                return filtered.filter(q => incorrectSet.has(q.id));
+            }
+
+            // Fallback: Use global incorrectQuestionIds
+            return filtered.filter(q => incorrectQuestionIds.has(q.id));
         }
 
-        setQuestions(filtered);
-    }, [topicParam, subTopicId, user.currentCourse, sessionMode, allQuestions, cleanTopic, topicContent]);
+        return filtered;
+    }, [allQuestions, localQuestions, user.currentCourse, topicParam, subTopicId, cleanTopic, sessionMode, incorrectQuestionIds, effectiveSectionId, getSectionProgressData, questionResults, frozenReviewQuestionIds]);
+
+    const isLoadingQuestions = false; // No longer needed as useMemo is sync (cached)
+
+    // --- Dynamic Time Calculation ---
+    const dynamicEstimatedMinutes = React.useMemo(() => {
+        if (questions.length === 0) return 0;
+        const totalSeconds = questions.reduce((acc, q) => acc + (q.targetTimeSeconds || 120), 0);
+        return Math.ceil(totalSeconds / 60);
+    }, [questions]);
+
+
+    // --- Separated Effect for Metadata Sync (Lesson Content) ---
+    useEffect(() => {
+        if (subTopicId && subTopicId !== 'unit_test' && topicParam) {
+            const dbUnit = topicContent[topicParam];
+            if (dbUnit) {
+                const dbSubTopic = dbUnit.subTopics?.find((s: any) => s.id === subTopicId);
+                if (dbSubTopic) {
+                    // Validate: Use functional update to preserve description_2 if already fetched
+                    setDbSubTopicData((prev: any) => {
+                        if (prev && prev.id === dbSubTopic.id && prev.description_2 && !dbSubTopic.description_2) {
+                            return { ...dbSubTopic, description_2: prev.description_2 };
+                        }
+                        return dbSubTopic;
+                    });
+
+                    // Direct fetch for description2 if missing logic (simplified for brevity as it was already handled well elsewhere)
+                } else if (COURSE_CONTENT_DATA[topicParam]) {
+                    // Logic handled by static derivation, no need to set state
+                }
+            } else if (COURSE_CONTENT_DATA[topicParam]) {
+                // Logic handled by static derivation, no need to set state
+            }
+            // Note: The specific description2 fetcher effect handles the heavy lifting
+        }
+    }, [subTopicId, topicParam, topicContent]); // Removed questions dependency
+
+
+    // Handle Empty State Debounce
+    useEffect(() => {
+        if (!isLoadingQuestions && questions.length === 0) {
+            const timer = setTimeout(() => setShowEmptyState(true), 200); // 200ms grace period
+            return () => clearTimeout(timer);
+        } else {
+            setShowEmptyState(false);
+        }
+    }, [questions.length, isLoadingQuestions]);
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -297,19 +734,52 @@ export const Practice = () => {
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
     const [sessionResults, setSessionResults] = useState({ correct: 0, total: 0 });
     const [viewingOptionId, setViewingOptionId] = useState<string | null>(null);
+    const [sessionHistory, setSessionHistory] = useState<any[]>([]); // NEW: Store history of attempts
 
-    // Update viewing option when submitted
+    // Fetch and sync session history when summary is shown
     useEffect(() => {
-        if (isSubmitted && selectedAnswer) {
-            setViewingOptionId(selectedAnswer);
-        }
-    }, [isSubmitted, selectedAnswer]);
+        if (showSummary && effectiveSectionId) {
+            const syncHistory = async () => {
+                const activities = await getUserActivities(effectiveSectionId);
+                console.log('🔄 Syncing session history from DB:', activities?.length, 'activities found');
+                if (activities && activities.length > 0) {
+                    const mapped = activities.map((a: any, idx: number) => {
+                        const isFirst = a.attempt_type === 'first_attempt';
+                        // Determine attempt number from activities
+                        const attemptsBeforeThis = activities.slice(0, idx).filter((x: any) => x.attempt_type === 'first_attempt').length;
+                        const currentAttemptNumber = attemptsBeforeThis + 1;
 
-    const question = questions[currentQuestionIndex];
-    const progress = questions.length > 0 ? ((currentQuestionIndex) / questions.length) * 100 : 0;
+                        // Count reviews for THIS specific attempt
+                        const reviewsForCurrentAttempt = activities.slice(0, idx + 1).filter((x: any, i: number) => {
+                            if (x.attempt_type !== 'review') return false;
+                            // Find the last first_attempt before this review
+                            const lastAttemptBeforeReview = activities.slice(0, i).filter((y: any) => y.attempt_type === 'first_attempt').length;
+                            return lastAttemptBeforeReview === attemptsBeforeThis;
+                        }).length;
+
+                        const attemptLabel = currentAttemptNumber === 1 ? 'First Attempt' : `${getOrdinal(currentAttemptNumber)} Attempt`;
+
+                        return {
+                            type: a.attempt_type,
+                            attemptNumber: currentAttemptNumber,
+                            label: isFirst ? attemptLabel : `Review ${attemptLabel} #${reviewsForCurrentAttempt}`,
+                            timestamp: a.created_at,
+                            score: a.score || 0,
+                            userAnswers: a.data?.userAnswers || {},
+                            questionResults: a.data?.questionResults || {},
+                            round: isFirst ? undefined : reviewsForCurrentAttempt
+                        };
+                    });
+                    setSessionHistory(mapped.reverse()); // Show newest at top of dropdown (or bottom depending on array.map order)
+                }
+            };
+            syncHistory();
+        }
+    }, [showSummary, effectiveSectionId]);
 
     // --- State Sync on Navigation ---
     useEffect(() => {
+        const question = questions[currentQuestionIndex];
         if (!question) return;
 
         // Sync selected answer from stored user answers
@@ -317,16 +787,23 @@ export const Practice = () => {
         setSelectedAnswer(savedAnswer || null);
 
         // Sync submission/feedback state
-        // If we have a result, it means it was graded (immediate mode)
-        // If it's just in userAnswers but no result, it's saved (batch mode) -> NOT submitted
         if (questionResults[question.id]) {
             setIsSubmitted(true);
             setFeedback(questionResults[question.id]);
+            setViewingOptionId(savedAnswer || null);
         } else {
             setIsSubmitted(false);
             setFeedback(null);
+            setViewingOptionId(null);
         }
-    }, [currentQuestionIndex, question, userAnswers, questionResults]);
+    }, [currentQuestionIndex, questions, userAnswers, questionResults]);
+
+    // Update viewing option when submitted
+    useEffect(() => {
+        if (isSubmitted && selectedAnswer) {
+            setViewingOptionId(selectedAnswer);
+        }
+    }, [isSubmitted, selectedAnswer]);
 
     // --- Scratchpad Canvas Setup ---
     useEffect(() => {
@@ -360,6 +837,38 @@ export const Practice = () => {
             if (ctx) ctx.strokeStyle = penColor;
         }
     }, [penColor]);
+
+    // --- Dynamic Content Fetch for Lesson Mode (Aggressive Sync) ---
+    useEffect(() => {
+        if (viewState === 'lesson' && topicParam && subTopicId) {
+            // Correct ID for unit tests
+            const actualSectionId = subTopicId === 'unit_test' ? `${topicParam}_unit_test` : subTopicId;
+            console.log('[Practice] Fetching lesson content:', { topicParam, subTopicId, actualSectionId });
+
+            sectionsApi.getSection(topicParam, actualSectionId)
+                .then(data => {
+                    console.log('[Practice] Fetch response:', data);
+                    if (data) {
+                        // Force update ALL fields from DB to ensure UI is 100% in sync
+                        setDbSubTopicData((prev: any) => ({
+                            ...prev,
+                            id: data.id || prev?.id, // STRICT: Don't fallback to subTopicId to avoid masquerading
+                            title: data.title || (subTopicId === 'unit_test' ? 'Unit Test' : prev?.title) || 'Untitled',
+                            description: data.description || prev?.description,
+                            description_2: data.description_2 || data.chapter_detailed_description || data.description2 || data.detailed_description || null,
+                            estimatedMinutes: data.estimated_minutes || prev?.estimatedMinutes,
+                            hasLesson: data.has_lesson !== false,
+                            hasPractice: data.has_practice !== false
+                        }));
+                    }
+                })
+                .catch(err => console.error('Failed to fetch lesson content:', err));
+        }
+    }, [viewState, topicParam, subTopicId]);
+
+    const question = questions[currentQuestionIndex];
+    const progress = questions.length > 0 ? ((currentQuestionIndex) / questions.length) * 100 : 0;
+
 
     const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
         setIsDrawing(true);
@@ -433,6 +942,63 @@ export const Practice = () => {
         }
     };
 
+    // --- Show Answer (Surrender) Logic ---
+    const playCorrectSound = () => {
+        if (user.preferences && user.preferences.soundEffects === false) return;
+        try {
+            const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+            const ctx = new AudioContextClass();
+            const now = ctx.currentTime;
+
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, now); // A5
+            osc.frequency.exponentialRampToValueAtTime(1320, now + 0.1); // E6
+
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(0.1, now + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.3);
+        } catch (err) {
+            console.error('Failed to play correct sound:', err);
+        }
+    };
+
+    const handleShowAnswer = async () => {
+        setIsSubmitted(true);
+        setFeedback('incorrect');
+        // Clear selection to indicate "no answer given"
+        setSelectedAnswer(null);
+
+        // Update visual progress state
+        setQuestionResults(prev => ({
+            ...prev,
+            [question.id]: 'incorrect'
+        }));
+
+        const startTime = questionStartTimeRef.current || Date.now();
+        const timeSpent = Math.round((Date.now() - startTime) / 1000);
+
+        try {
+            await submitAttempt({
+                questionId: question.id,
+                isCorrect: false,
+                selectedOptionId: null,
+                timeSpentSeconds: timeSpent,
+                errorTags: question.errorTags || []
+            });
+        } catch (error) {
+            console.error('Failed to submit "show answer" attempt:', error);
+        }
+    };
+
     // Immediate mode: submit and show feedback right away
     const handleSubmit = async () => {
         if (!selectedAnswer) return;
@@ -464,19 +1030,20 @@ export const Practice = () => {
 
             if (!result.success) {
                 console.error('Submission failed result:', result);
-                alert(`Debug: Submission failed. Error: ${result.error || 'Unknown'}`);
+                console.error(`Submission failed. Error: ${result.error || 'Unknown'}`);
             } else {
                 console.log('Submission successful:', result);
                 // alert('Debug: Submission successful! Attempt logged.'); // Optional: Uncomment if needed
             }
         } catch (error: any) {
             console.error('Failed to submit attempt:', error);
-            alert(`Debug: Submission exception: ${error.message || error}`);
+            console.error(`Submission exception: ${error.message || error}`);
         }
 
         if (isCorrect) {
             setFeedback('correct');
             setSessionResults(prev => ({ ...prev, correct: prev.correct + 1 }));
+            playCorrectSound();
         } else {
             setFeedback('incorrect');
         }
@@ -509,43 +1076,102 @@ export const Practice = () => {
 
         let correctCount = 0;
         const submissionPromises: Promise<any>[] = [];
+        const localResults: Record<string, 'correct' | 'incorrect'> = {};
+
+        // Calculate Average Time per Question relative to session start
+        const now = Date.now();
+        const durationSeconds = (now - sessionStartTimeRef.current) / 1000;
+        const timePerQuestion = Math.max(5, Math.round(durationSeconds / Math.max(1, questions.length)));
+
+        console.log(`⏱️ [handleBatchSubmit] Session Duration: ${durationSeconds.toFixed(1)}s, Avg per Q: ${timePerQuestion}s`);
 
         // Process all questions
         for (const q of questions) {
             const userAnswer = allAnswers[q.id];
+            const alreadySubmitted = questionResults[q.id] !== undefined;
+
             // If answered, check correctness and log attempt
             if (userAnswer) {
-                const isCorrect = userAnswer === q.correctOptionId;
+                // Robust comparison: handle string/number conversion and whitespace
+                const isCorrect = String(userAnswer).trim() === String(q.correctOptionId).trim();
+
                 if (isCorrect) correctCount++;
 
                 // Update local visual state
-                setQuestionResults(prev => ({
-                    ...prev,
-                    [q.id]: isCorrect ? 'correct' : 'incorrect'
-                }));
+                localResults[q.id] = isCorrect ? 'correct' : 'incorrect';
 
-                // Log attempt to Supabase
-                const promise = submitAttempt({
-                    questionId: q.id,
-                    isCorrect: isCorrect,
-                    selectedOptionId: userAnswer,
-                    timeSpentSeconds: 0, // Cannot track granular time in batch mode
-                    errorTags: isCorrect ? [] : (q.errorTags || [])
-                });
-                submissionPromises.push(promise);
+                // Only submit if NOT already submitted individually
+                if (!alreadySubmitted) {
+                    const promise = submitAttempt({
+                        questionId: q.id,
+                        isCorrect: isCorrect,
+                        selectedOptionId: userAnswer,
+                        timeSpentSeconds: timePerQuestion,
+                        errorTags: isCorrect ? [] : (q.errorTags || [])
+                    });
+                    submissionPromises.push(promise);
+                } else {
+                    // Already submitted individually, preserve existing result
+                    localResults[q.id] = questionResults[q.id];
+                    if (questionResults[q.id] === 'correct') {
+                        // Ensure correctCount includes individually submitted correct answers
+                        // (already counted above if userAnswer matches correctOptionId)
+                    }
+                }
             } else {
-                // Unanswered treated as incorrect visually
-                setQuestionResults(prev => ({ ...prev, [q.id]: 'incorrect' }));
+                // Unanswered treated as incorrect visually AND submitted as wrong attempt
+                localResults[q.id] = 'incorrect';
+
+                // Only submit if NOT already submitted individually
+                if (!alreadySubmitted) {
+                    const promise = submitAttempt({
+                        questionId: q.id,
+                        isCorrect: false,
+                        selectedOptionId: null,
+                        timeSpentSeconds: timePerQuestion,
+                        errorTags: q.errorTags || []
+                    });
+                    submissionPromises.push(promise);
+                }
             }
         }
 
-        // Wait for all logs to complete (optional: could be fire-and-forget but safer to await)
-        await Promise.all(submissionPromises);
+        // Recalculate correctCount from final localResults (includes both batch and individually submitted)
+        correctCount = Object.values(localResults).filter(r => r === 'correct').length;
 
+        // 1. Instantly update all local session states to avoid intermediate flashes
+        console.log('🚀 [handleBatchSubmit] Processing', questions.length, 'questions');
+        console.log('🚀 [handleBatchSubmit] Local Results:', localResults);
+        console.log('🚀 [handleBatchSubmit] Correct Count:', correctCount);
+
+        setUserAnswers(allAnswers);
+        setQuestionResults(localResults);
         setSessionResults({ correct: correctCount, total: questions.length });
+        setShowSummary(true); // Jump directly to summary
+        setMarkedQuestions(new Set()); // Clear marks upon submission
 
-        // Finalize session with calculated score
-        await finishSession(correctCount);
+        // 2. Wait for all to finish before finalizing session (Sequencing is critical for history reliability)
+        try {
+            await Promise.allSettled(submissionPromises);
+            console.log('✅ Batch attempts settled');
+
+            // 3. Finalize Session (Activity Log) AFTER attempts are secured
+            await finishSession(correctCount, allAnswers, localResults);
+        } catch (err) {
+            console.error('❌ Critical error in batch submit:', err);
+            // Still try to finish session even if some attempts failed
+            finishSession(correctCount, allAnswers, localResults);
+        }
+    };
+
+    // NEW: Handle explicit "Submit All" click from UI
+    const handleSubmitAll = () => {
+        const currentAnsweredCount = Object.keys(userAnswers).length + (selectedAnswer && !userAnswers[question.id] ? 1 : 0);
+        if (currentAnsweredCount < questions.length) {
+            setShowSubmitConfirm(true);
+        } else {
+            handleBatchSubmit();
+        }
     };
 
     // Next after immediate submission
@@ -561,126 +1187,455 @@ export const Practice = () => {
         }
     };
 
-    // Show summary instead of immediate navigation
-    // Show summary instead of immediate navigation
-    const finishSession = async (overrideCorrect?: number) => {
-        const finalCorrect = overrideCorrect !== undefined ? overrideCorrect : sessionResults.correct;
+    // --- Keyboard Navigation ---
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Ignore if input/textarea is focused or if modifiers are pressed
+            if (['INPUT', 'TEXTAREA'].includes((document.activeElement as HTMLElement)?.tagName)) return;
+            if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
 
-        // Mark section as completed in granular progress tracking
-        if (effectiveSectionId) {
+            if (e.key === 'ArrowLeft') {
+                if (currentQuestionIndex > 0) {
+                    setCurrentQuestionIndex(prev => prev - 1);
+                }
+            } else if (e.key === 'ArrowRight') {
+                if (isSubmitted) {
+                    // If submitted, ArrowRight acts as "Next Question" or "Finish"
+                    handleNext();
+                } else {
+                    // If not submitted, ArrowRight acts as "Skip/Next" (Batch Mode navigation)
+                    handleSkipToNext();
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [currentQuestionIndex, isSubmitted, questions.length, handleNext, handleSkipToNext]);
+
+    // Show summary instead of immediate navigation
+    const finishSession = async (overrideCorrect?: number, overrideAnswers?: any, overrideResults?: any) => {
+        // --- NEW: Skip progress persistence if in Summary mode ---
+        if (sessionMode === 'Summary') {
+            setShowSummary(true);
+            return;
+        }
+
+        const finalCorrectCount = overrideCorrect !== undefined ? overrideCorrect : sessionResults.correct;
+        const finalAnswers = overrideAnswers || userAnswers;
+        const finalResults = overrideResults || questionResults;
+        const mainSectionId = subTopicId.endsWith('_review') ? subTopicId.replace('_review', '') : subTopicId;
+
+        // 2. Fetch Latest Main Data (Background Fetch for Accuracy)
+        let existingData: any = {};
+        let mainTotalQuestions = questions.length;
+
+        try {
+            const mainP = await getSectionProgress(mainSectionId);
+            existingData = mainP?.data || {};
+            if (mainP?.total_questions) mainTotalQuestions = mainP.total_questions;
+
+            // DEBUG: Check what summaryHistory is being loaded
+            console.log('🔍 [finishSession] existingData.summaryHistory:', existingData.summaryHistory);
+            console.log('🔍 [finishSession] existingData keys:', Object.keys(existingData));
+        } catch (e) { console.error('Failed to fetch main data', e); }
+
+        // === NEW STATE MACHINE DATA STRUCTURE ===
+
+        if (sessionMode === 'Review') {
+            // --- REVIEW SESSION COMPLETION ---
+
+            // 1. Calculate which questions are still incorrect after this review round
+            const stillIncorrectIds: string[] = [];
+            questions.forEach(q => {
+                if (finalResults[q.id] !== 'correct') {
+                    stillIncorrectIds.push(q.id);
+                }
+            });
+
+            // 2. Update main userAnswers and questionResults with fixes
+            const mainUserAnswers = { ...(existingData.userAnswers || {}) };
+            const mainQuestionResults = { ...(existingData.questionResults || {}) };
+
+            Object.keys(finalResults).forEach(qid => {
+                if (finalResults[qid] === 'correct') {
+                    mainUserAnswers[qid] = finalAnswers[qid];
+                    mainQuestionResults[qid] = 'correct';
+                }
+            });
+
+            // 3. Create summary history entry (label will be set after attemptLabel calculation)
+            const reviewRound = existingData.review?.round || 1;
+
+            // Get existing history, with backward compatibility
+            let existingHistory = existingData.summaryHistory || [];
+            console.log('🔍 [Review finishSession] existingHistory from DB:', existingHistory);
+
+            // Backward compatibility: If no history but firstAttempt exists, rebuild first entry
+            if (existingHistory.length === 0 && existingData.firstAttempt?.status === 'completed') {
+                console.log('🔄 [Review finishSession] Rebuilding First Attempt from firstAttempt data');
+                const fa = existingData.firstAttempt;
+                const faResults = fa.questionResults || existingData.questionResults || {};
+                const faAnswers = fa.userAnswers || existingData.userAnswers || {};
+                const faCorrect = Object.values(faResults).filter(r => r === 'correct').length;
+                const faTotal = fa.questionIds?.length || Object.keys(faResults).length || 5;
+
+                existingHistory = [{
+                    type: 'first_attempt' as const,
+                    attemptNumber: 1,
+                    label: 'First Attempt',
+                    timestamp: fa.completedAt || existingData.timestamp || new Date().toISOString(),
+                    score: faTotal > 0 ? Math.round((faCorrect / faTotal) * 100) : 0,
+                    userAnswers: faAnswers,
+                    questionResults: faResults
+                }];
+                console.log('✅ [Review finishSession] Rebuilt existingHistory:', existingHistory);
+            }
+
+            // Determine current attempt number and generate label
+            const attemptCount = existingHistory.filter((h: any) => h.type === 'first_attempt').length;
+            const currentAttemptNumber = attemptCount > 0 ? attemptCount : 1;
+            const reviewsForCurrentAttempt = existingHistory.filter((h: any) => h.type === 'review' && h.attemptNumber === currentAttemptNumber).length;
+            const attemptLabel = currentAttemptNumber === 1 ? 'First Attempt' : `${getOrdinal(currentAttemptNumber)} Attempt`;
+
+            // Now create current snapshot with correct label
+            const currentSnapshot = {
+                type: 'review' as const,
+                attemptNumber: currentAttemptNumber,
+                round: reviewRound,
+                label: `Review ${attemptLabel} #${reviewsForCurrentAttempt + 1}`,
+                timestamp: new Date().toISOString(),
+                // Clamp score to 100% and ensure it's based on the questions in THIS session
+                score: questions.length > 0 ? Math.min(100, Math.round((finalCorrectCount / questions.length) * 100)) : 0,
+                userAnswers: finalAnswers,
+                questionResults: finalResults
+            };
+
+            // Deduplicate history by label/timestamp to prevent duplicates during rapid clicks/saves
+            const newHistory = [...existingHistory];
+            const isDuplicate = newHistory.some(h => h.label === currentSnapshot.label && Math.abs(new Date(h.timestamp).getTime() - new Date(currentSnapshot.timestamp).getTime()) < 1000);
+            if (!isDuplicate) {
+                newHistory.push(currentSnapshot);
+            }
+
+            console.log('📝 [Review finishSession] newHistory to save:', newHistory.map(h => ({ type: h.type, label: h.label, round: h.round })));
+            setSessionHistory(newHistory);
+            setJustCompletedSessionLabel(currentSnapshot.label); // Mark which session was just completed
+
+            // 4. Calculate new stats for main record
+            const mainTotal = mainTotalQuestions;
+            const mainCorrect = Object.values(mainQuestionResults).filter(r => r === 'correct').length;
+            const mainScore = mainTotal > 0 ? (mainCorrect / mainTotal) * 100 : 0;
+
+            // 5. Build new data structure
+            const newData = {
+                // Legacy fields (for backward compatibility)
+                userAnswers: mainUserAnswers,
+                questionResults: mainQuestionResults,
+                questionIds: existingData.questionIds || existingData.firstAttempt?.questionIds || questions.map(q => q.id),
+                summaryHistory: newHistory,
+
+                // NEW: firstAttempt (preserve existing or create from legacy)
+                firstAttempt: existingData.firstAttempt || {
+                    status: 'completed' as const,
+                    userAnswers: existingData.userAnswers || mainUserAnswers,
+                    questionResults: existingData.questionResults || mainQuestionResults,
+                    currentQuestionIndex: existingData.currentQuestionIndex || 0,
+                    questionIds: existingData.questionIds || questions.map(q => q.id),
+                    completedAt: existingData.timestamp || new Date().toISOString()
+                },
+
+                // NEW: review (mark as completed or preserve round)
+                review: {
+                    status: 'completed' as const,
+                    round: reviewRound,
+                    targetQuestionIds: questions.map(q => q.id),
+                    userAnswers: finalAnswers,
+                    questionResults: finalResults,
+                    currentQuestionIndex: questions.length
+                },
+
+                // NEW: currentIncorrectIds (the remaining errors)
+                currentIncorrectIds: stillIncorrectIds,
+                markedQuestionIds: [] // Marks 'die' after submission
+            };
+
+            await saveSectionProgress(mainSectionId, newData, {
+                completed: Object.keys(mainUserAnswers).length,
+                total: mainTotal,
+                score: mainScore
+            }, 'section', true);
+
+            // 6. Explicit Activity Logging
+            await logUserActivity({
+                sectionId: mainSectionId,
+                attemptType: 'review',
+                score: questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0,
+                correctCount: finalCorrectCount,
+                totalQuestions: questions.length,
+                data: { userAnswers: finalAnswers, questionResults: finalResults }
+            });
+
+            await fetchAllUserProgress();
+
+            // Update state to show cumulative results in Current Session
+            setQuestionResults(mainQuestionResults);
+            setUserAnswers(mainUserAnswers);
+
+            // Play correct sound if the review was successful (simplified: just if score > 0 or 100%)
+            if (questions.length > 0 && finalCorrectCount === questions.length) {
+                playCorrectSound();
+            }
+
+        } else {
+            // --- FIRST ATTEMPT COMPLETION ---
+
+            // 1. Find incorrect questions
+            const incorrectIds: string[] = [];
+            questions.forEach(q => {
+                if (finalResults[q.id] !== 'correct') {
+                    incorrectIds.push(q.id);
+                }
+            });
+
+            // 2. Create summary history entry
+            // Calculate ordinal label based on existing summaryHistory (more reliable than fetching activities)
+            const existingHistory = existingData.summaryHistory || [];
+            const attemptCount = existingHistory.filter((h: any) => h.type === 'first_attempt').length;
+            const ordinal = attemptCount === 0 ? 'First'
+                : attemptCount === 1 ? 'Second'
+                    : attemptCount === 2 ? 'Third'
+                        : `${attemptCount + 1}th`;
+            console.log(`📊 [finishSession] Found ${attemptCount} past first_attempts in summaryHistory. Label: ${ordinal} Attempt`);
+
+            const currentSnapshot = {
+                type: 'first_attempt' as const,
+                label: `${ordinal} Attempt`,
+                timestamp: new Date().toISOString(),
+                score: questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0,
+                userAnswers: finalAnswers,
+                questionResults: finalResults
+            };
+
+            console.log('🔍 [First Attempt finishSession] existingHistory:', existingHistory);
+            const newHistory = [...existingHistory, currentSnapshot];
+            console.log('📝 [First Attempt finishSession] newHistory to save:', newHistory.map(h => ({ type: h.type, label: h.label })));
+            setSessionHistory(newHistory);
+            setJustCompletedSessionLabel(currentSnapshot.label); // Mark which session was just completed
+
+            // 3. Build new data structure
+            const newData = {
+                // Legacy fields (for backward compatibility)
+                userAnswers: finalAnswers,
+                questionResults: finalResults,
+                questionIds: questions.map(q => q.id),
+                timestamp: new Date().toISOString(),
+                summaryHistory: newHistory,
+
+                // NEW: firstAttempt
+                firstAttempt: {
+                    status: 'completed' as const,
+                    userAnswers: finalAnswers,
+                    questionResults: finalResults,
+                    currentQuestionIndex: questions.length,
+                    questionIds: questions.map(q => q.id),
+                    completedAt: new Date().toISOString()
+                },
+
+                // NEW: review (not started yet)
+                review: {
+                    status: 'not_started' as const,
+                    round: 0,
+                    targetQuestionIds: [],
+                    userAnswers: {},
+                    questionResults: {},
+                    currentQuestionIndex: 0
+                },
+
+                // NEW: currentIncorrectIds
+                currentIncorrectIds: incorrectIds,
+                markedQuestionIds: [] // Marks 'die' after submission
+            };
+
             await completeSectionSession(
                 effectiveSectionId,
-                finalCorrect,
-                questions.length, // Total questions in this session
-                finalCorrect,
-                {
-                    userAnswers,
-                    questionResults,
-                    timestamp: new Date().toISOString()
-                }
+                finalCorrectCount,
+                questions.length,
+                finalCorrectCount,
+                newData,
+                'section',
+                false
             );
 
-            // NEW: Check if this completes the UNIT
+            // 4. Explicit Activity Logging
+            await logUserActivity({
+                sectionId: effectiveSectionId,
+                attemptType: 'first_attempt',
+                score: questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0,
+                correctCount: finalCorrectCount,
+                totalQuestions: questions.length,
+                data: {
+                    userAnswers: finalAnswers,
+                    questionResults: finalResults,
+                    label: `${ordinal} Attempt`
+                }
+            });
+
+            await fetchAllUserProgress();
+
+            // Unit completion check
             if (topicParam) {
-                // 1. Get all sections for this topic (Unit)
-                // (This assumes we have access to the full list of sections for this unit)
-                // We can check `sections[topicParam]` from AppContext if available
-                // OR we can make a lightweight assumption: if all *attempted* sections are completed, 
-                // and the number of completed sections == total sections.
-
-                // Better strategy: We can't easily query "all sections" on client without fetching them.
-                // Assuming `sections` (from useApp) contains the list of sections for this topic.
                 const unitSections = sections[topicParam] || [];
-
                 if (unitSections.length > 0) {
-                    // 2. Fetch progress for all these sections
-                    // For performance, we might want to do this lazily or in background
-                    // But let's do a quick check.
-                    // (Or better: create an RPC for 'check_unit_completion' later)
-
-                    let allCompleted = true;
-
-                    // Start parallel checks
                     const progressChecks = await Promise.all(unitSections.map(async (sec: any) => {
-                        // Skip the current one as we just marked it completed (but DB might not reflect immediately if async race, 
-                        // though await completeSectionSession should ensure it)
                         if (sec.id === subTopicId) return true;
-
                         const p = await getSectionProgress(sec.id);
                         return p && p.status === 'completed';
                     }));
-
                     if (progressChecks.every(isComplete => isComplete)) {
-                        // Mark Unit as Completed
-                        await saveSectionProgress(topicParam, {}, 0, 'unit'); // Mark as 'in_progress' implicitly updates status if we send 'completed'? 
-                        // Wait, saveSectionProgress sets 'in_progress'. We need a way to set 'completed' for unit.
-                        // We can use saveSectionProgress but we need to pass status. 
-                        // The current saveSectionProgress forces 'in_progress'.
-                        // I should add a helper `completeEntity` in AppContext or use a raw RPC call if available.
-                        // Actually, let's use the new `complete_entity_progress` RPC helper I added to the SQL if I exposed it?
-                        // I didn't expose it in AppContext yet.
-
-                        // Workaround: Call completeSectionSession with dummy data for the UNIT ID
-                        await completeSectionSession(
-                            topicParam,
-                            0, 0, 0, // Score doesn't matter for Unit container
-                            { completionType: 'auto-bubbled' }
-                        );
+                        // Unit complete
                     }
                 }
             }
         }
 
         completePractice({
-            correct: sessionResults.correct,
+            correct: finalCorrectCount,
             total: questions.length,
             topic: question?.topic || cleanTopic
         });
         setShowSummary(true);
     };
 
+
+
     // Exit from summary page
     const handleExitSummary = () => {
         if (subTopicId) {
-            navigate(`/practice/unit/${topicParam}`);
+            navigate(`/practice/unit/${topicParam}`, { state: { scrollToSubTopicId: subTopicId } });
         } else {
             navigate('/practice');
         }
     };
 
     const handleExitRequest = () => {
-        if (viewState === 'practice' && subTopicId && subTopicId !== 'unit_test') {
-            setShowExitConfirm(true); // Show confirmation dialog
+        if (viewState === 'practice' && subTopicId) {
+            setShowExitConfirm(true); // Show confirmation dialog for ALL practice types
         } else {
-            navigate('/practice');
+            // Check if we have a subTopicId to scroll back to
+            if (subTopicId) {
+                navigate(`/practice/unit/${topicParam}`, { state: { scrollToSubTopicId: subTopicId } });
+            } else {
+                navigate('/practice');
+            }
         }
     };
 
     const confirmSaveAndExit = async () => {
         setIsSaving(true);
-        // Save current state
-        if (subTopicId) {
-            const success = await saveSectionProgress(effectiveSectionId, {
-                userAnswers,
-                currentQuestionIndex,
-                questionResults // Save the graded status of questions
-            }, 0); // TODO: Track actual cumulative time
+        try {
+            // Save current state
+            if (subTopicId) {
+                // Fetch existing data to preserve other fields
+                let existingData: any = {};
+                try {
+                    const mainP = await getSectionProgress(effectiveSectionId);
+                    existingData = mainP?.data || {};
+                } catch (e) { console.error('Failed to fetch existing data', e); }
 
-            if (success) {
+                if (sessionMode === 'Review') {
+                    // === REVIEW MODE: Save to review field ===
+                    const reviewState = {
+                        status: 'in_progress' as const,
+                        round: existingData.review?.round || 1,
+                        targetQuestionIds: questions.map(q => q.id),
+                        userAnswers,
+                        questionResults,
+                        currentQuestionIndex
+                    };
+
+                    const newData = {
+                        ...existingData,
+                        // Preserve firstAttempt
+                        firstAttempt: existingData.firstAttempt || {
+                            status: 'completed' as const,
+                            userAnswers: existingData.userAnswers || {},
+                            questionResults: existingData.questionResults || {},
+                            currentQuestionIndex: 0,
+                            questionIds: existingData.questionIds || questions.map(q => q.id),
+                            completedAt: existingData.timestamp || new Date().toISOString()
+                        },
+                        // Update review
+                        review: reviewState,
+                        // MERGE into top-level questionResults for cumulative progress
+                        questionResults: {
+                            ...(existingData.questionResults || {}),
+                            ...questionResults
+                        },
+                        // Preserve currentIncorrectIds
+                        currentIncorrectIds: existingData.currentIncorrectIds || [],
+                        markedQuestionIds: Array.from(markedQuestions)
+                    };
+
+                    await saveSectionProgress(effectiveSectionId, newData,
+                        { completed: 0, total: 0, score: 0 }, 'section', true);
+                } else {
+                    // === FIRST ATTEMPT MODE: Save to firstAttempt field ===
+                    const firstAttemptState = {
+                        status: 'in_progress' as const,
+                        userAnswers,
+                        questionResults,
+                        currentQuestionIndex,
+                        questionIds: questions.map(q => q.id)
+                    };
+
+                    const currentCompleted = Object.keys(userAnswers).length;
+                    const currentScore = questions.length > 0 ? (sessionResults.correct / questions.length) * 100 : 0;
+
+                    const newData = {
+                        // Legacy fields for backward compatibility
+                        userAnswers,
+                        currentQuestionIndex,
+                        questionResults,
+                        // NEW: firstAttempt
+                        firstAttempt: firstAttemptState,
+                        // Preserve review if exists
+                        review: existingData.review || {
+                            status: 'not_started' as const,
+                            round: 0,
+                            targetQuestionIds: [],
+                            userAnswers: {},
+                            questionResults: {},
+                            currentQuestionIndex: 0
+                        },
+                        // Preserve other fields
+                        summaryHistory: existingData.summaryHistory || [],
+                        currentIncorrectIds: existingData.currentIncorrectIds || [],
+                        markedQuestionIds: Array.from(markedQuestions)
+                    };
+
+                    await saveSectionProgress(effectiveSectionId, newData, {
+                        completed: currentCompleted,
+                        total: questions.length,
+                        score: currentScore
+                    });
+                }
+
                 showToast('Progress saved successfully', 'success');
-            } else {
-                showToast('Failed to save progress', 'error');
             }
+        } catch (error) {
+            console.error('Save failed:', error);
+            showToast('Failed to save progress, but exiting anyway', 'error');
+        } finally {
+            setIsSaving(false);
+            setShowExitConfirm(false);
+            navigate(`/practice/unit/${topicParam}`, { state: { scrollToSubTopicId: subTopicId } });
         }
-        setIsSaving(false);
-        setShowExitConfirm(false);
-        setShowExitConfirm(false);
-        navigate(`/practice/unit/${topicParam}`); // Go back to Unit Detail (fixed URL)
     };
 
     const confirmExitWithoutSave = () => {
         setShowExitConfirm(false);
-        navigate(`/practice/unit/${topicParam}`);
+        navigate(`/practice/unit/${topicParam}`, { state: { scrollToSubTopicId: subTopicId } });
     };
 
     // Kept for backward compatibility if needed, but mainly replaced by confirmSaveAndExit
@@ -688,66 +1643,14 @@ export const Practice = () => {
         confirmSaveAndExit();
     };
 
+    // Report functionality removed
     const handleReportSubmit = () => {
-        setIsReporting(true);
-        setTimeout(() => {
-            setIsReporting(false);
-            setShowReportModal(false);
-            alert("Thank you for your report. We will review this question shortly.");
-        }, 800);
+        // Redundant
     };
 
     const renderContent = (content: string, type?: 'text' | 'image', options: { noBorder?: boolean } = {}) => {
         if (!content) return null;
-
-        let isImage = false;
-        if (type) {
-            isImage = type === 'image';
-        } else {
-            // Fallback heuristic if type is missing (legacy questions)
-            isImage = content.trim().startsWith('http') ||
-                content.trim().startsWith('data:image') ||
-                content.trim().startsWith('/');
-        }
-
-        if (isImage) {
-            // Try to parse array for multiple images
-            let imageUrls: string[] = [];
-            try {
-                if (content.trim().startsWith('[')) {
-                    const parsed = JSON.parse(content);
-                    if (Array.isArray(parsed)) {
-                        imageUrls = parsed;
-                    } else {
-                        imageUrls = [content];
-                    }
-                } else {
-                    imageUrls = [content];
-                }
-            } catch {
-                imageUrls = [content];
-            }
-
-            return (
-                <div className="flex flex-col gap-4 my-4">
-                    {imageUrls.map((url, idx) => (
-                        <div
-                            key={idx}
-                            className="flex justify-center group relative cursor-default"
-                        >
-                            <img
-                                src={url}
-                                alt={`Content ${idx + 1}`}
-                                className={`max-w-full rounded-lg transition-transform hover:scale-[1.01] ${options.noBorder ? '' : 'border border-gray-200 dark:border-gray-700 shadow-sm'}`}
-                                style={{ maxHeight: '400px' }}
-                            />
-                        </div>
-                    ))}
-                </div>
-            );
-        }
-
-        // Use MathRenderer for text/latex/markdown content
+        // Delegate all rendering (Mixed Arrays, Single Images, LaTeX/Text) to the smart MathRenderer
         return <MathRenderer content={content} className={options.noBorder ? '' : ''} />;
     };
 
@@ -762,109 +1665,132 @@ export const Practice = () => {
         }
     };
 
-    // --- RENDER LESSON VIEW ---
-    if (viewState === 'lesson' && subTopicData) {
+    // Early return for initialization to prevent flashes - MUST be after hooks
+    // Also show loading if we are in practice mode but questions are still calculating
+    // OR if questions are empty but the grace period (showEmptyState) hasn't passed yet
+    // OPTIMIZED LOADING CONDTION:
+    // If viewState is 'lesson', we allow rendering immediately (using sync subTopicData) even if session check is pending.
+    // We only block for loading if we are in 'practice' mode (where questions/progress are critical).
+    if (viewState === 'practice' && (isLoadingQuestions || (questions.length === 0 && !showEmptyState))) {
         return (
-            <div className="bg-background-light dark:bg-background-dark min-h-screen flex flex-col antialiased animate-fade-in">
-                <header className="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-6 py-3 h-16">
-                    <div className="flex items-center gap-4">
-                        <button onClick={handleExitRequest} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
-                            <span className="material-symbols-outlined text-text-main dark:text-white">arrow_back</span>
-                        </button>
-                        <h1 className="text-lg font-bold text-text-main dark:text-white truncate">{subTopicData.title}</h1>
-                    </div>
-                    <div className="px-3 py-1 bg-primary/10 text-yellow-700 dark:text-primary rounded text-xs font-bold uppercase tracking-wider">
-                        Lesson Mode
-                    </div>
-                </header>
-
-                <main className="flex-grow flex flex-col items-center justify-center py-12 px-4 sm:px-6">
-                    <div className="max-w-4xl w-full bg-surface-light dark:bg-surface-dark p-12 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-800">
-                        <div className="mb-8 border-b border-gray-100 dark:border-gray-800 pb-8">
-                            <h2 className="text-3xl font-black mb-2">{subTopicData.title}</h2>
-                            <div className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">{subTopicData.description}</div>
-
-                            {subTopicData.description2 && (
-                                <p className="text-lg text-text-secondary dark:text-gray-400 font-medium leading-relaxed mb-6">
-                                    {subTopicData.description2}
-                                </p>
-                            )}
-
-                            <div className="flex flex-wrap items-center gap-3">
-                                {(subTopicData.hasLesson !== false) && (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-bold uppercase tracking-wider">
-                                        <span className="material-symbols-outlined text-[16px]">menu_book</span>
-                                        Lesson
-                                    </span>
-                                )}
-                                {(subTopicData.hasPractice !== false) && (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs font-bold uppercase tracking-wider">
-                                        <span className="material-symbols-outlined text-[16px]">exercise</span>
-                                        Practice
-                                    </span>
-                                )}
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold uppercase tracking-wider">
-                                    <span className="material-symbols-outlined text-[16px]">schedule</span>
-                                    {subTopicData.estimatedMinutes} min
-                                </span>
-                            </div>
-                        </div>
-                        <div className="mt-10 flex justify-center gap-4">
-                            {pendingResumeData ? (
-                                <>
-                                    <button
-                                        onClick={handleStartNewSession}
-                                        className="px-8 py-4 rounded-xl font-bold flex items-center gap-3 border-2 border-gray-200 dark:border-gray-700 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-lg"
-                                    >
-                                        <span className="material-symbols-outlined">restart_alt</span>
-                                        <span>Start Over</span>
-                                    </button>
-                                    <button
-                                        onClick={handleConfirmResume}
-                                        className="bg-primary text-black px-8 py-4 rounded-xl font-bold flex items-center gap-3 hover:shadow-lg hover:scale-[1.02] transition-all text-lg"
-                                    >
-                                        <span>Resume Session</span>
-                                        <span className="material-symbols-outlined">history</span>
-                                    </button>
-                                </>
-                            ) : (
-                                <button
-                                    onClick={() => setViewState('practice')}
-                                    className="bg-primary text-black px-8 py-4 rounded-xl font-bold flex items-center gap-3 hover:shadow-lg hover:scale-[1.02] transition-all text-lg"
-                                >
-                                    <span>Start Practice Questions</span>
-                                    <span className="material-symbols-outlined">arrow_forward</span>
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                </main>
-
-                {/* Modal Removed - Inline Selection Used Instead */}
-
-                {/* Reuse Exit Modal for Lesson view */}
-                {showExitConfirm && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-                        <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 dark:border-gray-800">
-                            <div className="flex flex-col items-center text-center gap-4 mb-6">
-                                <h3 className="text-xl font-bold text-text-main dark:text-white">Exit Lesson?</h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm">
-                                    You can return to this lesson later.
-                                </p>
-                            </div>
-                            <div className="flex gap-3">
-                                <button onClick={() => setShowExitConfirm(false)} className="flex-1 py-3 rounded-xl font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10">Cancel</button>
-                                <button onClick={handleConfirmExit} className="flex-1 py-3 rounded-xl font-bold bg-primary text-text-main">Exit</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+            <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-gray-500 font-bold animate-pulse text-sm uppercase tracking-widest">Loading Practice Session...</p>
+                </div>
             </div>
-        )
+        );
     }
 
+    if (viewState === 'lesson') {
+        // Strictly use the "Detailed Description (For Card)" from settings
+        // If the user kept it EMPTY in Supabase, we show empty as requested.
+        const lessonContent = subTopicData?.description_2 || "No detailed description available.";
+
+        return (
+            <div key={subTopicId} className="h-screen bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 flex flex-col overflow-hidden">
+                <Navbar />
+                <main className="flex-grow w-full max-w-4xl mx-auto px-6 py-12 overflow-y-auto scroll-bounce">
+                    <header className="mb-10">
+                        {/* Back Button Added */}
+                        <button
+                            onClick={() => navigate(`/practice/unit/${topicParam}`, { state: { selectedSubTopicId: subTopicId } })}
+                            className="mb-6 flex items-center gap-2 text-gray-400 hover:text-black dark:hover:text-white transition-colors text-sm font-bold uppercase tracking-wider group"
+                        >
+                            <span className="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                            Back
+                        </button>
+
+                        <div className="flex items-center gap-3 mb-4">
+                            <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-bold uppercase tracking-widest">
+                                {(subTopicData?.hasLesson !== false && subTopicData?.hasPractice !== false) ? 'LESSON & PRACTICE' :
+                                    (subTopicData?.hasLesson === false && subTopicData?.hasPractice !== false) ? 'PRACTICE ONLY' :
+                                        'LESSON ONLY'}
+                            </span>
+                            <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">{topicParam}</span>
+                        </div>
+                        <h1 className="text-4xl font-black mb-4">{correctedSubTopicTitle || 'Loading...'}</h1>
+
+
+                        {/* Dynamic Metadata Badges */}
+                        <div className="flex flex-wrap items-center gap-3 mb-8">
+                            {/* Time Badge - NOW DYNAMIC */}
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold uppercase tracking-wider">
+                                <span className="material-symbols-outlined text-sm">schedule</span>
+                                <span>{dynamicEstimatedMinutes || subTopicData?.estimatedMinutes || 10} MIN</span>
+                            </div>
+
+                            {/* Type Badge */}
+                            {subTopicData?.hasLesson !== false && (
+                                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold uppercase tracking-wider">
+                                    <span className="material-symbols-outlined text-sm">menu_book</span>
+                                    <span>Lesson</span>
+                                </div>
+                            )}
+
+                            {/* Practice Badge - Show count */}
+                            {subTopicData?.hasPractice !== false && (
+                                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-bold uppercase tracking-wider">
+                                    <span className="material-symbols-outlined text-sm">exercise</span>
+                                    <span>Practice • {questions.length} Qs</span>
+                                </div>
+                            )}
+                        </div>
+
+
+                    </header>
+
+                    <div className="bg-surface-light dark:bg-surface-dark rounded-3xl p-8 md:p-12 border border-gray-100 dark:border-gray-800 shadow-sm leading-relaxed mb-12 min-h-[200px]">
+                        {lessonContent ? (
+                            <LessonRenderer content={lessonContent} />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center h-full text-gray-400 py-10">
+                                <span className="material-symbols-outlined text-4xl mb-2 opacity-50">description</span>
+                                <p className="text-sm uppercase tracking-widest font-bold">No lesson content available</p>
+                                <p className="text-xs text-center mt-2 opacity-70">Add a detailed description in Component Settings.</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6 py-8">
+                        {pendingResumeData ? (
+                            <>
+                                <button
+                                    onClick={handleStartNewSession}
+                                    className="px-8 py-4 rounded-xl font-bold flex items-center gap-3 border-2 border-gray-200 dark:border-gray-700 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-lg"
+                                >
+                                    <span className="material-symbols-outlined">restart_alt</span>
+                                    <span>Start Over</span>
+                                </button>
+                                <button
+                                    onClick={handleConfirmResume}
+                                    className="bg-primary text-black px-8 py-4 rounded-xl font-bold flex items-center gap-3 hover:shadow-lg hover:scale-[1.02] transition-all text-lg"
+                                >
+                                    <span>Resume Session</span>
+                                    <span className="material-symbols-outlined">history</span>
+                                </button>
+                            </>
+                        ) : (
+                            (subTopicData?.hasPractice !== false) && (
+                                <button
+                                    onClick={handleStartPractice}
+                                    className="group flex items-center gap-3 px-10 py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-black/10"
+                                >
+                                    Start Practice
+                                    <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                </button>
+                            )
+                        )}
+                    </div>
+                </main>
+            </div >
+        );
+    }
+
+    // --- FROM HERE DOWN IS PRACTICE VIEW ---
     // --- RENDER EMPTY STATE (NO QUESTIONS FOUND) ---
-    if (!question) {
+    // Added showEmptyState check to prevent flicker during debounce period
+    if (!question && !isInitializing && showEmptyState) {
         return (
             <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-white">
                 <Navbar />
@@ -879,6 +1805,16 @@ export const Practice = () => {
                             : `We are currently building the problem set for ${subTopicData ? subTopicData.title : 'this topic'}.`
                         }
                         <br /><span className="text-sm mt-2 block opacity-70">Hint: Add questions in the Creator Area!</span>
+                        <div className="mt-4 p-2 bg-red-100 text-red-800 text-xs font-mono text-left rounded overflow-auto max-h-40">
+                            <strong>Debug Info:</strong><br />
+                            topicParam: {topicParam}<br />
+                            subTopicId: {subTopicId} ({typeof subTopicId})<br />
+                            allQuestions: {allQuestions?.length}<br />
+                            filtered: {questions.length}<br />
+                            cleanTopic: {cleanTopic}<br />
+                            Example Q Topics: {allQuestions?.slice(0, 3).map(q => q.topic).join(', ')}<br />
+                            User Course: {user.currentCourse}
+                        </div>
                     </p>
                     <div className="flex gap-4">
                         <button
@@ -887,12 +1823,8 @@ export const Practice = () => {
                         >
                             Go Back
                         </button>
-                        {/* Fallback to general practice if possible */}
                         <button
-                            onClick={() => {
-                                // Try generic limits pool for demo purposes if stuck
-                                navigate('/practice');
-                            }}
+                            onClick={() => navigate('/practice')}
                             className="px-6 py-3 bg-primary text-black rounded-xl font-bold hover:shadow-lg transition-all"
                         >
                             Return to Hub
@@ -912,16 +1844,30 @@ export const Practice = () => {
                 questionResults={questionResults}
                 onExit={handleExitSummary}
                 onRetake={() => {
-                    // Optional: Implement reset logic if needed later
-                    handleExitSummary();
+                    setShowSummary(false);
+                    handleStartNewSession();
                 }}
+                onReviewErrors={() => {
+                    navigate('/practice/session', {
+                        state: {
+                            topic: topicParam,
+                            subTopicId: subTopicId,
+                            mode: 'Review',
+                            forceStartNew: true
+                        },
+                        replace: true
+                    });
+                }}
+                summaryHistory={sessionHistory}
+                justCompletedSessionLabel={justCompletedSessionLabel}
+                discussSlug={discussSlug}
             />
         );
     }
 
     // --- RENDER PRACTICE VIEW ---
     return (
-        <div className="bg-background-light dark:bg-background-dark text-text-main font-display min-h-screen flex flex-col overflow-x-hidden antialiased animate-fade-in">
+        <div className="bg-background-light dark:bg-background-dark text-text-main font-display h-screen flex flex-col overflow-hidden antialiased animate-fade-in">
 
             {/* Scratchpad Overlay */}
             {activeTool === 'scratchpad' && (
@@ -965,8 +1911,8 @@ export const Practice = () => {
                 </div>
                 <div className="flex items-center gap-6">
                     <button onClick={handleExitRequest} className="group flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors">
-                        <span className="material-symbols-outlined text-lg">arrow_back</span>
-                        <span>Exit Session</span>
+                        <span className="material-symbols-outlined text-lg">logout</span>
+                        <span>Exit</span>
                     </button>
                     <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-2"></div>
                     <div
@@ -976,7 +1922,7 @@ export const Practice = () => {
                 </div>
             </header>
 
-            <main className="flex-grow flex justify-center pt-6 pb-12 px-4 sm:px-6 relative">
+            <main className="flex-grow flex justify-center pt-6 pb-24 px-4 sm:px-6 relative overflow-y-auto scroll-bounce">
                 <div className="w-full max-w-[1600px] flex gap-6">
 
                     <div className="flex-1 flex flex-col gap-6">
@@ -985,19 +1931,9 @@ export const Practice = () => {
                                 <div className="flex items-center gap-2 text-sm font-medium text-text-muted text-gray-500">
                                     <span>Calculus {user.currentCourse}</span>
                                     <span className="text-gray-300">/</span>
-                                    {/* Fix: Prefer subTopicData title if available, else getTopicDisplayTitle. Use cleanTopic as fallback for 'Unit Test' label if needed */}
                                     <span className="font-bold text-primary">
-                                        {subTopicId === 'unit_test' ? 'Unit Test' : (subTopicData ? subTopicData.title : (sessionMode === 'Adaptive' ? getTopicDisplayTitle() : getModeLabel(sessionMode)))}
+                                        {subTopicId === 'unit_test' ? 'Unit Test' : (correctedSubTopicTitle || (sessionMode === 'Adaptive' ? getTopicDisplayTitle() : getModeLabel(sessionMode)))}
                                     </span>
-                                    {/* Hide 3rd level topic crumb if it's redundant or confusing (like 'AB_Limits' in BC) 
-                                        Actually, let's just show the Unit name clean if specific subtopic is not set
-                                    */}
-                                    {subTopicId !== 'unit_test' && !subTopicData && (
-                                        <>
-                                            <span className="text-gray-300">/</span>
-                                            <span>{cleanTopic}</span>
-                                        </>
-                                    )}
                                 </div>
                                 <h2 className="text-2xl font-bold text-text-main dark:text-white tracking-tight">Practice Session</h2>
                             </div>
@@ -1005,11 +1941,11 @@ export const Practice = () => {
                                 <div className="flex justify-between items-center text-xs font-semibold uppercase tracking-wider text-text-muted">
                                     <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
                                     <button
-                                        onClick={() => toggleMark(question.id)}
-                                        className={`flex items-center gap-1 px-2 py-0.5 rounded transition-colors ${markedQuestions.has(question.id) ? 'bg-orange-100 text-orange-600' : 'hover:bg-gray-100 text-gray-400'}`}
+                                        onClick={handleSubmitAll}
+                                        className="flex items-center gap-1 px-2 py-0.5 rounded text-gray-400 hover:text-gray-600 transition-colors lowercase font-bold whitespace-nowrap"
                                     >
-                                        <span className={`material-symbols-outlined text-sm ${markedQuestions.has(question.id) ? 'filled' : ''}`}>flag</span>
-                                        Mark
+                                        submit all
+                                        <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                                     </button>
                                 </div>
                                 {/* Segmented Progress Bar */}
@@ -1025,9 +1961,12 @@ export const Practice = () => {
                                             <div
                                                 key={q.id}
                                                 onClick={() => setCurrentQuestionIndex(idx)}
-                                                className={`h-full flex-1 rounded-md transition-all duration-300 ${bgClass} flex items-center justify-center text-[10px] cursor-pointer hover:opacity-80`}
+                                                className={`h-full flex-1 rounded-md transition-all duration-300 ${bgClass} flex items-center justify-center text-[10px] cursor-pointer hover:opacity-80 relative`}
                                             >
                                                 {idx + 1}
+                                                {markedQuestions.has(q.id) && (
+                                                    <div className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white dark:border-zinc-900 shadow-md z-20 animate-pulse-subtle" />
+                                                )}
                                             </div>
                                         );
                                     })}
@@ -1036,8 +1975,7 @@ export const Practice = () => {
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch relative">
-
-                            {/* Tool Overlay Panel (Formula only - Calculator is now independent) */}
+                            {/* Formulas/Reference Panel */}
                             {activeTool === 'formula' && (
                                 <div className="absolute top-0 left-0 right-0 z-20 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl animate-fade-in-up overflow-hidden ring-1 ring-black/5">
                                     <div className="flex justify-between items-center p-4 bg-gray-50 dark:bg-black/20 border-b border-gray-100 dark:border-gray-800">
@@ -1049,8 +1987,8 @@ export const Practice = () => {
                                             <span className="material-symbols-outlined">close</span>
                                         </button>
                                     </div>
-                                    <div className="p-6">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm max-h-[400px] overflow-y-auto pr-2">
+                                    <div className="p-6 overflow-y-auto scroll-bounce max-h-[500px]">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
                                             <div>
                                                 <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Derivatives</h4>
                                                 <ul className="space-y-2 text-gray-600 dark:text-gray-300 font-math">
@@ -1077,8 +2015,8 @@ export const Practice = () => {
                                 </div>
                             )}
 
-                            {/* Independent Calculator Window */}
-                            {activeTool === 'calculator' && (
+                            {/* Calculator */}
+                            {activeTool === 'calculator' && question && (
                                 <AdvancedCalculator
                                     onInput={handleCalcInput}
                                     display={calcDisplay}
@@ -1089,25 +2027,20 @@ export const Practice = () => {
                                 />
                             )}
 
-                            <div className={`lg:col-span-7 flex flex-col transition-all duration-500 ${isSubmitted ? 'h-[40vh] min-h-[300px]' : 'h-[calc(100vh-280px)] min-h-[500px]'}`}>
-                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col gap-4 relative transition-all duration-500 ease-in-out h-full ${isSubmitted ? 'p-3 opacity-90 hover:opacity-100' : 'p-6'}`}>
-                                    <div className="flex justify-between items-start border-b border-gray-100 dark:border-gray-800 pb-3 mb-2 shrink-0">
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={() => setActiveTool(activeTool === 'scratchpad' ? 'none' : 'scratchpad')}
-                                                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTool === 'scratchpad' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200'}`}
-                                            >
+                            {/* Question Section */}
+                            <div className={`lg:col-span-7 flex flex-col ${isSubmitted ? 'min-h-[250px]' : 'h-[calc(100vh-280px)] min-h-[450px]'}`}>
+                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col gap-4 relative h-full scroll-bounce ${isSubmitted ? 'p-3 opacity-90' : 'p-6'}`}>
+                                    <div className="flex justify-between items-start border-b border-gray-100 dark:border-gray-800 pb-3 mb-2">
+                                        <div className="flex items-center gap-2 mr-6">
+                                            <button onClick={() => setActiveTool(activeTool === 'scratchpad' ? 'none' : 'scratchpad')} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTool === 'scratchpad' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'}`}>
                                                 <span className="material-symbols-outlined text-lg">draw</span>
                                                 <span className="hidden sm:inline">Scratchpad</span>
                                             </button>
-                                            <button
-                                                onClick={() => setActiveTool(activeTool === 'formula' ? 'none' : 'formula')}
-                                                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTool === 'formula' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200'}`}
-                                            >
+                                            <button onClick={() => setActiveTool(activeTool === 'formula' ? 'none' : 'formula')} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTool === 'formula' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'}`}>
                                                 <span className="material-symbols-outlined text-lg">function</span>
                                                 <span className="hidden sm:inline">Formulas</span>
                                             </button>
-                                            {question.calculatorAllowed && (
+                                            {question?.calculatorAllowed ? (
                                                 <button
                                                     onClick={() => setActiveTool(activeTool === 'calculator' ? 'none' : 'calculator')}
                                                     className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTool === 'calculator' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200'}`}
@@ -1115,32 +2048,44 @@ export const Practice = () => {
                                                     <span className="material-symbols-outlined text-lg">calculate</span>
                                                     <span className="hidden sm:inline">Calculator</span>
                                                 </button>
+                                            ) : (
+                                                <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold invisible select-none">
+                                                    <span className="material-symbols-outlined text-lg">calculate</span>
+                                                    <span className="hidden sm:inline">Calculator</span>
+                                                </div>
                                             )}
                                         </div>
-                                        <button
-                                            onClick={() => setShowReportModal(true)}
-                                            className="text-text-muted hover:text-red-500 transition-colors p-1"
-                                            title="Report Issue"
-                                        >
-                                            <span className="material-symbols-outlined text-xl text-gray-400 hover:text-red-500 transition-colors">flag</span>
-                                        </button>
+                                        <div className="flex items-center gap-4">
+                                            {!isSubmitted && (
+                                                <button
+                                                    onClick={handleShowAnswer}
+                                                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-500 border border-amber-200 dark:border-amber-900/30 hover:bg-amber-100 dark:hover:bg-amber-900/40 whitespace-nowrap"
+                                                    title="Give up and show solution"
+                                                >
+                                                    <span>Show Answer</span>
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={() => toggleMark(question.id)}
+                                                className={`transition-colors ${markedQuestions.has(question.id) ? 'text-orange-500' : 'text-gray-400 hover:text-orange-500'}`}
+                                                title="Mark this question"
+                                            >
+                                                <span className={`material-symbols-outlined text-xl ${markedQuestions.has(question.id) ? 'filled' : ''}`}>flag</span>
+                                            </button>
+                                        </div>
                                     </div>
 
-                                    <div className="flex-grow flex flex-col gap-6 overflow-y-auto">
-                                        <div className={`text-text-main dark:text-gray-100 font-medium leading-relaxed transition-all duration-500 ${isSubmitted ? 'text-xs leading-tight' : 'text-lg md:text-xl'}`}>
-                                            {renderContent(question.prompt, question.promptType, { noBorder: true })}
-                                        </div>
-
-                                        <div className={`flex justify-center transition-all duration-500 ${isSubmitted ? 'py-1' : 'py-8'}`}>
-                                            <MathRenderer content={question.latex || ''} className={`text-text-main dark:text-white transition-all duration-500 ${isSubmitted ? 'text-base' : 'text-2xl md:text-3xl'}`} />
+                                    <div className="flex-grow overflow-y-auto">
+                                        <div className={`font-math text-text-main dark:text-gray-100 font-medium leading-relaxed ${isSubmitted ? 'text-sm' : 'text-lg md:text-xl'}`}>
+                                            {renderContent(question.prompt || '', question.promptType || 'text', { noBorder: true })}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-
-                            <div className={`lg:col-span-5 flex flex-col gap-4 transition-all duration-500 ${isSubmitted ? 'h-[40vh] min-h-[300px]' : 'h-[calc(100vh-280px)] min-h-[500px]'}`}>
-                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-apple flex flex-col gap-4 transition-all duration-500 ease-in-out h-full ${isSubmitted ? 'overflow-hidden p-2 opacity-90 hover:opacity-100' : ''}`}>
+                            {/* Options Section */}
+                            <div className={`lg:col-span-5 flex flex-col gap-4 ${isSubmitted ? 'min-h-[250px]' : 'h-[calc(100vh-280px)] min-h-[450px]'}`}>
+                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-2' : 'p-6'}`}>
                                     {/* Hide Header on Submit to save space as requested */}
                                     {!isSubmitted && (
                                         <div>
@@ -1153,16 +2098,16 @@ export const Practice = () => {
                                         </div>
                                     )}
 
-                                    <div className={`flex flex-col mt-4 flex-grow overflow-y-auto ${isSubmitted ? 'gap-2 justify-center' : 'gap-3'}`}>
-                                        {question.options.map((opt) => {
+                                    <div className="flex-grow overflow-y-auto scroll-bounce p-1.5 flex flex-col gap-3">
+                                        {question.options.map((opt, idx) => {
                                             const isSelected = selectedAnswer === opt.id;
-                                            const isViewing = viewingOptionId === opt.id;
                                             const isCorrect = question.correctOptionId === opt.id;
                                             const isEliminated = (eliminatedOptions[question.id] || []).includes(opt.id);
+                                            const isViewing = viewingOptionId === opt.id;
 
-                                            let borderClass = 'border-gray-200 dark:border-gray-700';
-                                            let bgClass = 'bg-background-light dark:bg-background-dark';
-                                            let textClass = 'text-text-main dark:text-gray-200';
+                                            let borderClass = 'border-gray-200 dark:border-gray-800';
+                                            let bgClass = 'bg-white dark:bg-surface-dark';
+                                            let textClass = 'text-text-main dark:text-gray-100';
 
                                             if (isEliminated && !isSubmitted) {
                                                 borderClass = 'border-gray-100 dark:border-gray-800 opacity-50';
@@ -1170,9 +2115,11 @@ export const Practice = () => {
                                                 textClass = 'text-gray-400 line-through decoration-2 decoration-gray-400';
                                             } else if (isSubmitted) {
                                                 if (isCorrect) {
-                                                    borderClass = 'border-green-500 bg-green-50 dark:bg-green-900/20';
+                                                    borderClass = 'border-green-500';
+                                                    bgClass = 'bg-green-50 dark:bg-green-900/20';
                                                 } else if (isSelected && !isCorrect) {
-                                                    borderClass = 'border-red-500 bg-red-50 dark:bg-red-900/20';
+                                                    borderClass = 'border-red-500';
+                                                    bgClass = 'bg-red-50 dark:bg-red-900/20';
                                                 }
                                                 // Highlight viewing option if distinct from selection
                                                 if (isViewing) {
@@ -1187,7 +2134,25 @@ export const Practice = () => {
                                                 <div
                                                     key={opt.id}
                                                     onClick={() => {
-                                                        if (!isSubmitted && !isEliminated) setSelectedAnswer(opt.id);
+                                                        if (!isSubmitted && !isEliminated) {
+                                                            setSelectedAnswer(opt.id);
+                                                            // Auto-save progress on selection
+                                                            const nextAnswers = { ...userAnswers, [question.id]: opt.id };
+                                                            setUserAnswers(nextAnswers);
+                                                            if (subTopicId) {
+                                                                // MERGE with existing data to prevent wiping history/results
+                                                                getSectionProgress(effectiveSectionId).then(p => {
+                                                                    const existing = p?.data || {};
+                                                                    const newData = {
+                                                                        ...existing,
+                                                                        userAnswers: nextAnswers,
+                                                                        currentQuestionIndex,
+                                                                        markedQuestionIds: Array.from(markedQuestions)
+                                                                    };
+                                                                    saveSectionProgress(effectiveSectionId, newData, { completed: Object.keys(nextAnswers).length, total: questions.length, score: 0 });
+                                                                });
+                                                            }
+                                                        }
                                                         if (isSubmitted) setViewingOptionId(opt.id);
                                                     }}
                                                     className={`group relative flex cursor-pointer rounded-xl border ${borderClass} ${bgClass} transition-all duration-200 ${isSubmitted ? 'p-2' : 'p-4'} ${!isSubmitted && !isEliminated && 'hover:border-primary/50'}`}
@@ -1206,10 +2171,10 @@ export const Practice = () => {
                                                         )}
 
                                                         <div className={`flex items-center justify-center rounded-full border font-bold transition-all ${isSelected || (isSubmitted && isCorrect) ? 'bg-primary border-primary text-black' : 'bg-white dark:bg-white/10 border-gray-200 dark:border-gray-700 text-gray-500'} ${isSubmitted ? 'h-5 w-5 text-xs' : 'h-8 w-8 text-sm'}`}>
-                                                            {opt.label}
+                                                            {opt.label || opt.id || String.fromCharCode(65 + idx)}
                                                         </div>
                                                         <div className={`font-math w-full transition-all duration-500 ${textClass} ${isSubmitted ? 'text-sm' : 'text-lg'}`}>
-                                                            {renderContent(opt.value, opt.type, { noBorder: true })}
+                                                            {renderContent(opt.value || (opt as any).text || '', opt.type, { noBorder: true })}
                                                         </div>
                                                         {isSubmitted && isCorrect && <span className="material-symbols-outlined ml-auto text-green-600">check_circle</span>}
                                                         {isSubmitted && isSelected && !isCorrect && <span className="material-symbols-outlined ml-auto text-red-500">cancel</span>}
@@ -1219,8 +2184,6 @@ export const Practice = () => {
                                         })}
                                     </div>
 
-
-
                                     <div className="mt-auto pt-2">
                                         {!isSubmitted ? (
                                             <div className="flex gap-3">
@@ -1228,11 +2191,14 @@ export const Practice = () => {
                                                     <button
                                                         onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
                                                         className="flex items-center justify-center gap-1 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 py-3.5 px-4 text-gray-600 dark:text-gray-300 font-bold transition-all active:scale-[0.98]"
-                                                        title="Previous Question"
+                                                        title="Previous Question (Left Arrow)"
                                                     >
                                                         <span className="material-symbols-outlined text-lg">arrow_back</span>
                                                     </button>
                                                 )}
+
+
+
                                                 <button
                                                     onClick={handleSubmit}
                                                     disabled={!selectedAnswer}
@@ -1247,10 +2213,10 @@ export const Practice = () => {
                                                         ? 'bg-black dark:bg-white text-white dark:text-black border-transparent hover:opacity-90 shadow-sm'
                                                         : 'border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-600 dark:text-gray-300'
                                                         }`}
-                                                    title={currentQuestionIndex === questions.length - 1 ? "Submit all answers" : "Save answer and check later"}
+                                                    title={currentQuestionIndex === questions.length - 1 ? "Submit all answers" : "Go to next question"}
                                                 >
-                                                    <span>{currentQuestionIndex === questions.length - 1 ? 'Submit All' : 'Save & Next'}</span>
-                                                    <span className="material-symbols-outlined text-lg">{currentQuestionIndex === questions.length - 1 ? 'done_all' : 'save_as'}</span>
+                                                    <span>{currentQuestionIndex === questions.length - 1 ? 'Submit All' : 'Next'}</span>
+                                                    <span className="material-symbols-outlined text-lg">{currentQuestionIndex === questions.length - 1 ? 'done_all' : 'arrow_forward'}</span>
                                                 </button>
                                             </div>
                                         ) : (
@@ -1278,12 +2244,9 @@ export const Practice = () => {
                             </div>
                         </div>
 
-
-
                         {/* Full Width Feedback Section (Below Grid) */}
-                        {/* Full Width Feedback Section - Fills remaining space */}
                         {isSubmitted && (
-                            <div className="w-full flex-grow min-h-0 bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-4 shadow-apple flex flex-col gap-3 animate-fade-in-up overflow-hidden mb-2">
+                            <div className="w-full bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-4 shadow-apple flex flex-col gap-3 animate-fade-in-up mb-2">
                                 <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-800 pb-2 shrink-0">
                                     <div className={`p-1 rounded-full ${feedback === 'correct' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500'}`}>
                                         <span className="material-symbols-outlined text-xl">{feedback === 'correct' ? 'check_circle' : 'cancel'}</span>
@@ -1296,9 +2259,16 @@ export const Practice = () => {
                                             {feedback === 'correct' ? 'You got it right. Detailed solution below.' : 'Check the solution below to improve.'}
                                         </p>
                                     </div>
+                                    <button
+                                        onClick={() => setShowComments(!showComments)}
+                                        className={`ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${showComments ? 'bg-primary text-white shadow-sm' : 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30'}`}
+                                    >
+                                        <span className="material-symbols-outlined text-sm">forum</span>
+                                        {showComments ? 'Hide Comments' : 'Discuss'}
+                                    </button>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto min-h-0 h-full">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {/* Specific Feedback */}
                                     <div className="flex flex-col gap-2 h-full">
                                         <h4 className="font-bold text-primary uppercase tracking-wider text-[10px] flex items-center gap-2 shrink-0">
@@ -1306,15 +2276,18 @@ export const Practice = () => {
                                             Option Feedback
                                         </h4>
                                         {viewingOptionId ? (
-                                            <div className="bg-white dark:bg-surface-dark p-4 rounded-xl border border-gray-100 dark:border-gray-800 h-full overflow-y-auto">
-                                                <div className="text-text-secondary dark:text-gray-300 leading-relaxed text-sm">
-                                                    {question.options.find(o => o.id === viewingOptionId)?.explanation ?
-                                                        renderContent(
-                                                            question.options.find(o => o.id === viewingOptionId)?.explanation || '',
-                                                            question.options.find(o => o.id === viewingOptionId)?.explanationType,
-                                                            { noBorder: true }
-                                                        ) : <span className="italic text-gray-400">No specific feedback for this option. See solution.</span>
-                                                    }
+                                            <div className="bg-white dark:bg-surface-dark p-4 rounded-xl border border-gray-100 dark:border-gray-800 min-h-[150px]">
+                                                <div className="font-math text-text-secondary dark:text-gray-300 leading-relaxed text-sm">
+                                                    {(() => {
+                                                        const opt = question.options.find(o => o.id === viewingOptionId);
+                                                        const microExpl = question.microExplanations?.[viewingOptionId];
+                                                        const feedback = opt?.explanation || microExpl;
+
+                                                        if (feedback) {
+                                                            return renderContent(feedback, opt?.explanationType || 'text', { noBorder: true });
+                                                        }
+                                                        return <span className="italic text-gray-400">No specific feedback for this option. See solution.</span>;
+                                                    })()}
                                                 </div>
                                             </div>
                                         ) : (
@@ -1324,78 +2297,90 @@ export const Practice = () => {
                                         )}
                                     </div>
 
-                                    {/* General Solution */}
                                     <div className="flex flex-col gap-2 h-full">
                                         <h4 className="font-bold text-primary uppercase tracking-wider text-[10px] flex items-center gap-2 shrink-0">
                                             <span className="material-symbols-outlined text-xs">school</span>
                                             General Solution
                                         </h4>
-                                        <div className="bg-white dark:bg-surface-dark p-4 rounded-xl border border-gray-100 dark:border-gray-800 h-full text-text-secondary dark:text-gray-300 leading-relaxed text-sm overflow-y-auto">
+                                        <div className="font-math bg-white dark:bg-surface-dark p-4 rounded-xl border border-gray-100 dark:border-gray-800 text-text-secondary dark:text-gray-300 leading-relaxed text-sm min-h-[150px]">
                                             {renderContent(question.explanation, question.explanationType, { noBorder: true })}
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* In-Place Question Comments */}
+                                {showComments && (
+                                    <QuestionCommentSection
+                                        questionId={question.id}
+                                        channelSlug={discussSlug}
+                                    />
+                                )}
                             </div>
                         )}
                     </div>
                 </div>
-            </main >
-            {
-                showExitConfirm && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-                        <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 dark:border-gray-800 transform transition-all scale-100">
-                            <div className="flex flex-col items-center text-center gap-4 mb-6">
-                                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-500 rounded-full flex items-center justify-center">
-                                    <span className="material-symbols-outlined text-2xl">save</span>
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-bold text-text-main dark:text-white">Save Progress?</h3>
-                                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
-                                        You are about to exit. Would you like to save your progress to resume later, or exit without saving?
-                                    </p>
-                                </div>
+            </main>
+
+            {/* Modals Section */}
+            {showExitConfirm && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 dark:border-gray-800 transform transition-all scale-100">
+                        <div className="flex flex-col items-center text-center gap-4 mb-6">
+                            <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-500 rounded-full flex items-center justify-center">
+                                <span className="material-symbols-outlined text-2xl">logout</span>
                             </div>
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={confirmExitWithoutSave}
-                                    disabled={isSaving}
-                                    className="flex-1 py-3 rounded-xl font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
-                                >
-                                    Don't Save
-                                </button>
-                                <button
-                                    onClick={confirmSaveAndExit}
-                                    disabled={isSaving}
-                                    className="flex-1 py-3 rounded-xl font-bold bg-primary text-text-main hover:brightness-105 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
-                                >
-                                    {isSaving ? (
-                                        <>
-                                            <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
-                                            Saving...
-                                        </>
-                                    ) : (
-                                        'Save & Exit'
-                                    )}
-                                </button>
+                            <div>
+                                <h3 className="text-xl font-bold text-text-main dark:text-white">Exit Session?</h3>
+                                <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+                                    Are you sure you want to exit? Your current progress will be saved automatically.
+                                </p>
                             </div>
                         </div>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowExitConfirm(false)}
+                                disabled={isSaving}
+                                className="flex-1 py-3 rounded-xl font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
+                            >
+                                Stay
+                            </button>
+                            <button
+                                onClick={confirmSaveAndExit}
+                                disabled={isSaving}
+                                className="flex-1 py-3 rounded-xl font-bold bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
+                            >
+                                {isSaving ? (
+                                    <>
+                                        <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
+                                        Exiting...
+                                    </>
+                                ) : (
+                                    'Yes, Exit'
+                                )}
+                            </button>
+                        </div>
                     </div>
-                )
-            }
+                </div>
+            )}
 
-            {/* Submit All Confirmation Modal */}
-            {
-                showSubmitConfirm && (
+            {showSubmitConfirm && (() => {
+                const currentAnsweredCount = Object.keys(userAnswers).length + (selectedAnswer && !userAnswers[question.id] ? 1 : 0);
+                const isUnderfilled = currentAnsweredCount < questions.length;
+                return (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-                        <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 dark:border-gray-800 transform transition-all scale-100">
+                        <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-md w-full p-6 border border-gray-100 dark:border-gray-800 transform transition-all scale-100">
                             <div className="flex flex-col items-center text-center gap-4 mb-6">
-                                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 rounded-full flex items-center justify-center">
-                                    <span className="material-symbols-outlined text-2xl">publish</span>
+                                <div className={`w-12 h-12 ${isUnderfilled ? 'bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-500' : 'bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500'} rounded-full flex items-center justify-center`}>
+                                    <span className="material-symbols-outlined text-2xl">{isUnderfilled ? 'warning' : 'done_all'}</span>
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-text-main dark:text-white">Submit All Answers?</h3>
+                                    <h3 className="text-xl font-bold text-text-main dark:text-white">
+                                        {isUnderfilled ? 'Unfinished Questions' : 'Ready to Finish?'}
+                                    </h3>
                                     <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
-                                        You are about to submit your practice session. You can review your results immediately after.
+                                        {isUnderfilled
+                                            ? `You still have ${questions.length - currentAnsweredCount} questions unanswered. Are you sure you want to submit all and finish?`
+                                            : 'You have reached the end of the session. Would you like to submit all your answers now?'}
                                     </p>
                                 </div>
                             </div>
@@ -1404,7 +2389,7 @@ export const Practice = () => {
                                     onClick={() => setShowSubmitConfirm(false)}
                                     className="flex-1 py-3 rounded-xl font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                                 >
-                                    Cancel
+                                    Not Yet
                                 </button>
                                 <button
                                     onClick={async () => {
@@ -1413,81 +2398,16 @@ export const Practice = () => {
                                     }}
                                     className="flex-1 py-3 rounded-xl font-bold bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-all shadow-sm"
                                 >
-                                    Submit
+                                    Submit All
                                 </button>
                             </div>
                         </div>
                     </div>
-                )
+                );
+            })()
             }
 
-
-
-            {/* Report Modal */}
-            {
-                showReportModal && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-                        <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-2xl max-w-md w-full p-6 border border-gray-100 dark:border-gray-800 transform transition-all scale-100">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-xl font-bold text-text-main dark:text-white flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-red-500">flag</span>
-                                    Report Issue
-                                </h3>
-                                <button onClick={() => setShowReportModal(false)} className="text-gray-400 hover:text-text-main dark:hover:text-white">
-                                    <span className="material-symbols-outlined">close</span>
-                                </button>
-                            </div>
-
-                            <div className="flex flex-col gap-4">
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Issue Type</label>
-                                    <select
-                                        value={reportReason}
-                                        onChange={(e) => setReportReason(e.target.value)}
-                                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-                                    >
-                                        <option value="content_error">Content Error (Question/Answer)</option>
-                                        <option value="formatting">Formatting/Display Issue</option>
-                                        <option value="explanation">Explanation is confusing</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Details (Optional)</label>
-                                    <textarea
-                                        placeholder="Please describe the issue..."
-                                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent outline-none focus:ring-2 focus:ring-primary/50 text-sm h-24 resize-none"
-                                    ></textarea>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-3 mt-6">
-                                <button
-                                    onClick={() => setShowReportModal(false)}
-                                    disabled={isReporting}
-                                    className="flex-1 py-3 rounded-xl font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleReportSubmit}
-                                    disabled={isReporting}
-                                    className="flex-1 py-3 rounded-xl font-bold bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
-                                >
-                                    {isReporting ? (
-                                        <>
-                                            <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
-                                            Sending...
-                                        </>
-                                    ) : (
-                                        'Submit Report'
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )
-            }
+            {/* Report Modal Removed */}
         </div >
     );
 };

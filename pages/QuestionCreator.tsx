@@ -33,6 +33,7 @@ interface FormState extends Omit<Question, 'id' | 'options' | 'correctOptionId' 
     primarySkillId: string;
     supportingSkillIds: string[];
     promptType: 'text' | 'image';
+    promptImage?: string | null;
 
     // Metadata
     source: string;
@@ -107,6 +108,154 @@ const ToastNotification = ({ message, type = 'success', onClose }: { message: st
 
 // ... (skipping ImageUploader/Component updates, jumping to Logic in QuestionCreator)
 
+
+// --- Math Toolbar & Validation ---
+
+const validateMathContent = (content: string): string[] => {
+    if (!content) return [];
+    const errors: string[] = [];
+
+    // Regex to find LaTeX-like commands NOT inside $...$ or $$...$$
+    // This is a heuristic. logic: match backslash word, check if likely math.
+    // Simplifying: check for specific common problematic commands that are definitely math
+    // e.g. \frac, \int, \sum, \sqrt, \sin, \cos
+    // If they appear in a context that doesn't look like math mode.
+    // Hard to do perfectly with regex, but we can catch obvious cases.
+
+    // Strategy: Split by $ delimiters. Even indices are "text mode", Odd are "math mode".
+    // (Assuming balanced $).
+    const segments = content.split('$');
+    let unbalanced = false;
+    if ((content.match(/\$/g) || []).length % 2 !== 0) {
+        unbalanced = true;
+        errors.push("Found unbalanced '$' delimiters. Please check your math formatting.");
+    }
+
+    segments.forEach((seg, idx) => {
+        // Even index = Text Mode (unless we have unbalanced $)
+        if (idx % 2 === 0 && !unbalanced) {
+            // Check for math keywords in text mode
+            const suspicious = seg.match(/\\(frac|int|sum|sqrt|lim|theta|pi|infty)/g);
+            if (suspicious) {
+                errors.push(`Found math command(s) "${suspicious.join(', ')}" outside of '$' delimiters. Wrap them like $...$`);
+            }
+        }
+    });
+
+    return errors;
+};
+
+// Enhanced MathToolbar with Image Support
+const MathToolbar = ({
+    onInsert,
+    onImageUpload,
+    textareaRef
+}: {
+    onInsert: (text: string, cursorOffset?: number) => void;
+    onImageUpload?: (file: File) => void;
+    textareaRef?: React.RefObject<HTMLTextAreaElement>;
+}) => {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleInsert = (text: string, cursorBack: number = 0) => {
+        // If ref provided, we could do smart insertion (not implemented fully here due to controlled state)
+        // For now, we rely on the parent handler or simpler append/insert logic if passed
+        onInsert(text, cursorBack);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0] && onImageUpload) {
+            onImageUpload(e.target.files[0]);
+        }
+        if (e.target.value) e.target.value = '';
+    };
+
+    return (
+        <div className="flex flex-wrap items-center gap-1 p-2 bg-gray-50 border-b border-gray-100 rounded-t-xl">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mr-2">Math Tools:</span>
+
+            <button
+                type="button"
+                onClick={() => handleInsert('$$', 1)}
+                className="px-2 py-1 bg-white border border-gray-200 rounded text-xs font-mono font-bold hover:bg-yellow-50 hover:border-yellow-300 transition-colors"
+                title="Inline Math"
+            >
+                $x$
+            </button>
+            <button
+                type="button"
+                onClick={() => handleInsert('$$$$', 2)}
+                className="px-2 py-1 bg-white border border-gray-200 rounded text-xs font-mono font-bold hover:bg-yellow-50 hover:border-yellow-300 transition-colors"
+                title="Block Math"
+            >
+                $$x$$
+            </button>
+            <div className="w-px h-4 bg-gray-300 mx-1"></div>
+            <button
+                type="button"
+                onClick={() => handleInsert('\\frac{}{}', 3)}
+                className="px-2 py-1 bg-white border border-gray-200 rounded text-xs font-math hover:bg-yellow-50 hover:border-yellow-300 transition-colors"
+            >
+                \frac
+            </button>
+            <button
+                type="button"
+                onClick={() => handleInsert('\\sqrt{}', 1)}
+                className="px-2 py-1 bg-white border border-gray-200 rounded text-xs font-math hover:bg-yellow-50 hover:border-yellow-300 transition-colors"
+            >
+                \sqrt
+            </button>
+            <button
+                type="button"
+                onClick={() => handleInsert('\\int ', 0)}
+                className="px-2 py-1 bg-white border border-gray-200 rounded text-xs font-math hover:bg-yellow-50 hover:border-yellow-300 transition-colors"
+            >
+                \int
+            </button>
+            <button
+                type="button"
+                onClick={() => handleInsert('\\sum ', 0)}
+                className="px-2 py-1 bg-white border border-gray-200 rounded text-xs font-math hover:bg-yellow-50 hover:border-yellow-300 transition-colors"
+            >
+                \sum
+            </button>
+            <button
+                type="button"
+                onClick={() => handleInsert('\\lim_{x \\to 0} ', 0)}
+                className="px-2 py-1 bg-white border border-gray-200 rounded text-xs font-math hover:bg-yellow-50 hover:border-yellow-300 transition-colors"
+            >
+                \lim
+            </button>
+            <div className="w-px h-4 bg-gray-300 mx-1"></div>
+            <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="px-2 py-1 bg-white border border-gray-200 rounded text-xs font-bold hover:bg-yellow-50 hover:border-yellow-300 transition-colors flex items-center gap-1"
+                title="Insert Image"
+            >
+                <span className="material-symbols-outlined text-[14px]">image</span>
+            </button>
+            <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileChange}
+            />
+            <div className="flex-1"></div>
+            <a
+                href="https://katex.org/docs/supported.html"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[10px] text-blue-500 hover:underline flex items-center gap-1"
+            >
+                <span className="material-symbols-outlined text-[10px]">help</span>
+                Reference
+            </a>
+        </div>
+    );
+};
+
 const ImageUploader = ({
     value,
     onChange,
@@ -122,24 +271,23 @@ const ImageUploader = ({
 }) => {
     const [isUploading, setIsUploading] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
-    // The following states are likely intended for a different component (e.g., QuestionCreator)
-    // but are placed here based on the provided instruction snippet's context.
-    // If this is incorrect, please provide the full context of the component where these states should reside.
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [promptPreview, setPromptPreview] = useState(false);
-    const [explanationPreview, setExplanationPreview] = useState(false);
-    const [optionPreviews, setOptionPreviews] = useState<Record<number, boolean>>({});
-    // const navigate = useNavigate(); // This line is commented out as useNavigate is not imported and likely belongs elsewhere.
+    const { showToast } = useToast();
 
-    // Parse value into array of URLs
+    // Parse value into array of URLs — only include valid image URLs
+    const isValidImageUrl = (s: string) => {
+        const t = s.trim();
+        return t.startsWith('http') || t.startsWith('data:image') || t.startsWith('blob:');
+    };
     const images: string[] = React.useMemo(() => {
         if (!value) return [];
         try {
             const parsed = JSON.parse(value);
-            if (Array.isArray(parsed)) return parsed;
-            return [value];
+            if (Array.isArray(parsed)) return parsed.filter(isValidImageUrl);
+            if (isValidImageUrl(value)) return [value];
+            return [];
         } catch {
-            return [value];
+            if (isValidImageUrl(value)) return [value];
+            return [];
         }
     }, [value]);
 
@@ -166,7 +314,7 @@ const ImageUploader = ({
 
             if (!token) {
                 console.error('No auth token found for image upload');
-                alert('Please log in to upload images');
+                showToast('Please log in to upload images', 'error');
                 return;
             }
 
@@ -176,7 +324,7 @@ const ImageUploader = ({
             for (const file of files) {
                 const formData = new FormData();
                 formData.append('image', file, 'upload.jpg');
-                const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+                const apiBase = '/api';
 
                 const res = await fetch(`${apiBase}/upload/image`, {
                     method: 'POST',
@@ -205,7 +353,7 @@ const ImageUploader = ({
 
         } catch (e) {
             console.error('Image upload failed:', e);
-            alert('Image upload failed. Please try again.');
+            showToast('Image upload failed. Please try again.', 'error');
         } finally {
             setIsUploading(false);
         }
@@ -421,74 +569,101 @@ const NavigationSidebar = ({
             </div>
 
             {/* Units List */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-2 pb-20 space-y-2">
-                {units.map((unit) => {
-                    // Use static data PRIORITY to ensure chapters always load (Context might have empty dynamic lists)
-                    const content = topicContent[unit.id];
-                    const staticData = COURSE_CONTENT_DATA[unit.id];
-                    const isExpanded = expandedUnits[unit.id];
-                    // Force static subtopics to guarantee structure
-                    const subs = staticData?.subTopics || content?.subTopics || [];
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-2 pb-20 space-y-2 scroll-bounce">
+                <div className="scroll-bounce-inner min-h-[101%]">
+                    {units.map((unit) => {
+                        // Use static data PRIORITY to ensure chapters always load (Context might have empty dynamic lists)
+                        const content = topicContent[unit.id];
+                        const staticData = COURSE_CONTENT_DATA[unit.id];
+                        const isExpanded = expandedUnits[unit.id];
+                        // Force static subtopics to guarantee structure
+                        const subs = staticData?.subTopics || content?.subTopics || [];
 
-                    return (
-                        <div key={unit.id} className="select-none">
-                            <button
-                                onClick={() => {
-                                    toggleUnit(unit.id);
-                                    // Also Select the Unit itself for "Unit Settings"
-                                    onSelect(unit.id, null as any, content?.title || unit.subject);
-                                }}
-                                className={`w-full text-left px-3 py-3 rounded-lg flex items-center gap-2 group transition-colors ${isExpanded ? 'bg-yellow-50' : 'hover:bg-gray-50'}`}
-                            >
-                                <span className={`material-symbols-outlined text-[18px] ${isExpanded ? 'text-yellow-600' : 'text-gray-400'}`}>folder</span>
-                                <span className="text-xs font-bold text-gray-800 flex-1 leading-snug">
-                                    {content?.title || unit.subject}
-                                </span>
-                                <span className={`material-symbols-outlined text-[14px] text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`}>chevron_right</span>
-                            </button>
+                        return (
+                            <div key={unit.id} className="select-none">
+                                <button
+                                    onClick={() => {
+                                        toggleUnit(unit.id);
+                                        // If clicking the currently selected unit (with no subtopic selected), deselect it (Toggle off)
+                                        if (selectedTopicId === unit.id && !selectedSubTopicId) {
+                                            onSelect('', null, '');
+                                        } else {
+                                            // Otherwise select it
+                                            onSelect(unit.id, null as any, content?.title || unit.subject);
+                                        }
+                                    }}
+                                    className={`w-full text-left px-3 py-3 rounded-lg flex items-center gap-2 group transition-colors ${isExpanded ? 'bg-yellow-50' : 'hover:bg-gray-50'}`}
+                                >
+                                    <span className={`material-symbols-outlined text-[18px] ${isExpanded ? 'text-yellow-600' : 'text-gray-400'}`}>folder</span>
+                                    <span className="text-xs font-bold text-gray-800 flex-1 leading-snug">
+                                        {content?.title || unit.subject}
+                                    </span>
+                                    <span className={`material-symbols-outlined text-[14px] text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`}>chevron_right</span>
+                                </button>
 
-                            {isExpanded && (
-                                <div className="mt-1 ml-4 pl-2 border-l-2 border-gray-100 space-y-1">
-                                    {/* Unit Test */}
-                                    <button
-                                        onClick={() => onSelect(unit.id, 'unit_test', 'Unit Test')}
-                                        className={`w-full text-left px-3 py-2 rounded-md text-[11px] font-medium flex items-center gap-2 transition-all ${selectedTopicId === unit.id && selectedSubTopicId === 'unit_test'
-                                            ? 'bg-black text-white shadow-md'
-                                            : 'text-gray-500 hover:bg-gray-50'
-                                            }`}
-                                    >
-                                        <span className="material-symbols-outlined text-[14px]">assignment</span>
-                                        Unit Test
-                                    </button>
+                                {isExpanded && (
+                                    <div className="mt-1 ml-4 pl-2 border-l-2 border-gray-100 space-y-1">
+                                        {/* Unit Test */}
+                                        <button
+                                            onClick={() => onSelect(unit.id, 'unit_test', 'Unit Test')}
+                                            className={`w-full text-left px-3 py-2 rounded-md text-[11px] font-medium flex items-center gap-2 transition-all ${selectedTopicId === unit.id && selectedSubTopicId === 'unit_test'
+                                                ? 'bg-black text-white shadow-md'
+                                                : 'text-gray-500 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            <span className="material-symbols-outlined text-[14px]">assignment</span>
+                                            Unit Test
+                                        </button>
 
-                                    {/* Chapters */}
-                                    {/* Chapters */}
-                                    {subs.length > 0 ? (
-                                        subs.map((sub: any) => {
-                                            const isSelected = selectedTopicId === unit.id && selectedSubTopicId === sub.id;
-                                            return (
-                                                <button
-                                                    key={sub.id}
-                                                    onClick={() => onSelect(unit.id, sub.id, sub.title)}
-                                                    className={`w-full text-left px-3 py-2 rounded-md transition-all ${isSelected
-                                                        ? 'bg-black text-white shadow-md'
-                                                        : 'text-gray-500 hover:bg-gray-50'
-                                                        }`}
-                                                >
-                                                    <div className="text-[11px] font-medium leading-tight break-words">
-                                                        {sub.title}
-                                                    </div>
-                                                </button>
-                                            );
-                                        })
-                                    ) : (
-                                        <div className="px-3 py-2 text-[10px] text-gray-400 italic">No chapters loaded</div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    );
-                })}
+                                        {/* Chapters */}
+                                        {/* Chapters */}
+                                        {(() => {
+                                            const BC_ONLY_IDS = [
+                                                '6.11', '6.12', '6.13', '7.5', '7.9', '8.13',
+                                                '9.1', '9.2', '9.3', '9.4', '9.5', '9.6', '9.7', '9.8', '9.9',
+                                                '10.1', '10.2', '10.3', '10.4', '10.5', '10.6', '10.7', '10.8', '10.9', '10.10', '10.11', '10.12', '10.13', '10.14', '10.15'
+                                            ];
+
+                                            const filteredSubs = subs.filter((s: any) => {
+                                                if (s.id === 'unit_test' || s.id === 'overview') return false;
+                                                if (activeCourse === 'AB' && BC_ONLY_IDS.includes(s.id)) return false;
+                                                if (!s.courseScope || s.courseScope === 'both') return true;
+                                                if (activeCourse === 'AB') return s.courseScope !== 'bc_only';
+                                                if (activeCourse === 'BC') return s.courseScope !== 'ab_only';
+                                                return true;
+                                            });
+
+                                            if (filteredSubs.length === 0) return <div className="px-3 py-2 text-[10px] text-gray-400 italic">No chapters loaded</div>;
+
+                                            return filteredSubs.map((sub: any, index: number) => {
+                                                const isSelected = selectedTopicId === unit.id && selectedSubTopicId === sub.id;
+                                                // Robust numbering fix
+                                                const cleanTitle = sub.title.replace(/^\d+\.\d+\s*/, '');
+                                                const unitPrefix = sub.title.match(/^\d+/)?.[0] || '';
+                                                const displayTitle = unitPrefix ? `${unitPrefix}.${index + 1} ${cleanTitle}` : sub.title;
+
+                                                return (
+                                                    <button
+                                                        key={sub.id}
+                                                        onClick={() => onSelect(unit.id, sub.id, sub.title)}
+                                                        className={`w-full text-left px-3 py-2 rounded-md transition-all ${isSelected
+                                                            ? 'bg-black text-white shadow-md'
+                                                            : 'text-gray-500 hover:bg-gray-50'
+                                                            }`}
+                                                    >
+                                                        <div className="text-[11px] font-medium leading-tight break-words">
+                                                            {displayTitle}
+                                                        </div>
+                                                    </button>
+                                                );
+                                            });
+                                        })()}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );
@@ -514,35 +689,101 @@ const QuestionListSidebar = ({
     const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
     const [draggingId, setDraggingId] = useState<string | null>(null);
     const [localOrder, setLocalOrder] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchScope, setSearchScope] = useState<'course' | 'unit' | 'section'>('unit');
+
+    // Auto-switch search scope based on selection
+    useEffect(() => {
+        if (selectedSubTopicId) {
+            setSearchScope('section');
+        } else if (selectedTopicId) {
+            setSearchScope('unit');
+        } else {
+            setSearchScope('course');
+        }
+    }, [selectedTopicId, selectedSubTopicId]);
 
     const filtered = useMemo(() => {
         // Helper to strip course prefix (AB_, BC_, Both_, or ABBC_)
         const getBase = (id: string) => id.replace(/^(AB_|BC_|Both_|ABBC_)/, '');
         const selectedBase = getBase(selectedTopicId);
+        const hasSearch = !!searchQuery.trim();
+        const term = searchQuery.toLowerCase().trim();
+        const isShortQuery = term.length < 2 && /^\d+$/.test(term); // Strict mode for single digits
 
-        return questions.filter(q => {
-            // 1. Check Topic Match
-            // Exact match OR Base match if question is shared
-            const qBase = getBase(q.topic);
-            const isTopicMatch = q.topic === selectedTopicId ||
-                (q.course === 'Both' && qBase === selectedBase) ||
-                (q as any).topicId === selectedTopicId; // Legacy fallback
+        // Pass 1: Filter Logic based on Scope
+        let candidates = questions.filter(q => {
+            if (searchScope === 'course') {
+                return true;
+            } else if (searchScope === 'unit') {
+                const qBase = getBase(q.topic);
+                return q.topic === selectedTopicId ||
+                    (q.course === 'Both' && qBase === selectedBase) ||
+                    (q as any).topicId === selectedTopicId;
+            } else {
+                // Section Scope
+                const qBase = getBase(q.topic);
+                const isTopicMatch = q.topic === selectedTopicId ||
+                    (q.course === 'Both' && qBase === selectedBase) ||
+                    (q as any).topicId === selectedTopicId;
 
-            if (!isTopicMatch) return false;
+                if (!isTopicMatch) return false;
+                if (!selectedSubTopicId) return true;
 
-            // 2. Check SubTopic Match (if selected)
-            if (selectedSubTopicId) {
-                // Special handling for Unit Tests which might have prefixes in DB (e.g. ABBC_Limits_unit_test)
                 if (selectedSubTopicId === 'unit_test') {
                     return q.sectionId === 'unit_test' || q.sectionId?.endsWith('_unit_test') ||
                         q.subTopicId === 'unit_test' || q.subTopicId?.endsWith('_unit_test');
                 }
                 return q.sectionId === selectedSubTopicId || q.subTopicId === selectedSubTopicId;
             }
-
-            return true;
         });
-    }, [questions, selectedSubTopicId, selectedTopicId]);
+
+        // Pass 2: Search Filtering & Ranking
+        if (hasSearch) {
+            // Filter first
+            candidates = candidates.filter(q => {
+                const titleMatch = q.title && q.title.toLowerCase().includes(term);
+                const idMatch = q.id && q.id.toLowerCase().includes(term);
+                const subTopicMatch = q.subTopicId && q.subTopicId.toLowerCase().includes(term); // Treat subtopic like title
+
+                // For short numeric queries (e.g. "4"), avoid searching prompt/text to prevent noise
+                // Otherwise search prompt
+                const promptMatch = !isShortQuery && q.prompt && q.prompt.toLowerCase().includes(term);
+
+                return titleMatch || idMatch || subTopicMatch || promptMatch;
+            });
+
+            // Scoring Function
+            const getScore = (q: Question) => {
+                let score = 0;
+                const title = (q.title || '').toLowerCase();
+                const id = (q.id || '').toLowerCase();
+                const subTopic = (q.subTopicId || '').toLowerCase();
+
+                // Title Matches (Highest Priority)
+                if (title === term) score += 100;
+                else if (title.startsWith(term)) score += 80;
+                else if (title.endsWith(term)) score += 75; // "Unit1-Q4" ends with 4
+                else if (title.includes(term)) score += 60;
+
+                // SubTopic Matches (High Priority for grouping)
+                if (subTopic === term) score += 90;
+                else if (subTopic.includes(term)) score += 55;
+
+                // ID Matches (Medium Priority)
+                if (id === term) score += 70;
+                else if (id.startsWith(term)) score += 50;
+                else if (id.includes(term)) score += 40;
+
+                return score;
+            };
+
+            // Sort by Score DESC
+            return candidates.sort((a, b) => getScore(b) - getScore(a));
+        }
+
+        return candidates;
+    }, [questions, selectedSubTopicId, selectedTopicId, searchQuery, searchScope]);
 
     // Load order from local storage
     useEffect(() => {
@@ -561,7 +802,39 @@ const QuestionListSidebar = ({
 
     // Compute display questions
     const displayQuestions = useMemo(() => {
-        if (localOrder.length === 0) return filtered;
+        // Helper to extract P-number or Q-number for sorting
+        // Prioritizes: Title -> Prompt (Image filename like 2.3-P4) -> ID
+        const getQuestionNumber = (q: Question): number => {
+            const textToSearch = `${q.title || ''} ${q.prompt || ''} ${q.id || ''}`;
+
+            // Match P1, P2, P10... or Q1, Q2...
+            // Look for patterns like "-P4", " P4", "Q4", "Question 4"
+            // We want specific delimiters to avoid matching random text
+            const pMatch = textToSearch.match(/(?:^|[\s\-_.\/\\])P(\d+)(?:[\s\-_.\/\\]|$)/i);
+            if (pMatch) return parseInt(pMatch[1]);
+
+            const qMatch = textToSearch.match(/(?:^|[\s\-_.\/\\])Q(\d+)(?:[\s\-_.\/\\]|$)/i);
+            if (qMatch) return parseInt(qMatch[1]);
+
+            return 999999; // No number found, push to end
+        };
+
+        // If Searching, ignore manual order (results are ranked by relevance)
+        if (searchQuery.trim()) return filtered;
+
+        // If NO manual order is set (or empty), use Auto-Sort by P-Number
+        if (localOrder.length === 0) {
+            return [...filtered].sort((a, b) => {
+                const numA = getQuestionNumber(a);
+                const numB = getQuestionNumber(b);
+
+                if (numA !== numB) {
+                    return numA - numB;
+                }
+                // Fallback to creation order (if available) or ID to be stable
+                return (a.id || '').localeCompare(b.id || '');
+            });
+        }
 
         const orderMap = new Map<string, number>(localOrder.map((id, i) => [id, i]));
 
@@ -572,10 +845,15 @@ const QuestionListSidebar = ({
             const idxA = orderMap.has(a.id) ? orderMap.get(a.id)! : 9999999;
             const idxB = orderMap.has(b.id) ? orderMap.get(b.id)! : 9999999;
 
-            if (idxA === idxB) return 0; // Maintain relative order if both new
+            if (idxA === idxB) {
+                // If both are new (not in manual order), sort them by P-number too!
+                const numA = getQuestionNumber(a);
+                const numB = getQuestionNumber(b);
+                return numA - numB;
+            }
             return idxA - idxB;
         });
-    }, [filtered, localOrder]);
+    }, [filtered, localOrder, searchQuery]);
 
     const handleDeleteClick = (e: React.MouseEvent, qId: string) => {
         e.stopPropagation();
@@ -601,6 +879,9 @@ const QuestionListSidebar = ({
         e.dataTransfer.dropEffect = "move";
 
         if (!draggingId || draggingId === targetId) return;
+
+        // Sorting is disabled during search
+        if (searchQuery.trim()) return;
 
         // Reorder locally for visual feedback
         const currentList = displayQuestions.map(q => q.id);
@@ -662,75 +943,105 @@ const QuestionListSidebar = ({
 
             <div className="w-80 border-r border-gray-200 h-full bg-white flex flex-col flex-shrink-0">
                 <div className="p-4 border-b border-gray-100">
-                    <p className="text-[12px] font-bold text-gray-900 mb-2">Questions ({displayQuestions.length})</p>
+                    <div className="flex items-center justify-between mb-3">
+                        <p className="text-[12px] font-bold text-gray-900">Questions ({displayQuestions.length})</p>
+
+                        <div className="flex bg-gray-100 rounded-lg p-0.5">
+                            <button
+                                onClick={() => setSearchScope('course')}
+                                className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-all ${searchScope === 'course' ? 'bg-white shadow text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                                title="Search Entire Course"
+                            >
+                                ALL
+                            </button>
+                            <button
+                                onClick={() => setSearchScope('unit')}
+                                className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-all ${searchScope === 'unit' ? 'bg-white shadow text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                                title="Search Current Unit"
+                            >
+                                UNIT
+                            </button>
+                            <button
+                                onClick={() => setSearchScope('section')}
+                                className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-all ${searchScope === 'section' ? 'bg-white shadow text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                                title="Search This Section Only"
+                            >
+                                SEC
+                            </button>
+                        </div>
+                    </div>
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-2 top-2 text-gray-400 text-sm">search</span>
                         <input
                             type="text"
-                            placeholder="Deep search..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder={`Search ${searchScope === 'course' ? 'everything' : searchScope === 'unit' ? 'unit' : 'section'}...`}
                             className="w-full pl-8 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs outline-none focus:border-yellow-400 transition-all"
                         />
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-3 pb-20 space-y-3 bg-gray-50/50">
-                    {displayQuestions.map((q, index) => {
-                        const isActive = activeQuestionId === q.id;
-                        const isDragging = draggingId === q.id;
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-3 pb-20 space-y-3 bg-gray-50/50 scroll-bounce">
+                    <div className="scroll-bounce-inner min-h-[101%]">
+                        {displayQuestions.map((q, index) => {
+                            const isActive = activeQuestionId === q.id;
+                            const isDragging = draggingId === q.id;
 
-                        return (
-                            <div
-                                key={q.id}
-                                draggable
-                                onDragStart={(e) => handleDragStart(e, q.id)}
-                                onDragOver={(e) => handleDragOver(e, q.id)}
-                                onDrop={handleDrop}
-                                onClick={() => onSelectQuestion(q)}
-                                className={`p-3 rounded-xl border cursor-pointer transition-all group relative ${isActive
-                                    ? 'bg-white border-yellow-400 shadow-md ring-1 ring-yellow-400/20'
-                                    : 'bg-white border-gray-100 shadow-sm hover:border-gray-300'
-                                    } ${isDragging ? 'opacity-50 scale-95' : ''}`}
-                            >
-                                {/* Drag Handle Hint (Optional, handled by whole card) */}
-                                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-gray-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-                                {/* Delete Button */}
-                                <button
-                                    onClick={(e) => handleDeleteClick(e, q.id)}
-                                    className="absolute top-2 right-2 p-1.5 rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
-                                    title="Delete Question"
+                            return (
+                                <div
+                                    key={q.id}
+                                    draggable
+                                    onDragStart={(e) => handleDragStart(e, q.id)}
+                                    onDragOver={(e) => handleDragOver(e, q.id)}
+                                    onDrop={handleDrop}
+                                    onClick={() => onSelectQuestion(q)}
+                                    className={`p-3 rounded-xl border cursor-pointer transition-all group relative ${isActive
+                                        ? 'bg-white border-yellow-400 shadow-md ring-1 ring-yellow-400/20'
+                                        : 'bg-white border-gray-100 shadow-sm hover:border-gray-300'
+                                        } ${isDragging ? 'opacity-50 scale-95 font-mono' : ''}`}
                                 >
-                                    <span className="material-symbols-outlined text-sm">delete</span>
-                                </button>
+                                    {/* Drag Handle Hint (Optional, handled by whole card) */}
+                                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-gray-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
-                                <div className="flex justify-between items-start mb-2 pr-6">
-                                    <span className="text-[10px] font-bold text-gray-400">{q.subTopicId}</span>
-                                    <div className="flex gap-1">
-                                        <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 text-[9px] font-bold rounded">BOTH</span>
-                                        <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 text-[9px] font-bold rounded">{q.type}</span>
+                                    {/* Delete Button */}
+                                    <button
+                                        onClick={(e) => handleDeleteClick(e, q.id)}
+                                        className="absolute top-2 right-2 p-1.5 rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
+                                        title="Delete Question"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">delete</span>
+                                    </button>
+
+                                    <div className="flex justify-between items-start mb-2 pr-6">
+                                        <span className="text-[10px] font-bold text-gray-400">{q.subTopicId}</span>
+                                        <div className="flex gap-1">
+                                            <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 text-[9px] font-bold rounded">BOTH</span>
+                                            <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 text-[9px] font-bold rounded">{q.type}</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-sm font-bold text-gray-800 mb-1 break-words">
+                                        {q.title || `Question ${q.id.substr(0, 8)}`}
+                                    </div>
+                                    <div className="flex justify-between items-center mt-1">
+                                        <div className="text-[10px] text-gray-400 font-mono">
+                                            ID: {q.id ? q.id.slice(0, 5) : 'NEW'}...
+                                        </div>
+                                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded uppercase ${q.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                                            }`}>
+                                            {q.status === 'published' ? 'PUBLISHED' : 'DRAFT'}
+                                        </span>
                                     </div>
                                 </div>
-                                <div className="text-sm font-bold text-gray-800 line-clamp-2 mb-1">
-                                    {q.title || `Question ${q.id.substr(0, 8)}`}
-                                </div>
-                                <div className="flex justify-between items-center mt-1">
-                                    <div className="text-[10px] text-gray-400 font-mono">
-                                        ID: {q.id ? q.id.slice(0, 5) : 'NEW'}...
-                                    </div>
-                                    <span className={`text-[9px] font-black px-1.5 py-0.5 rounded uppercase ${q.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
-                                        }`}>
-                                        {q.status === 'published' ? 'PUBLISHED' : 'DRAFT'}
-                                    </span>
-                                </div>
+                            );
+                        })}
+
+                        {displayQuestions.length === 0 && selectedSubTopicId && (
+                            <div className="text-center py-10 text-gray-400 text-xs">
+                                No questions in this section yet.
                             </div>
-                        );
-                    })}
-
-                    {displayQuestions.length === 0 && selectedSubTopicId && (
-                        <div className="text-center py-10 text-gray-400 text-xs">
-                            No questions in this section yet.
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
         </>
@@ -746,8 +1057,8 @@ export const QuestionCreator = () => {
 
     // -- State --
     const [activeCourse, setActiveCourse] = useState<CourseType>('AB');
-    const [selectedTopicId, setSelectedTopicId] = useState<string>('ABBC_Limits'); // Default Unified ID
-    const [selectedSubTopicId, setSelectedSubTopicId] = useState<string | null>('1.1');   // Default
+    const [selectedTopicId, setSelectedTopicId] = useState<string>(''); // Start empty per user request
+    const [selectedSubTopicId, setSelectedSubTopicId] = useState<string | null>(null);   // Start empty
 
     const [viewMode, setViewMode] = useState<'settings' | 'editor'>('settings');
     const prevSelectionRef = useRef({ topicId: selectedTopicId, subTopicId: selectedSubTopicId });
@@ -766,25 +1077,26 @@ export const QuestionCreator = () => {
         skillTags: [],
         errorTags: [],
         prompt: '',
+        promptImage: null,
         latex: '',
         options: [
-            { label: 'A', value: '', type: 'image', explanation: '', explanationType: 'image' },
-            { label: 'B', value: '', type: 'image', explanation: '', explanationType: 'image' },
-            { label: 'C', value: '', type: 'image', explanation: '', explanationType: 'image' },
-            { label: 'D', value: '', type: 'image', explanation: '', explanationType: 'image' }
+            { label: 'A', value: '', type: 'text', explanation: '', explanationType: 'text' },
+            { label: 'B', value: '', type: 'text', explanation: '', explanationType: 'text' },
+            { label: 'C', value: '', type: 'text', explanation: '', explanationType: 'text' },
+            { label: 'D', value: '', type: 'text', explanation: '', explanationType: 'text' }
         ],
         correctOptionLabel: 'A',
         explanation: '',
         recommendationReasons: [],
         primarySkillId: '',
         supportingSkillIds: [],
-        promptType: 'image',
+        promptType: 'text',
         source: 'self',
         status: 'published',
         version: 1,
         weightPrimary: 0.8,
         weightSupporting: 0.2,
-        explanationType: 'image',
+        explanationType: 'text',
         errorPatternIds: []
     }), [selectedSubTopicId, selectedTopicId]);
 
@@ -795,6 +1107,7 @@ export const QuestionCreator = () => {
     const [promptPreview, setPromptPreview] = useState(false);
     const [explanationPreview, setExplanationPreview] = useState(false);
     const [optionPreviews, setOptionPreviews] = useState<Record<number, boolean>>({});
+    const [optionExplPreviews, setOptionExplPreviews] = useState<Record<number, boolean>>({});
 
     // Chapter Settings State
     const [sectionSettings, setSectionSettings] = useState<any>(null);
@@ -815,13 +1128,18 @@ export const QuestionCreator = () => {
 
         // Find existing data
         const topicSecs = sections[selectedTopicId] || [];
-        const sec = topicSecs.find((s: any) => s.id === selectedSubTopicId);
+        // Handle unit_test ID mapping: 'unit_test' -> '[TopicID]_unit_test'
+        const effectiveSubTopicId = selectedSubTopicId === 'unit_test' ? `${selectedTopicId}_unit_test` : selectedSubTopicId;
+
+        // Try precise match first (e.g. BC_Series_unit_test), fallback to direct match (in case legacy)
+        const sec = topicSecs.find((s: any) => s.id === effectiveSubTopicId || s.id === selectedSubTopicId);
 
         if (sec) {
             setSectionSettings({
                 ...sec,
+                id: sec.id, // Use actual DB ID
                 availability: {
-                    lesson: sec.hasLesson !== false && sec.has_lesson !== false,
+                    lesson: !!(sec.hasLesson || sec.has_lesson),
                     practice: sec.hasPractice !== false && sec.has_practice !== false
                 }
             });
@@ -847,13 +1165,13 @@ export const QuestionCreator = () => {
                 (selectedSubTopicId === 'unit_test' ? unit?.unitTest : null)) as any;
 
             setSectionSettings({
-                id: selectedSubTopicId,
-                title: staticSec?.title || '',
+                id: effectiveSubTopicId, // Use the correct ID for saving
+                title: staticSec?.title || (selectedSubTopicId === 'unit_test' ? 'Unit Test' : ''),
                 description: staticSec?.description || '',
-                description2: staticSec?.description2 || '',
+                description_2: staticSec?.description_2 || '',
                 estimated_minutes: staticSec?.estimatedMinutes || 10,
                 availability: {
-                    lesson: staticSec?.hasLesson !== false,
+                    lesson: !!(staticSec?.hasLesson || staticSec?.has_lesson),
                     practice: staticSec?.hasPractice !== false
                 }
             });
@@ -877,16 +1195,134 @@ export const QuestionCreator = () => {
     };
 
     const handleSelectQuestion = (q: Question) => {
-        // Derive correct label from ID
-        const correctOpt = q.options.find(o => o.id === q.correctOptionId);
-        const derivedLabel = correctOpt ? correctOpt.label : 'A';
+        // Derive correct label from ID or fallback to index
+        const correctOptIdx = q.options.findIndex(o => o.id === q.correctOptionId);
+        const correctOpt = correctOptIdx !== -1 ? q.options[correctOptIdx] : null;
+        const derivedLabel = correctOpt
+            ? (correctOpt.label || (['A', 'B', 'C', 'D'].includes(correctOpt.id) ? correctOpt.id : String.fromCharCode(65 + correctOptIdx)))
+            : 'A';
+
+        // ROBUST MAPPING: Ensure skills and error tags are mapped even if relational fields are missing
+        const skillTags = q.skillTags || [];
+        const errorTags = q.errorTags || [];
+
+        const primarySkillId = q.primarySkillId || (skillTags.length > 0 ? skillTags[0] : '');
+        const supportingSkillIds = q.supportingSkillIds && q.supportingSkillIds.length > 0
+            ? q.supportingSkillIds
+            : (skillTags.length > 1 ? skillTags.slice(1) : []);
+        const errorPatternIds = q.errorPatternIds && q.errorPatternIds.length > 0
+            ? q.errorPatternIds
+            : errorTags;
+
+        // SYNC SELECTION: Ensure unit/chapter context is updated
+        const targetTopicId = (q as any).topicId || q.topic;
+        const targetSectionId = (q as any).sectionId || q.subTopicId;
+
+        if (targetTopicId) setSelectedTopicId(targetTopicId);
+        if (targetSectionId) setSelectedSubTopicId(targetSectionId);
+
+        // PRE-EMPT HOOK: Prevent the selection useEffect from resetting viewMode to 'settings'
+        if (targetTopicId || targetSectionId) {
+            prevSelectionRef.current = {
+                topicId: targetTopicId || selectedTopicId,
+                subTopicId: targetSectionId || (selectedSubTopicId as any)
+            };
+        }
+
+        // Parse prompt if it is a JSON string or object (legacy format)
+        let displayPrompt = q.prompt || '';
+        let displayImage = null;
+
+        if (typeof displayPrompt === 'object') {
+            const castedPrompt = displayPrompt as any;
+            displayPrompt = castedPrompt.text || '';
+            displayImage = castedPrompt.image || null;
+        } else if (typeof displayPrompt === 'string') {
+            const trimmed = displayPrompt.trim();
+            if (trimmed.startsWith('{')) {
+                try {
+                    const parsed = JSON.parse(displayPrompt);
+                    if (parsed.text || parsed.image) {
+                        displayPrompt = parsed.text || '';
+                        displayImage = parsed.image || null;
+                    }
+                } catch (e) { /* Ignore */ }
+            } else if (trimmed.startsWith('[')) {
+                // Handle JSON Array ["text", "image"]
+                try {
+                    const parsed = JSON.parse(displayPrompt);
+                    if (Array.isArray(parsed)) {
+                        // Assumption: First non-url item is text, first url-like item is image
+                        // Or just Item 0 is text, Item 1 is image?
+                        // Let's iterate and classify.
+                        const textParts: string[] = [];
+                        let foundImage = null;
+
+                        parsed.forEach(p => {
+                            const str = String(p);
+                            if (!foundImage && (str.startsWith('http') || str.startsWith('data:image') || str.startsWith('/storage'))) {
+                                foundImage = str;
+                            } else {
+                                // Check for Markdown image inside the text part
+                                const imgRegex = /!\[(.*?)\]\((.*?)\)/;
+                                const match = str.match(imgRegex);
+                                if (match && !foundImage) {
+                                    foundImage = match[2];
+                                    textParts.push(str.replace(imgRegex, '').trim());
+                                } else {
+                                    textParts.push(str);
+                                }
+                            }
+                        });
+                        displayPrompt = textParts.join('\n\n');
+                        displayImage = foundImage || displayImage; // Prioritize found image
+                    }
+                } catch (e) { /* Ignore */ }
+            } else {
+                // LEGACY STRING FORMAT (Markdown or Raw URL)
+
+                // 1. Extract ![...](url) pattern
+                const imgRegex = /!\[(.*?)\]\((.*?)\)/;
+                const match = displayPrompt.match(imgRegex);
+                if (match) {
+                    displayImage = match[2];
+                    displayPrompt = displayPrompt.replace(imgRegex, '').trim();
+                }
+
+                // 2. Check for Raw URL if no image yet
+                // If the entire prompt is just a URL, or contains one at the end?
+                // User screenshot shows a raw URL.
+                if (!displayImage) {
+                    // Simple check: if prompt looks like a URL
+                    if (displayPrompt.trim().startsWith('http') || displayPrompt.trim().startsWith('https://xzpjln')) {
+                        displayImage = displayPrompt.trim();
+                        displayPrompt = ''; // Clear text if it's just a URL
+                    }
+                }
+            }
+        }
 
         setFormData({
             ...defaultForm,
             ...q,
+            prompt: displayPrompt, // Use parsed prompt text
+            promptImage: displayImage, // Separate image
             correctOptionLabel: derivedLabel,
-            // Map legacy fields
-            options: q.options.map((o: any) => ({ ...o, type: o.type || 'text', explanation: o.explanation || '' }))
+            primarySkillId,
+            supportingSkillIds,
+            errorPatternIds,
+            // Map legacy fields — merge microExplanations into option.explanation
+            options: q.options.map((o: any, oIdx: number) => {
+                const label = o.label || String.fromCharCode(65 + oIdx);
+                const optId = o.id || label;
+                return {
+                    ...o,
+                    label,
+                    type: o.type || 'text',
+                    value: o.value || o.text || '', // Fix: fallback to o.text if value is missing
+                    explanation: o.explanation || q.microExplanations?.[optId] || q.microExplanations?.[label] || ''
+                };
+            })
         });
         setViewMode('editor');
     };
@@ -909,7 +1345,7 @@ export const QuestionCreator = () => {
                 const mapped = skillsData.map(s => ({ label: s.name, value: s.id }));
                 setFetchedSkills(mapped);
             } else {
-                // Fallback to constants if DB empty? 
+                // Fallback to constants if DB empty?
                 // User wants to CLEAR DB, so if empty, show empty.
                 // But initially might be empty.
                 // We merge constants if we want, but let's stick to DB as source of truth if connected.
@@ -1032,6 +1468,42 @@ export const QuestionCreator = () => {
             if (!formData.explanation?.trim()) errors.push('General Explanation / Solution');
         }
 
+
+        // --- Math Validation ---
+        const mathErrors: string[] = [];
+
+        // Check Prompt
+        if (formData.promptType === 'text') {
+            const promptErrors = validateMathContent(formData.prompt);
+            if (promptErrors.length > 0) {
+                mathErrors.push(`Prompt: ${promptErrors[0]}`); // Show first error
+            }
+        }
+
+        // Check Options
+        formData.options.forEach(opt => {
+            if (opt.value) {
+                const optErrors = validateMathContent(opt.value);
+                if (optErrors.length > 0) {
+                    mathErrors.push(`Option ${opt.label}: ${optErrors[0]}`);
+                }
+            }
+        });
+
+        if (mathErrors.length > 0) {
+            // We use confirm to allow them to proceed if they really want to (false positive fallback)
+            // But for now, let's treat it as a hard error or toast warning?
+            // User requested "warn". Let's use window.confirm or just block.
+            // Blocking is safer for the "Fix" objective.
+            // Let's block but with a very clear message.
+            const message = "Math Formatting Issues Detected:\n\n" + mathErrors.join('\n') + "\n\nPlease wrap math in $...$ delimiters.";
+
+            // Allow override via confirm
+            if (!window.confirm(message + "\n\nDo you want to Save anyway? (Not Recommended)")) {
+                return;
+            }
+        }
+
         if (errors.length > 0) {
             showToast(`Missing required fields: ${errors.join(', ')}`, 'error');
             return;
@@ -1039,24 +1511,84 @@ export const QuestionCreator = () => {
 
         setIsSaving(true);
         try {
-            // Dynamic Topic ID Calculation to handle shared/course-specific topics
-            // 1. Get base topic (e.g. 'Limits' from 'AB_Limits')
-            const baseTopicId = selectedTopicId.replace(/^(AB_|BC_|Both_)/, '');
-            // 2. Determine correct prefix based on chosen course
-            let prefix = 'AB_';
-            if (formData.course === 'BC') prefix = 'BC_';
-            else if (formData.course === 'Both') prefix = 'Both_';
+            // Combine Prompt Text and Image into JSON Array ["text", "image"]
+            // This is the format requested by the user for strict separation.
+            const promptArray = [];
+            if (formData.prompt) promptArray.push(formData.prompt);
+            if (formData.promptImage) promptArray.push(formData.promptImage);
 
-            const calculatedTopicId = `${prefix}${baseTopicId}`;
+            // If both empty, maybe empty string? But let's keep array if user wants array.
+            // If only text, maybe just array with one item?
+            // User said "prompt area should be an array".
+            const combinedPrompt = JSON.stringify(promptArray.length > 0 ? promptArray : [""]);
+
+            // Dynamic Topic ID Calculation
+            let calculatedTopicId = selectedTopicId;
+
+            // 1. Try Reverse Lookup (Search content for subtopic)
+            if (selectedSubTopicId) {
+                const parentUnitEntry = Object.entries(COURSE_CONTENT_DATA).find(([_, content]) => {
+                    return content.subTopics.some(sub => sub.id === selectedSubTopicId);
+                });
+                if (parentUnitEntry) {
+                    calculatedTopicId = parentUnitEntry[0];
+                }
+            }
+
+            // 2. HARD FALLBACK: Prefix Matching (If lookup failed and ID still looks like a subtopic "X.Y")
+            // This prevents "1.5" being sent as topic
+            if ((calculatedTopicId === selectedSubTopicId || /^\d+\./.test(calculatedTopicId) || calculatedTopicId === 'unit_test') && selectedSubTopicId) {
+                // Remove any course prefix if present in subtopic id (e.g. AB_1.5)
+                const coreId = selectedSubTopicId.replace(/^(AB_|BC_|Both_|ABBC_)/, '');
+
+                if (coreId.startsWith('1.')) calculatedTopicId = 'ABBC_Limits';
+                else if (coreId.startsWith('2.')) calculatedTopicId = 'ABBC_Derivatives';
+                else if (coreId.startsWith('3.')) calculatedTopicId = 'ABBC_Composite';
+                else if (coreId.startsWith('4.')) calculatedTopicId = 'ABBC_Applications';
+                else if (coreId.startsWith('5.')) calculatedTopicId = 'ABBC_Analytical';
+                else if (coreId.startsWith('6.')) calculatedTopicId = 'ABBC_Integration';
+                else if (coreId.startsWith('7.')) calculatedTopicId = 'ABBC_DiffEq';
+                else if (coreId.startsWith('8.')) calculatedTopicId = 'ABBC_AppIntegration';
+                else if (coreId.startsWith('9.')) calculatedTopicId = 'BC_Unit9';
+                else if (coreId.startsWith('10.')) calculatedTopicId = 'BC_Series';
+            }
+
+            // 3. DB Compatibility
+            // The User's DB screenshot shows 'Both_Limits' etc.
+            // But constants.ts uses 'ABBC_Limits'.
+            // Validating against the DB schema: we must translate ABBC_ -> Both_
+            if (calculatedTopicId.startsWith('ABBC_')) {
+                calculatedTopicId = calculatedTopicId.replace('ABBC_', 'Both_');
+            }
+
+            // Legacy/Fallback Logic
+            if (formData.course === 'Both' && (calculatedTopicId.startsWith('AB_') || calculatedTopicId.startsWith('BC_'))) {
+                const suffix = calculatedTopicId.replace(/^(AB_|BC_)/, '');
+                // If we have a Both_ version, use it
+                // (We assume Both_ is the standard for shared content in this DB)
+                calculatedTopicId = `Both_${suffix}`;
+            }
+
+            console.log('Saving Question (Final):', { selectedTopicId, selectedSubTopicId, calculatedTopicId });
+
+            // Build microExplanations from option explanations for DB storage
+            const microExplanations: Record<string, string> = {};
+            formData.options.forEach(opt => {
+                const key = opt.id || opt.label;
+                if (key && opt.explanation) {
+                    microExplanations[key] = opt.explanation;
+                }
+            });
 
             const payload = {
                 ...formData,
-                // Ensure correct topic identifiers for filtering
-                topic: calculatedTopicId,       // e.g. 'Both_Limits' if course is Both
-                topicId: calculatedTopicId,     // Redundant but explicit
+                prompt: combinedPrompt, // Use the JSON Array format
+                topic: calculatedTopicId,       // e.g. 'Both_Limits'
+                topicId: calculatedTopicId,
                 subTopicId: selectedSubTopicId,
                 sectionId: selectedSubTopicId,
                 correctOptionId: formData.correctOptionLabel, // Simplify for now
+                microExplanations,
                 // Ensure numeric types
                 difficulty: Number(formData.difficulty) as unknown as 1 | 2 | 3 | 4 | 5,
                 targetTimeSeconds: Number(formData.targetTimeSeconds),
@@ -1105,9 +1637,9 @@ export const QuestionCreator = () => {
             setViewMode('settings');
             fetchSections();
             fetchQuestions(); // Refresh question list
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            showToast('Failed to delete question.', 'error');
+            showToast(e.message || 'Failed to delete question.', 'error');
         } finally {
             setIsSaving(false);
         }
@@ -1161,10 +1693,13 @@ export const QuestionCreator = () => {
                 }
             } else {
                 // Case 2: Chapter Settings
-                await updateSection(selectedTopicId, selectedSubTopicId, {
+                // Use correct ID map for unit tests, or fallback to selected
+                const targetSubTopicId = selectedSubTopicId === 'unit_test' ? `${selectedTopicId}_unit_test` : selectedSubTopicId;
+
+                await updateSection(selectedTopicId, targetSubTopicId, {
                     title: sectionSettings.title,
                     description: sectionSettings.description,
-                    description2: sectionSettings.description2,
+                    description_2: sectionSettings.description_2,
                     estimated_minutes: Number(sectionSettings.estimated_minutes),
                     has_lesson: sectionSettings.availability.lesson,
                     has_practice: sectionSettings.availability.practice
@@ -1176,16 +1711,16 @@ export const QuestionCreator = () => {
 
             showToast('Settings saved successfully!');
             fetchSections();
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             setSaveStatus('error');
             setTimeout(() => setSaveStatus('idle'), 3000);
-            showToast('Failed to save settings.', 'error');
+            showToast(e.message || 'Failed to save settings.', 'error');
         }
     };
 
     return (
-        <div className="h-screen flex flex-col bg-white overflow-hidden">
+        <div className="h-full flex flex-col bg-white overflow-hidden">
             <Navbar />
             {/* Toast is now handled globally by ToastProvider */}
 
@@ -1194,7 +1729,11 @@ export const QuestionCreator = () => {
                 {/* 1. Navigation Sidebar */}
                 <NavigationSidebar
                     activeCourse={activeCourse}
-                    setActiveCourse={setActiveCourse}
+                    setActiveCourse={(c) => {
+                        setActiveCourse(c);
+                        setSelectedTopicId('');
+                        setSelectedSubTopicId(null);
+                    }}
                     topicContent={topicContent}
                     selectedTopicId={selectedTopicId}
                     selectedSubTopicId={selectedSubTopicId}
@@ -1212,608 +1751,763 @@ export const QuestionCreator = () => {
                 />
 
                 {/* 3. Main Content Area */}
-                <div className="flex-1 h-full overflow-y-auto bg-gray-50 p-8 custom-scrollbar">
-
-                    {viewMode === 'settings' && sectionSettings && (
-                        <div className="max-w-3xl mx-auto">
-                            <div className="flex items-center gap-4 mb-8">
-                                <div className="p-3 bg-black rounded-xl text-white">
-                                    <span className="material-symbols-outlined">settings_suggest</span>
-                                </div>
-                                <div>
-                                    <h1 className="text-2xl font-black text-gray-900">{sectionSettings.type === 'UNIT' ? 'Unit Settings' : 'Chapter Settings'}</h1>
-                                    <p className="text-gray-500">Configure metadata for this section.</p>
-                                </div>
-                            </div>
-
-                            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 space-y-6">
-                                <div>
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Title</label>
-                                    <input
-                                        value={sectionSettings.title}
-                                        onChange={e => setSectionSettings({ ...sectionSettings, title: e.target.value })}
-                                        className="w-full p-4 bg-gray-50 rounded-xl font-bold text-lg border-none focus:ring-2 focus:ring-yellow-400"
-                                    />
+                <div className="flex-1 h-full overflow-y-auto bg-gray-50 p-8 pb-32 custom-scrollbar scroll-bounce">
+                    <div className="scroll-bounce-inner min-h-[101%]">
+                        {viewMode === 'settings' && sectionSettings && (
+                            <div className="max-w-3xl mx-auto">
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="p-3 bg-black rounded-xl text-white">
+                                        <span className="material-symbols-outlined">settings_suggest</span>
+                                    </div>
+                                    <div>
+                                        <h1 className="text-2xl font-black text-gray-900">{sectionSettings.type === 'UNIT' ? 'Unit Settings' : 'Chapter Settings'}</h1>
+                                        <p className="text-gray-500">Configure metadata for this section.</p>
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Description (Short / Subtitle)</label>
-                                    <input
-                                        value={sectionSettings.description}
-                                        onChange={e => setSectionSettings({ ...sectionSettings, description: e.target.value })}
-                                        className="w-full p-4 bg-gray-50 rounded-xl font-medium border-none focus:ring-2 focus:ring-yellow-400"
-                                        placeholder="e.g. Avg vs Instant Rate"
-                                    />
-                                </div>
+                                <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 space-y-6">
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Title</label>
+                                        <input
+                                            value={sectionSettings.title}
+                                            onChange={e => setSectionSettings({ ...sectionSettings, title: e.target.value })}
+                                            className="w-full p-4 bg-gray-50 rounded-xl font-bold text-lg border-none focus:ring-2 focus:ring-yellow-400"
+                                        />
+                                    </div>
 
-                                <div>
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Detailed Description (For Card)</label>
-                                    <textarea
-                                        value={sectionSettings.description2 || ''}
-                                        onChange={e => setSectionSettings({ ...sectionSettings, description2: e.target.value })}
-                                        className="w-full p-4 bg-gray-50 rounded-xl font-medium min-h-[100px] border-none focus:ring-2 focus:ring-yellow-400 resize-none"
-                                        placeholder="Enter a more detailed description..."
-                                    />
-                                </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Description (Short / Subtitle)</label>
+                                        <input
+                                            value={sectionSettings.description}
+                                            onChange={e => setSectionSettings({ ...sectionSettings, description: e.target.value })}
+                                            className="w-full p-4 bg-gray-50 rounded-xl font-medium border-none focus:ring-2 focus:ring-yellow-400"
+                                            placeholder="e.g. Avg vs Instant Rate"
+                                        />
+                                    </div>
 
-                                {sectionSettings.type !== 'UNIT' && (
-                                    <div className="grid grid-cols-2 gap-8">
-                                        <div>
-                                            {/* Estimated Time Removed per User Request (Now calculated dynamically) */}
-                                            {/* <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Estimated Time (Min)</label>
-                                            <input ... /> */}
-                                        </div>
-                                        <div>
-                                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Availability (Check to Enable)</label>
-                                            <div className="flex gap-4">
-                                                <div
-                                                    className="flex-1 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between cursor-pointer hover:bg-yellow-100 transition-colors"
-                                                    onClick={() => setSectionSettings({ ...sectionSettings, availability: { ...sectionSettings.availability, lesson: !sectionSettings.availability.lesson } })}
-                                                >
-                                                    <span className="font-bold text-gray-800">Lesson</span>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={sectionSettings.availability.lesson}
-                                                        onChange={() => { }} // Handled by parent div
-                                                        className="w-5 h-5 accent-black cursor-pointer"
-                                                    />
-                                                </div>
-                                                <div
-                                                    className="flex-1 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between cursor-pointer hover:bg-yellow-100 transition-colors"
-                                                    onClick={() => setSectionSettings({ ...sectionSettings, availability: { ...sectionSettings.availability, practice: !sectionSettings.availability.practice } })}
-                                                >
-                                                    <span className="font-bold text-gray-800">Practice</span>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={sectionSettings.availability.practice}
-                                                        onChange={() => { }} // Handled by parent div
-                                                        className="w-5 h-5 accent-blue-600 cursor-pointer"
-                                                    />
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Detailed Description (For Card)</label>
+                                        <textarea
+                                            value={sectionSettings.description_2 || ''}
+                                            onChange={e => setSectionSettings({ ...sectionSettings, description_2: e.target.value })}
+                                            className="w-full p-4 bg-gray-50 rounded-xl font-medium min-h-[100px] border-none focus:ring-2 focus:ring-yellow-400 resize-none"
+                                            placeholder="Enter a more detailed description..."
+                                        />
+                                    </div>
+
+                                    {sectionSettings.type !== 'UNIT' && (
+                                        <div className="grid grid-cols-2 gap-8">
+                                            <div>
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Availability (Check to Enable)</label>
+                                                <div className="flex flex-wrap gap-4">
+                                                    <div
+                                                        className="flex-1 min-w-[140px] p-4 bg-purple-50 border border-purple-200 rounded-xl flex items-center justify-between gap-3 cursor-pointer hover:bg-purple-100 transition-colors"
+                                                        onClick={() => setSectionSettings({ ...sectionSettings, availability: { ...sectionSettings.availability, lesson: !sectionSettings.availability.lesson } })}
+                                                    >
+                                                        <span className="font-bold text-gray-800 whitespace-nowrap">Lesson</span>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={sectionSettings.availability.lesson}
+                                                            onChange={() => { }}
+                                                            className="w-5 h-5 accent-purple-600 cursor-pointer shrink-0"
+                                                        />
+                                                    </div>
+
+                                                    <div
+                                                        className="flex-1 min-w-[140px] p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between gap-3 cursor-pointer hover:bg-yellow-100 transition-colors"
+                                                        onClick={() => setSectionSettings({ ...sectionSettings, availability: { ...sectionSettings.availability, practice: !sectionSettings.availability.practice } })}
+                                                    >
+                                                        <span className="font-bold text-gray-800 whitespace-nowrap">Practice</span>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={sectionSettings.availability.practice}
+                                                            onChange={() => { }}
+                                                            className="w-5 h-5 accent-blue-600 cursor-pointer shrink-0"
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
-
-                                <div className="pt-8 flex gap-4">
-                                    <button
-                                        onClick={handleSaveSettings}
-                                        disabled={saveStatus === 'saving'}
-                                        className={`
-                                            px-8 py-4 font-bold rounded-xl transition-all flex items-center gap-2
-                                            ${saveStatus === 'success'
-                                                ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
-                                                : saveStatus === 'error'
-                                                    ? 'bg-red-500 text-white'
-                                                    : 'bg-gray-100 hover:bg-gray-200 text-black'
-                                            }
-                                        `}
-                                    >
-                                        {saveStatus === 'saving' ? (
-                                            <>
-                                                <span className="material-symbols-outlined animate-spin">refresh</span>
-                                                Saving...
-                                            </>
-                                        ) : saveStatus === 'success' ? (
-                                            <>
-                                                <span className="material-symbols-outlined">check_circle</span>
-                                                Saved!
-                                            </>
-                                        ) : (
-                                            <>
-                                                <span className="material-symbols-outlined">save</span>
-                                                Save Settings
-                                            </>
-                                        )}
-                                    </button>
-                                    <button onClick={handleCreateQuestion} className="flex-1 px-8 py-4 bg-black text-white font-bold rounded-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-xl">
-                                        <span className="material-symbols-outlined">add_circle</span>
-                                        Create Question for this Section
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {viewMode === 'editor' && (
-                        <div className="max-w-4xl mx-auto pb-20">
-                            {/* Editor Header */}
-                            <div className="flex items-center justify-between mb-8">
-                                <div>
-                                    <div className={`inline-block px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-md mb-2 ${formData.status === 'published'
-                                        ? 'bg-green-100 text-green-700'
-                                        : 'bg-yellow-100 text-yellow-800'
-                                        }`}>
-                                        {formData.status === 'published' ? 'Published' : 'Drafting'}
-                                    </div>
-                                    <h1 className="text-3xl font-black text-gray-900">Question Editor</h1>
-                                </div>
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={() => setViewMode('settings')}
-                                        className="px-6 py-2.5 font-bold text-gray-500 hover:bg-gray-100 rounded-xl transition-colors"
-                                    >
-                                        Cancel
-                                    </button>
-                                    {formData.id && (
-                                        <button
-                                            onClick={handleDeleteQuestion}
-                                            disabled={isSaving}
-                                            className="px-6 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl transition-all flex items-center gap-2 disabled:opacity-50"
-                                        >
-                                            <span className="material-symbols-outlined text-lg">delete</span>
-                                            Delete
-                                        </button>
                                     )}
-                                    <button
-                                        onClick={handleSaveQuestion}
-                                        disabled={isSaving}
-                                        className="px-8 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-black font-black rounded-xl shadow-lg shadow-yellow-400/20 transition-all flex items-center gap-2 disabled:opacity-50"
-                                    >
-                                        {isSaving ? 'Saving...' : 'Save'}
-                                    </button>
+
+                                    <div className="pt-8 flex gap-4">
+                                        <button
+                                            onClick={handleSaveSettings}
+                                            disabled={saveStatus === 'saving'}
+                                            className={`
+                                                px-6 py-4 font-bold rounded-xl transition-all flex items-center justify-center gap-2 whitespace-nowrap min-w-fit
+                                                ${saveStatus === 'success'
+                                                    ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
+                                                    : saveStatus === 'error'
+                                                        ? 'bg-red-500 text-white'
+                                                        : 'bg-gray-100 hover:bg-gray-200 text-black'
+                                                }
+                                            `}
+                                        >
+                                            {saveStatus === 'saving' ? (
+                                                <>
+                                                    <span className="material-symbols-outlined animate-spin shrink-0">refresh</span>
+                                                    <span>Saving...</span>
+                                                </>
+                                            ) : saveStatus === 'success' ? (
+                                                <>
+                                                    <span className="material-symbols-outlined shrink-0">check_circle</span>
+                                                    <span>Saved!</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span className="material-symbols-outlined shrink-0">save</span>
+                                                    <span>Save Settings</span>
+                                                </>
+                                            )}
+                                        </button>
+                                        <button onClick={handleCreateQuestion} className="flex-1 px-4 py-4 bg-black text-white font-bold rounded-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-xl text-center leading-tight min-w-fit">
+                                            <span className="material-symbols-outlined shrink-0">add_circle</span>
+                                            <span>Create Question for this Section</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                        )}
 
-                            {/* Metadata Grid */}
-                            <div className="mb-8">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Classification & Metadata</h3>
-
-                                    {/* RESET BUTTON for User Request */}
-                                    <button
-                                        onClick={handleDeleteAllMetadata}
-                                        className="text-[10px] text-red-400 hover:text-red-600 underline font-medium"
-                                        title="Clears all Skills and Error Tags from DB"
-                                    >
-                                        [DEV] Clear Supabase Metadata
-                                    </button>
-                                </div>
-
-                                {/* Row 1: Name & Status */}
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                                    <div className="md:col-span-3 space-y-1">
-                                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Question Name <span className="text-red-500">*</span></label>
-                                        <input
-                                            type="text"
-                                            value={formData.title || ''}
-                                            onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                            placeholder="e.g. Limit Laws Practice 1"
-                                            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-text-main focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition-all placeholder:font-medium"
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <CustomSelect
-                                            label="Status"
-                                            value={formData.status}
-                                            onChange={(val) => setFormData({ ...formData, status: val })}
-                                            options={STATUS_OPTIONS}
-                                            icon="label"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Row 2: Target Course & Question Type */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div className="space-y-1">
-                                        <CustomSelect
-                                            label="Target Course"
-                                            value={formData.course}
-                                            onChange={(val) => setFormData({ ...formData, course: val })}
-                                            options={COURSE_OPTIONS}
-                                            icon="school"
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <CustomSelect
-                                            label="Question Type"
-                                            value={formData.type}
-                                            onChange={(val) => setFormData({ ...formData, type: val })}
-                                            options={TYPE_OPTIONS}
-                                            icon="quiz"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Row 3: Calculator & Difficulty */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div className="space-y-1">
-                                        <CustomSelect
-                                            label="Calculator Policy"
-                                            value={formData.calculatorAllowed ? 1 : 0}
-                                            onChange={(val) => setFormData({ ...formData, calculatorAllowed: val === 1 })}
-                                            options={CALCULATOR_OPTIONS}
-                                            icon="calculate"
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <CustomSelect
-                                            label="Difficulty Level"
-                                            value={formData.difficulty}
-                                            onChange={(val) => setFormData({ ...formData, difficulty: Number(val) as import('../types').DifficultyLevel })}
-                                            options={DIFFICULTY_OPTIONS}
-                                            icon="signal_cellular_alt"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Row 3.5: Estimated Time (New per User Request) */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Estimated Time (Min)</label>
-                                        <input
-                                            type="number"
-                                            step="0.5"
-                                            min="0.5"
-                                            value={(formData.targetTimeSeconds || 120) / 60}
-                                            onChange={e => setFormData({ ...formData, targetTimeSeconds: parseFloat(e.target.value) * 60 })}
-                                            className="w-full p-4 bg-white border border-gray-200 rounded-xl text-sm font-bold outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all"
-                                            placeholder="e.g. 2"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Row 4: Skills & Weights */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div className="space-y-1">
-                                        <div className="flex justify-between">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-red-500">Primary Skill *</label>
-                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Weight</label>
+                        {viewMode === 'editor' && (
+                            <div className="max-w-4xl mx-auto pb-20">
+                                {/* Editor Header */}
+                                <div className="flex items-center justify-between mb-8">
+                                    <div>
+                                        <div className={`inline-block px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-md mb-2 ${formData.status === 'published'
+                                            ? 'bg-green-100 text-green-700'
+                                            : 'bg-yellow-100 text-yellow-800'
+                                            }`}>
+                                            {formData.status === 'published' ? 'Published' : 'Drafting'}
                                         </div>
-                                        <div className="flex gap-2">
-                                            <div className="relative flex-1">
-                                                <CreatableSelect
-                                                    placeholder="Select or Create Primary Skill..."
-                                                    value={formData.primarySkillId}
-                                                    onChange={val => setFormData({ ...formData, primarySkillId: val })}
-                                                    onCreate={handleCreateSkill}
-                                                    onDeleteOption={handleDeleteSkillValue}
-                                                    options={fetchedSkills}
-                                                />
-                                            </div>
-                                            <input
-                                                type="number"
-                                                step="0.1"
-                                                min="0"
-                                                max="1"
-                                                value={formData.weightPrimary || 1.0}
-                                                onChange={e => setFormData({ ...formData, weightPrimary: parseFloat(e.target.value) })}
-                                                className="w-20 p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-center outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400"
-                                            />
-                                        </div>
+                                        <h1 className="text-3xl font-black text-gray-900">Question Editor</h1>
                                     </div>
-                                    <div className="space-y-1">
-                                        <div className="flex justify-between">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Supporting Skills</label>
-                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Weight</label>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <div className="relative flex-1">
-                                                <CreatableMultiSelect
-                                                    placeholder="Select or Create Supporting Skills..."
-                                                    value={formData.supportingSkillIds}
-                                                    onChange={val => setFormData({ ...formData, supportingSkillIds: val })}
-                                                    onCreate={handleCreateSkill}
-                                                    onDeleteOption={handleDeleteSkillValue}
-                                                    options={fetchedSkills}
-                                                />
-                                            </div>
-                                            <input
-                                                type="number"
-                                                step="0.1"
-                                                min="0"
-                                                max="1"
-                                                value={formData.weightSupporting}
-                                                onChange={e => setFormData({ ...formData, weightSupporting: parseFloat(e.target.value) })}
-                                                className="w-20 p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-center outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Row 5: Topic, Chapter */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-red-500">Topic (Unit) *</label>
-                                        <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-500 cursor-not-allowed flex items-center justify-between">
-                                            <span className="truncate">{topicContent[selectedTopicId]?.title}</span>
-                                            <span className="material-symbols-outlined text-sm opacity-50">lock</span>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-red-500">Chapter (Section) *</label>
-                                        <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-500 cursor-not-allowed flex items-center justify-between">
-                                            <span className="truncate">{selectedSubTopicId}</span>
-                                            <span className="material-symbols-outlined text-sm opacity-50">lock</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Row 6: Source & Error Patterns */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Source</label>
-                                        <input
-                                            type="text"
-                                            value={formData.source || ''}
-                                            onChange={e => setFormData({ ...formData, source: e.target.value })}
-                                            placeholder="e.g. Textbook, Past Paper, Self"
-                                            className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all"
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Common Error Patterns</label>
-                                        <div className="relative">
-                                            <CreatableMultiSelect
-                                                placeholder="Select or Create Error Patterns..."
-                                                value={formData.errorPatternIds || []}
-                                                onChange={val => setFormData({ ...formData, errorPatternIds: val })}
-                                                onCreate={handleCreateError}
-                                                onDeleteOption={handleDeleteErrorValue}
-                                                options={fetchedErrors}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Row 7: Notes */}
-                                <div className="mb-4">
-                                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Notes (Internal)</label>
-                                    <textarea
-                                        value={formData.notes || ''}
-                                        onChange={e => setFormData({ ...formData, notes: e.target.value })}
-                                        placeholder="Internal notes about this question..."
-                                        className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all resize-y min-h-[60px]"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Prompt */}
-                            <div className="mb-8">
-                                <div className="flex justify-between mb-2">
-                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Question Prompt (Text / Image) <span className="text-red-500">*</span></h3>
-                                    <div className="flex bg-gray-100 p-1 rounded-lg gap-1">
+                                    <div className="flex gap-3">
                                         <button
-                                            onClick={() => setFormData({ ...formData, promptType: 'text' })}
-                                            className={`text-[10px] font-bold px-3 py-1.5 rounded-md transition-all ${formData.promptType === 'text' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-gray-700'}`}
+                                            onClick={() => setViewMode('settings')}
+                                            className="px-6 py-2.5 font-bold text-gray-500 hover:bg-gray-100 rounded-xl transition-colors"
                                         >
-                                            Tt Text
+                                            Cancel
                                         </button>
-                                        <button
-                                            onClick={() => setFormData({ ...formData, promptType: 'image' })}
-                                            className={`text-[10px] font-bold px-3 py-1.5 rounded-md transition-all ${formData.promptType === 'image' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-gray-700'}`}
-                                        >
-                                            Image
-                                        </button>
-                                        {formData.promptType === 'text' && (
-                                            <>
-                                                <div className="w-px bg-gray-300 my-1 mx-1"></div>
-                                                <button
-                                                    onClick={() => setPromptPreview(!promptPreview)}
-                                                    className={`text-[10px] font-bold px-3 py-1.5 rounded-md transition-all flex items-center gap-1 ${promptPreview ? 'bg-black text-white' : 'text-gray-500 hover:text-gray-700'}`}
-                                                >
-                                                    <span className="material-symbols-outlined text-[14px]">{promptPreview ? 'visibility_off' : 'visibility'}</span>
-                                                    {promptPreview ? 'Edit' : 'Preview'}
-                                                </button>
-                                            </>
+                                        {formData.id && (
+                                            <button
+                                                onClick={handleDeleteQuestion}
+                                                disabled={isSaving}
+                                                className="px-6 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl transition-all flex items-center gap-2 disabled:opacity-50"
+                                            >
+                                                <span className="material-symbols-outlined text-lg">delete</span>
+                                                Delete
+                                            </button>
                                         )}
+                                        <button
+                                            onClick={handleSaveQuestion}
+                                            disabled={isSaving}
+                                            className="px-8 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-black font-black rounded-xl shadow-lg shadow-yellow-400/20 transition-all flex items-center gap-2 disabled:opacity-50"
+                                        >
+                                            {isSaving ? 'Saving...' : 'Save'}
+                                        </button>
                                     </div>
                                 </div>
-                                <div className={`
+
+                                {/* Metadata Grid */}
+                                <div className="mb-8">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Classification & Metadata</h3>
+
+                                        {/* RESET BUTTON for User Request */}
+                                        <button
+                                            onClick={handleDeleteAllMetadata}
+                                            className="text-[10px] text-red-400 hover:text-red-600 underline font-medium"
+                                            title="Clears all Skills and Error Tags from DB"
+                                        >
+                                            [DEV] Clear Supabase Metadata
+                                        </button>
+                                    </div>
+
+                                    {/* Row 1: Name & Status */}
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                                        <div className="md:col-span-3 space-y-1">
+                                            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Question Name <span className="text-red-500">*</span></label>
+                                            <input
+                                                type="text"
+                                                value={formData.title || ''}
+                                                onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                                placeholder="e.g. Limit Laws Practice 1"
+                                                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-text-main focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition-all placeholder:font-medium"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <CustomSelect
+                                                label="Status"
+                                                value={formData.status}
+                                                onChange={(val) => setFormData({ ...formData, status: val })}
+                                                options={STATUS_OPTIONS}
+                                                icon="label"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Row 2: Target Course & Question Type */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div className="space-y-1">
+                                            <CustomSelect
+                                                label="Target Course"
+                                                value={formData.course}
+                                                onChange={(val) => setFormData({ ...formData, course: val })}
+                                                options={COURSE_OPTIONS}
+                                                icon="school"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <CustomSelect
+                                                label="Question Type"
+                                                value={formData.type}
+                                                onChange={(val) => setFormData({ ...formData, type: val })}
+                                                options={TYPE_OPTIONS}
+                                                icon="quiz"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Row 3: Calculator & Difficulty */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div className="space-y-1">
+                                            <CustomSelect
+                                                label="Calculator Policy"
+                                                value={formData.calculatorAllowed ? 1 : 0}
+                                                onChange={(val) => setFormData({ ...formData, calculatorAllowed: val === 1 })}
+                                                options={CALCULATOR_OPTIONS}
+                                                icon="calculate"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <CustomSelect
+                                                label="Difficulty Level"
+                                                value={formData.difficulty}
+                                                onChange={(val) => setFormData({ ...formData, difficulty: Number(val) as import('../types').DifficultyLevel })}
+                                                options={DIFFICULTY_OPTIONS}
+                                                icon="signal_cellular_alt"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Row 3.5: Estimated Time (New per User Request) */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Estimated Time (Min)</label>
+                                            <input
+                                                type="number"
+                                                step="0.5"
+                                                min="0.5"
+                                                value={(formData.targetTimeSeconds || 120) / 60}
+                                                onChange={e => setFormData({ ...formData, targetTimeSeconds: parseFloat(e.target.value) * 60 })}
+                                                className="w-full p-4 bg-white border border-gray-200 rounded-xl text-sm font-bold outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all"
+                                                placeholder="e.g. 2"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Row 4: Skills & Weights */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div className="space-y-1">
+                                            <div className="flex justify-between">
+                                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-red-500">Primary Skill *</label>
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Weight</label>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <div className="relative flex-1">
+                                                    <CreatableSelect
+                                                        placeholder="Select or Create Primary Skill..."
+                                                        value={formData.primarySkillId}
+                                                        onChange={val => setFormData({ ...formData, primarySkillId: val })}
+                                                        onCreate={handleCreateSkill}
+                                                        onDeleteOption={handleDeleteSkillValue}
+                                                        options={fetchedSkills}
+                                                    />
+                                                </div>
+                                                <input
+                                                    type="number"
+                                                    step="0.1"
+                                                    min="0"
+                                                    max="1"
+                                                    value={formData.weightPrimary || 1.0}
+                                                    onChange={e => setFormData({ ...formData, weightPrimary: parseFloat(e.target.value) })}
+                                                    className="w-20 p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-center outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <div className="flex justify-between">
+                                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Supporting Skills</label>
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Weight</label>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <div className="relative flex-1">
+                                                    <CreatableMultiSelect
+                                                        placeholder="Select or Create Supporting Skills..."
+                                                        value={formData.supportingSkillIds}
+                                                        onChange={val => setFormData({ ...formData, supportingSkillIds: val })}
+                                                        onCreate={handleCreateSkill}
+                                                        onDeleteOption={handleDeleteSkillValue}
+                                                        options={fetchedSkills}
+                                                    />
+                                                </div>
+                                                <input
+                                                    type="number"
+                                                    step="0.1"
+                                                    min="0"
+                                                    max="1"
+                                                    value={formData.weightSupporting}
+                                                    onChange={e => setFormData({ ...formData, weightSupporting: parseFloat(e.target.value) })}
+                                                    className="w-20 p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-center outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Row 5: Topic, Chapter */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-red-500">Topic (Unit) *</label>
+                                            <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-500 cursor-not-allowed flex items-center justify-between">
+                                                <span className="truncate">{topicContent[selectedTopicId]?.title}</span>
+                                                <span className="material-symbols-outlined text-sm opacity-50">lock</span>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-red-500">Chapter (Section) *</label>
+                                            <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-500 cursor-not-allowed flex items-center justify-between">
+                                                <span className="truncate">
+                                                    {(() => {
+                                                        if (!selectedSubTopicId) return 'Not Selected';
+                                                        if (selectedSubTopicId === 'unit_test') return 'Unit Test';
+
+                                                        // Try to find the title in dynamic sections first
+                                                        const topicSecs = sections[selectedTopicId] || [];
+                                                        const sec = topicSecs.find((s: any) => s.id === selectedSubTopicId);
+                                                        if (sec?.title) return sec.title;
+
+                                                        // Fallback to static data
+                                                        const unit = topicContent[selectedTopicId] || COURSE_CONTENT_DATA[selectedTopicId];
+                                                        const staticSec = unit?.subTopics?.find((s: any) => s.id === selectedSubTopicId);
+                                                        return staticSec?.title || selectedSubTopicId;
+                                                    })()}
+                                                </span>
+                                                <span className="material-symbols-outlined text-sm opacity-50">lock</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Row 6: Source & Error Patterns */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Source</label>
+                                            <input
+                                                type="text"
+                                                value={formData.source || ''}
+                                                onChange={e => setFormData({ ...formData, source: e.target.value })}
+                                                placeholder="e.g. Textbook, Past Paper, Self"
+                                                className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Common Error Patterns</label>
+                                            <div className="relative">
+                                                <CreatableMultiSelect
+                                                    placeholder="Select or Create Error Patterns..."
+                                                    value={formData.errorPatternIds || []}
+                                                    onChange={val => setFormData({ ...formData, errorPatternIds: val })}
+                                                    onCreate={handleCreateError}
+                                                    onDeleteOption={handleDeleteErrorValue}
+                                                    options={fetchedErrors}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Row 7: Notes */}
+                                    <div className="mb-4">
+                                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Notes (Internal)</label>
+                                        <textarea
+                                            value={formData.notes || ''}
+                                            onChange={e => setFormData({ ...formData, notes: e.target.value })}
+                                            placeholder="Internal notes about this question..."
+                                            className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all resize-y min-h-[60px]"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Prompt */}
+                                <div className="mb-8">
+                                    <div className="flex justify-between mb-2">
+                                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Question Prompt (Text / Image) <span className="text-red-500">*</span></h3>
+                                        <div className="flex bg-gray-100 p-1 rounded-lg gap-1">
+                                            <button
+                                                onClick={() => setFormData({ ...formData, promptType: 'text' })}
+                                                className={`text-[10px] font-bold px-3 py-1.5 rounded-md transition-all ${formData.promptType === 'text' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-gray-700'}`}
+                                            >
+                                                Tt Text
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setFormData({ ...formData, promptType: 'image' as const });
+                                                    setPromptPreview(false);
+                                                }}
+                                                className={`text-[10px] font-bold px-3 py-1.5 rounded-md transition-all ${formData.promptType === 'image' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-gray-700'}`}
+                                            >
+                                                Image
+                                            </button>
+                                            {formData.promptType === 'text' && (
+                                                <>
+                                                    <div className="w-px bg-gray-300 my-1 mx-1"></div>
+                                                    <button
+                                                        onClick={() => setPromptPreview(!promptPreview)}
+                                                        className={`text-[10px] font-bold px-3 py-1.5 rounded-md transition-all flex items-center gap-1 ${promptPreview ? 'bg-black text-white' : 'text-gray-500 hover:text-gray-700'}`}
+                                                    >
+                                                        <span className="material-symbols-outlined text-[14px]">{promptPreview ? 'visibility_off' : 'visibility'}</span>
+                                                        {promptPreview ? 'Edit' : 'Preview'}
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className={`
                                     bg-white border rounded-2xl p-1 shadow-sm overflow-hidden group transition-all
                                     ${formData.promptType === 'text' && !promptPreview ? 'focus-within:border-yellow-400 focus-within:ring-2 focus-within:ring-yellow-400' : ''}
                                     ${'border-gray-200 hover:border-gray-300'}
                                 `}>
-                                    {formData.promptType === 'text' ? (
-                                        promptPreview ? (
-                                            <div className="p-6 min-h-[160px] cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => setPromptPreview(false)}>
-                                                <MathRenderer content={formData.prompt} />
-                                                <div className="mt-4 text-xs text-center text-gray-400 font-medium">Click to edit</div>
-                                            </div>
+
+                                        {formData.promptType === 'text' ? (
+                                            promptPreview ? (
+                                                <div className="font-math p-6 min-h-[160px] cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => setPromptPreview(false)}>
+                                                    <MathRenderer content={JSON.stringify([formData.prompt, formData.promptImage].filter(Boolean))} />
+                                                    <div className="mt-4 text-xs text-center text-gray-400 font-medium">Click to edit</div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col">
+                                                    <MathToolbar
+                                                        onInsert={(text, cursorBack) => {
+                                                            const el = document.getElementById('prompt-textarea') as HTMLTextAreaElement;
+                                                            if (el) {
+                                                                const start = el.selectionStart;
+                                                                const end = el.selectionEnd;
+                                                                const val = formData.prompt;
+                                                                const before = val.substring(0, start);
+                                                                const after = val.substring(end);
+                                                                const newVal = before + text + after;
+                                                                setFormData({ ...formData, prompt: newVal });
+                                                                // Defer focus restoration
+                                                                setTimeout(() => {
+                                                                    el.focus();
+                                                                    el.setSelectionRange(start + text.length - cursorBack, start + text.length - cursorBack);
+                                                                }, 0);
+                                                            } else {
+                                                                // Fallback if ref missing
+                                                                setFormData({ ...formData, prompt: formData.prompt + text });
+                                                            }
+                                                        }}
+                                                        onImageUpload={async (file) => {
+                                                            try {
+                                                                const fileExt = file.name.split('.').pop();
+                                                                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                                                                const filePath = `mixed_content/${fileName}`;
+
+                                                                showToast('Uploading image...', 'info');
+
+                                                                const { error: uploadError } = await supabase.storage
+                                                                    .from('images')
+                                                                    .upload(filePath, file);
+
+                                                                if (uploadError) throw uploadError;
+
+                                                                const { data } = supabase.storage
+                                                                    .from('images')
+                                                                    .getPublicUrl(filePath);
+
+                                                                // Update promptImage state directly
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    promptImage: data.publicUrl,
+                                                                    promptType: 'image' // Switch to image tab so user sees it
+                                                                }));
+
+                                                                showToast('Image uploaded! Switched to Image tab.', 'success');
+                                                            } catch (err: any) {
+                                                                console.error('Toolbar upload failed:', err);
+                                                                showToast(`Upload failed: ${err.message}`, 'error');
+                                                            }
+                                                        }}
+                                                    />
+                                                    <textarea
+                                                        id="prompt-textarea"
+                                                        value={formData.prompt}
+                                                        onChange={e => setFormData({ ...formData, prompt: e.target.value })}
+                                                        placeholder="Enter prompt... Use the toolbar or drop images to insert."
+                                                        className="w-full p-6 min-h-[160px] outline-none text-base font-medium text-text-main resize-none bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none placeholder:text-gray-400 font-mono"
+                                                        onDragOver={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                        }}
+                                                        onDrop={async (e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+
+                                                            const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+                                                            if (files.length === 0) return;
+
+                                                            // Only take the first image for now since we have a single promptImage field
+                                                            // Or if multiple, maybe just take the last one? Ideally warn user.
+                                                            const file = files[0];
+
+                                                            showToast(`Uploading image...`, 'info');
+
+                                                            try {
+                                                                const fileExt = file.name.split('.').pop();
+                                                                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                                                                const filePath = `mixed_content/${fileName}`;
+
+                                                                const { error: uploadError } = await supabase.storage
+                                                                    .from('images')
+                                                                    .upload(filePath, file);
+
+                                                                if (uploadError) throw uploadError;
+
+                                                                const { data } = supabase.storage
+                                                                    .from('images')
+                                                                    .getPublicUrl(filePath);
+
+                                                                // Update promptImage state directly and switch tab
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    promptImage: data.publicUrl,
+                                                                    promptType: 'image'
+                                                                }));
+
+                                                                showToast('Image uploaded! Switched to Image tab.', 'success');
+
+                                                            } catch (err: any) {
+                                                                console.error('Drop upload failed:', err);
+                                                                showToast(`Upload failed: ${err.message}`, 'error');
+                                                            }
+                                                        }}
+                                                    />
+                                                    <div className="px-4 pb-2 text-[10px] text-gray-400">
+                                                        <span className="font-bold text-yellow-600">TIP:</span> Wrap math in <code className="bg-gray-100 px-1 rounded">$</code> (inline) or <code className="bg-gray-100 px-1 rounded">$$</code> (block). Example: <code className="bg-gray-100 px-1 rounded">{'$\\frac{1}{2}$'}</code>
+                                                    </div>
+                                                </div>
+                                            )
                                         ) : (
-                                            <textarea
-                                                value={formData.prompt}
-                                                onChange={e => setFormData({ ...formData, prompt: e.target.value })}
-                                                placeholder="Enter the question prompt here... (Supports LaTeX: $x^2$ or $$x^2$$)"
-                                                className="w-full p-6 min-h-[160px] outline-none text-base font-medium text-text-main resize-none bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none placeholder:text-gray-400 font-mono"
-                                            />
-                                        )
+                                            <div className="p-4">
+                                                <ImageUploader value={formData.promptImage || ''} onChange={v => setFormData({ ...formData, promptImage: v })} />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Options */}
+                                {formData.type === 'MCQ' && (
+                                    <div>
+                                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Answer Options <span className="text-red-500">*</span></h3>
+                                        <div className="space-y-4">
+                                            {formData.options.map((opt, idx) => (
+                                                <div key={idx} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm focus-within:border-yellow-400 focus-within:ring-1 focus-within:ring-yellow-400 transition-all">
+                                                    <div className="flex gap-4 mb-4">
+                                                        <button
+                                                            onClick={() => setFormData({ ...formData, correctOptionLabel: opt.label || String.fromCharCode(65 + idx) })}
+                                                            className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-xl flex-shrink-0 transition-all ${formData.correctOptionLabel === (opt.label || String.fromCharCode(65 + idx)) ? 'bg-green-500 text-white shadow-lg shadow-green-500/30' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                                                        >
+                                                            {opt.label || String.fromCharCode(65 + idx)}
+                                                        </button>
+                                                        <div className="flex-1 space-y-4">
+                                                            {/* Option Content Header */}
+                                                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-1.5 border border-gray-100">
+                                                                <span className="text-[10px] font-bold text-gray-400 px-2 uppercase tracking-wider">Option {opt.label || String.fromCharCode(65 + idx)} Content</span>
+                                                                <div className="flex gap-1">
+                                                                    <button onClick={() => {
+                                                                        const ops = [...formData.options]; ops[idx].type = 'text'; setFormData({ ...formData, options: ops });
+                                                                    }} className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${opt.type === 'text' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}>Text</button>
+                                                                    <button onClick={() => {
+                                                                        const ops = [...formData.options];
+                                                                        ops[idx].type = 'image';
+                                                                        setFormData({ ...formData, options: ops });
+                                                                        setOptionPreviews(prev => ({ ...prev, [idx]: false }));
+                                                                    }} className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${opt.type === 'image' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}>Image</button>
+
+                                                                    {opt.type === 'text' && (
+                                                                        <>
+                                                                            <div className="w-px bg-gray-300 my-1 mx-1"></div>
+                                                                            <button
+                                                                                onClick={() => setOptionPreviews(prev => ({ ...prev, [idx]: !prev[idx] }))}
+                                                                                className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all flex items-center gap-1 ${optionPreviews[idx] ? 'bg-black text-white' : 'text-gray-400 hover:text-gray-600'}`}
+                                                                            >
+                                                                                <span className="material-symbols-outlined text-[14px]">{optionPreviews[idx] ? 'visibility_off' : 'visibility'}</span>
+                                                                                {optionPreviews[idx] ? 'Edit' : 'Preview'}
+                                                                            </button>
+                                                                        </>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Option Input */}
+                                                            {opt.type === 'text' ? (
+                                                                optionPreviews[idx] ? (
+                                                                    <div
+                                                                        className="font-math w-full p-4 bg-gray-50 rounded-xl border border-transparent hover:bg-white hover:border-gray-200 transition-all cursor-pointer min-h-[58px] flex items-center"
+                                                                        onClick={() => setOptionPreviews(prev => ({ ...prev, [idx]: false }))}
+                                                                    >
+                                                                        <MathRenderer content={opt.value} />
+                                                                    </div>
+                                                                ) : (
+                                                                    <input
+                                                                        value={opt.value}
+                                                                        onChange={e => {
+                                                                            const ops = [...formData.options];
+                                                                            ops[idx].value = e.target.value;
+                                                                            setFormData({ ...formData, options: ops });
+                                                                        }}
+                                                                        placeholder={`Enter Option ${opt.label || String.fromCharCode(65 + idx)} content...`}
+                                                                        className="w-full p-4 bg-gray-50 rounded-xl text-base font-bold outline-none border border-transparent focus:bg-white focus:border-yellow-400 transition-all font-mono"
+                                                                    />
+                                                                )
+                                                            ) : (
+                                                                <ImageUploader value={opt.value} onChange={v => {
+                                                                    const ops = [...formData.options];
+                                                                    ops[idx].value = v;
+                                                                    setFormData({ ...formData, options: ops });
+                                                                }} heightClass="h-32" />
+                                                            )}
+
+                                                            {/* Explanation */}
+                                                            <div>
+                                                                <div className="flex justify-between items-center mb-2">
+                                                                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Explanation (Correct/Incorrect Reason) <span className="text-red-500">*</span></label>
+                                                                    <div className="flex items-center gap-1">
+                                                                        <InputTypeToggle
+                                                                            type={opt.explanationType || 'text'}
+                                                                            onChange={(t) => {
+                                                                                const ops = [...formData.options];
+                                                                                ops[idx].explanationType = t;
+                                                                                setFormData({ ...formData, options: ops });
+                                                                                // Reset preview when switching type
+                                                                                setOptionExplPreviews(prev => ({ ...prev, [idx]: false }));
+                                                                            }}
+                                                                        />
+                                                                        {(opt.explanationType || 'text') === 'text' && (
+                                                                            <>
+                                                                                <div className="w-px bg-gray-300 my-1 mx-1 h-5"></div>
+                                                                                <button
+                                                                                    onClick={() => setOptionExplPreviews(prev => ({ ...prev, [idx]: !prev[idx] }))}
+                                                                                    className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all flex items-center gap-1 ${optionExplPreviews[idx] ? 'bg-black text-white' : 'text-gray-400 hover:text-gray-600'}`}
+                                                                                >
+                                                                                    <span className="material-symbols-outlined text-[14px]">{optionExplPreviews[idx] ? 'visibility_off' : 'visibility'}</span>
+                                                                                    {optionExplPreviews[idx] ? 'Edit' : 'Preview'}
+                                                                                </button>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+
+                                                                {opt.explanationType === 'image' ? (
+                                                                    <ImageUploader
+                                                                        value={opt.explanation || ''}
+                                                                        onChange={v => {
+                                                                            const ops = [...formData.options];
+                                                                            ops[idx].explanation = v;
+                                                                            setFormData({ ...formData, options: ops });
+                                                                        }}
+                                                                        heightClass="h-24"
+                                                                        placeholder="Upload Explanation Image"
+                                                                    />
+                                                                ) : (
+                                                                    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden transition-all focus-within:border-yellow-400 focus-within:ring-1 focus-within:ring-yellow-400">
+                                                                        {optionExplPreviews[idx] ? (
+                                                                            <div
+                                                                                className="font-math w-full p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-white transition-all min-h-[80px]"
+                                                                                onClick={() => setOptionExplPreviews(prev => ({ ...prev, [idx]: false }))}
+                                                                            >
+                                                                                <MathRenderer content={opt.explanation || ''} />
+                                                                                <div className="mt-2 text-xs text-center text-gray-400 font-medium">Click to edit</div>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <textarea
+                                                                                value={opt.explanation || ''}
+                                                                                onChange={e => {
+                                                                                    const ops = [...formData.options];
+                                                                                    ops[idx].explanation = e.target.value;
+                                                                                    setFormData({ ...formData, options: ops });
+                                                                                }}
+                                                                                placeholder={`Explain why Option ${opt.label || String.fromCharCode(65 + idx)} is ${formData.correctOptionLabel === (opt.label || String.fromCharCode(65 + idx)) ? 'correct' : 'incorrect'}...`}
+                                                                                className="w-full p-3 text-sm font-medium outline-none transition-all resize-y min-h-[80px] border-none focus:ring-0 font-mono"
+                                                                            />
+                                                                        )}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* General Explanation / Solution (For both MCQ and FRQ) */}
+                                <div className="mb-8 mt-12">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                            {formData.type === 'MCQ' ? 'General Solution / Logic' : 'Suggested Solution / Marking Guide'} <span className="text-red-500">*</span>
+                                        </h3>
+                                        <InputTypeToggle
+                                            type={formData.explanationType || 'text'}
+                                            onChange={(type) => {
+                                                setFormData({ ...formData, explanationType: type });
+                                                setExplanationPreview(false);
+                                            }}
+                                        />
+                                        {formData.explanationType === 'text' && (
+                                            <button
+                                                onClick={() => setExplanationPreview(!explanationPreview)}
+                                                className={`ml-2 text-[10px] font-bold px-3 py-1.5 rounded-md transition-all flex items-center gap-1 ${explanationPreview ? 'bg-black text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-700'}`}
+                                            >
+                                                <span className="material-symbols-outlined text-[14px]">{explanationPreview ? 'visibility_off' : 'visibility'}</span>
+                                                {explanationPreview ? 'Edit' : 'Preview'}
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {formData.explanationType === 'image' ? (
+                                        <ImageUploader
+                                            value={formData.explanation}
+                                            onChange={v => setFormData({ ...formData, explanation: v })}
+                                            heightClass="h-48"
+                                            placeholder="Click to Upload Solution Image"
+                                        />
                                     ) : (
-                                        <div className="p-4">
-                                            <ImageUploader value={formData.prompt} onChange={v => setFormData({ ...formData, prompt: v })} />
+                                        <div className="bg-white border border-gray-200 rounded-2xl p-1 shadow-sm overflow-hidden group hover:border-gray-300 transition-all focus-within:border-yellow-400 focus-within:ring-1 focus-within:ring-yellow-400">
+                                            {explanationPreview ? (
+                                                <div className="font-math p-6 min-h-[120px] cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => setExplanationPreview(false)}>
+                                                    <MathRenderer content={formData.explanation || ''} />
+                                                    <div className="mt-4 text-xs text-center text-gray-400 font-medium">Click to edit</div>
+                                                </div>
+                                            ) : (
+                                                <textarea
+                                                    value={formData.explanation || ''}
+                                                    onChange={e => setFormData({ ...formData, explanation: e.target.value })}
+                                                    placeholder={formData.type === 'MCQ'
+                                                        ? "Explain the overall logic for the correct answer..."
+                                                        : "Provide the grading rubric, key points, or full solution..."}
+                                                    className="w-full p-6 min-h-[120px] outline-none text-sm font-medium text-text-main resize-none bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none font-mono"
+                                                />
+                                            )}
                                         </div>
                                     )}
                                 </div>
                             </div>
-
-                            {/* Options */}
-                            {formData.type === 'MCQ' && (
-                                <div>
-                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Answer Options <span className="text-red-500">*</span></h3>
-                                    <div className="space-y-4">
-                                        {formData.options.map((opt, idx) => (
-                                            <div key={idx} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm focus-within:border-yellow-400 focus-within:ring-1 focus-within:ring-yellow-400 transition-all">
-                                                <div className="flex gap-4 mb-4">
-                                                    <button
-                                                        onClick={() => setFormData({ ...formData, correctOptionLabel: opt.label })}
-                                                        className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-xl flex-shrink-0 ${formData.correctOptionLabel === opt.label ? 'bg-green-500 text-white shadow-lg shadow-green-500/30' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
-                                                    >
-                                                        {opt.label}
-                                                    </button>
-                                                    <div className="flex-1 space-y-4">
-                                                        {/* Option Content Header */}
-                                                        <div className="flex justify-between items-center bg-gray-50 rounded-lg p-1.5 border border-gray-100">
-                                                            <span className="text-[10px] font-bold text-gray-400 px-2 uppercase tracking-wider">Option Content</span>
-                                                            <div className="flex gap-1">
-                                                                <button onClick={() => {
-                                                                    const ops = [...formData.options]; ops[idx].type = 'text'; setFormData({ ...formData, options: ops });
-                                                                }} className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${opt.type === 'text' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}>Text</button>
-                                                                <button onClick={() => {
-                                                                    const ops = [...formData.options]; ops[idx].type = 'image'; setFormData({ ...formData, options: ops });
-                                                                }} className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${opt.type === 'image' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}>Image</button>
-
-                                                                {opt.type === 'text' && (
-                                                                    <>
-                                                                        <div className="w-px bg-gray-300 my-1 mx-1"></div>
-                                                                        <button
-                                                                            onClick={() => setOptionPreviews(prev => ({ ...prev, [idx]: !prev[idx] }))}
-                                                                            className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all flex items-center gap-1 ${optionPreviews[idx] ? 'bg-black text-white' : 'text-gray-400 hover:text-gray-600'}`}
-                                                                        >
-                                                                            <span className="material-symbols-outlined text-[14px]">{optionPreviews[idx] ? 'visibility_off' : 'visibility'}</span>
-                                                                            {optionPreviews[idx] ? 'Edit' : 'Preview'}
-                                                                        </button>
-                                                                    </>
-                                                                )}
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Option Input */}
-                                                        {opt.type === 'text' ? (
-                                                            optionPreviews[idx] ? (
-                                                                <div
-                                                                    className="w-full p-4 bg-gray-50 rounded-xl border border-transparent hover:bg-white hover:border-gray-200 transition-all cursor-pointer min-h-[58px] flex items-center"
-                                                                    onClick={() => setOptionPreviews(prev => ({ ...prev, [idx]: false }))}
-                                                                >
-                                                                    <MathRenderer content={opt.value} />
-                                                                </div>
-                                                            ) : (
-                                                                <input
-                                                                    value={opt.value}
-                                                                    onChange={e => {
-                                                                        const ops = [...formData.options];
-                                                                        ops[idx].value = e.target.value;
-                                                                        setFormData({ ...formData, options: ops });
-                                                                    }}
-                                                                    placeholder={`Enter Option ${opt.label} content...`}
-                                                                    className="w-full p-4 bg-gray-50 rounded-xl text-base font-bold outline-none border border-transparent focus:bg-white focus:border-yellow-400 transition-all font-mono"
-                                                                />
-                                                            )
-                                                        ) : (
-                                                            <ImageUploader value={opt.value} onChange={v => {
-                                                                const ops = [...formData.options];
-                                                                ops[idx].value = v;
-                                                                setFormData({ ...formData, options: ops });
-                                                            }} heightClass="h-32" />
-                                                        )}
-
-                                                        {/* Explanation */}
-                                                        {/* Explanation */}
-                                                        <div>
-                                                            <div className="flex justify-between items-center mb-2">
-                                                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Explanation (Correct/Incorrect Reason) <span className="text-red-500">*</span></label>
-                                                                <InputTypeToggle
-                                                                    type={opt.explanationType || 'image'}
-                                                                    onChange={(t) => {
-                                                                        const ops = [...formData.options];
-                                                                        ops[idx].explanationType = t;
-                                                                        setFormData({ ...formData, options: ops });
-                                                                    }}
-                                                                />
-                                                            </div>
-
-                                                            {opt.explanationType === 'image' ? (
-                                                                <ImageUploader
-                                                                    value={opt.explanation || ''}
-                                                                    onChange={v => {
-                                                                        const ops = [...formData.options];
-                                                                        ops[idx].explanation = v;
-                                                                        setFormData({ ...formData, options: ops });
-                                                                    }}
-                                                                    heightClass="h-24"
-                                                                    placeholder="Upload Explanation Image"
-                                                                />
-                                                            ) : (
-                                                                <textarea
-                                                                    value={opt.explanation || ''}
-                                                                    onChange={e => {
-                                                                        const ops = [...formData.options];
-                                                                        ops[idx].explanation = e.target.value;
-                                                                        setFormData({ ...formData, options: ops });
-                                                                    }}
-                                                                    placeholder={`Explain why Option ${opt.label} is ${formData.correctOptionLabel === opt.label ? 'correct' : 'incorrect'}...`}
-                                                                    className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-all resize-y min-h-[80px]"
-                                                                />
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* General Explanation / Solution (For both MCQ and FRQ) */}
-                            <div className="mb-8 mt-12">
-                                <div className="flex items-center justify-between mb-2">
-                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                                        {formData.type === 'MCQ' ? 'General Solution / Logic' : 'Suggested Solution / Marking Guide'} <span className="text-red-500">*</span>
-                                    </h3>
-                                    <InputTypeToggle
-                                        type={formData.explanationType || 'image'}
-                                        onChange={(type) => setFormData({ ...formData, explanationType: type })}
-                                    />
-                                    {formData.explanationType === 'text' && (
-                                        <button
-                                            onClick={() => setExplanationPreview(!explanationPreview)}
-                                            className={`ml-2 text-[10px] font-bold px-3 py-1.5 rounded-md transition-all flex items-center gap-1 ${explanationPreview ? 'bg-black text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-700'}`}
-                                        >
-                                            <span className="material-symbols-outlined text-[14px]">{explanationPreview ? 'visibility_off' : 'visibility'}</span>
-                                            {explanationPreview ? 'Edit' : 'Preview'}
-                                        </button>
-                                    )}
-                                </div>
-
-                                {formData.explanationType === 'image' ? (
-                                    <ImageUploader
-                                        value={formData.explanation}
-                                        onChange={v => setFormData({ ...formData, explanation: v })}
-                                        heightClass="h-48"
-                                        placeholder="Click to Upload Solution Image"
-                                    />
-                                ) : (
-                                    <div className="bg-white border border-gray-200 rounded-2xl p-1 shadow-sm overflow-hidden group hover:border-gray-300 transition-all focus-within:border-yellow-400 focus-within:ring-1 focus-within:ring-yellow-400">
-                                        {explanationPreview ? (
-                                            <div className="p-6 min-h-[120px] cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => setExplanationPreview(false)}>
-                                                <MathRenderer content={formData.explanation || ''} block />
-                                                <div className="mt-4 text-xs text-center text-gray-400 font-medium">Click to edit</div>
-                                            </div>
-                                        ) : (
-                                            <textarea
-                                                value={formData.explanation || ''}
-                                                onChange={e => setFormData({ ...formData, explanation: e.target.value })}
-                                                placeholder={formData.type === 'MCQ'
-                                                    ? "Explain the overall logic for the correct answer..."
-                                                    : "Provide the grading rubric, key points, or full solution..."}
-                                                className="w-full p-6 min-h-[120px] outline-none text-sm font-medium text-text-main resize-none bg-transparent border-none focus:ring-0 focus:border-none focus:outline-none font-mono"
-                                            />
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

@@ -197,7 +197,7 @@ export const CreatableSelect: React.FC<CreatableSelectProps> = ({
 
                 {/* Dropdown Menu */}
                 {isOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#2c2c2e] border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto animate-fade-in-up">
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#2c2c2e] border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto scroll-bounce animate-fade-in-up">
                         <div className="py-1">
                             {filteredOptions.map((option) => (
                                 <div

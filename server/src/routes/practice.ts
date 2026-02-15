@@ -62,7 +62,7 @@ router.post('/complete', authMiddleware, async (req: Request, res: Response): Pr
         else if (accuracy >= 0.5) gain = 5;
 
         const { data: existingMastery } = await supabaseAdmin
-            .from('topic_mastery')
+            .from('unit_mastery')
             .select('*')
             .eq('user_id', userId)
             .eq('subject', cleanTopic)
@@ -71,11 +71,11 @@ router.post('/complete', authMiddleware, async (req: Request, res: Response): Pr
         if (existingMastery) {
             const newScore = Math.min(100, (existingMastery.mastery_score || 0) + gain);
             await supabaseAdmin
-                .from('topic_mastery')
+                .from('unit_mastery')
                 .update({ mastery_score: newScore, updated_at: new Date().toISOString() })
                 .eq('id', existingMastery.id);
         } else {
-            await supabaseAdmin.from('topic_mastery').insert({
+            await supabaseAdmin.from('unit_mastery').insert({
                 user_id: userId,
                 subject: cleanTopic,
                 mastery_score: gain,
@@ -120,7 +120,7 @@ router.get('/recommendation', authMiddleware, async (req: Request, res: Response
             .single();
 
         const { data: mastery } = await supabaseAdmin
-            .from('topic_mastery')
+            .from('unit_mastery')
             .select('*')
             .eq('user_id', userId)
             .order('mastery_score', { ascending: true });

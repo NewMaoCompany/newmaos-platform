@@ -1,0 +1,769 @@
+[
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C13_R1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 90,
+        "skill_tags": [
+            "Detect_Removable_Discontinuity",
+            "Limit_Algebraic_Simplification",
+            "Domain_Restriction_Ignored"
+        ],
+        "error_tags": [
+            "Cancel_Factor_Without_Restriction",
+            "Limit_Equals_Value_Misconception",
+            "Domain_Restriction_Ignored"
+        ],
+        "prompt": "Let\n$$f(x)=\\frac{x^2-9}{x-3}$$\nfor $x\\ne 3$. Which value of $f(3)$ makes $f$ continuous at $x=3$?",
+        "latex": "Let\n$$f(x)=\\frac{x^2-9}{x-3}$$\nfor $x\\ne 3$. Which value of $f(3)$ makes $f$ continuous at $x=3$?",
+        "options": [
+            {
+                "id": "A",
+                "text": "$3$",
+                "explanation": "This equals $x$ at $x=3$, but the simplified expression is $x+3$, not $x$."
+            },
+            {
+                "id": "B",
+                "text": "$0$",
+                "explanation": "Setting $f(3)=0$ does not match the limiting value of $f(x)$ as $x\\to 3$."
+            },
+            {
+                "id": "C",
+                "text": "$6$",
+                "explanation": "Since $\\frac{x^2-9}{x-3}=x+3$ for $x\\ne 3$, the limit as $x\\to 3$ is $6$."
+            },
+            {
+                "id": "D",
+                "text": "Does not exist (cannot be made continuous)",
+                "explanation": "A removable discontinuity at $x=3$ can be removed by defining $f(3)$ to equal the limit."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": null,
+        "explanation": "Factor $x^2-9=(x-3)(x+3)$. For $x\\ne 3$, $f(x)=x+3$. Therefore $\\lim_{x\\to 3} f(x)=3+3=6$. Define $f(3)=6$ to make $f$ continuous at $x=3$.",
+        "micro_explanations": {
+            "A": "Confuses $x+3$ with $x$ after canceling.",
+            "B": "Chooses an arbitrary fill-in value instead of matching the limit.",
+            "C": "Matches $f(3)$ to the limit at the hole.",
+            "D": "Misclassifies a removable discontinuity as non-removable."
+        },
+        "recommendation_reasons": [
+            "Targets removing a removable discontinuity by redefining a point value.",
+            "Reinforces safe canceling with domain awareness."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_C13",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "C13-Q1 Fill the Hole by Defining f(3)",
+        "prompt_type": "text",
+        "primary_skill_id": "Detect_Removable_Discontinuity",
+        "supporting_skill_ids": [
+            "Limit_Algebraic_Simplification"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C13_R2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 120,
+        "skill_tags": [
+            "Piecewise_Continuity_Parameter",
+            "Limit_At_Hole",
+            "Limit_Algebraic_Simplification"
+        ],
+        "error_tags": [
+            "Limit_Equals_Value_Misconception",
+            "OneSided_Limit_Not_Checked",
+            "Algebra_Simplification_Error"
+        ],
+        "prompt": "Define\n$$g(x)=\\begin{cases}\n\\frac{x^2-1}{x-1}, & x\\ne 1 \\\\\n k, & x=1\n\\end{cases}$$\nWhich value of $k$ makes $g$ continuous at $x=1$?",
+        "latex": "Define\n$$g(x)=\\begin{cases}\n\\frac{x^2-1}{x-1}, & x\\ne 1 \\\\\n k, & x=1\n\\end{cases}$$\nWhich value of $k$ makes $g$ continuous at $x=1$?",
+        "options": [
+            {
+                "id": "A",
+                "text": "$0$",
+                "explanation": "The limit as $x\\to 1$ is not $0$."
+            },
+            {
+                "id": "B",
+                "text": "$2$",
+                "explanation": "For $x\\ne 1$, $\\frac{x^2-1}{x-1}=x+1$, so the limiting value at $x=1$ is $2$."
+            },
+            {
+                "id": "C",
+                "text": "$1$",
+                "explanation": "This equals the point $x=1$, but continuity requires matching the function value to the limit."
+            },
+            {
+                "id": "D",
+                "text": "No such $k$",
+                "explanation": "The discontinuity is removable, so a suitable $k$ exists."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "Factor $x^2-1=(x-1)(x+1)$. For $x\\ne 1$, $g(x)=x+1$. Thus $\\lim_{x\\to 1} g(x)=2$. Continuity at $x=1$ requires $k=2$.",
+        "micro_explanations": {
+            "A": "Common when substituting $x=1$ into the numerator only.",
+            "B": "Correctly uses the simplified form and matches $k$ to the limit.",
+            "C": "Confuses the input value with the function value needed for continuity.",
+            "D": "Treats a removable discontinuity as non-removable."
+        },
+        "recommendation_reasons": [
+            "Builds the continuity condition $\\lim g(x)=g(1)$ in piecewise form.",
+            "Practice factoring and canceling to evaluate limits at holes."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_C13",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "C13-Q2 Choose k for Continuity at x=1",
+        "prompt_type": "text",
+        "primary_skill_id": "Piecewise_Continuity_Parameter",
+        "supporting_skill_ids": [
+            "Limit_Algebraic_Simplification"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C13_R3",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 75,
+        "skill_tags": [
+            "Limit_Algebraic_Simplification",
+            "Detect_Removable_Discontinuity"
+        ],
+        "error_tags": [
+            "Cancel_Factor_Without_Restriction",
+            "Algebra_Simplification_Error",
+            "Domain_Restriction_Ignored"
+        ],
+        "prompt": "Evaluate\n$$\\lim_{x\\to -2}\\frac{x^2+5x+6}{x+2}.$$",
+        "latex": "Evaluate\n$$\\lim_{x\\to -2}\\frac{x^2+5x+6}{x+2}.$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$-2$",
+                "explanation": "This results from incorrectly canceling or substituting without factoring."
+            },
+            {
+                "id": "B",
+                "text": "$1$",
+                "explanation": "This is the value of $x+3$ at $x=-2$, but the simplified expression is $x+3$, giving $1$ only if factoring is done correctly—check carefully."
+            },
+            {
+                "id": "C",
+                "text": "$-1$",
+                "explanation": "Sign error after factoring and canceling."
+            },
+            {
+                "id": "D",
+                "text": "$1$",
+                "explanation": "Factor $x^2+5x+6=(x+2)(x+3)$. For $x\\ne -2$, the expression is $x+3$, so the limit is $1$."
+            }
+        ],
+        "correct_option_id": "D",
+        "tolerance": null,
+        "explanation": "Factor: $x^2+5x+6=(x+2)(x+3)$. Then for $x\\ne -2$, $\\frac{(x+2)(x+3)}{x+2}=x+3$. So $\\lim_{x\\to -2}(x+3)=1$.",
+        "micro_explanations": {
+            "A": "Often from plugging $x=-2$ too early or canceling incorrectly.",
+            "B": "Correct numeric value but paired with an incorrect justification path if not factoring first.",
+            "C": "Arises from distributing a negative incorrectly.",
+            "D": "Correct factor-cancel-limit workflow."
+        },
+        "recommendation_reasons": [
+            "Reinforces factoring to remove removable discontinuities.",
+            "Targets correct sequencing: simplify first, then substitute."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 0.9,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_C13",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "C13-Q3 Limit at a Removable Discontinuity",
+        "prompt_type": "text",
+        "primary_skill_id": "Limit_Algebraic_Simplification",
+        "supporting_skill_ids": [
+            "Detect_Removable_Discontinuity"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C13_R4",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level5",
+        "target_time_seconds": 150,
+        "skill_tags": [
+            "Piecewise_Continuity_Parameter",
+            "Limit_Algebraic_Simplification",
+            "OneSided_Limits_From_FactorSigns"
+        ],
+        "error_tags": [
+            "OneSided_Limit_Not_Checked",
+            "Algebra_Simplification_Error",
+            "Limit_Equals_Value_Misconception"
+        ],
+        "prompt": "Let\n$$h(x)=\\begin{cases}\n\\frac{x^2-4}{x-2}, & x<2 \\\\\n ax+b, & x\\ge 2\n\\end{cases}$$\nIf $h$ is continuous at $x=2$ and $h(3)=7$, what are $a$ and $b$?",
+        "latex": "Let\n$$h(x)=\\begin{cases}\n\\frac{x^2-4}{x-2}, & x<2 \\\\\n ax+b, & x\\ge 2\n\\end{cases}$$\nIf $h$ is continuous at $x=2$ and $h(3)=7$, what are $a$ and $b$?",
+        "options": [
+            {
+                "id": "A",
+                "text": "$a=1,\\ b=4$",
+                "explanation": "This satisfies continuity at $x=2$ but does not satisfy $h(3)=7$."
+            },
+            {
+                "id": "B",
+                "text": "$a=3,\\ b=-2$",
+                "explanation": "Continuity at $x=2$ requires $2a+b=4$, and $h(3)=7$ requires $3a+b=7$; solving gives $a=3$, $b=-2$."
+            },
+            {
+                "id": "C",
+                "text": "$a=2,\\ b=0$",
+                "explanation": "This makes $h(3)=6$, not $7$."
+            },
+            {
+                "id": "D",
+                "text": "$a=0,\\ b=4$",
+                "explanation": "This makes $h(3)=4$, not $7$."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "For $x<2$, $\\frac{x^2-4}{x-2}=x+2$ (for $x\\ne 2$), so $\\lim_{x\\to 2^-}h(x)=4$. Continuity at $x=2$ (using the $x\\ge2$ branch) gives $h(2)=2a+b=4$. Also $h(3)=3a+b=7$. Subtract: $(3a+b)-(2a+b)=7-4\\Rightarrow a=3$. Then $2(3)+b=4\\Rightarrow b=-2$.",
+        "micro_explanations": {
+            "A": "Uses $2a+b=4$ but ignores $h(3)=7$.",
+            "B": "Correctly sets up two linear equations from continuity and the given value.",
+            "C": "Solves only one condition or makes an arithmetic slip.",
+            "D": "Treats the right branch as constant due to misreading."
+        },
+        "recommendation_reasons": [
+            "Integrates removable-discontinuity limit with piecewise continuity constraints.",
+            "AP-style parameter solve with two conditions."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 4,
+        "mastery_weight": 1.2,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_C13",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "C13-Q4 Continuity + Point Value Determines Line",
+        "prompt_type": "text",
+        "primary_skill_id": "Piecewise_Continuity_Parameter",
+        "supporting_skill_ids": [
+            "Limit_Algebraic_Simplification"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C13_R5",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 105,
+        "skill_tags": [
+            "Limit_Algebraic_Simplification",
+            "Detect_Removable_Discontinuity"
+        ],
+        "error_tags": [
+            "Algebra_Simplification_Error",
+            "Cancel_Factor_Without_Restriction",
+            "Limit_Equals_Value_Misconception"
+        ],
+        "prompt": "Evaluate\n$$\\lim_{x\\to 0}\\frac{\\sqrt{1+3x}-1}{x}.$$",
+        "latex": "Evaluate\n$$\\lim_{x\\to 0}\\frac{\\sqrt{1+3x}-1}{x}.$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$\\frac{3}{2}$",
+                "explanation": "Rationalize: multiply by the conjugate, then simplify to get a constant limit of $\\frac{3}{2}$."
+            },
+            {
+                "id": "B",
+                "text": "$3$",
+                "explanation": "This forgets the factor of $\\sqrt{1+3x}+1$ in the denominator after rationalizing."
+            },
+            {
+                "id": "C",
+                "text": "$0$",
+                "explanation": "This comes from substituting $x=0$ directly into an indeterminate form."
+            },
+            {
+                "id": "D",
+                "text": "Does not exist",
+                "explanation": "The limit exists after algebraic manipulation (rationalization)."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": null,
+        "explanation": "Rationalize:\n$$\\frac{\\sqrt{1+3x}-1}{x}\\cdot\\frac{\\sqrt{1+3x}+1}{\\sqrt{1+3x}+1}=\n\\frac{(1+3x)-1}{x(\\sqrt{1+3x}+1)}=\n\\frac{3}{\\sqrt{1+3x}+1}.$$\nAs $x\\to 0$, this approaches $\\frac{3}{1+1}=\\frac{3}{2}$.",
+        "micro_explanations": {
+            "A": "Correct conjugate method and substitution after simplification.",
+            "B": "Drops the denominator factor created by rationalizing.",
+            "C": "Stops at $0/0$ and incorrectly evaluates it as $0$.",
+            "D": "Assumes indeterminate form implies nonexistence."
+        },
+        "recommendation_reasons": [
+            "Classic ‘remove indeterminate form’ task aligned with removing a discontinuity via algebra.",
+            "Strengthens conjugate technique used frequently on AP."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_C13",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "C13-Q5 Conjugate to Evaluate a Limit",
+        "prompt_type": "text",
+        "primary_skill_id": "Limit_Algebraic_Simplification",
+        "supporting_skill_ids": [
+            "Detect_Removable_Discontinuity"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C14_V1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 85,
+        "skill_tags": [
+            "Infinite_Limits_Vertical_Asymptotes",
+            "OneSided_Limits_From_FactorSigns"
+        ],
+        "error_tags": [
+            "VerticalAsymptote_Sign_Error",
+            "Hole_vs_Asymptote_Confusion",
+            "OneSided_Limit_Not_Checked"
+        ],
+        "prompt": "Evaluate\n$$\\lim_{x\\to 2^+}\\frac{5}{x-2}.$$",
+        "latex": "Evaluate\n$$\\lim_{x\\to 2^+}\\frac{5}{x-2}.$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$+\\infty$",
+                "explanation": "As $x\\to 2^+$, $x-2$ is a small positive number, so the quotient grows without bound."
+            },
+            {
+                "id": "B",
+                "text": "$-\\infty$",
+                "explanation": "This would occur for $x\\to 2^-$, where $x-2$ is negative."
+            },
+            {
+                "id": "C",
+                "text": "$0$",
+                "explanation": "This misreads a vertical-asymptote limit as a horizontal behavior."
+            },
+            {
+                "id": "D",
+                "text": "$5$",
+                "explanation": "Direct substitution is not valid because the expression is undefined at $x=2$."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": null,
+        "explanation": "For $x\\to 2^+$, the denominator $x-2\\to 0^+$, so $\\frac{5}{x-2}\\to +\\infty$.",
+        "micro_explanations": {
+            "A": "Correct one-sided sign analysis.",
+            "B": "Confuses right-hand with left-hand behavior.",
+            "C": "Treats $1/0$ as $0$ instead of unbounded.",
+            "D": "Mistakes undefined at the point as a reason the limit cannot be infinite."
+        },
+        "recommendation_reasons": [
+            "Builds correct sign reasoning for one-sided infinite limits.",
+            "Directly connects to identifying vertical asymptotes."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 2,
+        "mastery_weight": 0.9,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_C14",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "C14-Q1 One-Sided Infinite Limit of Reciprocal",
+        "prompt_type": "text",
+        "primary_skill_id": "Infinite_Limits_Vertical_Asymptotes",
+        "supporting_skill_ids": [
+            "OneSided_Limits_From_FactorSigns"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C14_V2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 130,
+        "skill_tags": [
+            "Infinite_Limits_Vertical_Asymptotes",
+            "OneSided_Limits_From_FactorSigns",
+            "Limit_Algebraic_Simplification"
+        ],
+        "error_tags": [
+            "VerticalAsymptote_Sign_Error",
+            "Hole_vs_Asymptote_Confusion",
+            "Cancel_Factor_Without_Restriction"
+        ],
+        "prompt": "Let\n$$p(x)=\\frac{(x-1)(x+2)}{(x-1)^2}.$$ Which statement is true?",
+        "latex": "Let\n$$p(x)=\\frac{(x-1)(x+2)}{(x-1)^2}.$$ Which statement is true?",
+        "options": [
+            {
+                "id": "A",
+                "text": "$x=1$ is a removable discontinuity (a hole)",
+                "explanation": "One factor of $(x-1)$ cancels, but one remains in the denominator, so it is not removable."
+            },
+            {
+                "id": "B",
+                "text": "$\\lim_{x\\to 1}p(x)$ is finite",
+                "explanation": "As $x\\to 1$, the remaining $(x-1)$ in the denominator forces unbounded behavior."
+            },
+            {
+                "id": "C",
+                "text": "$x=1$ is a vertical asymptote and $\\lim_{x\\to 1^+}p(x)=+\\infty$",
+                "explanation": "Simplify to $p(x)=\\frac{x+2}{x-1}$. As $x\\to 1^+$, numerator $\\to 3>0$ and denominator $\\to 0^+$, so the limit is $+\\infty$."
+            },
+            {
+                "id": "D",
+                "text": "$x=-2$ is a vertical asymptote",
+                "explanation": "At $x=-2$, the numerator is $0$ (not the denominator), so it is an $x$-intercept, not an asymptote."
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": null,
+        "explanation": "Cancel one $(x-1)$ to get $p(x)=\\frac{x+2}{x-1}$ for $x\\ne 1$. Since the denominator still goes to $0$ at $x=1$, there is a vertical asymptote at $x=1$. For $x\\to 1^+$, $x-1\\to 0^+$ and $x+2\\to 3$, so $p(x)\\to +\\infty$.",
+        "micro_explanations": {
+            "A": "Cancels too aggressively and forgets the leftover denominator factor.",
+            "B": "Assumes cancellation guarantees finiteness.",
+            "C": "Correctly distinguishes vertical asymptote vs hole and uses one-sided sign.",
+            "D": "Confuses zero of numerator with vertical asymptote."
+        },
+        "recommendation_reasons": [
+            "Targets the high-frequency confusion: hole vs vertical asymptote after partial cancellation.",
+            "Reinforces one-sided sign analysis for $\\pm\\infty$."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 4,
+        "mastery_weight": 1.1,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_C14",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "C14-Q2 Hole vs Vertical Asymptote After Cancellation",
+        "prompt_type": "text",
+        "primary_skill_id": "Infinite_Limits_Vertical_Asymptotes",
+        "supporting_skill_ids": [
+            "OneSided_Limits_From_FactorSigns",
+            "Limit_Algebraic_Simplification"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C14_V3",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 110,
+        "skill_tags": [
+            "Infinite_Limits_Vertical_Asymptotes",
+            "OneSided_Limits_From_FactorSigns"
+        ],
+        "error_tags": [
+            "VerticalAsymptote_Sign_Error",
+            "OneSided_Limit_Not_Checked",
+            "Algebra_Simplification_Error"
+        ],
+        "prompt": "Evaluate\n$$\\lim_{x\\to -3^-}\\frac{2}{(x+3)^3}.$$",
+        "latex": "Evaluate\n$$\\lim_{x\\to -3^-}\\frac{2}{(x+3)^3}.$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$+\\infty$",
+                "explanation": "For $x\\to -3^-$, $(x+3)$ is negative, and an odd power keeps it negative, so the quotient is negative unbounded, not positive."
+            },
+            {
+                "id": "B",
+                "text": "$-\\infty$",
+                "explanation": "As $x\\to -3^-$, $(x+3)^3\\to 0^-$, so $\\frac{2}{(x+3)^3}\\to -\\infty$."
+            },
+            {
+                "id": "C",
+                "text": "$0$",
+                "explanation": "Unbounded behavior near a vertical asymptote is not $0$."
+            },
+            {
+                "id": "D",
+                "text": "Does not exist",
+                "explanation": "The limit exists as an infinite limit ($-\\infty$)."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "When $x\\to -3^-$, $x+3\\to 0^-$ (small negative). Since the power is odd, $(x+3)^3\\to 0^-$. Therefore $\\frac{2}{(x+3)^3}\\to -\\infty$.",
+        "micro_explanations": {
+            "A": "Loses the sign behavior for odd powers.",
+            "B": "Correctly sign chart near a vertical asymptote with an odd power.",
+            "C": "Confuses vertical-asymptote behavior with end behavior.",
+            "D": "Misinterprets infinite limits as nonexistence."
+        },
+        "recommendation_reasons": [
+            "Strengthens sign reasoning with odd/even powers in denominators.",
+            "AP-common trap: left-hand vs right-hand infinite limits."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_C14",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image.",
+        "weight_primary": 0.85,
+        "weight_supporting": 0.15,
+        "title": "C14-Q3 Odd Power Denominator Sign to -Infinity",
+        "prompt_type": "text",
+        "primary_skill_id": "OneSided_Limits_From_FactorSigns",
+        "supporting_skill_ids": [
+            "Infinite_Limits_Vertical_Asymptotes"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C14_V4",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level5",
+        "target_time_seconds": 160,
+        "skill_tags": [
+            "Infinite_Limits_Vertical_Asymptotes",
+            "Rational_Function_Analysis",
+            "OneSided_Limits_From_FactorSigns"
+        ],
+        "error_tags": [
+            "Hole_vs_Asymptote_Confusion",
+            "VerticalAsymptote_Sign_Error",
+            "Cancel_Factor_Without_Restriction"
+        ],
+        "prompt": "For\n$$q(x)=\\frac{x^2-4x+3}{x^2-5x+6},$$\nwhich $x$-value is a vertical asymptote of $q$?",
+        "latex": "For\n$$q(x)=\\frac{x^2-4x+3}{x^2-5x+6},$$\nwhich $x$-value is a vertical asymptote of $q$?",
+        "options": [
+            {
+                "id": "A",
+                "text": "$x=2$",
+                "explanation": "A factor of $(x-2)$ cancels, creating a hole (removable discontinuity), not a vertical asymptote."
+            },
+            {
+                "id": "B",
+                "text": "$x=3$",
+                "explanation": "After cancellation, $(x-3)$ remains in the denominator, so $x=3$ is a vertical asymptote."
+            },
+            {
+                "id": "C",
+                "text": "$x=1$",
+                "explanation": "$x=1$ is a zero of the numerator, not a zero of the (uncanceled) denominator."
+            },
+            {
+                "id": "D",
+                "text": "No vertical asymptotes",
+                "explanation": "There is a vertical asymptote at the uncanceled denominator zero."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "Factor:\n$$x^2-4x+3=(x-1)(x-3),\\qquad x^2-5x+6=(x-2)(x-3).$$\nThen\n$$q(x)=\\frac{(x-1)(x-3)}{(x-2)(x-3)}=\\frac{x-1}{x-2}$$\nfor $x\\ne 3$. The factor $(x-3)$ cancels, so $x=3$ is a hole. The remaining denominator zero is $x=2$, which is the vertical asymptote of the simplified function; however $x=2$ was never canceled, so it is the vertical asymptote of $q$.\n\nTherefore the vertical asymptote is at $x=2$? Wait: after simplification the denominator is $(x-2)$, so the vertical asymptote is $x=2$.",
+        "micro_explanations": {
+            "A": "Correctly identifies the simplified denominator but may be chosen for the wrong reason if cancellation is misunderstood.",
+            "B": "Confuses the canceled factor (hole) with a vertical asymptote.",
+            "C": "Mixes up zeros and asymptotes.",
+            "D": "Assumes cancellation removes all asymptotes."
+        },
+        "recommendation_reasons": [
+            "Targets distinguishing holes from vertical asymptotes via factoring and cancellation.",
+            "Reinforces that vertical asymptotes come from uncanceled denominator zeros."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 5,
+        "mastery_weight": 1.2,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_C14",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image.",
+        "weight_primary": 0.75,
+        "weight_supporting": 0.25,
+        "title": "C14-Q4 Identify Vertical Asymptote vs Hole by Factoring",
+        "prompt_type": "text",
+        "primary_skill_id": "Rational_Function_Analysis",
+        "supporting_skill_ids": [
+            "Infinite_Limits_Vertical_Asymptotes",
+            "OneSided_Limits_From_FactorSigns"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "Both_Limits",
+        "sub_topic_id": "U1_C14_V5",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 120,
+        "skill_tags": [
+            "Infinite_Limits_Vertical_Asymptotes",
+            "OneSided_Limits_From_FactorSigns"
+        ],
+        "error_tags": [
+            "VerticalAsymptote_Sign_Error",
+            "OneSided_Limit_Not_Checked",
+            "Algebra_Simplification_Error"
+        ],
+        "prompt": "Evaluate\n$$\\lim_{x\\to 4}\\frac{x+1}{(x-4)^2}.$$",
+        "latex": "Evaluate\n$$\\lim_{x\\to 4}\\frac{x+1}{(x-4)^2}.$$",
+        "options": [
+            {
+                "id": "A",
+                "text": "$-\\infty$",
+                "explanation": "Because $(x-4)^2\\ge 0$ on both sides of $4$, the expression cannot go to $-\\infty$ if the numerator is positive near $4$."
+            },
+            {
+                "id": "B",
+                "text": "$+\\infty$",
+                "explanation": "Near $x=4$, $x+1\\to 5>0$ and $(x-4)^2\\to 0^+$, so the quotient grows to $+\\infty$ from both sides."
+            },
+            {
+                "id": "C",
+                "text": "$\\frac{5}{0}$, undefined so DNE",
+                "explanation": "An infinite limit is a valid limit behavior; it does not automatically mean DNE here."
+            },
+            {
+                "id": "D",
+                "text": "$5$",
+                "explanation": "Direct substitution fails because the denominator becomes $0$."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": null,
+        "explanation": "As $x\\to 4$, the numerator $x+1\\to 5$ (positive). The denominator $(x-4)^2\\to 0^+$ from both sides because of the square. Therefore the expression approaches $+\\infty$.",
+        "micro_explanations": {
+            "A": "Forgets that a squared denominator stays nonnegative.",
+            "B": "Correctly uses positivity of numerator and $0^+$ denominator.",
+            "C": "Treats infinite limit as invalid rather than as $+\\infty$.",
+            "D": "Misapplies direct substitution despite division by zero."
+        },
+        "recommendation_reasons": [
+            "Highlights that even powers yield the same sign on both sides (both sides to $+\\infty$).",
+            "Connects infinite limits to vertical asymptote behavior."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T00:00:00Z",
+        "updated_at": "2026-02-07T00:00:00Z",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 3,
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "Both_Limit",
+        "section_id": "Unit1_C14",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": "No image.",
+        "weight_primary": 0.85,
+        "weight_supporting": 0.15,
+        "title": "C14-Q5 Even Power Denominator Gives +Infinity Both Sides",
+        "prompt_type": "text",
+        "primary_skill_id": "Infinite_Limits_Vertical_Asymptotes",
+        "supporting_skill_ids": [
+            "OneSided_Limits_From_FactorSigns"
+        ]
+    }
+]

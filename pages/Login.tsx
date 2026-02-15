@@ -80,7 +80,11 @@ export const Login = () => {
 
             // Update local state - use profile name if available, otherwise use email
             const username = response.profile?.name || response.user?.user_metadata?.name;
-            login(email, username, response.session?.user?.id);
+            const subTier = response.profile?.subscription_tier || 'basic';
+            const subEnd = response.profile?.subscription_period_end;
+            const hasSeenProIntro = response.profile?.has_seen_pro_intro || false;
+
+            login(email, username, response.session?.user?.id, subTier, subEnd, hasSeenProIntro);
             navigate('/dashboard');
         } catch (err: any) {
             const errorMessage = err.message || '';
@@ -92,7 +96,9 @@ export const Login = () => {
                 setError('Please verify your email before signing in.');
             } else {
                 // Default error message for invalid credentials
-                setError('Incorrect email or password');
+                console.error('Login error details:', err);
+                const fullError = typeof err === 'object' ? JSON.stringify(err, Object.getOwnPropertyNames(err)) : String(err);
+                setError((errorMessage || 'Incorrect email or password') + ' | DBG: ' + fullError);
             }
         } finally {
             setIsLoading(false);

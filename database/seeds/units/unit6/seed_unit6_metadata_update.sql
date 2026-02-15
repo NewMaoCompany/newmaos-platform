@@ -1,0 +1,88 @@
+-- Strict Update for Unit 6 Skills and Error Tags
+-- Based on User Provided JSON
+-- Unit: Unit6 (User JSON says "Unit6", usually we use "ABBC_Integration". I will check if I should map "Unit6" -> "ABBC_Integration" or insert as is. 
+-- Existing DB uses "ABBC_Integration". I will MAP "Unit6" to "ABBC_Integration" to keep referential integrity with existing questions).
+
+-- 1. Insert/Update Skills
+INSERT INTO public.skills (id, name, unit, prerequisites) VALUES
+('accumulation_concept', 'Accumulation Concept (Net Change)', 'ABBC_Integration', '{}'),
+('area_vs_net_change', 'Area vs Net Change (Signed Area)', 'ABBC_Integration', '{"accumulation_concept"}'),
+('riemann_sum_setup', 'Riemann Sum Setup (Δx, sample points)', 'ABBC_Integration', '{}'),
+('riemann_left_right_mid', 'Left/Right/Midpoint Sums', 'ABBC_Integration', '{"riemann_sum_setup"}'),
+('riemann_trap_rule', 'Trapezoidal Rule', 'ABBC_Integration', '{"riemann_sum_setup"}'),
+('riemann_from_table', 'Riemann Sums from Table/Data', 'ABBC_Integration', '{"riemann_sum_setup"}'),
+('riemann_from_graph', 'Riemann Sums from Graph', 'ABBC_Integration', '{"riemann_sum_setup"}'),
+('sigma_notation', 'Sigma Notation (Summation)', 'ABBC_Integration', '{}'),
+('def_integral_notation', 'Definite Integral Notation & Meaning', 'ABBC_Integration', '{"accumulation_concept"}'),
+('def_integral_as_limit', 'Definite Integral as Limit of Sums', 'ABBC_Integration', '{"sigma_notation", "riemann_sum_setup"}'),
+('ftc1_accumulation_func', 'FTC1 (Accumulation Function)', 'ABBC_Integration', '{"def_integral_notation"}'),
+('accumulation_function_eval', 'Evaluate Accumulation Function Values', 'ABBC_Integration', '{"ftc1_accumulation_func"}'),
+('accumulation_function_derivative', 'Derivative of Accumulation (FTC1)', 'ABBC_Integration', '{"ftc1_accumulation_func"}'),
+('ftc1_chain_rule', 'FTC1 + Chain Rule (upper bound g(x))', 'ABBC_Integration', '{"accumulation_function_derivative"}'),
+('accumulation_behavior_analysis', 'Accumulation Behavior (Inc/Dec, Extrema)', 'ABBC_Integration', '{"accumulation_function_derivative"}'),
+('integral_properties', 'Properties of Definite Integrals', 'ABBC_Integration', '{"def_integral_notation"}'),
+('integral_additivity', 'Split/Combine Intervals', 'ABBC_Integration', '{"integral_properties"}'),
+('integral_symmetry', 'Even/Odd Symmetry on [-a,a]', 'ABBC_Integration', '{"integral_properties"}'),
+('integral_comparison_bounds', 'Bounding/Comparison for Integrals', 'ABBC_Integration', '{"integral_properties"}'),
+('ftc2_eval_def_integral', 'FTC2 (Evaluate Definite Integral)', 'ABBC_Integration', '{}'),
+('antiderivative_basic_rules', 'Antiderivatives (Power/Exp/Trig basic)', 'ABBC_Integration', '{}'),
+('indef_integral_notation', 'Indefinite Integrals + C', 'ABBC_Integration', '{"antiderivative_basic_rules"}'),
+('u_substitution', 'u-Substitution', 'ABBC_Integration', '{"antiderivative_basic_rules"}'),
+('u_sub_definite_bounds', 'u-Sub with Definite Bounds', 'ABBC_Integration', '{"u_substitution"}'),
+('algebraic_prep_integrals', 'Algebraic Prep (factor/expand/simplify)', 'ABBC_Integration', '{}'),
+('long_division_rational', 'Long Division for Rational Integrals', 'ABBC_Integration', '{"algebraic_prep_integrals"}'),
+('complete_square_prep', 'Complete the Square (Integral Prep)', 'ABBC_Integration', '{"algebraic_prep_integrals"}'),
+('choose_integration_technique', 'Select Technique (rules/u-sub/algebra)', 'ABBC_Integration', '{"antiderivative_basic_rules", "u_substitution", "algebraic_prep_integrals"}'),
+('avg_value_from_integral', 'Average Value of Function', 'ABBC_Integration', '{"def_integral_notation"}'),
+('velocity_position_net_change', 'Motion: v to displacement, speed', 'ABBC_Integration', '{"accumulation_concept", "area_vs_net_change"}'),
+('units_interpretation_integrals', 'Units/Context Interpretation (Integral)', 'ABBC_Integration', '{"def_integral_notation"}')
+ON CONFLICT (id) DO UPDATE SET
+    name = EXCLUDED.name,
+    unit = EXCLUDED.unit,
+    prerequisites = EXCLUDED.prerequisites;
+
+-- 2. Insert/Update Error Tags
+INSERT INTO public.error_tags (id, name, category, severity, unit) VALUES
+('accumulation_sign_misread', 'Misread net change sign (signed area)', 'concept', 4, 'ABBC_Integration'),
+('area_vs_net_change_confusion', 'Confuse total area with net change', 'concept', 4, 'ABBC_Integration'),
+('integral_limits_reversed', 'Reverse bounds without sign change', 'notation', 3, 'ABBC_Integration'),
+('missing_dx', 'Missing dx in integral', 'notation', 3, 'ABBC_Integration'),
+('missing_constant_C', 'Forget +C for indefinite integral', 'notation', 4, 'ABBC_Integration'),
+('riemann_delta_x_wrong', 'Wrong Δx (use (b-a)/n)', 'setup', 4, 'ABBC_Integration'),
+('riemann_sample_point_wrong', 'Wrong sample points (L/R/M)', 'setup', 4, 'ABBC_Integration'),
+('riemann_index_shift_error', 'Index shift error in sigma (i vs i-1)', 'setup', 4, 'ABBC_Integration'),
+('riemann_interval_partition_error', 'Wrong interval partition endpoints', 'setup', 3, 'ABBC_Integration'),
+('trap_rule_formula_error', 'Trapezoid rule weighting mistake', 'setup', 3, 'ABBC_Integration'),
+('riemann_units_ignored', 'Ignore units/width in area estimate', 'concept', 2, 'ABBC_Integration'),
+('sigma_expand_incorrect', 'Expand sigma expression incorrectly', 'algebra', 3, 'ABBC_Integration'),
+('sigma_bounds_mismatch', 'Sigma bounds mismatch (1..n vs 0..n-1)', 'notation', 3, 'ABBC_Integration'),
+('ftc1_derivative_missing_chain', 'FTC1 derivative missing chain rule', 'concept', 5, 'ABBC_Integration'),
+('ftc1_wrong_integrand_eval', 'FTC1: use wrong integrand value', 'concept', 4, 'ABBC_Integration'),
+('accum_func_lower_bound_varies', 'Treat lower bound as variable incorrectly', 'concept', 4, 'ABBC_Integration'),
+('accum_behavior_sign_chart_wrong', 'Wrong sign analysis for accumulation behavior', 'concept', 3, 'ABBC_Integration'),
+('integral_property_sign_error', 'Misuse linearity/sign in properties', 'concept', 3, 'ABBC_Integration'),
+('integral_split_missing_part', 'Split interval but omit a piece', 'setup', 3, 'ABBC_Integration'),
+('integral_symmetry_misapplied', 'Misapply even/odd symmetry', 'concept', 3, 'ABBC_Integration'),
+('ftc2_antiderivative_error', 'Wrong antiderivative (basic rules)', 'technique', 4, 'ABBC_Integration'),
+('ftc2_eval_substitution_error', 'Plug bounds incorrectly (F(b)-F(a))', 'algebra', 3, 'ABBC_Integration'),
+('ftc2_simplify_slip', 'Algebra simplification slip after evaluation', 'algebra', 2, 'ABBC_Integration'),
+('u_sub_u_choice_bad', 'Bad u choice (doesn''t simplify)', 'technique', 3, 'ABBC_Integration'),
+('u_sub_du_missing_factor', 'Missing factor in du / incorrect du', 'technique', 5, 'ABBC_Integration'),
+('u_sub_back_sub_error', 'Back-substitute incorrectly', 'algebra', 3, 'ABBC_Integration'),
+('u_sub_bounds_not_changed', 'Definite u-sub: forget to change bounds', 'technique', 4, 'ABBC_Integration'),
+('u_sub_change_bounds_wrong', 'Definite u-sub: bounds converted wrong', 'technique', 4, 'ABBC_Integration'),
+('long_division_not_done', 'Skip long division when degree requires', 'technique', 3, 'ABBC_Integration'),
+('long_division_arithmetic_error', 'Long division arithmetic/sign error', 'algebra', 3, 'ABBC_Integration'),
+('complete_square_incorrect', 'Complete the square incorrectly', 'algebra', 4, 'ABBC_Integration'),
+('prep_simplify_incomplete', 'Do not simplify/factor before integrating', 'technique', 2, 'ABBC_Integration'),
+('avg_value_formula_wrong', 'Average value formula wrong', 'concept', 3, 'ABBC_Integration'),
+('avg_value_bounds_wrong', 'Average value: wrong interval length', 'setup', 3, 'ABBC_Integration'),
+('motion_speed_vs_velocity', 'Confuse speed with velocity (abs value)', 'concept', 4, 'ABBC_Integration'),
+('motion_displacement_vs_distance', 'Confuse displacement with total distance', 'concept', 4, 'ABBC_Integration'),
+('units_missing_interpretation', 'Ignore units/meaning in context problems', 'concept', 2, 'ABBC_Integration'),
+('technique_selection_wrong', 'Choose wrong technique (rules vs u-sub)', 'technique', 3, 'ABBC_Integration')
+ON CONFLICT (id) DO UPDATE SET
+    name = EXCLUDED.name,
+    category = EXCLUDED.category,
+    severity = EXCLUDED.severity,
+    unit = EXCLUDED.unit;

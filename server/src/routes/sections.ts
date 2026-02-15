@@ -99,7 +99,7 @@ router.put('/:topicId/:sectionId', authMiddleware, async (req: Request, res: Res
             topic_id: topicId,
             title: updateData.title || `Section ${sectionId}`,
             description: updateData.description || '',
-            description2: updateData.description2 || null,
+            description_2: updateData.description_2 || null,
             estimated_minutes: updateData.estimated_minutes || 15,
             has_lesson: updateData.has_lesson !== false,
             has_practice: updateData.has_practice !== false,
@@ -124,7 +124,7 @@ router.put('/:topicId/:sectionId', authMiddleware, async (req: Request, res: Res
                 .update({
                     title: sectionData.title,
                     description: sectionData.description,
-                    description2: sectionData.description2,
+                    description_2: sectionData.description_2,
                     estimated_minutes: sectionData.estimated_minutes,
                     has_lesson: sectionData.has_lesson,
                     has_practice: sectionData.has_practice,

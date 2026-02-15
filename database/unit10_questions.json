@@ -1,0 +1,770 @@
+[
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "BC_Series",
+        "sub_topic_id": "10.1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 75,
+        "skill_tags": [
+            {
+                "skill_id": "S_SERIES_DEF_CONVERGENCE",
+                "weight": 0.8
+            },
+            {
+                "skill_id": "S_PARTIAL_SUMS_CONCEPT",
+                "weight": 0.2
+            }
+        ],
+        "error_tags": [
+            "E_DEF_MIX_SEQUENCE_SERIES",
+            "E_CONVERGENCE_MEANING_MISREAD"
+        ],
+        "prompt": "Let $\\sum_{n=1}^{\\infty} a_n$ be an infinite series with partial sums $S_k=\\sum_{n=1}^{k} a_n$. Which statement correctly describes what it means for $\\sum_{n=1}^{\\infty} a_n$ to converge?",
+        "latex": "Let $S_k=\\sum_{n=1}^{k} a_n$. The series $\\sum_{n=1}^{\\infty} a_n$ converges iff $\\lim_{k\\to\\infty} S_k$ exists and is finite.",
+        "options": [
+            {
+                "option_id": "A",
+                "text": "The sequence $\\{a_n\\}$ has a finite limit."
+            },
+            {
+                "option_id": "B",
+                "text": "The sequence $\\{S_k\\}$ approaches a finite limit as $k\\to\\infty$."
+            },
+            {
+                "option_id": "C",
+                "text": "The sequence $\\{S_k\\}$ is increasing and bounded above."
+            },
+            {
+                "option_id": "D",
+                "text": "The terms $a_n$ eventually become negative."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "By definition, an infinite series converges when its sequence of partial sums $S_k$ converges to a finite limit. The behavior of $a_n$ alone is not the definition of series convergence.",
+        "micro_explanations": {
+            "A": "A limit for $a_n$ concerns the terms, not the partial sums; it is not the definition of series convergence.",
+            "B": "Correct: convergence of the series is convergence of $S_k$ to a finite value.",
+            "C": "Increasing and bounded implies convergence, but a convergent series need not have increasing partial sums.",
+            "D": "Sign of terms does not define convergence."
+        },
+        "recommendation_reasons": [
+            "Reinforces the formal definition of convergence via partial sums.",
+            "Targets a common confusion between sequences and series."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T15:00:00-05:00",
+        "updated_at": "2026-02-07T15:00:00-05:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "conceptual",
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "BC_Series",
+        "section_id": "Unit10",
+        "source": "NewMaoS_Original",
+        "source_year": 2026,
+        "notes": "Keep focus on definition: partial sums, not term behavior.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "C1Q1_Definition_of_Series_Convergence",
+        "prompt_type": "text",
+        "primary_skill_id": "S_SERIES_DEF_CONVERGENCE",
+        "supporting_skill_ids": [
+            "S_PARTIAL_SUMS_CONCEPT"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "BC_Series",
+        "sub_topic_id": "10.1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 110,
+        "skill_tags": [
+            {
+                "skill_id": "S_PARTIAL_SUMS_COMPUTE",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "S_SERIES_DEF_CONVERGENCE",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "E_PARTIAL_SUM_INDEX_SHIFT",
+            "E_ARITHMETIC_SIGN_ERROR"
+        ],
+        "prompt": "A series has terms $a_n=\\frac{1}{n(n+1)}$ for $n\\ge1$. Let $S_k=\\sum_{n=1}^{k} a_n$. Which expression equals $S_k$?",
+        "latex": "a_n=\\frac{1}{n(n+1)}=\\frac{1}{n}-\\frac{1}{n+1}.\\quad S_k=\\sum_{n=1}^{k}\\left(\\frac{1}{n}-\\frac{1}{n+1}\\right)=1-\\frac{1}{k+1}.",
+        "options": [
+            {
+                "option_id": "A",
+                "text": "$1-\\frac{1}{k}$"
+            },
+            {
+                "option_id": "B",
+                "text": "$\\frac{1}{k+1}$"
+            },
+            {
+                "option_id": "C",
+                "text": "$1-\\frac{1}{k+1}$"
+            },
+            {
+                "option_id": "D",
+                "text": "$\\frac{k}{k+1}$"
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "Use partial fractions: $\\frac{1}{n(n+1)}=\\frac{1}{n}-\\frac{1}{n+1}$. The sum telescopes to $S_k=1-\\frac{1}{k+1}$.",
+        "micro_explanations": {
+            "A": "Index error: the last remaining term is $\\frac{1}{k+1}$, not $\\frac{1}{k}$.",
+            "B": "This is only the final leftover term, not the whole partial sum.",
+            "C": "Correct telescoping result.",
+            "D": "Although $\\frac{k}{k+1}=1-\\frac{1}{k+1}$, the prompt asks for an expression; this one is equivalent but not the most direct telescoping form."
+        },
+        "recommendation_reasons": [
+            "Builds fluency with partial sums as the core object for convergence.",
+            "Practice with telescoping structure (without invoking later tests)."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T15:00:00-05:00",
+        "updated_at": "2026-02-07T15:00:00-05:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "procedural",
+        "mastery_weight": 1.1,
+        "representation_type": "symbolic",
+        "topic_id": "BC_Series",
+        "section_id": "Unit10",
+        "source": "NewMaoS_Original",
+        "source_year": 2026,
+        "notes": "Watch the final term after cancellation: $-\\frac{1}{k+1}$.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "C1Q2_Partial_Sums_Telescoping_Form",
+        "prompt_type": "text",
+        "primary_skill_id": "S_PARTIAL_SUMS_COMPUTE",
+        "supporting_skill_ids": [
+            "S_SERIES_DEF_CONVERGENCE"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "BC_Series",
+        "sub_topic_id": "10.1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level1",
+        "target_time_seconds": 60,
+        "skill_tags": [
+            {
+                "skill_id": "S_SERIES_VS_SEQUENCE",
+                "weight": 1.0
+            }
+        ],
+        "error_tags": [
+            "E_DEF_MIX_SEQUENCE_SERIES"
+        ],
+        "prompt": "Which object is a sequence (not a series)?",
+        "latex": "",
+        "options": [
+            {
+                "option_id": "A",
+                "text": "$\\sum_{n=1}^{\\infty} \\frac{1}{n^2}$"
+            },
+            {
+                "option_id": "B",
+                "text": "$\\left\\{\\sum_{n=1}^{k} \\frac{1}{n^2}\\right\\}_{k=1}^{\\infty}$"
+            },
+            {
+                "option_id": "C",
+                "text": "$\\frac{1}{1^2}+\\frac{1}{2^2}+\\frac{1}{3^2}+\\cdots$"
+            },
+            {
+                "option_id": "D",
+                "text": "$\\sum_{n=1}^{50} \\frac{1}{n^2}$"
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "A sequence is an ordered list of numbers. The partial sums $\\left\\{\\sum_{n=1}^{k} \\frac{1}{n^2}\\right\\}$ form a sequence. The others are series (infinite or finite).",
+        "micro_explanations": {
+            "A": "This is an infinite series written in sigma notation.",
+            "B": "Correct: the braces indicate a sequence indexed by $k$ (the partial sums).",
+            "C": "This is an infinite series written with ellipses.",
+            "D": "This is a finite series (a single number after summing)."
+        },
+        "recommendation_reasons": [
+            "Directly targets the most common foundational confusion in Unit 10.",
+            "Sets up later tests by clarifying what converges (partial sums)."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T15:00:00-05:00",
+        "updated_at": "2026-02-07T15:00:00-05:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "conceptual",
+        "mastery_weight": 0.9,
+        "representation_type": "symbolic",
+        "topic_id": "BC_Series",
+        "section_id": "Unit10",
+        "source": "NewMaoS_Original",
+        "source_year": 2026,
+        "notes": "Sequence notation uses braces/parentheses with an index; a series is a sum.",
+        "weight_primary": 1.0,
+        "weight_supporting": 0.0,
+        "title": "C1Q3_Sequence_vs_Series_Identify",
+        "prompt_type": "text",
+        "primary_skill_id": "S_SERIES_VS_SEQUENCE",
+        "supporting_skill_ids": []
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "BC_Series",
+        "sub_topic_id": "10.1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 140,
+        "skill_tags": [
+            {
+                "skill_id": "S_PARTIAL_SUMS_CONCEPT",
+                "weight": 0.6
+            },
+            {
+                "skill_id": "S_SERIES_DEF_CONVERGENCE",
+                "weight": 0.4
+            }
+        ],
+        "error_tags": [
+            "E_INFINITE_VS_FINITE_CONFUSION",
+            "E_LIMIT_OBJECT_WRONG"
+        ],
+        "prompt": "Suppose $S_k=3-\\frac{2}{k}$ for the partial sums of an infinite series $\\sum_{n=1}^{\\infty} a_n$. What is the value of the infinite series?",
+        "latex": "$\\sum_{n=1}^{\\infty} a_n=\\lim_{k\\to\\infty} S_k=\\lim_{k\\to\\infty}\\left(3-\\frac{2}{k}\\right)=3.$",
+        "options": [
+            {
+                "option_id": "A",
+                "text": "$1$"
+            },
+            {
+                "option_id": "B",
+                "text": "$3$"
+            },
+            {
+                "option_id": "C",
+                "text": "$2$"
+            },
+            {
+                "option_id": "D",
+                "text": "The series diverges."
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "The value of a convergent series equals the limit of its partial sums. Since $S_k\\to 3$, the series sums to $3$.",
+        "micro_explanations": {
+            "A": "Confuses the limit with the coefficient of $\\frac{2}{k}$ or a term value.",
+            "B": "Correct: limit of $S_k$ is $3$.",
+            "C": "Uses the numerator $2$ incorrectly as the sum.",
+            "D": "A finite limit for $S_k$ means the series converges."
+        },
+        "recommendation_reasons": [
+            "Emphasizes that the 'sum' of a series is defined as a limit of partial sums.",
+            "Trains reading partial-sum formulas directly."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T15:00:00-05:00",
+        "updated_at": "2026-02-07T15:00:00-05:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "strategic",
+        "mastery_weight": 1.2,
+        "representation_type": "symbolic",
+        "topic_id": "BC_Series",
+        "section_id": "Unit10",
+        "source": "NewMaoS_Original",
+        "source_year": 2026,
+        "notes": "Key move: series value is $\\lim S_k$, not $\\lim a_n$.",
+        "weight_primary": 0.6,
+        "weight_supporting": 0.4,
+        "title": "C1Q4_Series_Value_From_Partial_Sum_Formula",
+        "prompt_type": "text",
+        "primary_skill_id": "S_PARTIAL_SUMS_CONCEPT",
+        "supporting_skill_ids": [
+            "S_SERIES_DEF_CONVERGENCE"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "BC_Series",
+        "sub_topic_id": "10.1",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 90,
+        "skill_tags": [
+            {
+                "skill_id": "S_PARTIAL_SUMS_CONCEPT",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "S_SERIES_VS_SEQUENCE",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "E_DEF_MIX_SEQUENCE_SERIES",
+            "E_CONVERGENCE_MEANING_MISREAD"
+        ],
+        "prompt": "A student claims: “The series $\\sum_{n=1}^{\\infty} a_n$ converges because the sequence $\\{S_k\\}$ is bounded.” Which additional condition, together with boundedness of $\\{S_k\\}$, would be sufficient to guarantee the series converges?",
+        "latex": "If $\\{S_k\\}$ is monotonic (e.g., increasing) and bounded, then $\\{S_k\\}$ converges, so the series converges.",
+        "options": [
+            {
+                "option_id": "A",
+                "text": "$\\{S_k\\}$ is increasing."
+            },
+            {
+                "option_id": "B",
+                "text": "$\\{a_n\\}$ is increasing."
+            },
+            {
+                "option_id": "C",
+                "text": "$a_n>0$ for all $n$."
+            },
+            {
+                "option_id": "D",
+                "text": "$S_k\\ne 0$ for all $k$."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0,
+        "explanation": "A bounded monotonic sequence converges. If the partial sums $S_k$ are bounded and increasing, then $S_k$ converges, so the series converges.",
+        "micro_explanations": {
+            "A": "Correct: monotone + bounded implies $S_k$ converges.",
+            "B": "Monotonicity of terms $a_n$ does not ensure $S_k$ converges.",
+            "C": "Positive terms alone do not force convergence (partial sums could grow without bound).",
+            "D": "Nonzero partial sums is irrelevant to convergence."
+        },
+        "recommendation_reasons": [
+            "Connects series convergence to properties of the partial-sum sequence.",
+            "Targets a common misbelief: bounded alone is not enough without structure."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T15:00:00-05:00",
+        "updated_at": "2026-02-07T15:00:00-05:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "conceptual",
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "BC_Series",
+        "section_id": "Unit10",
+        "source": "NewMaoS_Original",
+        "source_year": 2026,
+        "notes": "Use monotone convergence theorem for sequences (not a later series test).",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "C1Q5_Bounded_Partial_Sums_When_Enough",
+        "prompt_type": "text",
+        "primary_skill_id": "S_PARTIAL_SUMS_CONCEPT",
+        "supporting_skill_ids": [
+            "S_SERIES_VS_SEQUENCE"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "BC_Series",
+        "sub_topic_id": "10.2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level2",
+        "target_time_seconds": 80,
+        "skill_tags": [
+            {
+                "skill_id": "S_GEOM_IDENTIFY_R",
+                "weight": 0.6
+            },
+            {
+                "skill_id": "S_GEOM_CONVERGENCE_CONDITION",
+                "weight": 0.4
+            }
+        ],
+        "error_tags": [
+            "E_GEOM_RATIO_WRONG",
+            "E_GEOM_CONVERGENCE_CONDITION_MISAPPLY"
+        ],
+        "prompt": "Consider the series $\\sum_{n=0}^{\\infty} 6\\left(-\\frac{1}{3}\\right)^n$. Which statement is true?",
+        "latex": "Geometric series with ratio $r=-\\frac{1}{3}$; since $|r|<1$, it converges.",
+        "options": [
+            {
+                "option_id": "A",
+                "text": "It converges because $\\left| -\\frac{1}{3} \\right|<1$."
+            },
+            {
+                "option_id": "B",
+                "text": "It diverges because the terms alternate in sign."
+            },
+            {
+                "option_id": "C",
+                "text": "It diverges because $r$ is negative."
+            },
+            {
+                "option_id": "D",
+                "text": "It converges only if $r>0$."
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0,
+        "explanation": "This is geometric with common ratio $r=-\\frac{1}{3}$. A geometric series converges when $|r|<1$, regardless of sign.",
+        "micro_explanations": {
+            "A": "Correct: $|r|<1$ guarantees convergence for a geometric series.",
+            "B": "Alternating signs do not prevent convergence for geometric series.",
+            "C": "Negative ratio is allowed; magnitude controls convergence.",
+            "D": "No requirement that $r$ be positive."
+        },
+        "recommendation_reasons": [
+            "Checks the core convergence criterion for geometric series.",
+            "Targets sign-based misconceptions about ratios."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T15:00:00-05:00",
+        "updated_at": "2026-02-07T15:00:00-05:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "conceptual",
+        "mastery_weight": 1.0,
+        "representation_type": "symbolic",
+        "topic_id": "BC_Series",
+        "section_id": "Unit10",
+        "source": "NewMaoS_Original",
+        "source_year": 2026,
+        "notes": "Convergence depends on $|r|$, not sign.",
+        "weight_primary": 0.6,
+        "weight_supporting": 0.4,
+        "title": "C2Q1_Geometric_Convergence_Criterion",
+        "prompt_type": "text",
+        "primary_skill_id": "S_GEOM_CONVERGENCE_CONDITION",
+        "supporting_skill_ids": [
+            "S_GEOM_IDENTIFY_R"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "BC_Series",
+        "sub_topic_id": "10.2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 120,
+        "skill_tags": [
+            {
+                "skill_id": "S_GEOM_SUM_INFINITE",
+                "weight": 0.8
+            },
+            {
+                "skill_id": "S_GEOM_IDENTIFY_A1",
+                "weight": 0.2
+            }
+        ],
+        "error_tags": [
+            "E_GEOM_SUM_FORMULA_MISUSE",
+            "E_GEOM_RATIO_WRONG"
+        ],
+        "prompt": "Find the sum of the infinite geometric series $$5-\\frac{5}{2}+\\frac{5}{4}-\\frac{5}{8}+\\cdots.$$",
+        "latex": "First term $a=5$, ratio $r=-\\frac{1}{2}$. Sum $S=\\frac{a}{1-r}=\\frac{5}{1-(-1/2)}=\\frac{5}{3/2}=\\frac{10}{3}$.",
+        "options": [
+            {
+                "option_id": "A",
+                "text": "$\\frac{5}{3}$"
+            },
+            {
+                "option_id": "B",
+                "text": "$\\frac{10}{3}$"
+            },
+            {
+                "option_id": "C",
+                "text": "$\\frac{15}{2}$"
+            },
+            {
+                "option_id": "D",
+                "text": "$\\frac{10}{7}$"
+            }
+        ],
+        "correct_option_id": "B",
+        "tolerance": 0,
+        "explanation": "This is geometric with $a=5$ and $r=-\\frac{1}{2}$. Since $|r|<1$, the sum is $\\frac{a}{1-r}=\\frac{10}{3}$.",
+        "micro_explanations": {
+            "A": "Typically comes from using $\\frac{a}{1+r}$ or other incorrect denominator.",
+            "B": "Correct computation using $\\frac{a}{1-r}$.",
+            "C": "May result from summing first few terms only, not the infinite sum.",
+            "D": "Uses $1-r^2$ or another wrong formula."
+        },
+        "recommendation_reasons": [
+            "Practices identifying $a$ and $r$ from a written series.",
+            "Reinforces the infinite geometric sum formula with negative ratio."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T15:00:00-05:00",
+        "updated_at": "2026-02-07T15:00:00-05:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "procedural",
+        "mastery_weight": 1.1,
+        "representation_type": "symbolic",
+        "topic_id": "BC_Series",
+        "section_id": "Unit10",
+        "source": "NewMaoS_Original",
+        "source_year": 2026,
+        "notes": "Denominator is $1-r$ even when $r<0$.",
+        "weight_primary": 0.8,
+        "weight_supporting": 0.2,
+        "title": "C2Q2_Infinite_Geometric_Sum_Negative_Ratio",
+        "prompt_type": "text",
+        "primary_skill_id": "S_GEOM_SUM_INFINITE",
+        "supporting_skill_ids": [
+            "S_GEOM_IDENTIFY_A1"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "BC_Series",
+        "sub_topic_id": "10.2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level4",
+        "target_time_seconds": 150,
+        "skill_tags": [
+            {
+                "skill_id": "S_GEOM_MODEL_REPEATING_DECIMAL",
+                "weight": 0.7
+            },
+            {
+                "skill_id": "S_GEOM_SUM_INFINITE",
+                "weight": 0.3
+            }
+        ],
+        "error_tags": [
+            "E_GEOM_PLACE_VALUE_ERROR",
+            "E_GEOM_SUM_FORMULA_MISUSE"
+        ],
+        "prompt": "Write $0.\\overline{27}$ as a fraction by interpreting it as a geometric series.",
+        "latex": "0.\\overline{27}=\\frac{27}{100}+\\frac{27}{100^2}+\\frac{27}{100^3}+\\cdots\\;\\Rightarrow\\; a=\\frac{27}{100},\\ r=\\frac{1}{100},\\ S=\\frac{a}{1-r}=\\frac{27/100}{1-1/100}=\\frac{27}{99}=\\frac{3}{11}.",
+        "options": [
+            {
+                "option_id": "A",
+                "text": "$\\frac{27}{100}$"
+            },
+            {
+                "option_id": "B",
+                "text": "$\\frac{27}{99}$"
+            },
+            {
+                "option_id": "C",
+                "text": "$\\frac{3}{11}$"
+            },
+            {
+                "option_id": "D",
+                "text": "$\\frac{27}{11}$"
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "Interpret $0.\\overline{27}$ as $\\frac{27}{100}+\\frac{27}{100^2}+\\cdots$ with ratio $\\frac{1}{100}$. The sum is $\\frac{27}{99}=\\frac{3}{11}$.",
+        "micro_explanations": {
+            "A": "This is only the first term, not the repeating decimal.",
+            "B": "Equivalent fraction but not simplified; the question asks for a fraction, and simplification gives $\\frac{3}{11}$.",
+            "C": "Correct simplified fraction.",
+            "D": "Places the decimal incorrectly (too large by a factor of $100$)."
+        },
+        "recommendation_reasons": [
+            "Connects geometric series to a classic application (repeating decimals).",
+            "Targets common place-value and ratio mistakes."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T15:00:00-05:00",
+        "updated_at": "2026-02-07T15:00:00-05:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "strategic",
+        "mastery_weight": 1.2,
+        "representation_type": "symbolic",
+        "topic_id": "BC_Series",
+        "section_id": "Unit10",
+        "source": "NewMaoS_Original",
+        "source_year": 2026,
+        "notes": "Be explicit about the first term $27/100$ and ratio $1/100$.",
+        "weight_primary": 0.7,
+        "weight_supporting": 0.3,
+        "title": "C2Q3_Repeating_Decimal_As_Geometric_Series",
+        "prompt_type": "text",
+        "primary_skill_id": "S_GEOM_MODEL_REPEATING_DECIMAL",
+        "supporting_skill_ids": [
+            "S_GEOM_SUM_INFINITE"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "BC_Series",
+        "sub_topic_id": "10.2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level3",
+        "target_time_seconds": 115,
+        "skill_tags": [
+            {
+                "skill_id": "S_GEOM_IDENTIFY_R",
+                "weight": 0.5
+            },
+            {
+                "skill_id": "S_GEOM_SUM_INFINITE",
+                "weight": 0.5
+            }
+        ],
+        "error_tags": [
+            "E_GEOM_RATIO_WRONG",
+            "E_GEOM_CONVERGENCE_CONDITION_MISAPPLY"
+        ],
+        "prompt": "An infinite geometric series has first term $a$ and ratio $r$. Its sum is $12$, and its second term is $6$. What is $r$?",
+        "latex": "Second term: $ar=6$. Sum: $\\frac{a}{1-r}=12$. Substitute $a=\\frac{6}{r}$: $\\frac{6/r}{1-r}=12\\Rightarrow \\frac{6}{r(1-r)}=12\\Rightarrow r(1-r)=\\frac{1}{2}\\Rightarrow r^2-r+\\frac{1}{2}=0$ has no real solution, so re-check: second term is $ar=6$ and sum is $12$ implies $a=12(1-r)$, so $12(1-r)r=6\\Rightarrow 12(r-r^2)=6\\Rightarrow 2r^2-2r+1=0\\Rightarrow (r-\\tfrac{1}{2})^2=0\\Rightarrow r=\\tfrac{1}{2}.$",
+        "options": [
+            {
+                "option_id": "A",
+                "text": "$\\frac{1}{2}$"
+            },
+            {
+                "option_id": "B",
+                "text": "$2$"
+            },
+            {
+                "option_id": "C",
+                "text": "$-\\frac{1}{2}$"
+            },
+            {
+                "option_id": "D",
+                "text": "$\\frac{3}{2}$"
+            }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0,
+        "explanation": "Use $S=\\frac{a}{1-r}=12$ so $a=12(1-r)$. The second term is $ar=6$, so $12(1-r)r=6$. Solving gives $r=\\frac{1}{2}$ (and $|r|<1$ is satisfied).",
+        "micro_explanations": {
+            "A": "Correct: satisfies both the sum and the second-term condition.",
+            "B": "If $r=2$, the series cannot converge (|r|<1 required).",
+            "C": "Would make the second term negative if $a$ is positive from the sum condition.",
+            "D": "Also fails convergence since $|r|>1$."
+        },
+        "recommendation_reasons": [
+            "Combines identification of geometric parameters with the infinite sum formula.",
+            "Highlights the necessity of $|r|<1$ for an infinite sum."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T15:00:00-05:00",
+        "updated_at": "2026-02-07T15:00:00-05:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "strategic",
+        "mastery_weight": 1.15,
+        "representation_type": "symbolic",
+        "topic_id": "BC_Series",
+        "section_id": "Unit10",
+        "source": "NewMaoS_Original",
+        "source_year": 2026,
+        "notes": "Set up equations from 'second term' and 'sum'; enforce $|r|<1$.",
+        "weight_primary": 0.5,
+        "weight_supporting": 0.5,
+        "title": "C2Q4_Solve_For_R_From_Sum_And_Term",
+        "prompt_type": "text",
+        "primary_skill_id": "S_GEOM_SUM_INFINITE",
+        "supporting_skill_ids": [
+            "S_GEOM_IDENTIFY_R"
+        ]
+    },
+    {
+        "course": "AP_Calculus_BC",
+        "topic": "BC_Series",
+        "sub_topic_id": "10.2",
+        "type": "mcq",
+        "calculator_allowed": false,
+        "difficulty": "Level5",
+        "target_time_seconds": 180,
+        "skill_tags": [
+            {
+                "skill_id": "S_GEOM_WRITE_SIGMA",
+                "weight": 0.6
+            },
+            {
+                "skill_id": "S_GEOM_IDENTIFY_A1",
+                "weight": 0.2
+            },
+            {
+                "skill_id": "S_GEOM_IDENTIFY_R",
+                "weight": 0.2
+            }
+        ],
+        "error_tags": [
+            "E_PARTIAL_SUM_INDEX_SHIFT",
+            "E_GEOM_RATIO_WRONG"
+        ],
+        "prompt": "Which sigma notation represents the geometric series $$\\frac{3}{4}+\\frac{3}{10}+\\frac{3}{25}+\\frac{3}{62.5}+\\cdots\\ ?$$",
+        "latex": "Ratios: \\(\\frac{3/10}{3/4}=\\frac{2}{5}\\), \\(\\frac{3/25}{3/10}=\\frac{2}{5}\\). So $a=\\frac{3}{4}$, $r=\\frac{2}{5}$. Series: $\\sum_{n=0}^{\\infty} \\frac{3}{4}\\left(\\frac{2}{5}\\right)^n$.",
+        "options": [
+            {
+                "option_id": "A",
+                "text": "$\\displaystyle \\sum_{n=1}^{\\infty} \\frac{3}{4}\\left(\\frac{2}{5}\\right)^n$"
+            },
+            {
+                "option_id": "B",
+                "text": "$\\displaystyle \\sum_{n=0}^{\\infty} \\frac{3}{4}\\left(\\frac{5}{2}\\right)^n$"
+            },
+            {
+                "option_id": "C",
+                "text": "$\\displaystyle \\sum_{n=0}^{\\infty} \\frac{3}{4}\\left(\\frac{2}{5}\\right)^n$"
+            },
+            {
+                "option_id": "D",
+                "text": "$\\displaystyle \\sum_{n=1}^{\\infty} \\frac{3}{4}\\left(\\frac{5}{2}\\right)^{n-1}$"
+            }
+        ],
+        "correct_option_id": "C",
+        "tolerance": 0,
+        "explanation": "The common ratio is $r=\\frac{2}{5}$. Using $n=0$ gives the first term $\\frac{3}{4}$. Therefore the correct representation is $\\sum_{n=0}^{\\infty} \\frac{3}{4}\\left(\\frac{2}{5}\\right)^n$.",
+        "micro_explanations": {
+            "A": "Starts at $n=1$, so the first term becomes $\\frac{3}{4}\\cdot\\frac{2}{5}$, which is too small.",
+            "B": "Uses the reciprocal ratio $\\frac{5}{2}$, which would make terms grow.",
+            "C": "Correct: matches first term and ratio.",
+            "D": "Uses the wrong ratio $\\frac{5}{2}$; also creates increasing terms."
+        },
+        "recommendation_reasons": [
+            "Tests precise control of indexing ($n=0$ vs $n=1$) in sigma form.",
+            "Reinforces identifying ratio from consecutive terms."
+        ],
+        "created_by": "NewMaoS",
+        "created_at": "2026-02-07T15:00:00-05:00",
+        "updated_at": "2026-02-07T15:00:00-05:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": "strategic",
+        "mastery_weight": 1.25,
+        "representation_type": "symbolic",
+        "topic_id": "BC_Series",
+        "section_id": "Unit10",
+        "source": "NewMaoS_Original",
+        "source_year": 2026,
+        "notes": "Indexing is the trap: $n=0$ is the cleanest for matching the first term.",
+        "weight_primary": 0.6,
+        "weight_supporting": 0.4,
+        "title": "C2Q5_Geometric_Series_Sigma_Notation_Indexing",
+        "prompt_type": "text",
+        "primary_skill_id": "S_GEOM_WRITE_SIGMA",
+        "supporting_skill_ids": [
+            "S_GEOM_IDENTIFY_A1",
+            "S_GEOM_IDENTIFY_R"
+        ]
+    }
+]

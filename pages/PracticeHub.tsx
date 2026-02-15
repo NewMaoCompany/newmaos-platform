@@ -5,6 +5,177 @@ import { Navbar } from '../components/Navbar';
 import { COURSE_TOPICS, COURSE_CONTENT_DATA } from '../constants';
 import { SessionMode, Question } from '../types';
 
+// Sub-component for Unit Card to handle its own async progress fetching
+const UnitCard = ({ topic, idx, onClick }: { topic: any, idx: number, onClick: () => void }) => {
+    const { getUnitProgress, topicContent, questions, sections, getSectionStatus } = useApp();
+    const [progress, setProgress] = useState(0);
+
+    const content = topicContent[topic.id];
+    const staticContent = COURSE_CONTENT_DATA[topic.id] || { subTopics: [] };
+
+    useEffect(() => {
+        getUnitProgress(topic.id).then(data => {
+            if (data) setProgress(Math.round(data.progress_percentage || 0));
+        });
+    }, [topic.id]);
+
+    // Icon helper
+    const getTopicIcon = (id: string) => {
+        if (id.includes('Limits')) return 'waves';
+        if (id.includes('Derivatives')) return 'trending_up';
+        if (id.includes('Composite')) return 'hub';
+        if (id.includes('Applications')) return 'speed';
+        if (id.includes('Analytical')) return 'insights';
+        if (id.includes('Integration')) return 'waterfall_chart';
+        if (id.includes('DiffEq')) return 'wind_power';
+        if (id.includes('AppIntegration')) return 'view_in_ar';
+        if (id.includes('Unit9') || id.includes('Parametric')) return 'radar';
+        if (id.includes('Series')) return 'all_inclusive';
+        return 'calculate';
+    };
+
+    // Calculate Counts
+    const topicQuestions = questions.filter((q: Question) => {
+        const qBase = q.topic.includes('_') ? q.topic.split('_')[1] : q.topic;
+        const tBase = topic.id.includes('_') ? topic.id.split('_')[1] : topic.id;
+        const isMatch = q.topic === topic.id || (q.course === 'Both' && qBase === tBase);
+        const isStatusValid = q.status === 'published' || !q.status;
+        return isMatch && isStatusValid;
+    });
+    const totalQuestions = topicQuestions.length;
+
+    // Use static structure for chapter count
+    const chapterCount = (staticContent.subTopics || []).length;
+
+    // Time estimate
+    const topicSections = sections[topic.id] || [];
+    const totalMinutes = topicSections.reduce((sum: number, sec: any) => sum + (Number(sec.estimated_minutes) || 0), 0);
+    const totalHours = Math.floor(totalMinutes / 60);
+    const remainingMinutes = totalMinutes % 60;
+
+    return (
+        <div
+            onClick={onClick}
+            className="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 p-5 rounded-2xl hover:border-primary/50 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
+        >
+            <div>
+                <div className="flex justify-between items-start mb-3">
+                    <div className="flex flex-col gap-2">
+                        <div className="p-2 w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 group-hover:bg-primary/20 group-hover:text-yellow-700 dark:group-hover:text-primary transition-colors">
+                            <span className="material-symbols-outlined">{getTopicIcon(topic.id)}</span>
+                        </div>
+                        {getSectionStatus(topic.id) !== 'not_started' && (
+                            <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider w-fit
+                                ${getSectionStatus(topic.id) === 'in_progress'
+                                    ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                    : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
+                                {getSectionStatus(topic.id) === 'in_progress' ? 'In Progress' : 'Completed'}
+                            </span>
+                        )}
+                    </div>
+                    <span className="text-xs font-bold bg-gray-100 dark:bg-white/10 px-2 py-1 rounded text-gray-500">
+                        {content ? (content.title.includes(':') ? content.title.split(':')[0] : `Unit ${idx + 1}`) : `Unit ${idx + 1}`}
+                    </span>
+                </div>
+                <h4 className="font-bold text-lg mb-1">{content ? content.title : topic.subject}</h4>
+
+                {content?.description && (
+                    <p className="text-xs text-text-secondary dark:text-gray-500 mb-2 line-clamp-2">
+                        {content.description}
+                    </p>
+                )}
+
+                <div className="flex flex-col gap-1">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {totalQuestions} questions • {chapterCount} chapters
+                    </p>
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+                        Est. Time: {totalHours > 0 ? `${totalHours}h ` : ''}{remainingMinutes}m
+                    </p>
+                </div>
+            </div>
+
+            <div className="mt-2">
+                <div className="flex justify-between items-end mb-1.5">
+                    <span className="text-xs font-bold text-text-secondary dark:text-gray-500 uppercase tracking-wider">Mastery</span>
+                    <span className="text-xs font-bold text-primary">{progress}%</span>
+                </div>
+                <div className="w-full h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                    <div
+                        className="h-full bg-primary rounded-full transition-all duration-1000 ease-out relative group-hover:shadow-[0_0_8px_rgba(249,212,6,0.6)]"
+                        style={{ width: `${progress}%` }}
+                    >
+                        <div className="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-white/20 to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Helper Component for Grouped History
+const HistoryGroupCard = ({ sectionId, activities }: { sectionId: string, activities: any[] }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    // Aggregate Info
+    const latest = activities[0]; // Assuming sorted desc
+    const title = latest.title || 'Unknown Topic';
+    const lastTime = latest.timestamp;
+
+    // Sort chronological for display inside
+    const sortedDetails = [...activities].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+    return (
+        <div className="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden transition-all duration-300">
+            {/* Summary Header - Click to Expand */}
+            <div
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+            >
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <span className="material-symbols-outlined">history_edu</span>
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-sm text-text-main dark:text-white">{title}</h4>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">
+                            {activities.length} Session{activities.length > 1 ? 's' : ''} • Last: {lastTime}
+                        </p>
+                    </div>
+                </div>
+                <button className={`w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                    <span className="material-symbols-outlined text-gray-500">expand_more</span>
+                </button>
+            </div>
+
+            {/* Expanded Details */}
+            {isExpanded && (
+                <div className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 animate-fade-in">
+                    {sortedDetails.map((activity, idx) => (
+                        <div key={activity.id || idx} className="p-3 pl-16 border-b last:border-0 border-gray-100 dark:border-white/5 flex justify-between items-center hover:bg-white dark:hover:bg-white/5 transition-colors">
+                            <div>
+                                <div className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    {activity.description?.includes('Review') ? activity.description : (activity.attemptType === 'review' ? 'Review Session' : activity.label || 'Practice Session')}
+                                </div>
+                                <div className="text-[10px] text-gray-400">
+                                    {activity.timestamp && !activity.timestamp.includes('Just')
+                                        ? new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                                        : (activity.timestamp || 'Unknown time')}
+                                </div>
+                            </div>
+                            {activity.score !== undefined && (
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${activity.score >= 80 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                    {activity.score}%
+                                </span>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
 export const PracticeHub = () => {
     const { user, activities, courses, recommendation, setSessionMode, radarData, topicContent, questions, sections } = useApp();
     const navigate = useNavigate();
@@ -29,7 +200,7 @@ export const PracticeHub = () => {
         return 'school';
     }
 
-    // Resolve Icon for Topic Cards
+    // Customize Topic Icon Logic
     const getTopicIcon = (id: string) => {
         // Unit 1: Limits & Continuity
         if (id.includes('Limits')) return 'waves';
@@ -61,25 +232,7 @@ export const PracticeHub = () => {
     // Async loading removed in favor of AppContext caching
 
 
-    // Helper to map Topic ID to Radar Data Subject for progress
-    const getTopicProgress = (id: string) => {
-        let subjectName = '';
-        // Map IDs to the specific names used in INITIAL_RADAR_DATA/radarData
-        if (id.includes('Limits')) subjectName = 'Limits';
-        else if (id.includes('Derivatives')) subjectName = 'Derivatives';
-        else if (id.includes('Composite')) subjectName = 'Composite';
-        else if (id.includes('Applications')) subjectName = 'Contextual Applications';
-        else if (id.includes('Analytical')) subjectName = 'Analytical Applications';
-        // Specific check for AppIntegration vs Integration
-        else if (id.includes('AppIntegration')) subjectName = 'App of Int';
-        else if (id.includes('Integration')) subjectName = 'Integration';
-        else if (id.includes('DiffEq')) subjectName = 'Diff Eq';
-        else if (id.includes('Unit9') || id.includes('Parametric')) subjectName = 'Parametric/Polar';
-        else if (id.includes('Series')) subjectName = 'Series';
 
-        const found = radarData.find(r => r.subject === subjectName);
-        return found ? found.A : 0;
-    };
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -129,11 +282,31 @@ export const PracticeHub = () => {
         }
     }
 
+    // Group History by SectionId
+    const groupedHistory = useMemo(() => {
+        const groups: Record<string, any[]> = {};
+        practiceHistory.forEach((act: any) => {
+            // Fallback to title if sectionId missing, or group unrelated items under 'misc'
+            const key = act.sectionId || act.title || 'misc';
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(act);
+        });
+        // Convert to array and sort by most recent activity in group
+        return Object.entries(groups).map(([key, items]) => ({
+            sectionId: key,
+            activities: items,
+            latestTime: items.reduce((max, item) => {
+                const t = new Date(item.created_at || item.timestamp).getTime();
+                return t > max ? t : max;
+            }, 0)
+        })).sort((a, b) => b.latestTime - a.latestTime);
+    }, [practiceHistory]);
+
     return (
-        <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100">
+        <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-hidden">
             <Navbar />
 
-            <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 animate-fade-in flex flex-col gap-6 sm:gap-10">
+            <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-6 sm:gap-10 overflow-y-auto scroll-bounce">
 
                 <header>
                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight mb-2">Practice Center</h1>
@@ -260,111 +433,18 @@ export const PracticeHub = () => {
 
                     <section className="lg:col-span-2 flex flex-col gap-6">
                         <h3 className="text-xl font-bold flex items-center gap-2">
-                            <span className="material-symbols-outlined text-primary">topic</span>
-                            Topics
+                            <span className="material-symbols-outlined text-primary">grid_view</span>
+                            Units
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {topics.map((topic, idx) => {
-                                const progress = getTopicProgress(topic.id);
-                                const content = topicContent[topic.id]; // Get dynamic content
-                                const staticContent = COURSE_CONTENT_DATA[topic.id] || { subTopics: [] };
-
-                                // Calculate Dynamic Counts
-                                const topicQuestions = questions.filter((q: Question) => {
-                                    const qBase = q.topic.includes('_') ? q.topic.split('_')[1] : q.topic;
-                                    const tBase = topic.id.includes('_') ? topic.id.split('_')[1] : topic.id;
-
-                                    const isMatch = q.topic === topic.id || (q.course === 'Both' && qBase === tBase);
-                                    const isStatusValid = q.status === 'published' || !q.status;
-                                    return isMatch && isStatusValid;
-                                });
-                                const totalQuestions = topicQuestions.filter((q: Question) => !q.sectionId?.includes('unit_test')).length;
-
-                                // Count unique chapters (excluding 'unit_test' and 'overview' and 'undefined')
-                                const uniqueChapters = new Set();
-                                topicQuestions.forEach(q => {
-                                    if (q.sectionId && q.sectionId !== 'unit_test' && q.sectionId !== 'overview') {
-                                        uniqueChapters.add(q.sectionId);
-                                    }
-                                });
-                                // Also consider chapters from static content if no questions yet?
-                                // Better to count simply the number of chapters defined in structure
-                                // User requested "total number of chapters within that unit". 
-                                // This is usually better derived from static/dynamic structure than inferred from questions.
-                                const chapterCount = (staticContent.subTopics || []).length;
-
-                                // Calculate Total Estimated Time
-                                const topicSections = sections[topic.id] || [];
-                                const totalMinutes = topicSections.reduce((sum: number, sec: any) => sum + (Number(sec.estimated_minutes) || 0), 0);
-                                const totalHours = Math.floor(totalMinutes / 60);
-                                const remainingMinutes = totalMinutes % 60;
-
-                                return (
-                                    <div
-                                        key={idx}
-                                        onClick={() => handleTopicClick(topic.id)}
-                                        className="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 p-5 rounded-2xl hover:border-primary/50 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
-                                    >
-                                        <div>
-                                            <div className="flex justify-between items-start mb-3">
-                                                <div className="flex flex-col gap-2">
-                                                    <div className="p-2 w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 group-hover:bg-primary/20 group-hover:text-yellow-700 dark:group-hover:text-primary transition-colors">
-                                                        <span className="material-symbols-outlined">{getTopicIcon(topic.id)}</span>
-                                                    </div>
-                                                    {/* Unit Status Badge */}
-                                                    {/* Unit Status Badge */}
-                                                    {getSectionStatus(topic.id) !== 'not_started' && (
-                                                        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider w-fit
-                                                            ${getSectionStatus(topic.id) === 'in_progress'
-                                                                ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                                                                : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
-                                                            {getSectionStatus(topic.id) === 'in_progress' ? 'In Progress' : 'Completed'}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <span className="text-xs font-bold bg-gray-100 dark:bg-white/10 px-2 py-1 rounded text-gray-500">
-                                                    {/* Fallback to topic.subject from constants if context not ready, but usually content.title is best */}
-                                                    {content ? (content.title.includes(':') ? content.title.split(':')[0] : `Unit ${idx + 1}`) : `Unit ${idx + 1}`}
-                                                </span>
-                                            </div>
-                                            <h4 className="font-bold text-lg mb-1">{content ? content.title : topic.subject}</h4>
-
-                                            {/* Description Display */}
-                                            {content?.description && (
-                                                <p className="text-xs text-text-secondary dark:text-gray-500 mb-2 line-clamp-2">
-                                                    {content.description}
-                                                </p>
-                                            )}
-
-                                            <div className="flex flex-col gap-1">
-                                                <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                    {totalQuestions} questions • {chapterCount} chapters
-                                                </p>
-                                                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">
-                                                    Est. Time: {totalHours > 0 ? `${totalHours}h ` : ''}{remainingMinutes}m
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Dynamic Progress Bar */}
-                                        <div className="mt-2">
-                                            <div className="flex justify-between items-end mb-1.5">
-                                                <span className="text-xs font-bold text-text-secondary dark:text-gray-500 uppercase tracking-wider">Mastery</span>
-                                                <span className="text-xs font-bold text-primary">{progress}%</span>
-                                            </div>
-                                            <div className="w-full h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
-                                                <div
-                                                    className="h-full bg-primary rounded-full transition-all duration-1000 ease-out relative group-hover:shadow-[0_0_8px_rgba(249,212,6,0.6)]"
-                                                    style={{ width: `${progress}%` }}
-                                                >
-                                                    {/* Shiny effect overlay */}
-                                                    <div className="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-white/20 to-transparent"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            {topics.map((topic, idx) => (
+                                <UnitCard
+                                    key={topic.id}
+                                    topic={topic}
+                                    idx={idx}
+                                    onClick={() => handleTopicClick(topic.id)}
+                                />
+                            ))}
                         </div>
                     </section>
 
@@ -376,24 +456,17 @@ export const PracticeHub = () => {
                             </h3>
                         </div>
 
-                        <div className="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-2">
-                            {practiceHistory.length > 0 ? (
-                                practiceHistory.slice(0, 5).map((activity) => (
-                                    <div key={activity.id} className="p-4 border-b last:border-0 border-gray-100 dark:border-gray-800/50 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors rounded-xl">
-                                        <div className="flex justify-between items-start mb-1">
-                                            <span className="font-bold text-sm">{activity.title}</span>
-                                            {activity.score !== undefined && (
-                                                <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${activity.score >= 80 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                                    {activity.score}%
-                                                </span>
-                                            )}
-                                        </div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{activity.description}</p>
-                                        <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">{activity.timestamp}</span>
-                                    </div>
+                        <div className="flex flex-col gap-4">
+                            {groupedHistory.length > 0 ? (
+                                groupedHistory.slice(0, 5).map((group) => (
+                                    <HistoryGroupCard
+                                        key={group.sectionId}
+                                        sectionId={group.sectionId}
+                                        activities={group.activities}
+                                    />
                                 ))
                             ) : (
-                                <div className="p-8 text-center text-gray-500">
+                                <div className="p-8 text-center text-gray-500 bg-surface-light dark:bg-surface-dark rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
                                     No practice history yet. Start your first session!
                                 </div>
                             )}

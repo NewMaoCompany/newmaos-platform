@@ -13,27 +13,28 @@ export const INITIAL_USER: User = {
   percentile: 0, // 0 indicates unranked/new
   preferences: {
     emailNotifications: true,
-    soundEffects: false
+    soundEffects: true
   },
-  isCreator: false
+  isCreator: false,
+  subscriptionTier: 'basic',
+  subscriptionPeriodEnd: undefined,
+  hasSeenProIntro: false
 };
 
 export const INITIAL_RADAR_DATA: TopicMastery[] = [
-  { subject: 'Limits', A: 0, fullMark: 100 },
-  { subject: 'Derivatives', A: 0, fullMark: 100 },
-  { subject: 'Composite', A: 0, fullMark: 100 },
-  { subject: 'Contextual Applications', A: 0, fullMark: 100 },
-  { subject: 'Analytical Applications', A: 0, fullMark: 100 },
-  { subject: 'Integration', A: 0, fullMark: 100 },
-  { subject: 'Diff Eq', A: 0, fullMark: 100 },
-  { subject: 'App of Int', A: 0, fullMark: 100 },
-  { subject: 'Parametric/Polar', A: 0, fullMark: 100 },
-  { subject: 'Series', A: 0, fullMark: 100 },
+  { subject: 'Unit 1', A: 0, fullMark: 100 },
+  { subject: 'Unit 2', A: 0, fullMark: 100 },
+  { subject: 'Unit 3', A: 0, fullMark: 100 },
+  { subject: 'Unit 4', A: 0, fullMark: 100 },
+  { subject: 'Unit 5', A: 0, fullMark: 100 },
+  { subject: 'Unit 6', A: 0, fullMark: 100 },
+  { subject: 'Unit 7', A: 0, fullMark: 100 },
+  { subject: 'Unit 8', A: 0, fullMark: 100 },
+  { subject: 'Unit 9', A: 0, fullMark: 100 },
+  { subject: 'Unit 10', A: 0, fullMark: 100 },
 ];
 
-export const INITIAL_NOTIFICATIONS: AppNotification[] = [
-  { id: 1, text: "Welcome to NewMaoS! Start your first session.", time: "Just now", unread: true, link: '/practice' },
-];
+export const INITIAL_NOTIFICATIONS: AppNotification[] = [];
 
 // --- Metadata for Question Builder ---
 
@@ -63,7 +64,7 @@ export const ERROR_TAGS = [
 ];
 
 export const RECOMMENDATION_REASON_CODES = [
-  { id: 'LOW_MASTERY', label: 'Low Topic Mastery' },
+  { id: 'LOW_MASTERY', label: 'Low Unit Mastery' },
   { id: 'HIGH_ERROR_FREQUENCY', label: 'High Error Frequency' },
   { id: 'SPACED_REVIEW_DUE', label: 'Spaced Repetition Due' },
   { id: 'STREAK_BUILDER', label: 'Confidence Builder' },
@@ -74,22 +75,134 @@ export const RECOMMENDATION_REASON_CODES = [
 
 // Unit 1: Limits and Continuity
 const UNIT1_SUBTOPICS = [
-  { id: '1.1', title: '1.1 Introducing Calculus: Can Change Occur at an Instant?', description: 'Avg vs Instant Rate', estimatedMinutes: 10, content: '' },
-  { id: '1.2', title: '1.2 Defining Limits and Using Limit Notation', description: 'Limit Notation', estimatedMinutes: 15, content: '' },
-  { id: '1.3', title: '1.3 Estimating Limit Values from Graphs', description: 'Graphical Limits', estimatedMinutes: 10, content: '' },
-  { id: '1.4', title: '1.4 Estimating Limit Values from Tables', description: 'Numerical Limits', estimatedMinutes: 10, content: '' },
-  { id: '1.5', title: '1.5 Determining Limits Using Algebraic Properties of Limits', description: 'Limit Laws', estimatedMinutes: 15, content: '' },
-  { id: '1.6', title: '1.6 Determining Limits Using Algebraic Manipulation', description: 'Factoring/Conjugates', estimatedMinutes: 20, content: '' },
-  { id: '1.7', title: '1.7 Selecting Procedures for Determining Limits', description: 'Strategy', estimatedMinutes: 15, content: '' },
-  { id: '1.8', title: '1.8 Determining Limits Using the Squeeze Theorem', description: 'Squeeze Theorem', estimatedMinutes: 15, content: '' },
-  { id: '1.9', title: '1.9 Connecting Multiple Representations of Limits', description: 'Synthesis', estimatedMinutes: 10, content: '' },
-  { id: '1.10', title: '1.10 Exploring Types of Discontinuities', description: 'Removable/Jump/Infinite', estimatedMinutes: 15, content: '' },
-  { id: '1.11', title: '1.11 Defining Continuity at a Point', description: '3-Part Definition', estimatedMinutes: 15, content: '' },
-  { id: '1.12', title: '1.12 Confirming Continuity over an Interval', description: 'Intervals', estimatedMinutes: 10, content: '' },
-  { id: '1.13', title: '1.13 Removing Discontinuities', description: 'Extensions', estimatedMinutes: 15, content: '' },
-  { id: '1.14', title: '1.14 Connecting Infinite Limits and Vertical Asymptotes', description: 'Asymptotes', estimatedMinutes: 15, content: '' },
-  { id: '1.15', title: '1.15 Connecting Limits at Infinity and Horizontal Asymptotes', description: 'End Behavior', estimatedMinutes: 15, content: '' },
-  { id: '1.16', title: '1.16 Working with the Intermediate Value Theorem', description: 'IVT', estimatedMinutes: 15, content: '' }
+  {
+    id: '1.1',
+    title: '1.1 Introducing Calculus: Can Change Occur at an Instant?',
+    description: 'Avg vs Instant Rate',
+    estimatedMinutes: 10,
+    content: '',
+    description2: "This chapter bridges precalculus and calculus by examining the difference between average rate of change and instantaneous rate of change. Students explore the secant line slope as a precursor to the tangent line slope. The core concept is that as the time interval shrinks to zero, the average velocity approaches the instantaneous velocity. This limit process is foundational to understanding derivatives. It challenges students to think about motion and change not just over intervals, but at a specific moment in time."
+  },
+  {
+    id: '1.2',
+    title: '1.2 Defining Limits and Using Limit Notation',
+    description: 'Limit Notation',
+    estimatedMinutes: 15,
+    content: '',
+    description2: "This chapter introduces the formal notation of limits, requiring students to understand that a limit describes the behavior of a function as inputs approach a value, not necessarily the value of the function at that point. It covers one-sided limits and the condition for a general limit to exist. Students learn to read and write limit expressions correctly, emphasizing that 'approaching' is the key operation. This rigorous definition sets the stage for all future calculus operations."
+  },
+  {
+    id: '1.3',
+    title: '1.3 Estimating Limit Values from Graphs',
+    description: 'Graphical Limits',
+    estimatedMinutes: 10,
+    content: '',
+    description2: "In this chapter, students develop visual intuition for limits by examining graphs of functions, including those with holes, jumps, and vertical asymptotes. The focus is on identifying the y-value that the graph approaches from both the left and right sides. Students distinguish between the limit value and the function value (f(c)), reinforcing that a function can be undefined at a point yet still have a limit there. This visual skill is critical for quick analysis of function behavior."
+  },
+  {
+    id: '1.4',
+    title: '1.4 Estimating Limit Values from Tables',
+    description: 'Numerical Limits',
+    estimatedMinutes: 10,
+    content: '',
+    description2: "This chapter focuses on the numerical approach to limits. Students analyze tables of values to observe trends as x gets closer and closer to a target number from both sides. It emphasizes the importance of choosing x-values that are incrementally closer (e.g., 1.9, 1.99, 1.999) to establish a convincing pattern. Students also learn to recognize when a table suggests that a limit does not exist, such as when values oscillate or diverge."
+  },
+  {
+    id: '1.5',
+    title: '1.5 Determining Limits Using Algebraic Properties of Limits',
+    description: 'Limit Laws',
+    estimatedMinutes: 15,
+    content: '',
+    description2: "This chapter covers the algebraic laws that allow limits to be computed by breaking complex expressions into simpler parts. Students learn rules for sums, differences, products, quotients, and powers. The lesson emphasizes that these rules apply directly only when the limits of the individual components exist. It builds a toolkit for evaluating limits analytically without relying solely on graphs or calculators, serving as a first step toward algebraic mastery of calculus."
+  },
+  {
+    id: '1.6',
+    title: '1.6 Determining Limits Using Algebraic Manipulation',
+    description: 'Factoring/Conjugates',
+    estimatedMinutes: 20,
+    content: '',
+    description2: "This chapter tackles indeterminate forms like 0/0 by equipping students with algebraic techniques such as factoring, canceling common factors, rationalizing numerators using conjugates, and simplifying complex fractions. The goal is to transform the expression into a continuous form where direct substitution works. This 'algebraic gymnastics' is a core skill for AP Calculus, requiring precision and the ability to recognize which method unlocks the limit."
+  },
+  {
+    id: '1.7',
+    title: '1.7 Selecting Procedures for Determining Limits',
+    description: 'Strategy',
+    estimatedMinutes: 15,
+    content: '',
+    description2: "This chapter synthesizes previous methods, asking students to choose the most efficient strategy for a given limit problem. They must decide whether to use direct substitution, algebraic manipulation, graphical inspection, or numerical estimation. It emphasizes recognizing problem types—knowing when to factor versus when to rationalize or when to check one-sided limits. This decision-making process is crucial for speed and accuracy on the Exam."
+  },
+  {
+    id: '1.8',
+    title: '1.8 Determining Limits Using the Squeeze Theorem',
+    description: 'Squeeze Theorem',
+    estimatedMinutes: 15,
+    content: '',
+    description2: "This chapter introduces the squeeze theorem as a powerful way to evaluate limits that are difficult or impossible to compute directly. Students learn to trap a function between two simpler functions that share the same limiting behavior. The focus is on building correct bounds, checking that the target function truly stays between them, and drawing a valid conclusion. Many problems involve oscillating behavior and require strong inequality reasoning."
+  },
+  {
+    id: '1.9',
+    title: '1.9 Connecting Multiple Representations of Limits',
+    description: 'Synthesis',
+    estimatedMinutes: 10,
+    content: '',
+    description2: "This chapter connects graphical, numerical, and algebraic representations of limits. Students practice translating between these forms to build a robust understanding. For example, they might start with a graph and derive an algebraic function, or look at a table and sketch a possible graph. This multi-modal approach ensures deep conceptual retention and prepares students for questions that test flexibility in thinking about functions."
+  },
+  {
+    id: '1.10',
+    title: '1.10 Exploring Types of Discontinuities',
+    description: 'Removable/Jump/Infinite',
+    estimatedMinutes: 15,
+    content: '',
+    description2: "This chapter categorizes discontinuities into three main types: removable (holes), jump (breaks), and infinite (vertical asymptotes). Students learn the specific limit conditions that define each type. The lesson emphasizes the difference between a function incorrectly defined at a point versus the limit not matching the function value. Mastering this vocabulary allows students to describe function behavior precisely and diagnose why a function fails to be continuous."
+  },
+  {
+    id: '1.11',
+    title: '1.11 Defining Continuity at a Point',
+    description: '3-Part Definition',
+    estimatedMinutes: 15,
+    content: '',
+    description2: "This chapter presents the rigorous three-part definition of continuity: 1) f(c) helps exist, 2) limit as x approaches c exists, and 3) the limit equals the function value. Students must verify all three conditions to prove continuity at a specific point. This definition is a frequent free-response topic. The lesson drills the logical steps required to construct a formal argument for or against continuity."
+  },
+  {
+    id: '1.12',
+    title: '1.12 Confirming Continuity over an Interval',
+    description: 'Intervals',
+    estimatedMinutes: 10,
+    content: '',
+    description2: "This chapter extends the concept of continuity from a single point to an entire interval. Students investigate what it means for a function to be continuous on open versus closed intervals. The lesson covers the specific behavior required at endpoints and how domain restrictions (like roots and logs) affect continuity. Understanding interval continuity is a prerequisite for major theorems like IVT and EVT."
+  },
+  {
+    id: '1.13',
+    title: '1.13 Removing Discontinuities',
+    description: 'Extensions',
+    estimatedMinutes: 15,
+    content: '',
+    description2: "This chapter teaches students how to fix certain discontinuities by redefining a function at a single point. Students learn when a discontinuity is removable and how to choose a value that makes the function continuous. The key skill is understanding that the function's behavior near a point determines whether it can be repaired. This chapter reinforces the relationship between limits and continuity."
+  },
+  {
+    id: '1.14',
+    title: '1.14 Connecting Infinite Limits and Vertical Asymptotes',
+    description: 'Asymptotes',
+    estimatedMinutes: 15,
+    content: '',
+    description2: "This chapter establishes the link between infinite limits and vertical asymptotes. Students learn that if a limit approaches infinity as x approaches a number, the graph has a vertical asymptote there. The lesson involves analyzing rational functions where the denominator is zero but the numerator is not. Students practice writing limit statements to justify the existence of asymptotes, a required skill for the AP exam."
+  },
+  {
+    id: '1.15',
+    title: '1.15 Connecting Limits at Infinity and Horizontal Asymptotes',
+    description: 'End Behavior',
+    estimatedMinutes: 15,
+    content: '',
+    description2: "This chapter focuses on end behavior, examining limits as x approaches positive or negative infinity. Students learn that these limits determine horizontal asymptotes. The lesson covers techniques for comparing growth rates of numerator and denominator terms (dominant terms) to quickly evaluate limits at infinity. This global view of functions complements the local view provided by derivatives."
+  },
+  {
+    id: '1.16',
+    title: '1.16 Working with the Intermediate Value Theorem',
+    description: 'IVT',
+    estimatedMinutes: 15,
+    content: '',
+    description2: "This chapter introduces the Intermediate Value Theorem (IVT), an existence theorem that guarantees a function takes on every value between two endpoints if it is continuous. Students learn the precise conditions required to apply IVT (continuity on a closed interval) and how to construct a justification statement. The lesson emphasizes that IVT guarantees a solution exists but does not find it."
+  }
 ];
 
 // Unit 2: Differentiation: Definition and Fundamental Properties
@@ -158,16 +271,21 @@ const UNIT6_SUBTOPICS_COMMON = [
 ];
 
 const UNIT6_BC_ONLY_PART = [
-  { id: '6.11', title: '6.11 (BC ONLY) Using Integration by Parts', description: 'Integration by Parts', estimatedMinutes: 20, content: '' },
-  { id: '6.12', title: '6.12 (BC ONLY) Integrating Using Linear Partial Fractions', description: 'Partial Fractions', estimatedMinutes: 20, content: '' },
-  { id: '6.13', title: '6.13 (BC ONLY) Evaluating Improper Integrals', description: 'Improper Integrals', estimatedMinutes: 20, content: '' },
+  { id: '6.11', title: '6.11 (BC ONLY) Using Integration by Parts', description: 'Integration by Parts', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const },
+  { id: '6.12', title: '6.12 (BC ONLY) Integrating Using Linear Partial Fractions', description: 'Partial Fractions', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const },
+  { id: '6.13', title: '6.13 (BC ONLY) Evaluating Improper Integrals', description: 'Improper Integrals', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const },
 ];
 
 const UNIT6_COMMON_END = [
   { id: '6.14', title: '6.14 Selecting Techniques for Antidifferentiation', description: 'Selecting Techniques', estimatedMinutes: 20, content: '' }
 ];
 
-const UNIT6_SUBTOPICS_AB = [...UNIT6_SUBTOPICS_COMMON, ...UNIT6_COMMON_END];
+// Special mapping for AB: Uses ID 6.14 (shared content) but displays as 6.11
+const UNIT6_AB_END = [
+  { id: '6.14', title: '6.11 Selecting Techniques for Antidifferentiation', description: 'Selecting Techniques', estimatedMinutes: 20, content: '' }
+];
+
+const UNIT6_SUBTOPICS_AB = [...UNIT6_SUBTOPICS_COMMON, ...UNIT6_AB_END];
 const UNIT6_SUBTOPICS_BC = [...UNIT6_SUBTOPICS_COMMON, ...UNIT6_BC_ONLY_PART, ...UNIT6_COMMON_END];
 
 
@@ -180,7 +298,7 @@ const UNIT7_COMMON_PART_1 = [
 ];
 
 const UNIT7_BC_ONLY_PART_1 = [
-  { id: '7.5', title: '7.5 (BC ONLY) Approximating Solutions Using Euler’s Method', description: 'Euler Method', estimatedMinutes: 20, content: '' }
+  { id: '7.5', title: '7.5 (BC ONLY) Approximating Solutions Using Euler’s Method', description: 'Euler Method', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const }
 ];
 
 const UNIT7_COMMON_PART_2 = [
@@ -190,7 +308,7 @@ const UNIT7_COMMON_PART_2 = [
 ];
 
 const UNIT7_BC_ONLY_PART_2 = [
-  { id: '7.9', title: '7.9 (BC ONLY) Logistic Models with Differential Equations', description: 'Logistic Models', estimatedMinutes: 20, content: '' }
+  { id: '7.9', title: '7.9 (BC ONLY) Logistic Models with Differential Equations', description: 'Logistic Models', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const }
 ];
 
 const UNIT7_SUBTOPICS_AB = [...UNIT7_COMMON_PART_1, ...UNIT7_COMMON_PART_2];
@@ -213,7 +331,7 @@ const UNIT8_COMMON = [
 ];
 
 const UNIT8_BC_ONLY = [
-  { id: '8.13', title: '8.13 (BC ONLY) The Arc Length of a Smooth, Planar Curve and Distance Traveled', description: 'Arc Length', estimatedMinutes: 20, content: '' }
+  { id: '8.13', title: '8.13 (BC ONLY) The Arc Length of a Smooth, Planar Curve and Distance Traveled', description: 'Arc Length', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const }
 ];
 
 const UNIT8_SUBTOPICS_AB = [...UNIT8_COMMON];
@@ -221,15 +339,15 @@ const UNIT8_SUBTOPICS_BC = [...UNIT8_COMMON, ...UNIT8_BC_ONLY];
 
 // Unit 9: Parametric, Polar, and Vector-Valued Functions (BC ONLY)
 const UNIT9_SUBTOPICS_BC = [
-  { id: '9.1', title: '9.1 (BC ONLY) Defining and Differentiating Parametric Equations', description: 'Parametric Derivs', estimatedMinutes: 20, content: '' },
-  { id: '9.2', title: '9.2 (BC ONLY) Second Derivatives of Parametric Equations', description: 'Parametric 2nd Deriv', estimatedMinutes: 20, content: '' },
-  { id: '9.3', title: '9.3 (BC ONLY) Finding Arc Lengths of Curves Given by Parametric Equations', description: 'Parametric Arc Length', estimatedMinutes: 15, content: '' },
-  { id: '9.4', title: '9.4 (BC ONLY) Defining and Differentiating Vector-Valued Functions', description: 'Vector Derivs', estimatedMinutes: 15, content: '' },
-  { id: '9.5', title: '9.5 (BC ONLY) Integrating Vector-Valued Functions', description: 'Vector Int', estimatedMinutes: 15, content: '' },
-  { id: '9.6', title: '9.6 (BC ONLY) Solving Motion Problems Using Parametric and Vector-Valued Functions', description: 'Vector Motion', estimatedMinutes: 20, content: '' },
-  { id: '9.7', title: '9.7 (BC ONLY) Defining Polar Coordinates and Differentiating in Polar Form', description: 'Polar Derivs', estimatedMinutes: 20, content: '' },
-  { id: '9.8', title: '9.8 (BC ONLY) Finding the Area of a Polar Region or the Area Bounded by a Single Polar Curve', description: 'Polar Area', estimatedMinutes: 20, content: '' },
-  { id: '9.9', title: '9.9 (BC ONLY) Finding the Area of the Region Bounded by Two Polar Curves', description: 'Area Between Polar', estimatedMinutes: 20, content: '' }
+  { id: '9.1', title: '9.1 (BC ONLY) Defining and Differentiating Parametric Equations', description: 'Parametric Derivs', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const },
+  { id: '9.2', title: '9.2 (BC ONLY) Second Derivatives of Parametric Equations', description: 'Parametric 2nd Deriv', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const },
+  { id: '9.3', title: '9.3 (BC ONLY) Finding Arc Lengths of Curves Given by Parametric Equations', description: 'Parametric Arc Length', estimatedMinutes: 15, content: '', courseScope: 'bc_only' as const },
+  { id: '9.4', title: '9.4 (BC ONLY) Defining and Differentiating Vector-Valued Functions', description: 'Vector Derivs', estimatedMinutes: 15, content: '', courseScope: 'bc_only' as const },
+  { id: '9.5', title: '9.5 (BC ONLY) Integrating Vector-Valued Functions', description: 'Vector Int', estimatedMinutes: 15, content: '', courseScope: 'bc_only' as const },
+  { id: '9.6', title: '9.6 (BC ONLY) Solving Motion Problems Using Parametric and Vector-Valued Functions', description: 'Vector Motion', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const },
+  { id: '9.7', title: '9.7 (BC ONLY) Defining Polar Coordinates and Differentiating in Polar Form', description: 'Polar Derivs', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const },
+  { id: '9.8', title: '9.8 (BC ONLY) Finding the Area of a Polar Region or the Area Bounded by a Single Polar Curve', description: 'Polar Area', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const },
+  { id: '9.9', title: '9.9 (BC ONLY) Finding the Area of the Region Bounded by Two Polar Curves', description: 'Area Between Polar', estimatedMinutes: 20, content: '', courseScope: 'bc_only' as const }
 ];
 
 // Unit 10: Infinite Sequences and Series (BC ONLY)
@@ -256,24 +374,24 @@ const UNIT10_SUBTOPICS_BC = [
 // Used by Course Navigator (Dashboard/Sidebar)
 export const COURSE_TOPICS: Record<CourseType, { id: string; subject: string; count: number }[]> = {
   AB: [
-    { id: 'ABBC_Limits', subject: 'Unit 1: Limits and Continuity', count: 0 },
-    { id: 'ABBC_Derivatives', subject: 'Unit 2: Differentiation: Definition and Fundamental Properties', count: 0 },
-    { id: 'ABBC_Composite', subject: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', count: 0 },
-    { id: 'ABBC_Applications', subject: 'Unit 4: Contextual Applications of Differentiation', count: 0 },
-    { id: 'ABBC_Analytical', subject: 'Unit 5: Analytical Applications of Differentiation', count: 0 },
-    { id: 'ABBC_Integration', subject: 'Unit 6: Integration and Accumulation of Change', count: 0 },
-    { id: 'ABBC_DiffEq', subject: 'Unit 7: Differential Equations', count: 0 },
-    { id: 'ABBC_AppIntegration', subject: 'Unit 8: Applications of Integration', count: 0 },
+    { id: 'Both_Limits', subject: 'Unit 1: Limits and Continuity', count: 0 },
+    { id: 'Both_Derivatives', subject: 'Unit 2: Differentiation: Definition and Fundamental Properties', count: 0 },
+    { id: 'Both_Composite', subject: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', count: 0 },
+    { id: 'Both_Applications', subject: 'Unit 4: Contextual Applications of Differentiation', count: 0 },
+    { id: 'Both_Analytical', subject: 'Unit 5: Analytical Applications of Differentiation', count: 0 },
+    { id: 'Both_Integration', subject: 'Unit 6: Integration and Accumulation of Change', count: 0 },
+    { id: 'Both_DiffEq', subject: 'Unit 7: Differential Equations', count: 0 },
+    { id: 'Both_AppIntegration', subject: 'Unit 8: Applications of Integration', count: 0 },
   ],
   BC: [
-    { id: 'ABBC_Limits', subject: 'Unit 1: Limits and Continuity', count: 0 },
-    { id: 'ABBC_Derivatives', subject: 'Unit 2: Differentiation: Definition and Fundamental Properties', count: 0 },
-    { id: 'ABBC_Composite', subject: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', count: 0 },
-    { id: 'ABBC_Applications', subject: 'Unit 4: Contextual Applications of Differentiation', count: 0 },
-    { id: 'ABBC_Analytical', subject: 'Unit 5: Analytical Applications of Differentiation', count: 0 },
-    { id: 'ABBC_Integration', subject: 'Unit 6: Integration and Accumulation of Change', count: 0 },
-    { id: 'ABBC_DiffEq', subject: 'Unit 7: Differential Equations', count: 0 },
-    { id: 'ABBC_AppIntegration', subject: 'Unit 8: Applications of Integration', count: 0 },
+    { id: 'Both_Limits', subject: 'Unit 1: Limits and Continuity', count: 0 },
+    { id: 'Both_Derivatives', subject: 'Unit 2: Differentiation: Definition and Fundamental Properties', count: 0 },
+    { id: 'Both_Composite', subject: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', count: 0 },
+    { id: 'Both_Applications', subject: 'Unit 4: Contextual Applications of Differentiation', count: 0 },
+    { id: 'Both_Analytical', subject: 'Unit 5: Analytical Applications of Differentiation', count: 0 },
+    { id: 'Both_Integration', subject: 'Unit 6: Integration and Accumulation of Change', count: 0 },
+    { id: 'Both_DiffEq', subject: 'Unit 7: Differential Equations', count: 0 },
+    { id: 'Both_AppIntegration', subject: 'Unit 8: Applications of Integration', count: 0 },
     { id: 'BC_Unit9', subject: 'Unit 9: Parametric Equations, Polar Coordinates, and Vector-Valued Functions', count: 0 },
     { id: 'BC_Series', subject: 'Unit 10: Infinite Sequences and Series', count: 0 },
   ]
@@ -282,18 +400,18 @@ export const COURSE_TOPICS: Record<CourseType, { id: string; subject: string; co
 // Used by TopicDetail and QuestionCreator to populate subtopics
 // Used by TopicDetail and QuestionCreator to populate subtopics
 export const COURSE_CONTENT_DATA: Record<string, UnitContent> = {
-  // SHARED Mappings (ABBC)
-  'ABBC_Limits': { id: 'ABBC_Limits', title: 'Unit 1: Limits and Continuity', description: 'Limits and Continuity', subTopics: UNIT1_SUBTOPICS },
-  'ABBC_Derivatives': { id: 'ABBC_Derivatives', title: 'Unit 2: Differentiation: Definition and Fundamental Properties', description: 'Differentiation Definition', subTopics: UNIT2_SUBTOPICS },
-  'ABBC_Composite': { id: 'ABBC_Composite', title: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', description: 'Composite Functions', subTopics: UNIT3_SUBTOPICS },
-  'ABBC_Applications': { id: 'ABBC_Applications', title: 'Unit 4: Contextual Applications of Differentiation', description: 'Contextual Applications', subTopics: UNIT4_SUBTOPICS },
-  'ABBC_Analytical': { id: 'ABBC_Analytical', title: 'Unit 5: Analytical Applications of Differentiation', description: 'Analytical Applications', subTopics: UNIT5_SUBTOPICS },
+  // SHARED Mappings (Both)
+  'Both_Limits': { id: 'Both_Limits', title: 'Unit 1: Limits and Continuity', description: 'Limits and Continuity', subTopics: UNIT1_SUBTOPICS },
+  'Both_Derivatives': { id: 'Both_Derivatives', title: 'Unit 2: Differentiation: Definition and Fundamental Properties', description: 'Differentiation Definition', subTopics: UNIT2_SUBTOPICS },
+  'Both_Composite': { id: 'Both_Composite', title: 'Unit 3: Differentiation: Composite, Implicit, and Inverse Functions', description: 'Composite Functions', subTopics: UNIT3_SUBTOPICS },
+  'Both_Applications': { id: 'Both_Applications', title: 'Unit 4: Contextual Applications of Differentiation', description: 'Contextual Applications', subTopics: UNIT4_SUBTOPICS },
+  'Both_Analytical': { id: 'Both_Analytical', title: 'Unit 5: Analytical Applications of Differentiation', description: 'Analytical Applications', subTopics: UNIT5_SUBTOPICS },
   // NOTE: Integration, DiffEq, AppIntegration have mixed content. 
   // We point them to the BC superset in constants for now, but UI should filter based on scope if using DB.
   // Actually, let's use the BC superset (Logic: Contains everything) and rely on UI to hide unmatched scope.
-  'ABBC_Integration': { id: 'ABBC_Integration', title: 'Unit 6: Integration and Accumulation of Change', description: 'Integration and Accumulation of Change', subTopics: UNIT6_SUBTOPICS_BC },
-  'ABBC_DiffEq': { id: 'ABBC_DiffEq', title: 'Unit 7: Differential Equations', description: 'Differential Equations', subTopics: UNIT7_SUBTOPICS_BC },
-  'ABBC_AppIntegration': { id: 'ABBC_AppIntegration', title: 'Unit 8: Applications of Integration', description: 'Applications of Integration', subTopics: UNIT8_SUBTOPICS_BC },
+  'Both_Integration': { id: 'Both_Integration', title: 'Unit 6: Integration and Accumulation of Change', description: 'Integration and Accumulation of Change', subTopics: UNIT6_SUBTOPICS_BC },
+  'Both_DiffEq': { id: 'Both_DiffEq', title: 'Unit 7: Differential Equations', description: 'Differential Equations', subTopics: UNIT7_SUBTOPICS_BC },
+  'Both_AppIntegration': { id: 'Both_AppIntegration', title: 'Unit 8: Applications of Integration', description: 'Applications of Integration', subTopics: UNIT8_SUBTOPICS_BC },
 
   // BC Only Mappings (Unit 9/10)
   'BC_Unit9': { id: 'BC_Unit9', title: 'Unit 9: Parametric Equations, Polar Coordinates, and Vector-Valued Functions', description: 'Parametric/Polar/Vector', subTopics: UNIT9_SUBTOPICS_BC },

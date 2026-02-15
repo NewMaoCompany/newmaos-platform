@@ -1,0 +1,121 @@
+-- =====================================================
+-- Unit 6 Skills and Error Tags (Comprehensive Sync)
+-- Target Unit: Both_Integration
+-- =====================================================
+
+
+
+-- 1. Insert/Update Skills
+INSERT INTO public.skills (id, name, unit, prerequisites) VALUES
+('accumulation_concept', 'Accumulation of Change (Net vs Total Change)', 'Both_Integration', '{}'),
+('area_under_curve_interpretation', 'Interpreting Area Under a Rate Graph', 'Both_Integration', '{"accumulation_concept"}'),
+('riemann_sum_setup', 'Riemann Sum Setup (Δx, Subintervals)', 'Both_Integration', '{}'),
+('riemann_sum_approximation', 'Approximating Definite Integrals with Riemann Sums', 'Both_Integration', '{"riemann_sum_setup"}'),
+('riemann_sum_from_table', 'Riemann Sums from Tables/Data', 'Both_Integration', '{"riemann_sum_setup"}'),
+('riemann_sum_from_graph', 'Riemann Sums from Graphs', 'Both_Integration', '{"riemann_sum_setup"}'),
+('summation_notation_sigma', 'Summation Notation (Sigma) Interpretation', 'Both_Integration', '{}'),
+('definite_integral_notation', 'Definite Integral Notation (Bounds, Meaning)', 'Both_Integration', '{"summation_notation_sigma"}'),
+('link_riemann_to_integral', 'Connecting Riemann Sums to Definite Integral', 'Both_Integration', '{"riemann_sum_setup"}'),
+('ftc1_accumulation_function', 'FTC Part 1 (Accumulation Function)', 'Both_Integration', '{"definite_integral_notation"}'),
+('accumulation_from_variable_limit', 'Derivative of Accumulation Function', 'Both_Integration', '{"ftc1_accumulation_function"}'),
+('accumulation_behavior_analysis', 'Behavior of Accumulation Functions', 'Both_Integration', '{"accumulation_from_variable_limit"}'),
+('integral_properties_basic', 'Properties of Definite Integrals', 'Both_Integration', '{"definite_integral_notation"}'),
+('integral_symmetry_even_odd', 'Symmetry with Even/Odd Integrands', 'Both_Integration', '{"integral_properties_basic"}'),
+('integral_total_vs_net_area', 'Net Area vs Total Area', 'Both_Integration', '{"area_under_curve_interpretation"}'),
+('ftc2_evaluate_integral', 'FTC Part 2 (Evaluate via Antiderivative)', 'Both_Integration', '{"definite_integral_notation"}'),
+('antiderivative_basic_rules', 'Finding Antiderivatives (Basic Rules)', 'Both_Integration', '{}'),
+('indefinite_integral_notation', 'Indefinite Integrals', 'Both_Integration', '{"antiderivative_basic_rules"}'),
+('u_substitution_setup', 'u-Substitution Setup', 'Both_Integration', '{"antiderivative_basic_rules"}'),
+('u_substitution_limits', 'u-Substitution with Definite Integrals', 'Both_Integration', '{"u_substitution_setup"}'),
+('algebraic_prep_long_division', 'Algebraic Prep: Long Division', 'Both_Integration', '{"antiderivative_basic_rules"}'),
+('algebraic_prep_complete_square', 'Algebraic Prep: Completing the Square', 'Both_Integration', '{"antiderivative_basic_rules"}'),
+('technique_selection_antidiff', 'Selecting Techniques for Antidifferentiation', 'Both_Integration', '{"u_substitution_setup"}'),
+('units_and_context_integrals', 'Interpreting Integral Results in Context', 'Both_Integration', '{"area_under_curve_interpretation"}'),
+-- Missing practice skill IDs
+('area_as_integral_from_graph', 'Area as Definite Integral from Graph', 'Both_Integration', '{"definite_integral_notation"}'),
+('riemann_sum_interpretation', 'Interpreting Riemann Sum Limits', 'Both_Integration', '{"riemann_sum_setup"}'),
+('ftc1_derivative_of_accumulation', 'Derivative of Accumulation Function (FTC1)', 'Both_Integration', '{"ftc1_accumulation_function"}'),
+('ftc1_chain_inside', 'FTC1 with Chain Rule', 'Both_Integration', '{"ftc1_derivative_of_accumulation"}'),
+('recover_f_from_accumulation_graph', 'Recovering f from Accumulation Graph', 'Both_Integration', '{"ftc1_accumulation_function"}'),
+('net_change_from_integral', 'Net Change from Definite Integral', 'Both_Integration', '{"definite_integral_notation"}'),
+('accumulation_from_table_trapezoid', 'Accumulation from Table (Trapezoidal)', 'Both_Integration', '{"riemann_sum_from_table"}'),
+('method_selection_unit6', 'Method Selection for Integration Problems', 'Both_Integration', '{}'),
+-- Missing unit test skill IDs
+('area_vs_net_change', 'Area vs Net Change Comparison', 'Both_Integration', '{"accumulation_concept"}'),
+('velocity_position_net_change', 'Velocity/Position Net Change', 'Both_Integration', '{"accumulation_concept"}'),
+('riemann_from_table', 'Riemann Sums from TableData', 'Both_Integration', '{"riemann_sum_setup"}'),
+('riemann_left_right_mid', 'Left/Right/Midpoint Riemann Sums', 'Both_Integration', '{"riemann_sum_setup"}'),
+('riemann_trap_rule', 'Trapezoidal Rule Approximation', 'Both_Integration', '{"riemann_sum_setup"}'),
+('def_integral_as_limit', 'Definite Integral as Limit of Riemann Sum', 'Both_Integration', '{"link_riemann_to_integral"}'),
+('sigma_notation', 'Sigma Notation for Riemann Sums', 'Both_Integration', '{}'),
+('integral_properties', 'Integral Properties (Linearity/Additivity)', 'Both_Integration', '{"definite_integral_notation"}'),
+('integral_additivity', 'Integral Additivity Property', 'Both_Integration', '{"integral_properties"}'),
+('ftc2_eval_def_integral', 'FTC2: Evaluating Definite Integrals', 'Both_Integration', '{"ftc2_evaluate_integral"}'),
+('u_substitution', 'Integration by u-Substitution', 'Both_Integration', '{"u_substitution_setup"}'),
+('choose_integration_technique', 'Choosing Integration Technique', 'Both_Integration', '{"technique_selection_antidiff"}'),
+('u_sub_definite_bounds', 'u-Sub with Definite Integral Bounds', 'Both_Integration', '{"u_substitution_limits"}'),
+('long_division_rational', 'Rational Integration via Long Division', 'Both_Integration', '{"algebraic_prep_long_division"}'),
+('complete_square_prep', 'Integration Prep via Completing Square', 'Both_Integration', '{"algebraic_prep_complete_square"}'),
+('algebraic_prep_integrals', 'Algebraic Prep for Integrals', 'Both_Integration', '{}'),
+('avg_value_from_integral', 'Average Value of Function', 'Both_Integration', '{"definite_integral_notation"}'),
+('integral_symmetry', 'Integral Symmetry Properties', 'Both_Integration', '{"integral_symmetry_even_odd"}'),
+('ftc1_chain_rule', 'FTC1 with Chain Rule (Advanced)', 'Both_Integration', '{"ftc1_chain_inside"}'),
+('accumulation_function_derivative', 'Derivative of Accumulation Function (General)', 'Both_Integration', '{"accumulation_from_variable_limit"}'),
+('integral_comparison_bounds', 'Integral Comparison and Bounds', 'Both_Integration', '{"definite_integral_notation"}'),
+('units_interpretation_integrals', 'Units Interpretation in Integrals', 'Both_Integration', '{"units_and_context_integrals"}'),
+('accumulation_function_behavior', 'Accumulation Function Behavior', 'Both_Integration', '{"accumulation_behavior_analysis"}')
+ON CONFLICT (id) DO UPDATE SET
+    name = EXCLUDED.name,
+    unit = EXCLUDED.unit,
+    prerequisites = EXCLUDED.prerequisites;
+
+-- 2. Insert/Update Error Tags
+INSERT INTO public.error_tags (id, name, category, severity, unit) VALUES
+('net_vs_total_change_confusion', 'Net vs Total Change Confusion', 'Accumulation', 3, 'Both_Integration'),
+('area_sign_misread', 'Area Sign Misread', 'Accumulation', 3, 'Both_Integration'),
+('units_not_interpreted', 'Units Not Interpreted', 'Context', 3, 'Both_Integration'),
+('delta_x_wrong', 'Delta x Wrong', 'Riemann Sums', 4, 'Both_Integration'),
+('sample_point_wrong', 'Sample Point Wrong', 'Riemann Sums', 3, 'Both_Integration'),
+('table_interval_misuse', 'Table Interval Misuse', 'Riemann Sums', 4, 'Both_Integration'),
+('sigma_expression_mismatch', 'Sigma Expression Mismatch', 'Sigma Notation', 4, 'Both_Integration'),
+('sigma_index_error', 'Sigma Index Error', 'Sigma Notation', 3, 'Both_Integration'),
+('bounds_swap_error', 'Bounds Swap Error', 'Integral Properties', 3, 'Both_Integration'),
+('area_sign_mistake', 'Area Sign Mistake', 'Integral Properties', 3, 'Both_Integration'),
+('wrong_method_choice_unit6', 'Wrong Method Choice (Unit 6)', 'Strategy', 3, 'Both_Integration'),
+('ftc_sign_error', 'FTC Sign Error', 'FTC', 3, 'Both_Integration'),
+('chain_rule_missing_factor', 'Chain Rule Missing Factor', 'FTC', 4, 'Both_Integration'),
+('accumulation_vs_value_confusion', 'Accumulation vs Value Confusion', 'FTC', 4, 'Both_Integration'),
+-- Missing unit test error tags
+('area_vs_net_change_confusion', 'Area vs Net Change Confusion', 'Accumulation', 3, 'Both_Integration'),
+('motion_displacement_vs_distance', 'Displacement vs Distance Confusion', 'Motion', 3, 'Both_Integration'),
+('trap_rule_formula_error', 'Trapezoidal Rule Formula Error', 'Riemann Sums', 3, 'Both_Integration'),
+('riemann_index_shift_error', 'Riemann Sum Index Shift Error', 'Riemann Sums', 3, 'Both_Integration'),
+('integral_limits_reversed', 'Integral Limits Reversed Error', 'Properties', 3, 'Both_Integration'),
+('ftc2_antiderivative_error', 'FTC2 Antiderivative Error', 'FTC', 3, 'Both_Integration'),
+('missing_constant_C', 'Missing Constant C', 'Antiderivatives', 2, 'Both_Integration'),
+('u_sub_du_missing_factor', 'u-Sub du Missing Factor', 'Substitution', 4, 'Both_Integration'),
+('u_sub_bounds_not_changed', 'u-Sub Bounds Not Changed', 'Substitution', 3, 'Both_Integration'),
+('long_division_not_done', 'Long Division Not Done', 'Algebra', 3, 'Both_Integration'),
+('avg_value_formula_wrong', 'Average Value Formula Wrong', 'Applications', 3, 'Both_Integration'),
+('integral_symmetry_misapplied', 'Integral Symmetry Misapplied', 'Properties', 3, 'Both_Integration'),
+('ftc1_derivative_missing_chain', 'FTC1 Derivative Missing Chain Rule', 'FTC', 4, 'Both_Integration'),
+('accum_behavior_sign_chart_wrong', 'Accumulation Sign Chart Error', 'Behavior', 3, 'Both_Integration'),
+('integral_property_sign_error', 'Integral Property Sign Error', 'Properties', 3, 'Both_Integration'),
+('units_missing_interpretation', 'Units Missing Interpretation', 'Context', 3, 'Both_Integration'),
+('accumulation_sign_misread', 'Accumulation Sign Misread', 'Accumulation', 3, 'Both_Integration'),
+('riemann_delta_x_wrong', 'Riemann Sum Delta x Error', 'Riemann Sums', 3, 'Both_Integration'),
+('accumulation_behavior_misread', 'Misreading Accumulation Behavior', 'Accumulation', 3, 'Both_Integration'),
+('integral_additivity_error', 'Integral Additivity Error', 'Properties', 3, 'Both_Integration'),
+('integral_bounds_reversal_error', 'Integral Bounds Reversal Error', 'Properties', 3, 'Both_Integration'),
+('symmetry_even_odd_misuse', 'Symmetry Even/Odd Misuse', 'Properties', 3, 'Both_Integration'),
+('accumulation_derivative_wrong_variable', 'Accumulation Derivative Wrong Variable', 'FTC', 4, 'Both_Integration'),
+('accumulation_chain_rule_missing', 'Accumulation Chain Rule Missing', 'FTC', 4, 'Both_Integration'),
+('power_rule_antiderivative_error', 'Power Rule Antiderivative Error', 'Antiderivatives', 3, 'Both_Integration'),
+('antiderivative_constant_missing', 'Missing Constant C', 'Antiderivatives', 2, 'Both_Integration')
+ON CONFLICT (id) DO UPDATE SET
+    name = EXCLUDED.name,
+    category = EXCLUDED.category,
+    severity = EXCLUDED.severity,
+    unit = EXCLUDED.unit;
+
+

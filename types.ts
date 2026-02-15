@@ -6,6 +6,12 @@ export interface UserPreferences {
   soundEffects: boolean;
 }
 
+export interface UserProfileStats {
+  posts: number;
+  friends: number;
+  channels: number;
+}
+
 export interface User {
   id: string; // Supabase UUID
   name: string;
@@ -19,6 +25,32 @@ export interface User {
   percentile: number; // e.g. Top 15%
   preferences: UserPreferences;
   isCreator: boolean; // RBAC Role
+  equippedTitleId?: string;
+  equippedTitle?: Title;
+  subscriptionTier?: 'basic' | 'pro';
+  subscriptionPeriodEnd?: string;
+  hasSeenProIntro?: boolean;
+  stats?: UserProfileStats;
+  bio?: string;
+  avatarColor?: string;
+  showName?: boolean;
+  showEmail?: boolean;
+  showBio?: boolean;
+}
+
+export interface Title {
+  id: string;
+  name: string;
+  description: string;
+  category: 'streak' | 'mastery_unit' | 'mastery_course' | 'social' | 'influence' | string;
+  threshold: number;
+}
+
+export interface UserTitle {
+  user_id: string;
+  title_id: string;
+  unlocked_at: string;
+  title?: Title;
 }
 
 // --- Question Engine Types ---
@@ -42,6 +74,7 @@ export interface Question {
   title: string; // User-facing name/title
   course: QuestionCourseType; // Supports 'Both' for syncing
   topic: string; // The parent Unit ID (e.g., "Limits" or "AB_Limits")
+  topicId?: string; // Unified topic identifier (e.g. BC_Series)
   subTopicId: string; // Chapter (e.g., "1.2")
   sectionId?: string; // Explicit Section ID FK (matches subTopicId usually)
 
@@ -92,7 +125,7 @@ export interface SubTopic {
   id: string;
   title: string;
   description: string;
-  description2?: string; // Detailed description or subtitle
+  description_2?: string; // Detailed description
   content: string; // Markdown-like text for the lesson
   estimatedMinutes: number;
   hasLesson?: boolean;
@@ -144,7 +177,7 @@ export interface CourseState {
   modules: CourseModule[];
 }
 
-export type SessionMode = 'Adaptive' | 'Review' | 'Random';
+export type SessionMode = 'Adaptive' | 'Review' | 'Random' | 'Summary';
 
 export interface Recommendation {
   topic: string;
@@ -160,6 +193,14 @@ export interface AppNotification {
   time: string;
   unread: boolean;
   link: string;
+  type?: string; // e.g. 'gift_claim', 'system', 'chat'
+  metadata?: any; // For flexible dynamic content
+  chatId?: string; // For direct messages
+  channelId?: string; // For forum channels
+  messageId?: string; // For deep linking to specific message
+  senderName?: string; // For conditional display
+  senderId?: string; // For friend status check
+  isAccepted?: boolean; // For friend requests persistency
 }
 
 // --- Agent Insight Types ---

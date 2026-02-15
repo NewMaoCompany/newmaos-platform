@@ -1,0 +1,468 @@
+{
+  "exportedAt": "2026-02-06T02:40:46.544Z",
+  "database": {
+    "url": "https://xzpjlnkirboevkjzitcx.supabase.co",
+    "schema": "public"
+  },
+  "tables": {
+    "sections": {
+      "name": "sections",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "topic_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "course_scope",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "estimated_minutes",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "has_lesson",
+          "type": "boolean",
+          "nullable": false
+        },
+        {
+          "name": "has_practice",
+          "type": "boolean",
+          "nullable": false
+        },
+        {
+          "name": "is_unit_test",
+          "type": "boolean",
+          "nullable": false
+        },
+        {
+          "name": "sort_order",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "nullable": false
+        },
+        {
+          "name": "description_2",
+          "type": "text",
+          "nullable": false
+        }
+      ],
+      "rowCount": 122,
+      "sampleData": {
+        "id": "Both_Limits_unit_test",
+        "topic_id": "Both_Limits",
+        "title": "Unit 1 Test",
+        "description": "",
+        "course_scope": "both",
+        "estimated_minutes": 10,
+        "has_lesson": true,
+        "has_practice": true,
+        "is_unit_test": true,
+        "sort_order": 0,
+        "created_at": "2026-01-29T21:06:13.523411+00:00",
+        "updated_at": "2026-01-31T19:42:27.29935+00:00",
+        "description_2": "This is the comprehensive Unit 1 Test. It covers limits, continuity, and the definition of the derivative. Expect problems requiring algebraic manipulation of limits, Squeeze Theorem application, and Intermediate Value Theorem justification."
+      }
+    },
+    "questions": {
+      "name": "questions",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false
+        },
+        {
+          "name": "course",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "topic",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "sub_topic_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "type",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "calculator_allowed",
+          "type": "boolean",
+          "nullable": false
+        },
+        {
+          "name": "difficulty",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "target_time_seconds",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "skill_tags",
+          "type": "array",
+          "nullable": false
+        },
+        {
+          "name": "error_tags",
+          "type": "array",
+          "nullable": false
+        },
+        {
+          "name": "prompt",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "latex",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "options",
+          "type": "array",
+          "nullable": false
+        },
+        {
+          "name": "correct_option_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "tolerance",
+          "type": "numeric",
+          "nullable": false
+        },
+        {
+          "name": "explanation",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "micro_explanations",
+          "type": "jsonb",
+          "nullable": false
+        },
+        {
+          "name": "recommendation_reasons",
+          "type": "array",
+          "nullable": false
+        },
+        {
+          "name": "created_by",
+          "type": "null",
+          "nullable": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "version",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "reasoning_level",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "mastery_weight",
+          "type": "numeric",
+          "nullable": false
+        },
+        {
+          "name": "representation_type",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "topic_id",
+          "type": "null",
+          "nullable": true
+        },
+        {
+          "name": "section_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "source",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "source_year",
+          "type": "integer",
+          "nullable": false
+        },
+        {
+          "name": "notes",
+          "type": "null",
+          "nullable": true
+        },
+        {
+          "name": "weight_primary",
+          "type": "numeric",
+          "nullable": false
+        },
+        {
+          "name": "weight_supporting",
+          "type": "numeric",
+          "nullable": false
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "prompt_type",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "primary_skill_id",
+          "type": "text",
+          "nullable": false
+        },
+        {
+          "name": "supporting_skill_ids",
+          "type": "array",
+          "nullable": false
+        }
+      ],
+      "rowCount": 755,
+      "sampleData": {
+        "id": "c351da6f-a1c7-4cc5-aa9f-efed76b3930b",
+        "course": "Both",
+        "topic": "Both_Limits",
+        "sub_topic_id": "1.14",
+        "type": "MCQ",
+        "calculator_allowed": false,
+        "difficulty": 5,
+        "target_time_seconds": 140,
+        "skill_tags": [
+          "infinite_limits_asymptotes",
+          "limit_notation"
+        ],
+        "error_tags": [
+          "notation_misread"
+        ],
+        "prompt": "Which statement correctly interprets $\\lim_{x\\to 3^-} f(x)=-\\infty$?",
+        "latex": "Which statement correctly interprets $\\lim_{x\\to 3^-} f(x)=-\\infty$?",
+        "options": [
+          {
+            "id": "A",
+            "type": "text",
+            "label": "A",
+            "value": "As $x$ approaches 3 from the left, $f(x)$ decreases without bound.",
+            "explanation": "Correct: left-hand approach and values go down without bound."
+          },
+          {
+            "id": "B",
+            "type": "text",
+            "label": "B",
+            "value": "As $x$ approaches 3 from the right, $f(x)$ decreases without bound.",
+            "explanation": "This incorrectly uses the right-hand side."
+          },
+          {
+            "id": "C",
+            "type": "text",
+            "label": "C",
+            "value": "As $x$ approaches 3 from the left, $f(x)$ approaches 0.",
+            "explanation": "The limit is infinite, not zero."
+          },
+          {
+            "id": "D",
+            "type": "text",
+            "label": "D",
+            "value": "As $x$ approaches 3, $f(3)$ must be undefined.",
+            "explanation": "While true for the graph, this is not what the limit statement says."
+          }
+        ],
+        "correct_option_id": "A",
+        "tolerance": 0.001,
+        "explanation": "The notation $x\\to 3^$- means approaching 3 from values less than 3, and -$\\infty$ means the function values decrease without bound.",
+        "micro_explanations": {
+          "A": "Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.",
+          "B": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).",
+          "C": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).",
+          "D": "Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point)."
+        },
+        "recommendation_reasons": [
+          "infinite_limits_asymptotes"
+        ],
+        "created_by": null,
+        "created_at": "2026-01-25T22:36:53.242986+00:00",
+        "updated_at": "2026-02-01T02:30:30.035927+00:00",
+        "status": "published",
+        "version": 1,
+        "reasoning_level": 5,
+        "mastery_weight": 1.4,
+        "representation_type": "symbolic",
+        "topic_id": null,
+        "section_id": "1.14",
+        "source": "NewMaoS",
+        "source_year": 2026,
+        "notes": null,
+        "weight_primary": 0.9,
+        "weight_supporting": 0.1,
+        "title": "1.14-P5",
+        "prompt_type": "text",
+        "primary_skill_id": "infinite_limits_asymptotes",
+        "supporting_skill_ids": [
+          "limit_notation"
+        ]
+      }
+    },
+    "skills": {
+      "name": "skills",
+      "columns": [],
+      "rowCount": 0,
+      "sampleData": null
+    },
+    "error_tags": {
+      "name": "error_tags",
+      "columns": [],
+      "rowCount": 0,
+      "sampleData": null
+    },
+    "question_skills": {
+      "name": "question_skills",
+      "columns": [],
+      "rowCount": 0,
+      "sampleData": null
+    },
+    "user_section_progress": {
+      "name": "user_section_progress",
+      "columns": [],
+      "rowCount": 0,
+      "sampleData": null
+    },
+    "question_attempts": {
+      "name": "question_attempts",
+      "columns": [],
+      "rowCount": 0,
+      "sampleData": null
+    },
+    "user_stats": {
+      "name": "user_stats",
+      "columns": [],
+      "rowCount": 0,
+      "sampleData": null
+    },
+    "recommendations": {
+      "name": "recommendations",
+      "columns": [],
+      "rowCount": 0,
+      "sampleData": null
+    },
+    "forum_channels": {
+      "name": "forum_channels",
+      "columns": [],
+      "rowCount": 0,
+      "sampleData": null
+    },
+    "forum_messages": {
+      "name": "forum_messages",
+      "columns": [],
+      "rowCount": 0,
+      "sampleData": null
+    }
+  },
+  "views": {},
+  "functions": {
+    "get_user_stats": {
+      "name": "get_user_stats",
+      "exists": false,
+      "signature": "(需要查看migrations了解完整签名)"
+    },
+    "get_radar_data": {
+      "name": "get_radar_data",
+      "exists": false,
+      "signature": "(需要查看migrations了解完整签名)"
+    },
+    "get_daily_stats": {
+      "name": "get_daily_stats",
+      "exists": false,
+      "signature": "(需要查看migrations了解完整签名)"
+    },
+    "get_accuracy_history": {
+      "name": "get_accuracy_history",
+      "exists": true,
+      "signature": "(需要查看migrations了解完整签名)"
+    },
+    "get_recent_activities": {
+      "name": "get_recent_activities",
+      "exists": false,
+      "signature": "(需要查看migrations了解完整签名)"
+    },
+    "submit_answer": {
+      "name": "submit_answer",
+      "exists": false,
+      "signature": "(需要查看migrations了解完整签名)"
+    },
+    "complete_session": {
+      "name": "complete_session",
+      "exists": false,
+      "signature": "(需要查看migrations了解完整签名)"
+    },
+    "get_recommendations": {
+      "name": "get_recommendations",
+      "exists": false,
+      "signature": "(需要查看migrations了解完整签名)"
+    }
+  },
+  "triggers": {},
+  "policies": {},
+  "enums": {}
+}

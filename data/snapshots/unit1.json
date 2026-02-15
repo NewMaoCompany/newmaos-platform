@@ -1,0 +1,979 @@
+{
+  "timestamp": "2026-01-31T05:37:49.067Z",
+  "description": "Proposed Unit 1 Relational Data (Semantic)",
+  "skills": [
+    {
+      "id": "discontinuity_types",
+      "name": "discontinuity_types",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "limit_estimation_graph",
+      "name": "limit_estimation_graph",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "limit_laws",
+      "name": "limit_laws",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "algebraic_simplification",
+      "name": "algebraic_simplification",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "limits_at_infinity",
+      "name": "limits_at_infinity",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "infinite_limits_asymptotes",
+      "name": "infinite_limits_asymptotes",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "ivt_application",
+      "name": "ivt_application",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "continuity_concept",
+      "name": "continuity_concept",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "avg_vs_instant_rate",
+      "name": "avg_vs_instant_rate",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "limit_concept",
+      "name": "limit_concept",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "squeeze_theorem",
+      "name": "squeeze_theorem",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "derivative_definition",
+      "name": "derivative_definition",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "limit_estimation_table",
+      "name": "limit_estimation_table",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "limit_notation",
+      "name": "limit_notation",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "method_selection",
+      "name": "method_selection",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "conjugate_rationalization",
+      "name": "conjugate_rationalization",
+      "unit": "Both_Limits"
+    },
+    {
+      "id": "one_sided_from_data",
+      "name": "one_sided_from_data",
+      "unit": "Both_Limits"
+    }
+  ],
+  "error_tags": [
+    {
+      "id": "graph_jump_confusion",
+      "name": "graph_jump_confusion"
+    },
+    {
+      "id": "illegal_substitution_0over0",
+      "name": "illegal_substitution_0over0"
+    },
+    {
+      "id": "asymptote_confusion",
+      "name": "asymptote_confusion"
+    },
+    {
+      "id": "ivt_missing_continuity",
+      "name": "ivt_missing_continuity"
+    },
+    {
+      "id": "average_vs_instant",
+      "name": "average_vs_instant"
+    },
+    {
+      "id": "squeeze_bounds_incorrect",
+      "name": "squeeze_bounds_incorrect"
+    },
+    {
+      "id": "difference_quotient_wrong_limit",
+      "name": "difference_quotient_wrong_limit"
+    },
+    {
+      "id": "table_trend_misread",
+      "name": "table_trend_misread"
+    },
+    {
+      "id": "continuity_three_conditions_miss",
+      "name": "continuity_three_conditions_miss"
+    },
+    {
+      "id": "wrong_method_choice",
+      "name": "wrong_method_choice"
+    },
+    {
+      "id": "infinity_degree_mistake",
+      "name": "infinity_degree_mistake"
+    },
+    {
+      "id": "infinite_limit_meaning",
+      "name": "infinite_limit_meaning"
+    },
+    {
+      "id": "two_sided_requires_match",
+      "name": "two_sided_requires_match"
+    },
+    {
+      "id": "conjugate_setup_error",
+      "name": "conjugate_setup_error"
+    },
+    {
+      "id": "endpoint_domain_issue",
+      "name": "endpoint_domain_issue"
+    },
+    {
+      "id": "open_vs_closed_point",
+      "name": "open_vs_closed_point"
+    },
+    {
+      "id": "factor_cancel_mistake",
+      "name": "factor_cancel_mistake"
+    },
+    {
+      "id": "limit_vs_value",
+      "name": "limit_vs_value"
+    },
+    {
+      "id": "quotient_law_denominator_zero",
+      "name": "quotient_law_denominator_zero"
+    },
+    {
+      "id": "interval_continuity_confusion",
+      "name": "interval_continuity_confusion"
+    },
+    {
+      "id": "notation_misread",
+      "name": "notation_misread"
+    },
+    {
+      "id": "one_sided_from_data",
+      "name": "one_sided_from_data"
+    }
+  ],
+  "question_skills": [
+    {
+      "question_id": "0015173b-cc1a-4da5-9bd2-4c6aaeecd720",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "0015173b-cc1a-4da5-9bd2-4c6aaeecd720",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "029895ae-b361-44f1-b162-e391e6578fe0",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "029895ae-b361-44f1-b162-e391e6578fe0",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "051cdc2e-fd06-4eb2-b3b1-ba75e807a64a",
+      "skill_id": "limits_at_infinity"
+    },
+    {
+      "question_id": "051cdc2e-fd06-4eb2-b3b1-ba75e807a64a",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "09af0e9c-0e94-4178-8e99-19821f5bb9bd",
+      "skill_id": "ivt_application"
+    },
+    {
+      "question_id": "09af0e9c-0e94-4178-8e99-19821f5bb9bd",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "0d6904ae-a190-4330-bed2-615431a5bc48",
+      "skill_id": "avg_vs_instant_rate"
+    },
+    {
+      "question_id": "0d6904ae-a190-4330-bed2-615431a5bc48",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "0f685f6a-9fcd-4555-afd2-03d2b1a2e899",
+      "skill_id": "squeeze_theorem"
+    },
+    {
+      "question_id": "0f685f6a-9fcd-4555-afd2-03d2b1a2e899",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "11ae027c-0215-4834-aa74-0e88e3ca6b6b",
+      "skill_id": "derivative_definition"
+    },
+    {
+      "question_id": "11ae027c-0215-4834-aa74-0e88e3ca6b6b",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "140e8637-cefb-4071-961f-dd01e9627f51",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "140e8637-cefb-4071-961f-dd01e9627f51",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "141ebcb4-37bf-41f0-9a6a-3c5a0c9860e3",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "141ebcb4-37bf-41f0-9a6a-3c5a0c9860e3",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "1d1df4d4-390a-4763-98ee-9a9154aa7101",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "1d1df4d4-390a-4763-98ee-9a9154aa7101",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "206da2ab-d968-47a0-b06f-a2d64a795e69",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "206da2ab-d968-47a0-b06f-a2d64a795e69",
+      "skill_id": "avg_vs_instant_rate"
+    },
+    {
+      "question_id": "26c57f87-799d-4e6a-a786-96f77b64d5c9",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "26c57f87-799d-4e6a-a786-96f77b64d5c9",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "28b9e55f-47cd-4797-b14b-127f3656400b",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "28b9e55f-47cd-4797-b14b-127f3656400b",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "34b950cd-3e01-4236-acf4-9985a39744bf",
+      "skill_id": "limits_at_infinity"
+    },
+    {
+      "question_id": "34b950cd-3e01-4236-acf4-9985a39744bf",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "3e778fee-ed46-4ce9-9957-0f98aab05d85",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "3e778fee-ed46-4ce9-9957-0f98aab05d85",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "42aacaf5-0631-49b3-ae54-46805526a3ac",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "42aacaf5-0631-49b3-ae54-46805526a3ac",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "45053b2f-bb1a-40db-ba92-8b4cb8d8b544",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "45053b2f-bb1a-40db-ba92-8b4cb8d8b544",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "4a20b9f3-7002-470a-b576-e8a4850d729c",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "4a20b9f3-7002-470a-b576-e8a4850d729c",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "4ab23ec2-7fee-4ecc-a197-8b7d7573d46d",
+      "skill_id": "conjugate_rationalization"
+    },
+    {
+      "question_id": "4ab23ec2-7fee-4ecc-a197-8b7d7573d46d",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "4b832987-d059-4273-9bd7-131e14f980f8",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "4b832987-d059-4273-9bd7-131e14f980f8",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "4be50f42-dfe8-46b0-a397-ce4bcb1d0402",
+      "skill_id": "conjugate_rationalization"
+    },
+    {
+      "question_id": "4be50f42-dfe8-46b0-a397-ce4bcb1d0402",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "4dc9f63b-711d-4eeb-9893-07dfc03a2b71",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "4dc9f63b-711d-4eeb-9893-07dfc03a2b71",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "4fcdb293-25e2-46f2-b889-0899197211c0",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "4fcdb293-25e2-46f2-b889-0899197211c0",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "51448cae-3144-4bde-b809-392cdfe4dfa2",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "51448cae-3144-4bde-b809-392cdfe4dfa2",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "517f0d4c-d735-47fc-bbac-90231c61b275",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "517f0d4c-d735-47fc-bbac-90231c61b275",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "54582b8f-de15-48cd-8f11-af7480321207",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "54582b8f-de15-48cd-8f11-af7480321207",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "5692b215-8191-4b07-be69-fcc4c13f11a2",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "5692b215-8191-4b07-be69-fcc4c13f11a2",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "5f960cac-a4ff-458c-a372-995fcb81d7f9",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "5f960cac-a4ff-458c-a372-995fcb81d7f9",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "603adacd-60af-4530-822d-09a41b3dfc9c",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "603adacd-60af-4530-822d-09a41b3dfc9c",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "6437c89c-ffff-4f06-84e7-db84847b05dd",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "657988f9-e8d7-4cea-b466-87dcff445639",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "657988f9-e8d7-4cea-b466-87dcff445639",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "6a70ff57-aff2-4d70-ad1e-1e4eabdb2f7b",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "6a70ff57-aff2-4d70-ad1e-1e4eabdb2f7b",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "6d17abb7-94c3-4b6c-8645-61f01c7c0d9d",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "6d17abb7-94c3-4b6c-8645-61f01c7c0d9d",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "6f768c3d-dd63-41ea-9c26-5eb51354e217",
+      "skill_id": "ivt_application"
+    },
+    {
+      "question_id": "6f768c3d-dd63-41ea-9c26-5eb51354e217",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "7411bef6-0477-4631-924b-b38afc3d2ecb",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "7411bef6-0477-4631-924b-b38afc3d2ecb",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "7e1b0164-2ec4-4bad-ad4e-3b65aec2534b",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "7e1b0164-2ec4-4bad-ad4e-3b65aec2534b",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "7e5e4219-1a50-4b7c-8f66-caf8a4aca5db",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "7e5e4219-1a50-4b7c-8f66-caf8a4aca5db",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "878f40cf-d90f-4112-a418-15a46a710606",
+      "skill_id": "squeeze_theorem"
+    },
+    {
+      "question_id": "878f40cf-d90f-4112-a418-15a46a710606",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "89417aeb-e2c3-4535-940c-1b4d2484e9c0",
+      "skill_id": "squeeze_theorem"
+    },
+    {
+      "question_id": "89417aeb-e2c3-4535-940c-1b4d2484e9c0",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "8a0ad35f-00a0-488e-875e-e3cc3be3279e",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "8a0ad35f-00a0-488e-875e-e3cc3be3279e",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "8a284217-7c14-4f3b-876f-f2d56e95ca85",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "8a284217-7c14-4f3b-876f-f2d56e95ca85",
+      "skill_id": "conjugate_rationalization"
+    },
+    {
+      "question_id": "8acd8514-e063-407b-8559-b87300662014",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "8acd8514-e063-407b-8559-b87300662014",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "8c4724a4-1bdf-4c88-a925-cdf2a9f9ccad",
+      "skill_id": "derivative_definition"
+    },
+    {
+      "question_id": "8c4724a4-1bdf-4c88-a925-cdf2a9f9ccad",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "8f5c5672-f562-453c-802c-d79b2c05185f",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "8f5c5672-f562-453c-802c-d79b2c05185f",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "93cff0de-5d7c-40ed-8492-2b741df23cad",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "93cff0de-5d7c-40ed-8492-2b741df23cad",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "97146b56-a7f9-43b4-a468-97e60063dc7d",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "97146b56-a7f9-43b4-a468-97e60063dc7d",
+      "skill_id": "limits_at_infinity"
+    },
+    {
+      "question_id": "9823692e-26d8-4e6d-9d33-9eeed60e4ff3",
+      "skill_id": "avg_vs_instant_rate"
+    },
+    {
+      "question_id": "9823692e-26d8-4e6d-9d33-9eeed60e4ff3",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "98fa533e-edaf-4c99-bee2-5d9df04aa0ac",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "98fa533e-edaf-4c99-bee2-5d9df04aa0ac",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "995d20ab-7ad4-4fc2-aa05-06031445ebb2",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "995d20ab-7ad4-4fc2-aa05-06031445ebb2",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "9b8a1428-e64e-4826-93cf-3167497f581d",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "9b8a1428-e64e-4826-93cf-3167497f581d",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "a2ee2cd1-6734-4fcc-8665-ec0e3d3dabd2",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "a2ee2cd1-6734-4fcc-8665-ec0e3d3dabd2",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "a3d4039d-b209-4027-9fd1-093c022401d0",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "a3d4039d-b209-4027-9fd1-093c022401d0",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "a42d9d06-35ba-410c-95ba-7f036ef1a11b",
+      "skill_id": "derivative_definition"
+    },
+    {
+      "question_id": "a42d9d06-35ba-410c-95ba-7f036ef1a11b",
+      "skill_id": "conjugate_rationalization"
+    },
+    {
+      "question_id": "a42f296d-1ba8-4e0b-a145-62988c59870c",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "a42f296d-1ba8-4e0b-a145-62988c59870c",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "a621e024-4133-4c53-aa01-043d473c67fd",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "a621e024-4133-4c53-aa01-043d473c67fd",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "a6e38b84-164f-47d8-9795-57aebf867316",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "a6e38b84-164f-47d8-9795-57aebf867316",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "aaecf8d8-17f7-446d-938e-2c6bdebacde1",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "aaecf8d8-17f7-446d-938e-2c6bdebacde1",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "ad9b29d7-485b-43d8-956c-8770a3f580c5",
+      "skill_id": "squeeze_theorem"
+    },
+    {
+      "question_id": "ad9b29d7-485b-43d8-956c-8770a3f580c5",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "adc81ac2-cfc7-4e33-b3df-345b6e79ae16",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "adc81ac2-cfc7-4e33-b3df-345b6e79ae16",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "aec34f1c-1ed9-4dd8-a80a-eae2e091722e",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "aec34f1c-1ed9-4dd8-a80a-eae2e091722e",
+      "skill_id": "limits_at_infinity"
+    },
+    {
+      "question_id": "b06360c6-c478-442e-956b-41b946d58257",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "b06360c6-c478-442e-956b-41b946d58257",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "b0fb72ce-126e-4c41-96e9-dcf4f96e3af0",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "b0fb72ce-126e-4c41-96e9-dcf4f96e3af0",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "b47292a2-5ca2-486b-af57-cabf8ff5f4fe",
+      "skill_id": "squeeze_theorem"
+    },
+    {
+      "question_id": "b47292a2-5ca2-486b-af57-cabf8ff5f4fe",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "ba9b6523-8207-4cae-8cc6-7d1955a32c07",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "ba9b6523-8207-4cae-8cc6-7d1955a32c07",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "c351da6f-a1c7-4cc5-aa9f-efed76b3930b",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "c351da6f-a1c7-4cc5-aa9f-efed76b3930b",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "c89d6f58-94bb-4419-b946-51a74f246164",
+      "skill_id": "ivt_application"
+    },
+    {
+      "question_id": "c89d6f58-94bb-4419-b946-51a74f246164",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "c9f2ebf0-c91a-48ed-af89-cb117b185b75",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "c9f2ebf0-c91a-48ed-af89-cb117b185b75",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "cb4e1f66-2fc1-4ec8-a37a-16d6371fab80",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "cb4e1f66-2fc1-4ec8-a37a-16d6371fab80",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "cb96d608-8cf3-4653-862d-037e39493960",
+      "skill_id": "avg_vs_instant_rate"
+    },
+    {
+      "question_id": "cb96d608-8cf3-4653-862d-037e39493960",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "cd685f61-7b8b-4bb8-b637-349deaf4d681",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "cd685f61-7b8b-4bb8-b637-349deaf4d681",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "ce84ec70-73b1-459c-b382-a3d6f599ab60",
+      "skill_id": "limits_at_infinity"
+    },
+    {
+      "question_id": "ce84ec70-73b1-459c-b382-a3d6f599ab60",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "d3ca74be-e13a-4e47-ad7d-137bdbdbc842",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "d3ca74be-e13a-4e47-ad7d-137bdbdbc842",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "d5394b68-91d3-431f-b00b-49be645f13fe",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "d5394b68-91d3-431f-b00b-49be645f13fe",
+      "skill_id": "infinite_limits_asymptotes"
+    },
+    {
+      "question_id": "dcfc4e82-0e48-4eba-81f2-0b0d75e0f9a4",
+      "skill_id": "limits_at_infinity"
+    },
+    {
+      "question_id": "dcfc4e82-0e48-4eba-81f2-0b0d75e0f9a4",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "ddab50a0-a3fc-4ea4-910d-0b38bf5de730",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "ddab50a0-a3fc-4ea4-910d-0b38bf5de730",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "dea4fa4e-088e-42cb-a25e-bd633e8871c3",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "dea4fa4e-088e-42cb-a25e-bd633e8871c3",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "e1e8385f-557c-49d4-bd29-b5180bf2f599",
+      "skill_id": "squeeze_theorem"
+    },
+    {
+      "question_id": "e1e8385f-557c-49d4-bd29-b5180bf2f599",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "e432e2fb-7cd6-4257-bbb4-d503e8ca9056",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "e432e2fb-7cd6-4257-bbb4-d503e8ca9056",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "e75e1786-e15d-43b8-a759-038b5d77adc5",
+      "skill_id": "ivt_application"
+    },
+    {
+      "question_id": "e75e1786-e15d-43b8-a759-038b5d77adc5",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "e8484a49-598c-464e-8765-9bba307a9337",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "e8484a49-598c-464e-8765-9bba307a9337",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "ea511a78-2b62-4d07-9573-a16f6180335a",
+      "skill_id": "conjugate_rationalization"
+    },
+    {
+      "question_id": "ea511a78-2b62-4d07-9573-a16f6180335a",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "ead92a67-4eb0-42af-8f2f-0dd065eb3f56",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "ead92a67-4eb0-42af-8f2f-0dd065eb3f56",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "ebdcf9bf-cc03-4b4e-ba2d-49dc62e535c9",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "ebdcf9bf-cc03-4b4e-ba2d-49dc62e535c9",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "ec27c3b6-dda8-4c93-909b-cdc99b1d50cb",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "ec27c3b6-dda8-4c93-909b-cdc99b1d50cb",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "ed9ed524-ace7-4e8f-831d-f9afe6fc1812",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "ed9ed524-ace7-4e8f-831d-f9afe6fc1812",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "ede9ce0c-1d22-49d6-a995-208f49ef89c3",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "ede9ce0c-1d22-49d6-a995-208f49ef89c3",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "ee05cd56-783f-48e2-b2a5-3134c3b55c37",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "ee05cd56-783f-48e2-b2a5-3134c3b55c37",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "ef4f083e-929a-4e18-8757-cd4e398e0d3c",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "ef4f083e-929a-4e18-8757-cd4e398e0d3c",
+      "skill_id": "limits_at_infinity"
+    },
+    {
+      "question_id": "f1bbd9af-c033-45d5-82bc-b45fff0e4248",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "f1bbd9af-c033-45d5-82bc-b45fff0e4248",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "f1bd14a2-40f6-419e-9d08-589c611f57bb",
+      "skill_id": "ivt_application"
+    },
+    {
+      "question_id": "f1bd14a2-40f6-419e-9d08-589c611f57bb",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "f2158552-ce7a-43c0-a13d-1da8103a5a5b",
+      "skill_id": "limits_at_infinity"
+    },
+    {
+      "question_id": "f2158552-ce7a-43c0-a13d-1da8103a5a5b",
+      "skill_id": "limit_laws"
+    },
+    {
+      "question_id": "f31cc2b4-fa53-4012-aa37-73263175e165",
+      "skill_id": "squeeze_theorem"
+    },
+    {
+      "question_id": "f31cc2b4-fa53-4012-aa37-73263175e165",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "f3ddbcd3-9929-4fd9-9fdd-065e17da100d",
+      "skill_id": "ivt_application"
+    },
+    {
+      "question_id": "f3ddbcd3-9929-4fd9-9fdd-065e17da100d",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "f60e26b6-b238-4d1c-9540-5174ebd4f98f",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "f60e26b6-b238-4d1c-9540-5174ebd4f98f",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "f625c885-89ec-4710-97bd-12c5b697f4be",
+      "skill_id": "limit_estimation_table"
+    },
+    {
+      "question_id": "f625c885-89ec-4710-97bd-12c5b697f4be",
+      "skill_id": "limit_concept"
+    },
+    {
+      "question_id": "f7736271-34ba-4f37-a844-c69297d05892",
+      "skill_id": "ivt_application"
+    },
+    {
+      "question_id": "f7736271-34ba-4f37-a844-c69297d05892",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "f7c82732-afba-4e9f-90b2-a2b9686812f1",
+      "skill_id": "algebraic_simplification"
+    },
+    {
+      "question_id": "f7c82732-afba-4e9f-90b2-a2b9686812f1",
+      "skill_id": "continuity_concept"
+    },
+    {
+      "question_id": "f974bbf4-173d-4d31-93e6-03f39cb216e6",
+      "skill_id": "limit_notation"
+    },
+    {
+      "question_id": "f974bbf4-173d-4d31-93e6-03f39cb216e6",
+      "skill_id": "method_selection"
+    },
+    {
+      "question_id": "fd68ffa8-f867-472f-b04d-7e9298e31aec",
+      "skill_id": "ivt_application"
+    },
+    {
+      "question_id": "fd68ffa8-f867-472f-b04d-7e9298e31aec",
+      "skill_id": "discontinuity_types"
+    },
+    {
+      "question_id": "ffa99911-ca73-4e4e-8871-d43eac06be80",
+      "skill_id": "limit_estimation_graph"
+    },
+    {
+      "question_id": "ffa99911-ca73-4e4e-8871-d43eac06be80",
+      "skill_id": "one_sided_from_data"
+    }
+  ]
+}
