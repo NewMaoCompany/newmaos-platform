@@ -144,9 +144,10 @@ const AppRoutes = () => {
 
   // Check if we are on any main page
   const isOnMainPage = isDashboard || isPractice || isAnalysis || isForum || isSettings;
+  const isPracticeSession = path.startsWith('/practice/session') || path.startsWith('/practice/unit/');
 
   return (
-    <div className="h-screen w-full min-w-[360px] bg-surface-light dark:bg-surface-dark overflow-x-auto overflow-y-hidden relative">
+    <div className={`h-screen w-full bg-surface-light dark:bg-surface-dark overflow-x-auto overflow-y-hidden relative ${isPracticeSession ? '' : 'min-w-[360px]'}`}>
 
 
       {/* Persistent Page Layers (Main 5) */}

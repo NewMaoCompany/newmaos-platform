@@ -1902,21 +1902,21 @@ export const Practice = () => {
                 </div>
             )}
 
-            <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border-light dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-6 py-3 lg:px-12 h-16">
-                <div className="flex items-center gap-4">
-                    <div className="size-8 flex items-center justify-center text-text-main dark:text-white bg-primary rounded-lg">
+            <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border-light dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 sm:px-6 lg:px-12 h-16 shrink-0">
+                <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
+                    <div className="size-8 flex items-center justify-center text-text-main dark:text-white bg-primary rounded-lg shrink-0">
                         <span className="material-symbols-outlined text-xl font-bold">functions</span>
                     </div>
-                    <h1 className="text-text-main dark:text-white text-lg font-bold tracking-tight">NewMaoS</h1>
+                    <h1 className="text-text-main dark:text-white text-lg font-bold tracking-tight truncate hidden sm:block">NewMaoS</h1>
                 </div>
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4 sm:gap-6 shrink-0">
                     <button onClick={handleExitRequest} className="group flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors">
                         <span className="material-symbols-outlined text-lg">logout</span>
-                        <span>Exit</span>
+                        <span className="hidden sm:inline">Exit</span>
                     </button>
-                    <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-2"></div>
+                    <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-1 sm:mx-2"></div>
                     <div
-                        className="bg-center bg-no-repeat bg-cover rounded-full size-9 ring-2 ring-transparent group-hover:ring-primary transition-all cursor-pointer"
+                        className="bg-center bg-no-repeat bg-cover rounded-full size-9 ring-2 ring-transparent group-hover:ring-primary transition-all cursor-pointer shrink-0"
                         style={{ backgroundImage: `url(${user.avatarUrl})` }}
                     ></div>
                 </div>
@@ -2076,7 +2076,7 @@ export const Practice = () => {
                                     </div>
 
                                     <div className="flex-grow overflow-y-auto">
-                                        <div className={`font-math text-text-main dark:text-gray-100 font-medium leading-relaxed ${isSubmitted ? 'text-sm' : 'text-lg md:text-xl'}`}>
+                                        <div className={`font-math text-text-main dark:text-gray-100 font-medium leading-relaxed ${isSubmitted ? 'text-sm' : 'text-lg md:text-xl'} overflow-x-auto max-w-full`}>
                                             {renderContent(question.prompt || '', question.promptType || 'text', { noBorder: true })}
                                         </div>
                                     </div>
@@ -2158,7 +2158,7 @@ export const Practice = () => {
                                                     className={`group relative flex cursor-pointer rounded-xl border ${borderClass} ${bgClass} transition-all duration-200 ${isSubmitted ? 'p-2' : 'p-4'} ${!isSubmitted && !isEliminated && 'hover:border-primary/50'}`}
                                                 >
                                                     <div className="peer sr-only"></div>
-                                                    <div className="flex items-center gap-4 relative z-10 w-full pr-8">
+                                                    <div className="flex items-center gap-4 relative z-10 w-full overflow-hidden sm:pr-8 pr-2">
                                                         {/* Eliminate Button - Right Side */}
                                                         {!isSubmitted && (
                                                             <button
@@ -2170,10 +2170,10 @@ export const Practice = () => {
                                                             </button>
                                                         )}
 
-                                                        <div className={`flex items-center justify-center rounded-full border font-bold transition-all ${isSelected || (isSubmitted && isCorrect) ? 'bg-primary border-primary text-black' : 'bg-white dark:bg-white/10 border-gray-200 dark:border-gray-700 text-gray-500'} ${isSubmitted ? 'h-5 w-5 text-xs' : 'h-8 w-8 text-sm'}`}>
+                                                        <div className={`flex items-center justify-center rounded-full border font-bold transition-all shrink-0 ${isSelected || (isSubmitted && isCorrect) ? 'bg-primary border-primary text-black' : 'bg-white dark:bg-white/10 border-gray-200 dark:border-gray-700 text-gray-500'} ${isSubmitted ? 'h-5 w-5 text-xs' : 'h-8 w-8 text-sm'}`}>
                                                             {opt.label || opt.id || String.fromCharCode(65 + idx)}
                                                         </div>
-                                                        <div className={`font-math w-full transition-all duration-500 ${textClass} ${isSubmitted ? 'text-sm' : 'text-lg'}`}>
+                                                        <div className={`font-math w-full transition-all duration-500 overflow-x-auto ${textClass} ${isSubmitted ? 'text-sm' : 'text-lg'}`}>
                                                             {renderContent(opt.value || (opt as any).text || '', opt.type, { noBorder: true })}
                                                         </div>
                                                         {isSubmitted && isCorrect && <span className="material-symbols-outlined ml-auto text-green-600">check_circle</span>}
