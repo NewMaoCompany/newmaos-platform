@@ -798,8 +798,16 @@ export const TopicDetail = () => {
                 {/* EMPTY STATE - Only show if truly empty after resolving data */}
                 {
                     (subTopics.length === 0) && (
-                        <div className="p-12 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-3xl text-center text-gray-400">
-                            No sub-topics found for this unit.
+                        <div className="p-12 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-3xl text-center text-gray-400 flex flex-col items-center justify-center gap-4">
+                            <span>No sub-topics found for this unit.</span>
+                            <div className="text-gray-500 font-mono text-xs text-left bg-gray-100 p-4 rounded max-w-lg">
+                                <strong>Debug Info (v1.0.2-fix):</strong><br />
+                                Requested ID: {unitId || 'null'} <br />
+                                Effective ID: {effectiveUnitId} <br />
+                                Keys: {Object.keys(topicContent).length} <br />
+                                Subtopics (Raw): {unitContent?.subTopics?.length || 0} <br />
+                                Current Course: {user.currentCourse}
+                            </div>
                         </div>
                     )
                 }
