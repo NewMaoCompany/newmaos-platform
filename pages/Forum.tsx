@@ -796,8 +796,8 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={onClose}>
-            <div className="bg-white dark:bg-zinc-800 rounded-3xl p-6 w-[540px] h-[640px] shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col animate-fade-in-up" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm pt-20 px-4 pb-4" onClick={onClose}>
+            <div className="bg-white dark:bg-zinc-800 rounded-3xl p-6 w-[480px] max-h-[min(480px,calc(100vh-6rem))] shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col animate-fade-in-up" onClick={e => e.stopPropagation()}>
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-black text-text-main dark:text-white flex items-center gap-2">
                         <span className="material-symbols-outlined text-primary">explore</span>
@@ -1484,7 +1484,12 @@ export const Forum = () => {
                         if (error) throw error;
 
                         showToast('Channel deleted', 'success');
-                        setChannels(prev => prev.filter(c => c.id !== channel.id));
+                        setChannels(prev => {
+                            const updated = prev.filter(c => c.id !== channel.id);
+                            localStorage.setItem('forum_channels_cache', JSON.stringify(updated));
+                            return updated;
+                        });
+                        setBrowsableChannels(prev => prev.filter(c => c.id !== channel.id));
                         setJoinedChannelIds(prev => {
                             const next = new Set(prev);
                             next.delete(channel.id);
