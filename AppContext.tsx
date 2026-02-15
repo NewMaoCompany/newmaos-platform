@@ -757,8 +757,34 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             }
 
             if (data && Object.keys(data).length > 0) {
-                setTopicContent(data);
-                console.log('✅ Content synced from backend');
+                // CRITICAL FIX: Merge backend data into static COURSE_CONTENT_DATA
+                // instead of replacing entirely. The DB topic_content table may have
+                // empty sub_topics arrays, which would wipe the static chapter definitions.
+                setTopicContent(prev => {
+                    const merged = { ...prev };
+                    Object.keys(data).forEach(topicId => {
+                        const dbTopic = data[topicId];
+                        const staticTopic = merged[topicId] || COURSE_CONTENT_DATA[topicId];
+                        if (!staticTopic) {
+                            // New topic from DB that doesn't exist in static data
+                            merged[topicId] = dbTopic;
+                            return;
+                        }
+                        merged[topicId] = {
+                            ...staticTopic,
+                            // Override title/description from DB if available
+                            title: dbTopic.title || staticTopic.title,
+                            description: dbTopic.description || staticTopic.description,
+                            unitTest: dbTopic.unitTest || staticTopic.unitTest,
+                            // ONLY override subTopics if DB actually has non-empty data
+                            subTopics: (dbTopic.subTopics && dbTopic.subTopics.length > 0)
+                                ? dbTopic.subTopics
+                                : staticTopic.subTopics || [],
+                        };
+                    });
+                    return merged;
+                });
+                console.log('✅ Content merged from backend (preserved static subTopics)');
             }
         } catch (error) {
             console.error('Failed to sync content:', error);
