@@ -278,7 +278,7 @@ export const TopicDetail = () => {
                     <span className="material-symbols-outlined text-6xl text-gray-300 mb-4">folder_off</span>
                     <h2 className="text-2xl font-bold mb-2">Unit Content Not Found</h2>
                     <p className="text-gray-500 mb-6 font-mono text-xs text-left bg-gray-100 p-4 rounded max-w-lg">
-                        <strong>Debug Info:</strong><br />
+                        <strong>Debug Info (v1.0.1-debug):</strong><br />
                         Requested ID: {unitId || 'null'} <br />
                         Effective ID: {effectiveUnitId} <br />
                         Keys: {Object.keys(topicContent).length}
