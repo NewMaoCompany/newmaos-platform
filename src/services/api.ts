@@ -4,8 +4,8 @@
  */
 
 // In production, force use of Railway backend to bypass broken Vercel env var or routing
-const API_BASE_URL = 'https://cheerful-patience-production-206d.up.railway.app/api';
-// const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// const API_BASE_URL = 'https://cheerful-patience-production-206d.up.railway.app/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
 // Helper to get auth token from Supabase session
 const getAuthToken = (): string | null => {
@@ -111,6 +111,13 @@ export const authApi = {
         });
     },
 
+    async changePassword(userId: string, currentPassword: string, newPassword: string) {
+        return apiRequest<{ success: boolean; message: string }>('/auth/change-password', {
+            method: 'POST',
+            body: JSON.stringify({ userId, currentPassword, newPassword }),
+        });
+    },
+
     async verifyCreator(password: string, userId?: string) {
         return apiRequest<{ success: boolean }>('/auth/verify-creator', {
             method: 'POST',
@@ -167,6 +174,13 @@ export const usersApi = {
         return apiRequest<any>('/users/preferences', {
             method: 'PUT',
             body: JSON.stringify(preferences),
+        });
+    },
+
+    async sendFriendRequest(identifier: string) {
+        return apiRequest<{ success: boolean; message: string }>('/users/friend-request', {
+            method: 'POST',
+            body: JSON.stringify({ identifier }),
         });
     },
 
@@ -342,7 +356,7 @@ export const notificationsApi = {
         return apiRequest<any[]>(`/notifications?limit=${limit}`);
     },
 
-    async markAsRead(id: number) {
+    async markAsRead(id: string | number) {
         return apiRequest<{ message: string }>(`/notifications/${id}/read`, {
             method: 'PUT',
         });
@@ -354,7 +368,7 @@ export const notificationsApi = {
         });
     },
 
-    async acceptFriend(notifId: number) {
+    async acceptFriend(notifId: string | number) {
         return apiRequest<{ success: boolean }>(`/notifications/${notifId}/accept-friend`, {
             method: 'POST',
         });

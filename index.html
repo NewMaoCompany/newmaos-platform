@@ -85,12 +85,15 @@
     html,
     body {
       height: 100%;
-      overflow: hidden;
+      overflow-x: auto;
+      /* Allow horizontal scrolling */
     }
 
     body {
       font-family: 'Inter', sans-serif;
       -webkit-font-smoothing: antialiased;
+      min-width: 1024px;
+      /* Force minimum desktop width */
     }
 
     /* Ensure main content areas can scroll */

@@ -150,4 +150,142 @@ router.get('/full', authMiddleware, async (req: Request, res: Response): Promise
     }
 });
 
+// POST /api/users/friend-request - Send friend request by Email or ID
+router.post('/friend-request', authMiddleware, async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.user!.id;
+        const { identifier } = req.body;
+
+        if (!identifier) {
+            res.status(400).json({ error: 'Identifier (Email or ID) is required' });
+            return;
+        }
+
+        const cleanIdentifier = identifier.trim();
+        let targetUserId: string | null = null;
+
+        // 1. Check if identifier is a valid UUID
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanIdentifier);
+
+        if (isUUID) {
+            // Check if user exists with this ID
+            const { data: user, error } = await supabaseAdmin
+                .from('user_profiles')
+                .select('id')
+                .eq('id', cleanIdentifier)
+                .single();
+
+            if (user) targetUserId = user.id;
+        }
+
+        // 2. If not found by ID (or not UUID), try Email or Name
+        if (!targetUserId) {
+            // First try strict email match
+            const { data: userByEmail, error: emailError } = await supabaseAdmin
+                .from('user_profiles')
+                .select('id')
+                .ilike('email', cleanIdentifier)
+                .single();
+
+            if (userByEmail) {
+                targetUserId = userByEmail.id;
+            } else {
+                // If not found by email, try searching by name (username)
+                // We use ilike for case-insensitive match on name
+                const { data: userByName, error: nameError } = await supabaseAdmin
+                    .from('user_profiles')
+                    .select('id')
+                    .ilike('name', cleanIdentifier)
+                    .limit(1) // Just take the first match if multiple? Or specific logic?
+                    .maybeSingle();
+
+                if (userByName) {
+                    targetUserId = userByName.id;
+                }
+            }
+
+            // Fallback: If still not found, and it looks like an email, try to find in auth.users via Admin API
+            // This handles cases where user_profiles.email might not be populated yet
+            if (!targetUserId && cleanIdentifier.includes('@')) {
+                const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+                if (users) {
+                    const foundAuthUser = users.find((u: any) => u.email?.toLowerCase() === cleanIdentifier.toLowerCase());
+                    if (foundAuthUser) targetUserId = foundAuthUser.id;
+                }
+            }
+        }
+
+        if (!targetUserId) {
+            console.log(`[FriendRequest] User not found for identifier: ${cleanIdentifier}`);
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        // 3. Prevent self-request
+        if (targetUserId === userId) {
+            res.status(400).json({ error: 'You cannot send a friend request to yourself' });
+            return;
+        }
+
+        // 4. Check if request already exists
+        const { data: existing, error: fetchError } = await supabaseAdmin
+            .from('friend_requests')
+            .select('*')
+            .or(`and(sender_id.eq.${userId},receiver_id.eq.${targetUserId}),and(sender_id.eq.${targetUserId},receiver_id.eq.${userId})`)
+            .maybeSingle();
+
+        if (fetchError) {
+            throw fetchError;
+        }
+
+        if (existing) {
+            if (existing.status === 'accepted') {
+                res.status(400).json({ error: 'You are already friends with this user' });
+            } else if (existing.status === 'pending') {
+                if (existing.sender_id === userId) {
+                    res.status(400).json({ error: 'Friend request already sent' });
+                } else {
+                    res.status(400).json({ error: 'This user has already sent you a friend request. Check your notifications!' });
+                }
+            } else {
+                // Rejected? We can allow re-sending or not. Let's allow for now if needed, or maybe specific logic.
+                // For now, let's treat rejected as 'cannot send again' immediately without localized reset, 
+                // BUT typically apps allow re-requesting.
+                // If status is 'rejected', we might want to update it to 'pending' if the SENDER is the one who was rejected?
+                // Or just insert new if row invalid? 
+                // The unique constraint might block insert.
+                // Let's UPDATE to pending if it exists.
+                const { error: updateError } = await supabaseAdmin
+                    .from('friend_requests')
+                    .update({ status: 'pending', sender_id: userId, receiver_id: targetUserId }) // Reset sender/receiver direction too?
+                    .eq('id', existing.id);
+
+                if (updateError) throw updateError;
+                res.json({ success: true, message: 'Friend request sent' });
+                return;
+            }
+            return;
+        }
+
+        // 5. Create new request
+        const { error: insertError } = await supabaseAdmin
+            .from('friend_requests')
+            .insert({
+                sender_id: userId,
+                receiver_id: targetUserId,
+                status: 'pending'
+            });
+
+        if (insertError) {
+            throw insertError;
+        }
+
+        res.json({ success: true, message: 'Friend request sent' });
+
+    } catch (error) {
+        console.error('Send friend request error:', error);
+        res.status(500).json({ error: 'Failed to send friend request' });
+    }
+});
+
 export default router;

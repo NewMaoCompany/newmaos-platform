@@ -418,8 +418,15 @@ export const Profile = () => {
                                         })()
                                     )}
 
-                                    <span className="px-4 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500 border border-gray-200 dark:border-white/5 tracking-wider uppercase">
-                                        ID: {profile.id.substring(0, 8)}...
+                                    <span
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(profile.id);
+                                            showToast('ID copied to clipboard!', 'success');
+                                        }}
+                                        className="px-4 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500 border border-gray-200 dark:border-white/5 tracking-wider uppercase cursor-pointer hover:opacity-80 active:scale-95 transition-all select-none"
+                                        title="Click to copy ID"
+                                    >
+                                        ID: {profile.id}
                                     </span>
                                 </div>
 

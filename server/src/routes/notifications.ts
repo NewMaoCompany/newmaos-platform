@@ -159,7 +159,8 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
 router.post('/:id/accept-friend', authMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = req.user!.id;
-        const notifId = Number(req.params.id);
+        const notifId = req.params.id;
+        console.log(`[AcceptFriend] Request for notifId: ${notifId}, userId: ${userId}`);
 
         // 1. Find the notification and extract sender_id from link
         const { data: notif, error: notifError } = await supabaseAdmin
@@ -180,6 +181,7 @@ router.post('/:id/accept-friend', authMiddleware, async (req: Request, res: Resp
             const urlParams = new URLSearchParams(notif.link.split('?')[1]);
             senderId = urlParams.get('sender_id');
         }
+        console.log(`[AcceptFriend] Found notification, senderId extracted: ${senderId}`);
 
         if (!senderId) {
             res.status(400).json({ error: 'No sender_id found in notification' });
@@ -206,6 +208,7 @@ router.post('/:id/accept-friend', authMiddleware, async (req: Request, res: Resp
             .eq('id', notifId);
 
         res.json({ success: true });
+        console.log(`[AcceptFriend] Successfully accepted friend request from ${senderId}`);
     } catch (error) {
         console.error('Accept friend error:', error);
         res.status(500).json({ error: 'Failed to accept friend request' });

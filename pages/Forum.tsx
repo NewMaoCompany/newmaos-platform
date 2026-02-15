@@ -9,6 +9,7 @@ import { useToast } from '../components/Toast';
 import api from '../src/services/api';
 import { EMOJI_CATEGORIES } from '../src/constants/emojiData';
 import { PointsCoin } from '../components/PointsCoin';
+import { AddFriendModal } from '../components/AddFriendModal';
 // --- Types ---
 interface Channel {
     id: string;
@@ -551,7 +552,7 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
                                 {message.is_pinned ? 'Unpin' : 'Pin'}
                             </button>
                         )}
-                        {onDelete && (
+                        {onDelete && !isOfficial && (
                             <button
                                 onClick={() => onDelete(message.id)}
                                 className="text-xs text-gray-400 hover:text-red-500 font-medium flex items-center gap-1 transition-colors"
@@ -895,6 +896,7 @@ export const Forum = () => {
     // Pending Points State
     const [pendingPoints, setPendingPoints] = useState<{ amount: number; count: number; details: any[] }>({ amount: 0, count: 0, details: [] });
     const [isClaimingPoints, setIsClaimingPoints] = useState(false);
+    const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
 
 
     // Fetch pending points from database
@@ -2513,13 +2515,13 @@ export const Forum = () => {
                             />
                             <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-4 border-white dark:border-zinc-800"></div>
                         </div>
-                        <div className="flex items-center gap-2 mb-1">
+
+                        <div className="flex items-center gap-2 mb-6">
                             <h2 className="text-xl font-bold text-text-main dark:text-white hover:underline cursor-pointer" onClick={() => navigate(`/profile/${selectedUserProfile.id}`)}>{selectedUserProfile.name}</h2>
                             {selectedUserProfile.is_official && (
                                 <span className="text-[10px] px-2 py-0.5 bg-primary text-white rounded-full font-black tracking-widest shadow-sm shadow-primary/20">OFFICIAL</span>
                             )}
                         </div>
-                        <p className="text-sm text-gray-400 mb-6 font-mono">#{selectedUserProfile.id.slice(0, 8)}</p>
 
                         <div className="flex flex-col gap-3 w-full">
                             <button
@@ -3137,6 +3139,10 @@ export const Forum = () => {
                 currentUserId={user?.id}
                 joinedChannelIds={joinedChannelIds}
             />
+            <AddFriendModal
+                isOpen={isAddFriendModalOpen}
+                onClose={() => setIsAddFriendModalOpen(false)}
+            />
             <Navbar />
 
             <div className="flex flex-1 min-h-0 relative">
@@ -3344,9 +3350,21 @@ export const Forum = () => {
                                         <span className="material-symbols-outlined text-[16px] text-primary">chat</span>
                                         <span className="text-[10px] font-black uppercase tracking-widest text-primary">Friend Chats</span>
                                     </div>
-                                    <span className={`material-symbols-outlined text-xs text-gray-400 transition-transform ${collapsedCategories['PrivateMessages'] ? '-rotate-90' : 'rotate-0'}`}>
-                                        expand_more
-                                    </span>
+                                    <div className="flex items-center gap-1">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setIsAddFriendModalOpen(true);
+                                            }}
+                                            className="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors text-gray-400"
+                                            title="Add Friend by Email/ID"
+                                        >
+                                            <span className="material-symbols-outlined text-[16px]">add</span>
+                                        </button>
+                                        <span className={`material-symbols-outlined text-xs text-gray-400 transition-transform ${collapsedCategories['PrivateMessages'] ? '-rotate-90' : 'rotate-0'}`}>
+                                            expand_more
+                                        </span>
+                                    </div>
                                 </div>
                                 {!collapsedCategories['PrivateMessages'] && (
                                     <div className="mt-1 pl-2 space-y-0.5">
@@ -3415,7 +3433,6 @@ export const Forum = () => {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="text-sm font-bold truncate text-text-main dark:text-white">{user.name}</div>
-                                    <div className="text-[10px] text-gray-400 truncate font-mono">#{user.id.slice(0, 4)}</div>
                                 </div>
                                 <div className="flex items-center gap-1 relative">
 
@@ -3483,47 +3500,44 @@ export const Forum = () => {
                                     )}
                                 </div>
                             </div>
-
                             <div className="flex items-center gap-3 md:gap-6">
-                                {/* Action Buttons & Search Group */}
-                                <div className="flex items-center gap-3 text-gray-400">
-                                    <div className="hidden md:flex items-center gap-4 border-r border-gray-200 dark:border-gray-700 pr-4 mr-1">
-                                        <button
-                                            className={`material-symbols-outlined cursor-pointer hover:text-primary transition-all text-[22px] flex items-center justify-center ${viewMode === 'channel'
-                                                ? (isChannelMuted ? 'text-amber-500' : '')
-                                                : (isChatMuted ? 'text-amber-500' : '')
-                                                }`}
-                                            title={
-                                                viewMode === 'channel'
-                                                    ? (isChannelMuted ? "Unmute Channel" : "Mute Channel")
-                                                    : (isChatMuted ? "Unmute Chat" : "Mute Chat")
-                                            }
-                                            onClick={viewMode === 'channel' ? toggleMuteChannel : toggleMuteChat}
-                                        >
-                                            {(viewMode === 'channel' ? isChannelMuted : isChatMuted) ? 'notifications_off' : 'notifications'}
-                                        </button>
-                                        <button
-                                            className={`material-symbols-outlined cursor-pointer hover:text-primary transition-all text-[22px] flex items-center justify-center ${showPinnedPanel ? 'text-amber-500' : ''}`}
-                                            title={showPinnedPanel ? "Hide Pinned Messages" : "Show Pinned Messages"}
-                                            onClick={() => {
-                                                setShowPinnedPanel(prev => !prev);
-                                                setShowMemberSidebar(false);
-                                            }}
-                                        >
-                                            push_pin
-                                        </button>
+                                <div className="flex items-center gap-4 text-gray-400">
+                                    <button
+                                        className={`material-symbols-outlined cursor-pointer hover:text-primary transition-all text-[22px] flex items-center justify-center ${viewMode === 'channel'
+                                            ? (isChannelMuted ? 'text-amber-500' : '')
+                                            : (isChatMuted ? 'text-amber-500' : '')
+                                            }`}
+                                        title={
+                                            viewMode === 'channel'
+                                                ? (isChannelMuted ? "Unmute Channel" : "Mute Channel")
+                                                : (isChatMuted ? "Unmute Chat" : "Mute Chat")
+                                        }
+                                        onClick={viewMode === 'channel' ? toggleMuteChannel : toggleMuteChat}
+                                    >
+                                        {(viewMode === 'channel' ? isChannelMuted : isChatMuted) ? 'notifications_off' : 'notifications'}
+                                    </button>
+                                    <button
+                                        className={`material-symbols-outlined cursor-pointer hover:text-primary transition-all text-[22px] flex items-center justify-center ${showPinnedPanel ? 'text-amber-500' : ''}`}
+                                        title={showPinnedPanel ? "Hide Pinned Messages" : "Show Pinned Messages"}
+                                        onClick={() => {
+                                            setShowPinnedPanel(prev => !prev);
+                                            setShowMemberSidebar(false);
+                                        }}
+                                    >
+                                        push_pin
+                                    </button>
 
-                                        {/* ✅ 删除按钮 - 仅创建者可见 */}
-                                        {viewMode === 'channel' && activeChannel?.creator_id === user?.id && (
-                                            <button
-                                                className="material-symbols-outlined cursor-pointer hover:text-red-500 transition-all text-[22px] flex items-center justify-center"
-                                                title="Delete Channel"
-                                                onClick={(e) => activeChannel && handleDeleteChannel(activeChannel, e)}
-                                            >
-                                                delete
-                                            </button>
-                                        )}
-                                    </div>
+                                    {/* ✅ Delete Button - Restricted for System Channels */}
+                                    {viewMode === 'channel' && activeChannel?.creator_id === user?.id && !['Information', 'Community', 'Courses'].includes(activeChannel.category) && (
+                                        <button
+                                            className="material-symbols-outlined cursor-pointer hover:text-red-500 transition-all text-[22px] flex items-center justify-center"
+                                            title="Delete Channel"
+                                            onClick={(e) => activeChannel && handleDeleteChannel(activeChannel, e)}
+                                        >
+                                            delete
+                                        </button>
+                                    )}
+
                                     <button
                                         className={`material-symbols-outlined cursor-pointer hover:text-primary transition-all text-[22px] flex items-center justify-center ${showMemberSidebar ? 'text-primary' : ''}`}
                                         title="Toggle Member List"
@@ -3534,133 +3548,6 @@ export const Forum = () => {
                                     >
                                         group
                                     </button>
-
-                                    {/* Global Search Bar */}
-                                    <div className="relative group/search hidden sm:block">
-                                        <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-800 focus-within:ring-2 focus-within:ring-primary/20 flex items-center gap-1 w-40 md:w-80 cursor-text transition-all px-3 py-2">
-                                            {/* Mode Selector - 搜索过滤模式 */}
-                                            <div className="flex items-center shrink-0">
-                                                <button
-                                                    ref={filterBtnRef}
-                                                    type="button"
-                                                    onClick={openFilterDropdown}
-                                                    className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2 py-1.5 rounded-lg transition-colors border ${searchMode !== 'text'
-                                                        ? 'text-primary bg-primary/10 border-primary/30 hover:bg-primary/20'
-                                                        : 'text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 border-gray-200 dark:border-gray-600'
-                                                        }`}
-                                                    title="Select search filter mode (Content / Date / User)"
-                                                >
-                                                    <span className="material-symbols-outlined text-[14px]">
-                                                        {searchMode === 'text' ? 'filter_list' : searchMode === 'user' ? 'person' : 'calendar_today'}
-                                                    </span>
-                                                    <span className="hidden sm:inline">{searchMode === 'text' ? 'Filter' : searchMode === 'user' ? 'User' : 'Date'}</span>
-                                                    <span className="material-symbols-outlined text-[12px] text-gray-400">keyboard_arrow_down</span>
-                                                </button>
-                                            </div>
-
-                                            {/* Filter Dropdown Portal - rendered at body level to avoid stacking context issues */}
-                                            {isSearchModeMenuOpen && ReactDOM.createPortal(
-                                                <div
-                                                    data-filter-dropdown
-                                                    style={{ position: 'fixed', top: filterDropdownPos.top, left: filterDropdownPos.left, zIndex: 99999 }}
-                                                    className="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl overflow-hidden flex flex-col w-48 animate-fade-in"
-                                                >
-                                                    <button type="button" onClick={() => selectFilterMode('text')}
-                                                        className={`px-4 py-3 text-sm font-medium text-left hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center gap-3 cursor-pointer ${searchMode === 'text' ? 'text-primary bg-primary/5 font-bold' : 'text-gray-600 dark:text-gray-400'}`}
-                                                    >
-                                                        <span className="material-symbols-outlined text-[18px]">match_case</span>
-                                                        Search by Content
-                                                    </button>
-                                                    <button type="button" onClick={() => selectFilterMode('date')}
-                                                        className={`px-4 py-3 text-sm font-medium text-left hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center gap-3 cursor-pointer ${searchMode === 'date' ? 'text-primary bg-primary/5 font-bold' : 'text-gray-600 dark:text-gray-400'}`}
-                                                    >
-                                                        <span className="material-symbols-outlined text-[18px]">calendar_today</span>
-                                                        Search by Date
-                                                    </button>
-                                                    <button type="button" onClick={() => selectFilterMode('user')}
-                                                        className={`px-4 py-3 text-sm font-medium text-left hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center gap-3 cursor-pointer ${searchMode === 'user' ? 'text-primary bg-primary/5 font-bold' : 'text-gray-600 dark:text-gray-400'}`}
-                                                    >
-                                                        <span className="material-symbols-outlined text-[18px]">person</span>
-                                                        Search by User
-                                                    </button>
-                                                </div>,
-                                                document.body
-                                            )}
-
-                                            <input
-                                                type="text"
-                                                value={globalSearchQuery}
-                                                onChange={(e) => {
-                                                    setGlobalSearchQuery(e.target.value);
-                                                    if (showSearchResults) setShowSearchResults(false);
-                                                }}
-                                                placeholder={searchMode === 'text' ? 'Search messages...' : searchMode === 'user' ? 'Search username...' : 'YYYY-MM-DD'}
-                                                className="bg-transparent border-none outline-none focus:outline-none focus:ring-0 w-full p-0 text-sm text-text-main dark:text-gray-100 placeholder-gray-400 ml-1"
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') handleGlobalSearch();
-                                                    if (e.key === 'Escape') setShowSearchResults(false);
-                                                }}
-                                            />
-
-                                            {/* Search Button */}
-                                            <button
-                                                onClick={handleGlobalSearch}
-                                                disabled={!globalSearchQuery.trim() || isSearchingGlobal}
-                                                className="material-symbols-outlined text-[18px] text-primary hover:text-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                                title="Search"
-                                            >
-                                                search
-                                            </button>
-
-                                            {globalSearchQuery && (
-                                                <button onClick={() => { setGlobalSearchQuery(''); setGlobalSearchResults([]); setShowSearchResults(false); }} className="material-symbols-outlined text-[16px] text-gray-400 hover:text-red-500">close</button>
-                                            )}
-                                        </div>
-
-                                        {/* Search Results Popover */}
-                                        {showSearchResults && (globalSearchResults.length > 0 || isSearchingGlobal) && (
-                                            <div className="absolute right-0 top-12 w-80 md:w-[450px] bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[70vh] animate-fade-in-up">
-                                                <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/50 dark:bg-white/5">
-                                                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                                                        {isSearchingGlobal ? 'Searching...' : `Found ${globalSearchResults.length} results`}
-                                                    </span>
-                                                    <button onClick={() => setShowSearchResults(false)} className="material-symbols-outlined text-xs text-secondary hover:text-red-500">close</button>
-                                                </div>
-                                                <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2">
-                                                    {isSearchingGlobal ? (
-                                                        <div className="flex justify-center p-8"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div></div>
-                                                    ) : globalSearchResults.length > 0 ? (
-                                                        globalSearchResults.map(result => (
-                                                            <div
-                                                                key={result.id}
-                                                                className="p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-800 group"
-                                                                onClick={() => {
-                                                                    setActiveChannelId(result.channel_id);
-                                                                    setShowSearchResults(false);
-                                                                }}
-                                                            >
-                                                                <div className="flex items-center gap-2 mb-1">
-                                                                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
-                                                                        {result.user?.name?.charAt(0).toUpperCase() || '?'}
-                                                                    </div>
-                                                                    <span className="text-xs font-bold text-text-main dark:text-white">{result.user?.name}</span>
-                                                                    <span className="text-[10px] text-gray-400">
-                                                                        {new Date(result.created_at).toLocaleDateString()}
-                                                                    </span>
-                                                                </div>
-                                                                <p className="text-xs text-secondary dark:text-gray-400 line-clamp-2 italic">"{result.content}"</p>
-                                                            </div>
-                                                        ))
-                                                    ) : (
-                                                        <div className="p-12 text-center text-gray-400">
-                                                            <span className="material-symbols-outlined text-4xl mb-2">search_off</span>
-                                                            <p className="text-xs italic">No messages match your search.</p>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -93,12 +93,11 @@ export const Login = () => {
             if (errorMessage.toLowerCase().includes('email not confirmed') ||
                 errorMessage.toLowerCase().includes('email is not confirmed')) {
                 setNeedsVerification(true);
-                setError('Please verify your email before signing in.');
+                setError('请在登录前验证您的邮箱。');
             } else {
                 // Default error message for invalid credentials
                 console.error('Login error details:', err);
-                const fullError = typeof err === 'object' ? JSON.stringify(err, Object.getOwnPropertyNames(err)) : String(err);
-                setError((errorMessage || 'Incorrect email or password') + ' | DBG: ' + fullError);
+                setError('密码或邮箱错误');
             }
         } finally {
             setIsLoading(false);
@@ -109,9 +108,9 @@ export const Login = () => {
         setIsLoading(true);
         try {
             await authApi.resendVerification(email);
-            showToast('Verification email sent! Check your inbox.', 'success');
+            showToast('验证邮件已发送！请检查您的收件箱。', 'success');
         } catch (err: any) {
-            setError(err.message || 'Failed to resend verification email.');
+            setError(err.message || '发送验证邮件失败。');
         } finally {
             setIsLoading(false);
         }
@@ -124,10 +123,10 @@ export const Login = () => {
 
         try {
             await authApi.forgotPassword(resetEmail);
-            showToast(`Verification code sent to ${resetEmail}`, 'success');
+            showToast(`验证码已发送至 ${resetEmail}`, 'success');
             setView('forgot-verify');
         } catch (err: any) {
-            setError(err.message || 'Failed to send verification code.');
+            setError(err.message || '发送验证码失败。');
         } finally {
             setIsLoading(false);
         }
@@ -142,7 +141,7 @@ export const Login = () => {
             await authApi.verifyResetCode(resetEmail, resetCode.join(''));
             setView('forgot-update');
         } catch (err: any) {
-            setError(err.message || 'Invalid code. Please try again.');
+            setError(err.message || '验证码无效，请重试。');
         } finally {
             setIsLoading(false);
         }
@@ -166,15 +165,15 @@ export const Login = () => {
                 // Use profile name if available, otherwise email prefix
                 const name = response.profile?.name || response.user?.user_metadata?.name || resetEmail.split('@')[0];
                 login(resetEmail, name, response.session.user.id); // Determine name from response if possible
-                showToast('Password updated! Logging you in...', 'success');
+                showToast('密码已更新！正在为您登录...', 'success');
                 navigate('/dashboard');
             } else {
-                showToast('Password updated! Please sign in.', 'success');
+                showToast('密码已更新！请登录。', 'success');
                 setView('login');
                 setPassword('');
             }
         } catch (err: any) {
-            setError(err.message || 'Failed to update password.');
+            setError(err.message || '更新密码失败。');
         } finally {
             setIsLoading(false);
         }
@@ -447,9 +446,9 @@ export const Login = () => {
                                         setError('');
                                         try {
                                             await authApi.forgotPassword(resetEmail);
-                                            showToast(`Resent code to ${resetEmail}`, 'success');
+                                            showToast(`已重发验证码至 ${resetEmail}`, 'success');
                                         } catch (err: any) {
-                                            setError(err.message || 'Failed to resend code.');
+                                            setError(err.message || '重发验证码失败。');
                                         } finally {
                                             setIsLoading(false);
                                         }

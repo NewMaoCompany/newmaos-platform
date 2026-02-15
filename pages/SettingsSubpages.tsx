@@ -839,11 +839,7 @@ export const ProfileSettings = () => {
                       <p className="text-sm text-gray-500 font-medium">{email}</p>
                     )}
 
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-[10px] font-bold text-gray-500 border border-gray-200 dark:border-white/5 truncate max-w-[150px]">
-                        ID: {user.id.substring(0, 8)}...
-                      </span>
-                    </div>
+                    {/* ID Hidden as per request */}
 
                     {showBio && bio && (
                       <p className="text-sm text-gray-600 dark:text-gray-300 mt-3 font-medium italic px-4 leading-relaxed">
@@ -935,52 +931,369 @@ export const ProfileSettings = () => {
   );
 };
 
+const PasswordInput = ({
+  value,
+  onChange,
+  placeholder = "Password",
+  label = "New Password",
+  showValidation = true
+}: {
+  value: string,
+  onChange: (v: string) => void,
+  placeholder?: string,
+  label?: string,
+  showValidation?: boolean
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const hasMinLength = value.length >= 8;
+  const hasUpper = /[A-Z]/.test(value);
+  const hasLower = /[a-z]/.test(value);
+  const hasNumber = /[0-9]/.test(value);
+
+  const reqs = [
+    { label: "8+ characters", met: hasMinLength, id: 'len' },
+    { label: "Uppercase", met: hasUpper, id: 'upper' },
+    { label: "Lowercase", met: hasLower, id: 'lower' },
+    { label: "Number", met: hasNumber, id: 'num' },
+  ];
+
+  return (
+    <div className="flex flex-col gap-2 group/pw">
+      <div className="flex items-center justify-between px-1">
+        <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">{label}</label>
+        {showValidation && (
+          <div className="flex gap-1">
+            {reqs.map(r => (
+              <div
+                key={r.id}
+                className={`w-1 h-1 rounded-full transition-all duration-500 ${r.met ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-800'}`}
+                title={r.label}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="relative flex items-center">
+        <div className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${isFocused
+          ? 'bg-white dark:bg-black shadow-[0_0_20px_rgba(var(--primary-rgb),0.1)] ring-1 ring-primary/20'
+          : 'bg-gray-50/30 dark:bg-white/5'
+          }`}>
+
+          <input
+            type={showPassword ? "text" : "password"}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            placeholder={placeholder}
+            autoComplete="new-password"
+            className="flex-1 bg-transparent border-none outline-none focus:ring-0 font-medium text-base text-text-main dark:text-white placeholder-gray-300 dark:placeholder-gray-600 tracking-tight"
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all ${showPassword ? 'text-primary' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'}`}
+          >
+            <span className="material-symbols-outlined text-[18px]">
+              {showPassword ? 'visibility_off' : 'visibility'}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {showValidation && (
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5 px-1 mt-1">
+          {reqs.map(r => (
+            <div key={r.label} className={`flex items-center gap-1.5 text-[10px] font-bold transition-all duration-300 ${r.met ? 'text-primary' : 'text-gray-400'}`}>
+              <span className="material-symbols-outlined text-[12px]">
+                {r.met ? 'check_circle' : 'radio_button_unchecked'}
+              </span>
+              {r.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+};
+
 export const SecuritySettings = () => {
+  const { user } = useApp();
   const { showToast } = useToast();
-  const [password, setPassword] = useState('');
+
+  const [activeTab, setActiveTab] = useState<'update' | 'reset'>('update');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleUpdate = () => {
+  const [resetStep, setResetStep] = useState<'send' | 'verify'>('send');
+  const [resetCode, setResetCode] = useState(['', '', '', '', '', '']);
+  const [resetNewPassword, setResetNewPassword] = useState('');
+  const [resetConfirmPassword, setResetConfirmPassword] = useState('');
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    if (timer > 0) {
+      const interval = setInterval(() => setTimer(t => t - 1), 1000);
+      return () => clearInterval(interval);
+    }
+  }, [timer]);
+
+  const handleUpdate = async () => {
+    if (newPassword !== confirmPassword) {
+      showToast("New passwords do not match", 'error');
+      return;
+    }
+    if (!user?.id) return;
     setIsUpdating(true);
-    setTimeout(() => {
-      setIsUpdating(false);
-      setPassword('');
+    try {
+      const res = await authApi.changePassword(user.id, currentPassword, newPassword);
+      if (!res.success) throw new Error(res.message);
+      showToast("Password updated successfully!", 'success');
+      setCurrentPassword('');
       setNewPassword('');
-      showToast("Password updated successfully.", 'success');
-    }, 1000);
-  }
+      setConfirmPassword('');
+    } catch (error: any) {
+      showToast(error.message || "Update failed", 'error');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleSendCode = async () => {
+    setIsSendingCode(true);
+    try {
+      if (!user?.email) throw new Error("No email found");
+      await authApi.forgotPassword(user.email);
+      showToast("Verification code sent!", 'success');
+      setResetStep('verify');
+      setTimer(60);
+    } catch (error: any) {
+      showToast(error.message || "Failed to send code", 'error');
+    } finally {
+      setIsSendingCode(false);
+    }
+  };
+
+  const handleReset = async () => {
+    if (resetNewPassword !== resetConfirmPassword) {
+      showToast("Passwords do not match", 'error');
+      return;
+    }
+    setIsResetting(true);
+    try {
+      if (!user?.email) throw new Error("No email found");
+
+      const response = await authApi.resetPassword(user.email, resetCode.join(''), resetNewPassword);
+
+      if (response.session) {
+        await supabase.auth.setSession(response.session);
+      }
+
+      showToast("Password updated successfully!", 'success');
+      setResetStep('send');
+      setResetCode(['', '', '', '', '', '']);
+      setResetNewPassword('');
+      setResetConfirmPassword('');
+      setActiveTab('update');
+      setTimer(0);
+    } catch (error: any) {
+      showToast(error.message || "Reset failed", 'error');
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
+  const handleCodeChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+    if (value.length > 1) return;
+    const newCode = [...resetCode];
+    newCode[index] = value;
+    setResetCode(newCode);
+    if (value && index < 5) document.getElementById(`reset-code-${index + 1}`)?.focus();
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !resetCode[index] && index > 0) {
+      document.getElementById(`reset-code-${index - 1}`)?.focus();
+    }
+  };
 
   return (
     <SubpageLayout title="Password & Security">
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Current Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent outline-none focus:ring-2 focus:ring-primary/50"
-          />
+      <div className="max-w-xl mx-auto w-full py-8">
+
+        {/* Minimalist Tab Switcher */}
+        <div className="flex items-center gap-8 border-b border-gray-100 dark:border-white/5 mb-12">
+          <button
+            onClick={() => setActiveTab('update')}
+            className={`relative pb-4 text-sm font-bold transition-all ${activeTab === 'update'
+              ? 'text-text-main dark:text-white'
+              : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
+              }`}
+          >
+            Update Password
+            {activeTab === 'update' && (
+              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary animate-in fade-in slide-in-from-left-2 duration-300" />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('reset')}
+            className={`relative pb-4 text-sm font-bold transition-all ${activeTab === 'reset'
+              ? 'text-text-main dark:text-white'
+              : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
+              }`}
+          >
+            Reset via Email
+            {activeTab === 'reset' && (
+              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary animate-in fade-in slide-in-from-left-2 duration-300" />
+            )}
+          </button>
         </div>
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-bold text-gray-700 dark:text-gray-300">New Password</label>
-          <input
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            placeholder="Enter new password"
-            className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent outline-none focus:ring-2 focus:ring-primary/50"
-          />
-        </div>
-        <button
-          onClick={handleUpdate}
-          disabled={!password || !newPassword || isUpdating}
-          className="mt-4 w-full py-3.5 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold shadow-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 flex justify-center items-center gap-2"
-        >
-          {isUpdating ? <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span> : 'Update Password'}
-        </button>
+
+        {activeTab === 'update' && (
+          <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] px-1">Current Password</label>
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Enter current password"
+                className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-1 focus:ring-primary/20 bg-gray-50/30 dark:bg-white/5 focus:bg-white dark:focus:bg-black transition-all font-medium text-base text-text-main dark:text-white placeholder-gray-300 dark:placeholder-gray-600 tracking-tight"
+              />
+              <button
+                onClick={() => setActiveTab('reset')}
+                className="w-fit mt-1 px-1 text-[10px] font-bold text-primary hover:underline transition-all"
+              >
+                Forgot password?
+              </button>
+            </div>
+
+            <PasswordInput
+              label="New Password"
+              value={newPassword}
+              onChange={setNewPassword}
+              placeholder="Minimum 8 characters"
+            />
+
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] px-1">Confirm New Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Re-type new password"
+                className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-1 focus:ring-primary/20 bg-gray-50/30 dark:bg-white/5 focus:bg-white dark:focus:bg-black transition-all font-medium text-base text-text-main dark:text-white placeholder-gray-300 dark:placeholder-gray-600 tracking-tight"
+              />
+            </div>
+
+            <button
+              onClick={handleUpdate}
+              disabled={isUpdating || !currentPassword || !newPassword || !confirmPassword}
+              className="mt-4 w-full bg-black dark:bg-white text-white dark:text-black py-4 rounded-xl font-bold hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-black/10 dark:shadow-white/10"
+            >
+              {isUpdating ? 'Updating...' : 'Update Password'}
+            </button>
+          </div>
+        )}
+
+        {activeTab === 'reset' && (
+          <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {resetStep === 'send' ? (
+              <div className="flex flex-col items-center text-center gap-6 py-8">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-primary text-3xl">mail</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-xl font-bold text-text-main dark:text-white">Verify your identity</h3>
+                  <p className="text-gray-400 text-sm max-w-xs">We'll send a 6-digit verification code to your email <span className="text-text-main dark:text-white font-medium">{user.email}</span></p>
+                </div>
+                <button
+                  onClick={handleSendCode}
+                  disabled={isSendingCode}
+                  className="w-full bg-black dark:bg-white text-white dark:text-black py-4 rounded-xl font-bold hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl"
+                >
+                  {isSendingCode ? 'Sending...' : 'Send Code'}
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-10">
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] px-1 text-center">Verification Code</label>
+                    <div className="flex justify-center gap-3">
+                      {resetCode.map((digit, idx) => (
+                        <input
+                          key={idx}
+                          id={`reset-code-${idx}`}
+                          type="text"
+                          value={digit}
+                          onChange={(e) => handleCodeChange(idx, e.target.value)}
+                          onKeyDown={(e) => handleKeyDown(idx, e)}
+                          autoComplete="off"
+                          className="w-12 h-14 text-center text-xl font-bold rounded-xl border-none ring-1 ring-black/5 dark:ring-white/5 bg-gray-50/30 dark:bg-white/5 focus:ring-primary focus:bg-white dark:focus:bg-black outline-none transition-all"
+                          maxLength={1}
+                        />
+                      ))}
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <p className="text-[10px] font-medium text-gray-400">
+                        Code expires in 10 minutes
+                      </p>
+                      {timer > 0 ? (
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-300 py-2 text-center select-none">
+                          Resend in {timer}s
+                        </p>
+                      ) : (
+                        <button
+                          onClick={() => handleSendCode()}
+                          className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-primary transition-colors py-2 text-center"
+                        >
+                          Resend Code
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-8">
+                    <PasswordInput
+                      label="New Password"
+                      value={resetNewPassword}
+                      onChange={setResetNewPassword}
+                      placeholder="Minimum 8 characters"
+                    />
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] px-1">Confirm New Password</label>
+                      <input
+                        type="password"
+                        value={resetConfirmPassword}
+                        onChange={(e) => setResetConfirmPassword(e.target.value)}
+                        placeholder="Re-type new password"
+                        className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-1 focus:ring-primary/20 bg-gray-50/30 dark:bg-white/5 focus:bg-white dark:focus:bg-black transition-all font-medium text-base text-text-main dark:text-white placeholder-gray-300 dark:placeholder-gray-600 tracking-tight"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleReset}
+                  disabled={isResetting || !resetNewPassword || resetCode.some(c => !c)}
+                  className="w-full bg-black dark:bg-white text-white dark:text-black py-4 rounded-xl font-bold hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl"
+                >
+                  {isResetting ? 'Resetting...' : 'Reset Password'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </SubpageLayout>
   );

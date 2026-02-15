@@ -189,6 +189,7 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
         await supabaseAdmin.from('user_profiles').insert({
             id: targetUserId,
             name: userName,
+            email: email, // Add email to profile
             avatar_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=f9d406&color=1c1a0d&bold=true`,
             current_course: 'AB',
             problems_solved: 0,
@@ -606,7 +607,58 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
         res.status(500).json({ error: 'Failed to reset password' });
     }
 });
+// POST /api/auth/change-password
+router.post('/change-password', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { userId, currentPassword, newPassword } = req.body;
 
+        if (!userId || !currentPassword || !newPassword) {
+            res.status(400).json({ error: 'Missing required fields' });
+            return;
+        }
+
+        // 1. Verify Current Password by attempting sign-in
+        const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
+        const user = users.find((u: any) => u.id === userId);
+
+        if (!user || !user.email) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: user.email,
+            password: currentPassword
+        });
+
+        if (signInError) {
+            res.status(401).json({ error: 'Incorrect current password' });
+            return;
+        }
+
+        // 2. Check if new password is same as old
+        if (currentPassword === newPassword) {
+            res.status(400).json({ error: 'New password cannot be the same as the current password' });
+            return;
+        }
+
+        // 3. Update Password
+        const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+            password: newPassword
+        });
+
+        if (updateError) {
+            res.status(400).json({ error: updateError.message });
+            return;
+        }
+
+        res.json({ success: true, message: 'Password updated successfully' });
+
+    } catch (error) {
+        console.error('Change password error:', error);
+        res.status(500).json({ error: 'Failed to update password' });
+    }
+});
 // POST /api/auth/verify-access-code
 router.post('/verify-access-code', async (req: Request, res: Response): Promise<void> => {
     try {

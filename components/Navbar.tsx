@@ -242,8 +242,8 @@ export const Navbar = () => {
           <h1 className="text-lg sm:text-xl font-bold tracking-tight text-text-main dark:text-white">NewMaoS</h1>
         </Link>
 
-        {/* Central Navigation - Hidden on mobile */}
-        <div className="hidden sm:flex items-center gap-2 lg:gap-3">
+        {/* Central Navigation - Always Desktop */}
+        <div className="flex items-center gap-2 lg:gap-3">
           <Link
             to="/dashboard"
             className={`text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
@@ -335,13 +335,13 @@ export const Navbar = () => {
         {/* Right Actions - Always Visible */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
 
-          {/* Mobile Menu Button - Visible only on mobile */}
-          <button
+          {/* Mobile Menu Button - DISABLED FOR DESKTOP ONLY MODE */}
+          {/* <button
             onClick={() => setShowMobileMenu(!showMobileMenu)}
             className="sm:hidden w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
           >
             <span className="material-symbols-outlined">{showMobileMenu ? 'close' : 'menu'}</span>
-          </button>
+          </button> */}
 
           {isAuthenticated ? (
             <>
@@ -510,79 +510,15 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {showMobileMenu && (
+      {/* Mobile Menu Overlay - DISABLED */}
+      {/* {showMobileMenu && (
         <div className="md:hidden fixed inset-0 top-16 bg-black/50 z-40" onClick={() => setShowMobileMenu(false)} />
-      )}
+      )} */}
 
-      {/* Mobile Menu Panel */}
-      <div className={`md:hidden fixed top-16 left-0 right-0 bg-white dark:bg-surface-dark border-b border-gray-200 dark:border-gray-800 shadow-lg z-50 transform transition-transform duration-200 ${showMobileMenu ? 'translate-y-0' : '-translate-y-full pointer-events-none'}`}>
-        <div className="p-4 flex flex-col gap-2">
-          <Link
-            to="/dashboard"
-            onClick={() => setShowMobileMenu(false)}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors relative ${location.pathname === '/dashboard' ? 'bg-primary/10 text-text-main dark:text-white' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
-          >
-            <span className="material-symbols-outlined text-[20px]">dashboard</span>
-            Dashboard
-            {needsCheckin && (
-              <span className="absolute top-2 right-3 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark">
-                1
-              </span>
-            )}
-          </Link>
-          <Link
-            to="/practice"
-            onClick={() => setShowMobileMenu(false)}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/practice') ? 'bg-primary/10 text-text-main dark:text-white' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
-          >
-            <span className="material-symbols-outlined text-[20px]">school</span>
-            Practice
-          </Link>
-          <Link
-            to="/analysis"
-            onClick={(e) => { if (!isPro) { e.preventDefault(); setShowPaywall(true); setShowMobileMenu(false); } else { setShowMobileMenu(false); } }}
-            className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/analysis') ? 'bg-primary/10 text-text-main dark:text-white' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
-          >
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[20px]">analytics</span>
-              <span>Analysis</span>
-            </div>
-            {!isPro && <span className="material-symbols-outlined text-[18px] opacity-50">lock</span>}
-          </Link>
-          <Link
-            to="/forum"
-            onClick={(e) => { if (!isPro) { e.preventDefault(); setShowPaywall(true); setShowMobileMenu(false); } else { setShowMobileMenu(false); } }}
-            className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors relative ${isActive('/forum') ? 'bg-primary/10 text-text-main dark:text-white' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
-          >
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[20px]">forum</span>
-              <span>Forum</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {totalUnreadChatCount > 0 && (
-                <span className="min-w-[18px] h-[18px] flex items-center justify-center bg-red-500 text-white text-[10px] font-black rounded-full px-1.5 shadow-sm">
-                  {totalUnreadChatCount > 99 ? '99+' : totalUnreadChatCount}
-                </span>
-              )}
-              {!isPro && <span className="material-symbols-outlined text-[18px] opacity-50">lock</span>}
-            </div>
-          </Link>
-          <Link
-            to="/settings"
-            onClick={() => setShowMobileMenu(false)}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors relative ${isActive('/settings') ? 'bg-primary/10 text-text-main dark:text-white' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
-          >
-            <span className="material-symbols-outlined text-[20px]">settings</span>
-            Settings
-            {needsProUpgrade && (
-              <span className="absolute top-2 right-3 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark">
-                1
-              </span>
-            )}
-          </Link>
-        </div>
-      </div>
+      {/* Mobile Menu Panel - DISABLED */}
+      {/* <div className={`md:hidden fixed top-16 left-0 right-0 bg-white dark:bg-surface-dark border-b border-gray-200 dark:border-gray-800 shadow-lg z-50 transform transition-transform duration-200 ${showMobileMenu ? 'translate-y-0' : '-translate-y-full pointer-events-none'}`}>
+          ... (mobile menu content) ...
+      </div> */}
 
       {newlyUnlockedTitle && (
         <AchievementUnlockModal
