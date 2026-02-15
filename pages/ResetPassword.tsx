@@ -50,10 +50,20 @@ export const ResetPassword = () => {
                 navigate('/login');
             }, 2000);
         } catch (err: any) {
-            setError(err.message || 'Failed to update password');
+            setError(translateError(err.message) || 'Failed to update password');
         } finally {
             setIsLoading(false);
         }
+    };
+
+    // Helper to translate backend errors if they come in Chinese
+    const translateError = (msg: string) => {
+        if (!msg) return '';
+        if (msg.includes('密码') || msg.includes('邮箱') || msg.includes('错误') || msg.includes('用户')) {
+            if (msg.includes('验证') || msg.includes('verify')) return 'Please verify your email.';
+            return 'Incorrect email or password.';
+        }
+        return msg;
     };
 
     return (

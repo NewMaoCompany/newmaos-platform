@@ -316,10 +316,20 @@ export const Signup = () => {
             // Always move to verify step for new registration flow
             setStep('verify');
         } catch (err: any) {
-            setError(err.message || 'Registration failed. Please try again.');
-        } finally {
+            setError(translateError(err.message) || 'Registration failed. Please try again.');
             setIsLoading(false);
         }
+    };
+
+    // Helper to translate backend errors if they come in Chinese (duplicated from Login)
+    const translateError = (msg: string) => {
+        if (!msg) return '';
+        if (msg.includes('密码') || msg.includes('邮箱') || msg.includes('错误') || msg.includes('用户')) {
+            if (msg.includes('验证') || msg.includes('verify')) return 'Please verify your email.';
+            if (msg.includes('exists') || msg.includes('User already registered')) return 'Email already registered.';
+            return 'Incorrect email or password.';
+        }
+        return msg;
     };
 
     const handleCodeChange = (index: number, value: string) => {
@@ -393,7 +403,7 @@ export const Signup = () => {
                 setTimeout(() => navigate('/login'), 1500);
             }
         } catch (err: any) {
-            setError(err.message || 'Verification failed. Please check the code.');
+            setError(translateError(err.message) || 'Verification failed. Please check the code.');
         } finally {
             setIsLoading(false);
         }

@@ -61,6 +61,16 @@ export const Login = () => {
         }
     };
 
+    // Helper to translate backend errors if they come in Chinese
+    const translateError = (msg: string) => {
+        if (!msg) return '';
+        if (msg.includes('密码') || msg.includes('邮箱') || msg.includes('错误') || msg.includes('用户')) {
+            if (msg.includes('验证') || msg.includes('verify')) return 'Please verify your email before signing in.';
+            return 'Incorrect email or password.';
+        }
+        return msg;
+    };
+
     const handleLoginSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -90,14 +100,22 @@ export const Login = () => {
             const errorMessage = err.message || '';
 
             // Check if the error is about email not being confirmed
+            // Also check for potential Chinese verification messages just in case
             if (errorMessage.toLowerCase().includes('email not confirmed') ||
-                errorMessage.toLowerCase().includes('email is not confirmed')) {
+                errorMessage.toLowerCase().includes('email is not confirmed') ||
+                errorMessage.includes('验证')) {
                 setNeedsVerification(true);
                 setError('Please verify your email before signing in.');
             } else {
                 // Default error message for invalid credentials
+                // Force English even if backend returns localized string
                 console.error('Login error details:', err);
-                setError('Incorrect email or password');
+                const translated = translateError(errorMessage);
+                // If translation didn't change it (was English or unknown), default to standard message
+                // unless it is a specific known English error?
+                // Actually, let's just stick to "Incorrect email or password" for login failures to be safe
+                // and avoid revealing user existence (security best practice)
+                setError('Incorrect email or password.');
             }
         } finally {
             setIsLoading(false);
@@ -110,7 +128,7 @@ export const Login = () => {
             await authApi.resendVerification(email);
             showToast('Verification email sent! Please check your inbox.', 'success');
         } catch (err: any) {
-            setError(err.message || 'Failed to send verification email.');
+            setError(translateError(err.message) || 'Failed to send verification email.');
         } finally {
             setIsLoading(false);
         }
@@ -126,7 +144,7 @@ export const Login = () => {
             showToast(`Verification code sent to ${resetEmail}`, 'success');
             setView('forgot-verify');
         } catch (err: any) {
-            setError(err.message || 'Failed to send verification code.');
+            setError(translateError(err.message) || 'Failed to send verification code.');
         } finally {
             setIsLoading(false);
         }
@@ -141,7 +159,7 @@ export const Login = () => {
             await authApi.verifyResetCode(resetEmail, resetCode.join(''));
             setView('forgot-update');
         } catch (err: any) {
-            setError(err.message || 'Invalid code, please try again.');
+            setError(translateError(err.message) || 'Invalid code, please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -173,7 +191,7 @@ export const Login = () => {
                 setPassword('');
             }
         } catch (err: any) {
-            setError(err.message || 'Failed to update password.');
+            setError(translateError(err.message) || 'Failed to update password.');
         } finally {
             setIsLoading(false);
         }

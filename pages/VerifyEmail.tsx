@@ -42,8 +42,18 @@ export const VerifyEmail = () => {
 
             } catch (err: any) {
                 setStatus('error');
-                setErrorMessage(err.message || 'Verification failed. The link may have expired.');
+                setErrorMessage(translateError(err.message) || 'Verification failed. The link may have expired.');
             }
+        };
+
+        // Helper to translate backend errors if they come in Chinese
+        const translateError = (msg: string) => {
+            if (!msg) return '';
+            if (msg.includes('密码') || msg.includes('邮箱') || msg.includes('错误') || msg.includes('用户')) {
+                if (msg.includes('验证') || msg.includes('verify')) return 'Please verify your email.';
+                return 'Verification failed.';
+            }
+            return msg;
         };
 
         verifyAndLogin();
