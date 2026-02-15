@@ -146,7 +146,7 @@ const AppRoutes = () => {
   const isOnMainPage = isDashboard || isPractice || isAnalysis || isForum || isSettings;
 
   return (
-    <div className="h-screen w-full bg-surface-light dark:bg-surface-dark overflow-hidden relative">
+    <div className="h-screen w-full min-w-[360px] bg-surface-light dark:bg-surface-dark overflow-x-auto overflow-y-hidden relative">
 
 
       {/* Persistent Page Layers (Main 5) */}

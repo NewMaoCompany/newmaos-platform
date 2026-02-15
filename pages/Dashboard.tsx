@@ -374,7 +374,7 @@ export const Dashboard = () => {
   const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   return (
-    <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans overflow-hidden">
+    <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans overflow-x-auto overflow-y-hidden">
       <Navbar />
 
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-8 sm:gap-12 w-full animate-fade-in overflow-y-auto scroll-bounce">

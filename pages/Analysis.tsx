@@ -385,7 +385,7 @@ export const Analysis = () => {
     const displayStreak = isStreakValid ? (profile?.streak_days || 0) : 0;
 
     return (
-        <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-hidden">
+        <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-x-auto overflow-y-hidden">
             {/* Global Style overrides for Charts */}
             <style>{`
                 .recharts-cartesian-grid-horizontal line, .recharts-cartesian-grid-vertical line { stroke-opacity: 0.1; }

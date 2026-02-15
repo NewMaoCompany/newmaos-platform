@@ -69,7 +69,7 @@ export const Settings = () => {
     };
 
     return (
-        <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-hidden">
+        <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-x-auto overflow-y-hidden">
             <Navbar />
 
             <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 animate-fade-in flex flex-col gap-6 sm:gap-10 overflow-y-auto scroll-bounce">

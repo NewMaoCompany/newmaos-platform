@@ -23,9 +23,9 @@ const SubpageLayout = ({ title, children, maxWidth = "max-w-4xl" }: { title: str
   };
 
   return (
-    <div className="h-full bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 flex flex-col overflow-hidden">
+    <div className="h-full bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 flex flex-col overflow-x-auto overflow-y-hidden">
       <Navbar />
-      <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 scroll-smooth">
+      <div className="flex-1 overflow-y-auto overflow-x-auto p-4 sm:p-6 scroll-smooth">
         <div className={`w-full ${maxWidth} mx-auto flex flex-col gap-6 pt-16 pb-10 animate-fade-in`}>
           <button
             onClick={handleBack}
