@@ -232,8 +232,8 @@ export const Navbar = () => {
   const allDisplayed = displayedNotifications;
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-gray-200/70 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface-light/60 pt-2 lg:pt-4">
-      <div className="w-full px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 w-full border-b border-gray-200/70 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface-light/60 pt-6 pb-2 lg:pt-8 lg:pb-3 transition-padding duration-300">
+      <div className="w-full px-4 sm:px-6 flex items-center justify-between min-h-[48px]">
         {/* Logo Area - Always Visible */}
         <Link to="/dashboard" className="flex items-center gap-2 group cursor-pointer shrink-0">
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-text-main shadow-glow transition-transform group-hover:scale-105 overflow-hidden">
