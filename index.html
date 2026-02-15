@@ -86,7 +86,9 @@
     body {
       height: 100%;
       overflow-x: auto;
-      /* Allow horizontal scrolling */
+      /* Disable overscroll bounce/rubber-banding on all devices */
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: auto;
     }
 
     body {
@@ -198,20 +200,17 @@
       background: transparent !important;
     }
 
-    /* Scroll bounce for specific containers */
+    /* Scroll containers — bounce disabled globally */
     .scroll-bounce {
       overflow-y: auto !important;
-      -webkit-overflow-scrolling: touch !important;
-      overscroll-behavior-y: auto !important;
-      /* Allow system rubber-banding */
-      will-change: scroll-position;
+      overscroll-behavior-y: none !important;
+      -webkit-overflow-scrolling: auto !important;
       touch-action: pan-y;
       position: relative;
     }
 
     .scroll-bounce-inner {
-      min-height: 101% !important;
-      /* Stronger force for scroller presence */
+      min-height: 100% !important;
     }
 
     /* Modal Animations */
