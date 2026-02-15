@@ -1665,6 +1665,61 @@ export const Practice = () => {
         }
     };
 
+    // --- SWIPE HANDLERS ---
+    const touchStart = useRef<{ x: number, y: number } | null>(null);
+    const touchEnd = useRef<{ x: number, y: number } | null>(null);
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        touchEnd.current = null;
+        touchStart.current = {
+            x: e.targetTouches[0].clientX,
+            y: e.targetTouches[0].clientY
+        };
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        touchEnd.current = {
+            x: e.targetTouches[0].clientX,
+            y: e.targetTouches[0].clientY
+        };
+    };
+
+    const onTouchEnd = (e: React.TouchEvent) => {
+        if (!touchStart.current || !touchEnd.current) return;
+
+        // Disable swipe navigation if any tool (Scratchpad, Calculator, Formulas) is active
+        // This prevents accidental navigation while interacting with overlays
+        if (activeTool !== 'none') return;
+
+        const distanceX = touchStart.current.x - touchEnd.current.x;
+        const distanceY = touchStart.current.y - touchEnd.current.y;
+
+        // Ignore if vertical scroll is dominant
+        if (Math.abs(distanceY) > Math.abs(distanceX)) return;
+
+        // Ignore if swipe distance is too short
+        if (Math.abs(distanceX) < minSwipeDistance) return;
+
+        // Check for internal scrolling elements (LaTeX or Code) to avoid conflict
+        const target = e.target as HTMLElement;
+        if (target.closest('.font-math') || target.closest('.overflow-x-auto') || target.closest('.overflow-auto')) {
+            return;
+        }
+
+        if (distanceX > 0) {
+            // Left Swipe = Next Question
+            if (currentQuestionIndex < questions.length - 1) {
+                setCurrentQuestionIndex(prev => prev + 1);
+            }
+        } else {
+            // Right Swipe = Prev Question
+            if (currentQuestionIndex > 0) {
+                setCurrentQuestionIndex(prev => prev - 1);
+            }
+        }
+    };
+
     // Early return for initialization to prevent flashes - MUST be after hooks
     // Also show loading if we are in practice mode but questions are still calculating
     // OR if questions are empty but the grace period (showEmptyState) hasn't passed yet
@@ -1867,7 +1922,12 @@ export const Practice = () => {
 
     // --- RENDER PRACTICE VIEW ---
     return (
-        <div className="bg-background-light dark:bg-background-dark text-text-main font-display h-screen flex flex-col overflow-hidden antialiased animate-fade-in">
+        <div
+            className="bg-background-light dark:bg-background-dark text-text-main font-display h-screen flex flex-col overflow-hidden antialiased animate-fade-in"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+        >
 
             {/* Scratchpad Overlay */}
             {activeTool === 'scratchpad' && (
