@@ -136,7 +136,27 @@ export const Practice = () => {
         if (dbUnit) {
             const dbSubTopic = dbUnit.subTopics?.find((s: any) => s.id === subTopicId);
             if (dbSubTopic) {
+                // VERIFICATION: Check if description_2 is missing but available in raw sections
+                if (!dbSubTopic.description_2 && sections) {
+                    // Check known keys for raw data
+                    const rawKey = Object.keys(sections).find(k => k.includes(cleanTopic));
+                    if (rawKey && sections[rawKey]) {
+                        const rawSection = sections[rawKey].find((s: any) => String(s.id) === String(subTopicId));
+                        if (rawSection && rawSection.description_2) {
+                            return { ...dbSubTopic, description_2: rawSection.description_2 };
+                        }
+                    }
+                }
                 return dbSubTopic; // Return directly
+            }
+        }
+
+        // AGGRESSIVE FALLBACK: If topicContent failed, try sections directly
+        if (sections) {
+            const rawKey = Object.keys(sections).find(k => k.includes(cleanTopic));
+            if (rawKey && sections[rawKey]) {
+                const rawSection = sections[rawKey].find((s: any) => String(s.id) === String(subTopicId));
+                if (rawSection) return rawSection;
             }
         }
 
@@ -145,7 +165,7 @@ export const Practice = () => {
             return COURSE_CONTENT_DATA[topicParam].subTopics?.find(s => s.id === subTopicId);
         }
         return null;
-    }, [subTopicId, topicParam, cleanTopic, topicContent]);
+    }, [subTopicId, topicParam, cleanTopic, topicContent, sections]);
 
     // NEW: Frozen snapshot of incorrect question IDs for Review mode
     // This prevents questions from disappearing when user answers correctly during review
@@ -2514,7 +2534,7 @@ export const Practice = () => {
 
             {/* DEBUGGING OVERLAY */}
             <div className="fixed bottom-0 left-0 right-0 bg-black/80 text-white p-2 text-xs font-mono z-[99999] opacity-75 hover:opacity-100 transition-opacity">
-                [v2.3 LOGGING] D: {cleanTopic} | TP: {topicParam} | ST: {subTopicId} |
+                [v2.4 DIRECT FIX] D: {cleanTopic} | TP: {topicParam} | ST: {subTopicId} |
                 SecCount: {Object.keys(sections).length} |
                 DBUnit: {String(!!topicContent[topicParam])} |
                 DescLen: {subTopicData?.description_2?.length || 0} |
