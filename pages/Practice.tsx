@@ -117,7 +117,35 @@ export const Practice = () => {
     }, [user?.currentCourse]);
 
     // Only store DB overrides in state, not the full data
-    const [dbSubTopicData, setDbSubTopicData] = useState<any>(null);
+    // --- Separated Effect for Metadata Sync (Lesson Content) ---
+    const dbSubTopicData = React.useMemo(() => {
+        if (!subTopicId || subTopicId === 'unit_test' || !topicParam) return null;
+
+        // SMART LOOKUP: Handle prefix mismatches (e.g. usage of 'Series' vs 'BC_Series')
+        let resolvedTopicKey = cleanTopic;
+        if (!topicContent[resolvedTopicKey]) {
+            // Try explicit prefixes if direct match fails
+            if (topicContent[`BC_${cleanTopic}`]) resolvedTopicKey = `BC_${cleanTopic}`;
+            else if (topicContent[`Both_${cleanTopic}`]) resolvedTopicKey = `Both_${cleanTopic}`;
+            else if (topicContent[`AB_${cleanTopic}`]) resolvedTopicKey = `AB_${cleanTopic}`;
+            // Fallback to topicParam if it's different and exists
+            else if (topicContent[topicParam]) resolvedTopicKey = topicParam;
+        }
+
+        const dbUnit = topicContent[resolvedTopicKey];
+        if (dbUnit) {
+            const dbSubTopic = dbUnit.subTopics?.find((s: any) => s.id === subTopicId);
+            if (dbSubTopic) {
+                return dbSubTopic; // Return directly
+            }
+        }
+
+        // Fallback to constants if DB lookup fails
+        if (COURSE_CONTENT_DATA[topicParam]) {
+            return COURSE_CONTENT_DATA[topicParam].subTopics?.find(s => s.id === subTopicId);
+        }
+        return null;
+    }, [subTopicId, topicParam, cleanTopic, topicContent]);
 
     // NEW: Frozen snapshot of incorrect question IDs for Review mode
     // This prevents questions from disappearing when user answers correctly during review
@@ -182,7 +210,6 @@ export const Practice = () => {
     const [prevSubTopicId, setPrevSubTopicId] = useState(subTopicId);
     if (subTopicId !== prevSubTopicId) {
         setPrevSubTopicId(subTopicId);
-        setDbSubTopicData(null); // Reset async data immediately
         // Note: We don't return null; we let it render with static data (which is correct)
     }
 
@@ -691,45 +718,6 @@ export const Practice = () => {
     }, [questions]);
 
 
-    // --- Separated Effect for Metadata Sync (Lesson Content) ---
-    useEffect(() => {
-        if (subTopicId && subTopicId !== 'unit_test' && topicParam) {
-            // SMART LOOKUP: Handle prefix mismatches (e.g. usage of 'Series' vs 'BC_Series')
-            let resolvedTopicKey = cleanTopic;
-            if (!topicContent[resolvedTopicKey]) {
-                // Try explicit prefixes if direct match fails
-                if (topicContent[`BC_${cleanTopic}`]) resolvedTopicKey = `BC_${cleanTopic}`;
-                else if (topicContent[`Both_${cleanTopic}`]) resolvedTopicKey = `Both_${cleanTopic}`;
-                else if (topicContent[`AB_${cleanTopic}`]) resolvedTopicKey = `AB_${cleanTopic}`;
-                // Fallback to topicParam if it's different and exists
-                else if (topicContent[topicParam]) resolvedTopicKey = topicParam;
-            }
-
-            const dbUnit = topicContent[resolvedTopicKey];
-            if (dbUnit) {
-                const dbSubTopic = dbUnit.subTopics?.find((s: any) => s.id === subTopicId);
-                if (dbSubTopic) {
-                    // Validate: Use functional update to preserve description_2 if already fetched
-                    setDbSubTopicData((prev: any) => {
-                        if (prev && prev.id === dbSubTopic.id && prev.description_2 && !dbSubTopic.description_2) {
-                            return { ...dbSubTopic, description_2: prev.description_2 };
-                        }
-                        return dbSubTopic;
-                    });
-
-                    // Direct fetch for description2 if missing logic (simplified for brevity as it was already handled well elsewhere)
-                } else if (COURSE_CONTENT_DATA[topicParam]) {
-                    // Logic handled by static derivation, no need to set state
-                }
-            } else if (COURSE_CONTENT_DATA[topicParam]) {
-                // Logic handled by static derivation, no need to set state
-            }
-            // Note: The specific description2 fetcher effect handles the heavy lifting
-        }
-    }, [subTopicId, topicParam, topicContent]); // Removed questions dependency
-
-
-    // Handle Empty State Debounce
     useEffect(() => {
         if (!isLoadingQuestions && questions.length === 0) {
             const timer = setTimeout(() => setShowEmptyState(true), 200); // 200ms grace period
@@ -740,6 +728,7 @@ export const Practice = () => {
     }, [questions.length, isLoadingQuestions]);
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const question = questions[currentQuestionIndex];
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
@@ -858,34 +847,6 @@ export const Practice = () => {
     }, [penColor]);
 
     // --- Dynamic Content Fetch for Lesson Mode (Aggressive Sync) ---
-    useEffect(() => {
-        if (viewState === 'lesson' && topicParam && subTopicId) {
-            // Correct ID for unit tests
-            const actualSectionId = subTopicId === 'unit_test' ? `${topicParam}_unit_test` : subTopicId;
-            console.log('[Practice] Fetching lesson content:', { topicParam, subTopicId, actualSectionId });
-
-            sectionsApi.getSection(topicParam, actualSectionId)
-                .then(data => {
-                    console.log('[Practice] Fetch response:', data);
-                    if (data) {
-                        // Force update ALL fields from DB to ensure UI is 100% in sync
-                        setDbSubTopicData((prev: any) => ({
-                            ...prev,
-                            id: data.id || prev?.id, // STRICT: Don't fallback to subTopicId to avoid masquerading
-                            title: data.title || (subTopicId === 'unit_test' ? 'Unit Test' : prev?.title) || 'Untitled',
-                            description: data.description || prev?.description,
-                            description_2: data.description_2 || data.chapter_detailed_description || data.description2 || data.detailed_description || null,
-                            estimatedMinutes: data.estimated_minutes || prev?.estimatedMinutes,
-                            hasLesson: data.has_lesson !== false,
-                            hasPractice: data.has_practice !== false
-                        }));
-                    }
-                })
-                .catch(err => console.error('Failed to fetch lesson content:', err));
-        }
-    }, [viewState, topicParam, subTopicId]);
-
-    const question = questions[currentQuestionIndex];
     const progress = questions.length > 0 ? ((currentQuestionIndex) / questions.length) * 100 : 0;
 
 
@@ -2550,6 +2511,16 @@ export const Practice = () => {
             }
 
             {/* Report Modal Removed */}
+
+            {/* DEBUGGING OVERLAY */}
+            <div className="fixed bottom-0 left-0 right-0 bg-black/80 text-white p-2 text-xs font-mono z-[99999] opacity-75 hover:opacity-100 transition-opacity">
+                D: {cleanTopic} | TP: {topicParam} | ST: {subTopicId} |
+                DBUnit: {String(!!topicContent[topicParam])} |
+                DescLen: {subTopicData?.description_2?.length || 0} |
+                Scope: {subTopicData?.courseScope || 'N/A'} |
+                KeyMatch: {Object.keys(topicContent).find(k => k.includes(cleanTopic))} |
+                CurrentCourse: {user?.currentCourse}
+            </div>
         </div >
     );
 };
