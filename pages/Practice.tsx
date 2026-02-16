@@ -2514,7 +2514,7 @@ export const Practice = () => {
 
             {/* DEBUGGING OVERLAY */}
             <div className="fixed bottom-0 left-0 right-0 bg-black/80 text-white p-2 text-xs font-mono z-[99999] opacity-75 hover:opacity-100 transition-opacity">
-                D: {cleanTopic} | TP: {topicParam} | ST: {subTopicId} |
+                [v2.1 FIXED] D: {cleanTopic} | TP: {topicParam} | ST: {subTopicId} |
                 DBUnit: {String(!!topicContent[topicParam])} |
                 DescLen: {subTopicData?.description_2?.length || 0} |
                 Scope: {subTopicData?.courseScope || 'N/A'} |
