@@ -11,7 +11,9 @@ SET
   difficulty = 2,
   target_time_seconds = 75,
   skill_tags = ARRAY['SK_LIMITS_INFINITY_HA_RULES', 'SK_RATIONAL_END_BEHAVIOR'],
-  error_tags = ARRAY['E_LIMIT_INFINITY_DEGREE_RULE', 'E_END_BEHAVIOR_SIGN'],
+  primary_skill_id = 'SK_LIMITS_INFINITY_HA_RULES',
+  supporting_skill_ids = ARRAY['SK_RATIONAL_END_BEHAVIOR'],
+error_tags = ARRAY['E_LIMIT_INFINITY_DEGREE_RULE', 'E_END_BEHAVIOR_SIGN'],
   prompt = 'For the function $$f(x)=\frac{5x^3-2x+7}{2x^3+9},$$ what is the horizontal asymptote of the graph of $f$?',
   latex = 'For the function $$f(x)=\frac{5x^3-2x+7}{2x^3+9},$$ what is the horizontal asymptote of the graph of $f$?',
   options = '[{"id": "A", "text": "$y=\\frac{5}{2}x$", "explanation": "This confuses end behavior at infinity with a slant asymptote rule; equal degrees do not produce a linear asymptote."}, {"id": "B", "text": "$y=\\frac{5}{2}$", "explanation": "Correct: degrees are equal, so the horizontal asymptote is the ratio of leading coefficients $\\frac{5}{2}$."}, {"id": "C", "text": "$y=0$", "explanation": "This is true only when the numerator degree is less than the denominator degree."}, {"id": "D", "text": "No horizontal asymptote", "explanation": "There is a horizontal asymptote because the degrees are equal."}]',
@@ -46,7 +48,9 @@ SET
   difficulty = 1,
   target_time_seconds = 60,
   skill_tags = ARRAY['SK_LIMITS_INFINITY_HA_RULES', 'SK_NUMERICAL_ESTIMATION_LIMITS'],
-  error_tags = ARRAY['E_LIMIT_INFINITY_DEGREE_RULE', 'E_END_BEHAVIOR_SIGN'],
+  primary_skill_id = 'SK_LIMITS_INFINITY_HA_RULES',
+  supporting_skill_ids = ARRAY['SK_NUMERICAL_ESTIMATION_LIMITS'],
+error_tags = ARRAY['E_LIMIT_INFINITY_DEGREE_RULE', 'E_END_BEHAVIOR_SIGN'],
   prompt = 'The table shows values of $f(x)=\dfrac{3x^2+1}{x^2-4}$ for large $x$.
 
 See image: U1C15_Q2_TableLimitAtInfinity.png
@@ -89,7 +93,9 @@ SET
   difficulty = 3,
   target_time_seconds = 95,
   skill_tags = ARRAY['SK_GRAPH_INTERPRETATION_LIMITS', 'SK_LIMITS_INFINITY_HA_RULES'],
-  error_tags = ARRAY['E_ASYMPTOTE_CONFUSION', 'E_END_BEHAVIOR_SIGN'],
+  primary_skill_id = 'SK_GRAPH_INTERPRETATION_LIMITS',
+  supporting_skill_ids = ARRAY['SK_LIMITS_INFINITY_HA_RULES'],
+error_tags = ARRAY['E_ASYMPTOTE_CONFUSION', 'E_END_BEHAVIOR_SIGN'],
   prompt = 'A graph is shown.
 
 See image: U1C15_Q3_EndBehaviorFromGraph.png
@@ -131,7 +137,9 @@ SET
   difficulty = 4,
   target_time_seconds = 120,
   skill_tags = ARRAY['SK_LIMITS_INFINITY_HA_RULES', 'SK_ALGEBRAIC_SIMPLIFICATION'],
-  error_tags = ARRAY['E_LIMIT_INFINITY_DEGREE_RULE', 'E_ALGEBRA_SIMPLIFY_ERROR'],
+  primary_skill_id = 'SK_LIMITS_INFINITY_HA_RULES',
+  supporting_skill_ids = ARRAY['SK_ALGEBRAIC_SIMPLIFICATION'],
+error_tags = ARRAY['E_LIMIT_INFINITY_DEGREE_RULE', 'E_ALGEBRA_SIMPLIFY_ERROR'],
   prompt = 'Evaluate the limit:
 $$\lim_{x\to-\infty}\frac{-4x^4+7x^2-1}{2x^4+5x-9}.$$',
   latex = 'Evaluate the limit:
@@ -169,7 +177,9 @@ SET
   difficulty = 5,
   target_time_seconds = 150,
   skill_tags = ARRAY['SK_ALGEBRAIC_SIMPLIFICATION', 'SK_LIMITS_INFINITY_HA_RULES'],
-  error_tags = ARRAY['E_ALGEBRA_SIMPLIFY_ERROR', 'E_END_BEHAVIOR_SIGN'],
+  primary_skill_id = 'SK_ALGEBRAIC_SIMPLIFICATION',
+  supporting_skill_ids = ARRAY['SK_LIMITS_INFINITY_HA_RULES'],
+error_tags = ARRAY['E_ALGEBRA_SIMPLIFY_ERROR', 'E_END_BEHAVIOR_SIGN'],
   prompt = 'Find the horizontal asymptote of
 $$f(x)=\frac{\sqrt{x^2+4x+1}}{x}$$
 (if it exists).',
@@ -210,7 +220,9 @@ SET
   difficulty = 2,
   target_time_seconds = 90,
   skill_tags = ARRAY['SK_IVT_APPLICATION', 'SK_FUNCTION_CONTINUITY_CHECK'],
-  error_tags = ARRAY['E_IVT_CONDITIONS_MISUSED', 'E_CONTINUITY_ASSUMPTION'],
+  primary_skill_id = 'SK_IVT_APPLICATION',
+  supporting_skill_ids = ARRAY['SK_FUNCTION_CONTINUITY_CHECK'],
+error_tags = ARRAY['E_IVT_CONDITIONS_MISUSED', 'E_CONTINUITY_ASSUMPTION'],
   prompt = 'Let $f$ be continuous on $[2,7]$ with $f(2)=-3$ and $f(7)=5$. Which statement must be true?',
   latex = 'Let $f$ be continuous on $[2,7]$ with $f(2)=-3$ and $f(7)=5$. Which statement must be true?',
   options = '[{"id": "A", "text": "There exists $c\\in(2,7)$ such that $f(c)=10$.", "explanation": "$10$ is not between $-3$ and $5$, so IVT does not guarantee this value."}, {"id": "B", "text": "There exists $c\\in(2,7)$ such that $f(c)=-4$.", "explanation": "$-4$ is not between $-3$ and $5$, so IVT does not guarantee this value."}, {"id": "C", "text": "There exists $c\\in(2,7)$ such that $f(c)=0$.", "explanation": "Correct: $0$ is between $-3$ and $5$, and continuity on $[2,7]$ guarantees some $c$ with $f(c)=0$."}, {"id": "D", "text": "$f$ must be increasing on $[2,7]$.", "explanation": "IVT does not imply monotonicity."}]',
@@ -243,7 +255,9 @@ SET
   difficulty = 3,
   target_time_seconds = 110,
   skill_tags = ARRAY['SK_IVT_APPLICATION', 'SK_EQUATION_SETUP'],
-  error_tags = ARRAY['E_IVT_DOMAIN_MISREAD', 'E_IVT_CONDITIONS_MISUSED'],
+  primary_skill_id = 'SK_IVT_APPLICATION',
+  supporting_skill_ids = ARRAY['SK_EQUATION_SETUP'],
+error_tags = ARRAY['E_IVT_DOMAIN_MISREAD', 'E_IVT_CONDITIONS_MISUSED'],
   prompt = 'Let $f(x)=x^3-6x+1$. Show that there is a solution to $f(x)=2$ in the interval $(0,1)$ using the Intermediate Value Theorem. Which pair of values correctly supports the conclusion?',
   latex = 'Let $f(x)=x^3-6x+1$. Show that there is a solution to $f(x)=2$ in the interval $(0,1)$ using the Intermediate Value Theorem. Which pair of values correctly supports the conclusion?',
   options = '[{"id": "A", "text": "$f(0)=1$ and $f(1)=-4$", "explanation": "These values straddle $0$, not $2$; they do not show $2$ is between endpoint outputs."}, {"id": "B", "text": "$f(0)=1$ and $f(1)=-4$, so there is a solution to $f(x)=2$", "explanation": "This incorrectly uses a sign change about $0$ to claim a solution for $f(x)=2$."}, {"id": "C", "text": "$f(0)=1$ and $f(1)=-4$, so there is a solution to $f(x)=0$", "explanation": "That conclusion is true, but it is not the target equation $f(x)=2$."}, {"id": "D", "text": "$f(0)=1$ and $f(1)=-4$, so there is a solution to $f(x)=2$ after shifting to $g(x)=f(x)-2$ with $g(0)=-1$ and $g(1)=-6$", "explanation": "This shift is set up incorrectly; $g(0)=f(0)-2= -1$ is correct, but $g(1)=f(1)-2=-6$ gives no sign change and does not prove existence on $(0,1)$."}]',
@@ -279,7 +293,9 @@ SET
   difficulty = 2,
   target_time_seconds = 85,
   skill_tags = ARRAY['SK_GRAPH_INTERPRETATION_LIMITS', 'SK_IVT_APPLICATION'],
-  error_tags = ARRAY['E_IVT_DOMAIN_MISREAD', 'E_IVT_CONDITIONS_MISUSED'],
+  primary_skill_id = 'SK_GRAPH_INTERPRETATION_LIMITS',
+  supporting_skill_ids = ARRAY['SK_IVT_APPLICATION'],
+error_tags = ARRAY['E_IVT_DOMAIN_MISREAD', 'E_IVT_CONDITIONS_MISUSED'],
   prompt = 'A continuous function $y=f(x)$ is graphed, and the line $y=2$ is shown.
 
 See image: U1C16_Q3_IVT_GraphYEquals2.png
@@ -320,7 +336,9 @@ SET
   difficulty = 4,
   target_time_seconds = 125,
   skill_tags = ARRAY['SK_IVT_APPLICATION', 'SK_FUNCTION_CONTINUITY_CHECK', 'SK_ALGEBRAIC_SIMPLIFICATION'],
-  error_tags = ARRAY['E_CONTINUITY_ASSUMPTION', 'E_IVT_CONDITIONS_MISUSED'],
+  primary_skill_id = 'SK_IVT_APPLICATION',
+  supporting_skill_ids = ARRAY['SK_FUNCTION_CONTINUITY_CHECK', 'SK_ALGEBRAIC_SIMPLIFICATION'],
+ 'SK_ALGEBRAIC_SIMPLIFICATION'],error_tags = ARRAY['E_CONTINUITY_ASSUMPTION', 'E_IVT_CONDITIONS_MISUSED'],
   prompt = 'Consider $$h(x)=\frac{x^2-9}{x-3}.$$ Which statement is correct about using the Intermediate Value Theorem to guarantee a solution to $h(x)=4$ on the interval $[2,5]$?',
   latex = 'Consider $$h(x)=\frac{x^2-9}{x-3}.$$ Which statement is correct about using the Intermediate Value Theorem to guarantee a solution to $h(x)=4$ on the interval $[2,5]$?',
   options = '[{"id": "A", "text": "IVT applies on $[2,5]$ because $h$ is a rational function.", "explanation": "Rational functions are not continuous where the denominator is $0$; here $x=3$ is in $[2,5]$."}, {"id": "B", "text": "IVT does not apply on $[2,5]$ because $h$ is not continuous on $[2,5]$.", "explanation": "Correct: $h$ is undefined at $x=3$, which lies in the interval, so $h$ is not continuous on $[2,5]$."}, {"id": "C", "text": "IVT applies on $[2,5]$ because $h(x)=x+3$ after simplification.", "explanation": "Although $\\frac{x^2-9}{x-3}=x+3$ for $x\\ne3$, the original function still has a discontinuity at $x=3$."}, {"id": "D", "text": "IVT applies on $[2,5]$ only if $h(3)=6$ is defined.", "explanation": "Defining $h(3)$ would create a new function; as given, $h$ is not continuous on $[2,5]$."}]',
@@ -355,7 +373,9 @@ SET
   difficulty = 3,
   target_time_seconds = 105,
   skill_tags = ARRAY['SK_FUNCTION_CONTINUITY_CHECK', 'SK_GRAPH_INTERPRETATION_LIMITS', 'SK_IVT_APPLICATION'],
-  error_tags = ARRAY['E_CONTINUITY_ASSUMPTION', 'E_IVT_CONDITIONS_MISUSED'],
+  primary_skill_id = 'SK_FUNCTION_CONTINUITY_CHECK',
+  supporting_skill_ids = ARRAY['SK_GRAPH_INTERPRETATION_LIMITS', 'SK_IVT_APPLICATION'],
+ 'SK_IVT_APPLICATION'],error_tags = ARRAY['E_CONTINUITY_ASSUMPTION', 'E_IVT_CONDITIONS_MISUSED'],
   prompt = 'A graph of $y=g(x)$ is shown.
 
 See image: U1C16_Q5_DiscontinuityCounterexample.png

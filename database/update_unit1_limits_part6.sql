@@ -11,7 +11,9 @@ SET
   difficulty = 3,
   target_time_seconds = 90,
   skill_tags = ARRAY['Detect_Removable_Discontinuity', 'Limit_Algebraic_Simplification', 'Domain_Restriction_Ignored'],
-  error_tags = ARRAY['Cancel_Factor_Without_Restriction', 'Limit_Equals_Value_Misconception', 'Domain_Restriction_Ignored'],
+  primary_skill_id = 'Detect_Removable_Discontinuity',
+  supporting_skill_ids = ARRAY['Limit_Algebraic_Simplification', 'Domain_Restriction_Ignored'],
+ 'Domain_Restriction_Ignored'],error_tags = ARRAY['Cancel_Factor_Without_Restriction', 'Limit_Equals_Value_Misconception', 'Domain_Restriction_Ignored'],
   prompt = 'Let
 $$f(x)=\frac{x^2-9}{x-3}$$
 for $x\ne 3$. Which value of $f(3)$ makes $f$ continuous at $x=3$?',
@@ -48,7 +50,9 @@ SET
   difficulty = 4,
   target_time_seconds = 120,
   skill_tags = ARRAY['Piecewise_Continuity_Parameter', 'Limit_At_Hole', 'Limit_Algebraic_Simplification'],
-  error_tags = ARRAY['Limit_Equals_Value_Misconception', 'OneSided_Limit_Not_Checked', 'Algebra_Simplification_Error'],
+  primary_skill_id = 'Piecewise_Continuity_Parameter',
+  supporting_skill_ids = ARRAY['Limit_At_Hole', 'Limit_Algebraic_Simplification'],
+ 'Limit_Algebraic_Simplification'],error_tags = ARRAY['Limit_Equals_Value_Misconception', 'OneSided_Limit_Not_Checked', 'Algebra_Simplification_Error'],
   prompt = 'Define
 $$g(x)=\begin{cases}
 \frac{x^2-1}{x-1}, & x\ne 1 \\
@@ -91,7 +95,9 @@ SET
   difficulty = 2,
   target_time_seconds = 75,
   skill_tags = ARRAY['Limit_Algebraic_Simplification', 'Detect_Removable_Discontinuity'],
-  error_tags = ARRAY['Cancel_Factor_Without_Restriction', 'Algebra_Simplification_Error', 'Domain_Restriction_Ignored'],
+  primary_skill_id = 'Limit_Algebraic_Simplification',
+  supporting_skill_ids = ARRAY['Detect_Removable_Discontinuity'],
+error_tags = ARRAY['Cancel_Factor_Without_Restriction', 'Algebra_Simplification_Error', 'Domain_Restriction_Ignored'],
   prompt = 'Evaluate
 $$\lim_{x\to -2}\frac{x^2+5x+6}{x+2}.$$',
   latex = 'Evaluate
@@ -126,7 +132,9 @@ SET
   difficulty = 5,
   target_time_seconds = 150,
   skill_tags = ARRAY['Piecewise_Continuity_Parameter', 'Limit_Algebraic_Simplification', 'OneSided_Limits_From_FactorSigns'],
-  error_tags = ARRAY['OneSided_Limit_Not_Checked', 'Algebra_Simplification_Error', 'Limit_Equals_Value_Misconception'],
+  primary_skill_id = 'Piecewise_Continuity_Parameter',
+  supporting_skill_ids = ARRAY['Limit_Algebraic_Simplification', 'OneSided_Limits_From_FactorSigns'],
+ 'OneSided_Limits_From_FactorSigns'],error_tags = ARRAY['OneSided_Limit_Not_Checked', 'Algebra_Simplification_Error', 'Limit_Equals_Value_Misconception'],
   prompt = 'Let
 $$h(x)=\begin{cases}
 \frac{x^2-4}{x-2}, & x<2 \\
@@ -169,7 +177,9 @@ SET
   difficulty = 3,
   target_time_seconds = 105,
   skill_tags = ARRAY['Limit_Algebraic_Simplification', 'Detect_Removable_Discontinuity'],
-  error_tags = ARRAY['Algebra_Simplification_Error', 'Cancel_Factor_Without_Restriction', 'Limit_Equals_Value_Misconception'],
+  primary_skill_id = 'Limit_Algebraic_Simplification',
+  supporting_skill_ids = ARRAY['Detect_Removable_Discontinuity'],
+error_tags = ARRAY['Algebra_Simplification_Error', 'Cancel_Factor_Without_Restriction', 'Limit_Equals_Value_Misconception'],
   prompt = 'Evaluate
 $$\lim_{x\to 0}\frac{\sqrt{1+3x}-1}{x}.$$',
   latex = 'Evaluate
@@ -208,7 +218,9 @@ SET
   difficulty = 2,
   target_time_seconds = 85,
   skill_tags = ARRAY['Infinite_Limits_Vertical_Asymptotes', 'OneSided_Limits_From_FactorSigns'],
-  error_tags = ARRAY['VerticalAsymptote_Sign_Error', 'Hole_vs_Asymptote_Confusion', 'OneSided_Limit_Not_Checked'],
+  primary_skill_id = 'Infinite_Limits_Vertical_Asymptotes',
+  supporting_skill_ids = ARRAY['OneSided_Limits_From_FactorSigns'],
+error_tags = ARRAY['VerticalAsymptote_Sign_Error', 'Hole_vs_Asymptote_Confusion', 'OneSided_Limit_Not_Checked'],
   prompt = 'Evaluate
 $$\lim_{x\to 2^+}\frac{5}{x-2}.$$',
   latex = 'Evaluate
@@ -243,7 +255,9 @@ SET
   difficulty = 4,
   target_time_seconds = 130,
   skill_tags = ARRAY['Infinite_Limits_Vertical_Asymptotes', 'OneSided_Limits_From_FactorSigns', 'Limit_Algebraic_Simplification'],
-  error_tags = ARRAY['VerticalAsymptote_Sign_Error', 'Hole_vs_Asymptote_Confusion', 'Cancel_Factor_Without_Restriction'],
+  primary_skill_id = 'Infinite_Limits_Vertical_Asymptotes',
+  supporting_skill_ids = ARRAY['OneSided_Limits_From_FactorSigns', 'Limit_Algebraic_Simplification'],
+ 'Limit_Algebraic_Simplification'],error_tags = ARRAY['VerticalAsymptote_Sign_Error', 'Hole_vs_Asymptote_Confusion', 'Cancel_Factor_Without_Restriction'],
   prompt = 'Let
 $$p(x)=\frac{(x-1)(x+2)}{(x-1)^2}.$$ Which statement is true?',
   latex = 'Let
@@ -278,7 +292,9 @@ SET
   difficulty = 3,
   target_time_seconds = 110,
   skill_tags = ARRAY['Infinite_Limits_Vertical_Asymptotes', 'OneSided_Limits_From_FactorSigns'],
-  error_tags = ARRAY['VerticalAsymptote_Sign_Error', 'OneSided_Limit_Not_Checked', 'Algebra_Simplification_Error'],
+  primary_skill_id = 'Infinite_Limits_Vertical_Asymptotes',
+  supporting_skill_ids = ARRAY['OneSided_Limits_From_FactorSigns'],
+error_tags = ARRAY['VerticalAsymptote_Sign_Error', 'OneSided_Limit_Not_Checked', 'Algebra_Simplification_Error'],
   prompt = 'Evaluate
 $$\lim_{x\to -3^-}\frac{2}{(x+3)^3}.$$',
   latex = 'Evaluate
@@ -313,7 +329,9 @@ SET
   difficulty = 5,
   target_time_seconds = 160,
   skill_tags = ARRAY['Infinite_Limits_Vertical_Asymptotes', 'Rational_Function_Analysis', 'OneSided_Limits_From_FactorSigns'],
-  error_tags = ARRAY['Hole_vs_Asymptote_Confusion', 'VerticalAsymptote_Sign_Error', 'Cancel_Factor_Without_Restriction'],
+  primary_skill_id = 'Infinite_Limits_Vertical_Asymptotes',
+  supporting_skill_ids = ARRAY['Rational_Function_Analysis', 'OneSided_Limits_From_FactorSigns'],
+ 'OneSided_Limits_From_FactorSigns'],error_tags = ARRAY['Hole_vs_Asymptote_Confusion', 'VerticalAsymptote_Sign_Error', 'Cancel_Factor_Without_Restriction'],
   prompt = 'For
 $$q(x)=\frac{x^2-4x+3}{x^2-5x+6},$$
 which $x$-value is a vertical asymptote of $q$?',
@@ -356,7 +374,9 @@ SET
   difficulty = 3,
   target_time_seconds = 120,
   skill_tags = ARRAY['Infinite_Limits_Vertical_Asymptotes', 'OneSided_Limits_From_FactorSigns'],
-  error_tags = ARRAY['VerticalAsymptote_Sign_Error', 'OneSided_Limit_Not_Checked', 'Algebra_Simplification_Error'],
+  primary_skill_id = 'Infinite_Limits_Vertical_Asymptotes',
+  supporting_skill_ids = ARRAY['OneSided_Limits_From_FactorSigns'],
+error_tags = ARRAY['VerticalAsymptote_Sign_Error', 'OneSided_Limit_Not_Checked', 'Algebra_Simplification_Error'],
   prompt = 'Evaluate
 $$\lim_{x\to 4}\frac{x+1}{(x-4)^2}.$$',
   latex = 'Evaluate

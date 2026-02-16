@@ -1,0 +1,848 @@
+-- Unit 6.5 (Interpreting the Behavior of Accumulation Functions Involving Area) — Practice 1–5
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.5',
+  section_id = '6.5',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 2,
+  target_time_seconds = 75,
+  skill_tags = ARRAY['SK_FTC1', 'SK_ACCUM_BEHAVIOR'],
+  primary_skill_id = 'SK_FTC1',
+  supporting_skill_ids = ARRAY['SK_ACCUM_BEHAVIOR'],
+error_tags = ARRAY['E_FTC_DERIV_CONFUSION', 'E_SIGN_CHART_ERROR'],
+  prompt = 'Let $G(x)=\displaystyle\int_{2}^{x}(t^2-4)\,dt$. On which interval is $G$ increasing on $[0,4]$?',
+  latex = 'Let $G(x)=\displaystyle\int_{2}^{x}(t^2-4)\,dt$. On which interval is $G$ increasing on $[0,4]$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$(2,4]$','explanation','By FTC, $G''(x)=x^2-4$. On $[0,4]$, $x^2-4>0$ exactly when $x>2$.'),
+    jsonb_build_object('id','B','text','$[0,2)$','explanation','On $[0,2)$, $x^2-4<0$, so $G$ is decreasing, not increasing.'),
+    jsonb_build_object('id','C','text','$(0,2)$','explanation','On $(0,2)$, $x^2-4<0$, so $G$ decreases.'),
+    jsonb_build_object('id','D','text','$[0,4]$','explanation','$G''(x)$ changes sign at $x=2$, so $G$ is not increasing on the entire interval.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Use FTC: $G''(x)=x^2-4$. Increasing where $G''(x)>0$, i.e., $x>2$ on $[0,4]$.',
+  recommendation_reasons = ARRAY['Uses FTC to connect $G''(x)$ to increasing/decreasing behavior.','Targets sign analysis on an interval.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: interpret increasing/decreasing of an accumulation function via $G''(x)$.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.5-P1';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.5',
+  section_id = '6.5',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 3,
+  target_time_seconds = 105,
+  skill_tags = ARRAY['SK_ACCUM_BEHAVIOR', 'SK_FTC1', 'SK_CONCAVITY_FROM_DERIV'],
+  primary_skill_id = 'SK_ACCUM_BEHAVIOR',
+  supporting_skill_ids = ARRAY['SK_FTC1', 'SK_CONCAVITY_FROM_DERIV'],
+error_tags = ARRAY['E_FTC_DERIV_CONFUSION', 'E_SIGN_NET_CHANGE'],
+  prompt = 'Let $A(x)=\displaystyle\int_{0}^{x} f(t)\,dt$, where $f$ is shown in the figure. Which statement about $A$ at $x=4$ is true?',
+  latex = 'Let $A(x)=\displaystyle\int_{0}^{x} f(t)\,dt$, where $f$ is shown in the figure. Which statement about $A$ at $x=4$ is true?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$A$ is increasing and concave down at $x=4$.','explanation','Increasing would require $A''(4)=f(4)>0$, but the figure shows $f(4)=0$.'),
+    jsonb_build_object('id','B','text','$A$ has a local maximum at $x=4$.','explanation','A local maximum would require $A''(4)=0$ and $f$ crossing from positive to negative at $4$; the figure shows $f(4)=0$ with positive slope.'),
+    jsonb_build_object('id','C','text','$A''(4)=0$ and $A$ has a local minimum at $x=4$.','explanation','By FTC, $A''(x)=f(x)$ so $A''(4)=f(4)=0$. Also $A''''(4)=f''(4)>0$ since $f$ is increasing through $x=4$, indicating a local minimum.'),
+    jsonb_build_object('id','D','text','$A$ is decreasing at $x=4$.','explanation','Decreasing would require $A''(4)=f(4)<0$, but the figure shows $f(4)=0$.')
+  ),
+  correct_option_id = 'C',
+  tolerance = 0.0010,
+  explanation = 'FTC gives $A''(x)=f(x)$ and $A''''(x)=f''(x)$. From the figure, $f(4)=0$ and $f''(4)>0$, so $A$ has a local minimum at $x=4$.',
+  recommendation_reasons = ARRAY['Interprets $A''(x)=f(x)$ and concavity via $A''''(x)=f''(x)$.','Targets local extrema of accumulation functions from graphs.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: use graph of $f$ to infer $A''(4)$ and local extremum via sign of slope at $x=4$.',
+  weight_primary = 0.70,
+  weight_supporting = 0.30,
+  prompt_type = 'text_and_image',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.5-P2';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.5',
+  section_id = '6.5',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 1,
+  target_time_seconds = 45,
+  skill_tags = ARRAY['SK_ACCUM_VALUE', 'SK_DEF_INT_INTERP'],
+  primary_skill_id = 'SK_ACCUM_VALUE',
+  supporting_skill_ids = ARRAY['SK_DEF_INT_INTERP'],
+error_tags = ARRAY['E_SIGN_NET_CHANGE', 'E_ACCUM_VS_VALUE'],
+  prompt = 'A function $g$ is continuous and $F(x)=\displaystyle\int_{0}^{x} g(t)\,dt$. If $F(1)=3$ and $F(4)=-2$, what is $\displaystyle\int_{1}^{4} g(t)\,dt$?',
+  latex = 'A function $g$ is continuous and $F(x)=\displaystyle\int_{0}^{x} g(t)\,dt$. If $F(1)=3$ and $F(4)=-2$, what is $\displaystyle\int_{1}^{4} g(t)\,dt$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$1$','explanation','$\int_{1}^{4} g=F(4)-F(1)=-2-3=-5$, not $1$.'),
+    jsonb_build_object('id','B','text','$5$','explanation','This ignores the sign: $F(4)-F(1)=-5$.'),
+    jsonb_build_object('id','C','text','$-1$','explanation','$F(4)-F(1)=-5$, not $-1$.'),
+    jsonb_build_object('id','D','text','$-5$','explanation','Correct since $\int_{1}^{4} g(t)\,dt=F(4)-F(1)=-2-3=-5$.')
+  ),
+  correct_option_id = 'D',
+  tolerance = 0.0010,
+  explanation = 'By additivity of integrals: $\int_{1}^{4} g(t)\,dt=\int_{0}^{4} g-\int_{0}^{1} g=F(4)-F(1)=-5$.',
+  recommendation_reasons = ARRAY['Reinforces that differences of accumulation values equal definite integrals.','Targets sign mistakes in net change.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 1,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: compute $\int_{1}^{4} g$ from accumulation values using $F(4)-F(1)$.',
+  weight_primary = 0.90,
+  weight_supporting = 0.10,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.5-P3';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.5',
+  section_id = '6.5',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 2,
+  target_time_seconds = 95,
+  skill_tags = ARRAY['SK_SIGNED_AREA', 'SK_ACCUM_VALUE'],
+  primary_skill_id = 'SK_SIGNED_AREA',
+  supporting_skill_ids = ARRAY['SK_ACCUM_VALUE'],
+error_tags = ARRAY['E_UNITS_MISMATCH', 'E_SIGN_NET_CHANGE'],
+  prompt = 'A tank contains $50$ gallons at $t=0$. Its volume is $V(t)=50+\displaystyle\int_{0}^{t} r(s)\,ds$, where $r(t)$ (in gallons per hour) is shown in the figure. What is $V(6)$?',
+  latex = 'A tank contains $50$ gallons at $t=0$. Its volume is $V(t)=50+\displaystyle\int_{0}^{t} r(s)\,ds$, where $r(t)$ (in gallons per hour) is shown in the figure. What is $V(6)$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$54$','explanation','From $0$ to $6$, net change is $6-2+4=8$, so $V(6)=58$, not $54$.'),
+    jsonb_build_object('id','B','text','$58$','explanation','Compute net change: $\int_0^2 3\,dt=6$, $\int_2^4 (-1)\,dt=-2$, $\int_4^6 2\,dt=4$. Total $=8$, so $50+8=58$.'),
+    jsonb_build_object('id','C','text','$60$','explanation','This would correspond to net change $10$, but the integral to $6$ is $8$.'),
+    jsonb_build_object('id','D','text','$42$','explanation','This misreads the sign; the net change is positive, so the volume increases overall.')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'Net change is the signed area under $r(t)$ from $0$ to $6$: $6+(-2)+4=8$. Add to the initial $50$ to get $58$.',
+  recommendation_reasons = ARRAY['Connects area under a rate curve to accumulated quantity with units.','Targets signed-area mistakes for negative rates.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: accumulation from a piecewise-constant rate graph using signed area and units.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+  prompt_type = 'text_and_image',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.5-P4';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.5',
+  section_id = '6.5',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 4,
+  target_time_seconds = 120,
+  skill_tags = ARRAY['SK_ACCUM_VALUE', 'SK_SIGNED_AREA'],
+  primary_skill_id = 'SK_ACCUM_VALUE',
+  supporting_skill_ids = ARRAY['SK_SIGNED_AREA'],
+error_tags = ARRAY['E_ABS_AREA_CONFUSION', 'E_SIGN_NET_CHANGE'],
+  prompt = 'Let $H(x)=\displaystyle\int_{0}^{x} |\sin t|\,dt$. What is $H(2\pi)$?',
+  latex = 'Let $H(x)=\displaystyle\int_{0}^{x} |\sin t|\,dt$. What is $H(2\pi)$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$4$','explanation','Over one full period, $\int_0^{2\pi} |\sin t|\,dt=2\int_0^{\pi} \sin t\,dt=2\cdot 2=4$.'),
+    jsonb_build_object('id','B','text','$0$','explanation','That would be $\int_0^{2\pi} \sin t\,dt$, not with absolute value.'),
+    jsonb_build_object('id','C','text','$2$','explanation','Half the correct value; $|\sin t|$ makes both halves contribute positively.'),
+    jsonb_build_object('id','D','text','$-4$','explanation','The integral of a nonnegative function $|\sin t|$ cannot be negative.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Because $|\sin t|\ge 0$, compute total area: $\int_0^{2\pi}|\sin t|dt=2\int_0^{\pi}\sin t\,dt=2\cdot 2=4$.',
+  recommendation_reasons = ARRAY['Checks that absolute value produces total area, not net area.','Targets the common $\int \sin =0$ confusion.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: interpret $\int |\sin t|$ as total area over a period.',
+  weight_primary = 0.85,
+  weight_supporting = 0.15,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.5-P5';
+
+
+
+-- Unit 6.6 (Applying Properties of Definite Integrals) — Practice 1–5
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.6',
+  section_id = '6.6',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 1,
+  target_time_seconds = 45,
+  skill_tags = ARRAY['SK_INT_PROPERTIES', 'SK_INT_LINEARITY'],
+  primary_skill_id = 'SK_INT_PROPERTIES',
+  supporting_skill_ids = ARRAY['SK_INT_LINEARITY'],
+error_tags = ARRAY['E_LINEARITY_CONST_ERROR', 'E_SIGN_NET_CHANGE'],
+  prompt = 'If $\displaystyle\int_{0}^{3} f(x)\,dx=5$ and $\displaystyle\int_{0}^{3} g(x)\,dx=-2$, what is $\displaystyle\int_{0}^{3} \bigl(2f(x)-3g(x)\bigr)\,dx$?',
+  latex = 'If $\displaystyle\int_{0}^{3} f(x)\,dx=5$ and $\displaystyle\int_{0}^{3} g(x)\,dx=-2$, what is $\displaystyle\int_{0}^{3} \bigl(2f(x)-3g(x)\bigr)\,dx$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$4$','explanation','This comes from not distributing constants correctly or mishandling signs.'),
+    jsonb_build_object('id','B','text','$10$','explanation','This is only $2\int f$, missing the $-3\int g$ term.'),
+    jsonb_build_object('id','C','text','$16$','explanation','Linearity: $2\int f-3\int g=2(5)-3(-2)=10+6=16$.'),
+    jsonb_build_object('id','D','text','$-16$','explanation','Sign error: $-3\int g=-3(-2)=+6$, not $-6$.')
+  ),
+  correct_option_id = 'C',
+  tolerance = 0.0010,
+  explanation = 'Use linearity: $\int(2f-3g)=2\int f-3\int g=2(5)-3(-2)=16$.',
+  recommendation_reasons = ARRAY['Fast practice with linearity and constants for definite integrals.','Targets sign control with negative integral values.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 1,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: apply linearity of the definite integral with constants and sums.',
+  weight_primary = 0.90,
+  weight_supporting = 0.10,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.6-P1';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.6',
+  section_id = '6.6',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 1,
+  target_time_seconds = 50,
+  skill_tags = ARRAY['SK_INT_PROPERTIES', 'SK_INT_ADDITIVITY'],
+  primary_skill_id = 'SK_INT_PROPERTIES',
+  supporting_skill_ids = ARRAY['SK_INT_ADDITIVITY'],
+error_tags = ARRAY['E_INTERVAL_SPLIT_ERROR', 'E_LIMITS_REVERSAL'],
+  prompt = 'If $\displaystyle\int_{1}^{5} f(x)\,dx=7$ and $\displaystyle\int_{5}^{9} f(x)\,dx=-4$, what is $\displaystyle\int_{1}^{9} f(x)\,dx$?',
+  latex = 'If $\displaystyle\int_{1}^{5} f(x)\,dx=7$ and $\displaystyle\int_{5}^{9} f(x)\,dx=-4$, what is $\displaystyle\int_{1}^{9} f(x)\,dx$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$-11$','explanation','This treats both contributions as negative; but $\int_{1}^{5} f$ is positive.'),
+    jsonb_build_object('id','B','text','$3$','explanation','Additivity: $\int_{1}^{9} f=\int_{1}^{5} f+\int_{5}^{9} f=7+(-4)=3$.'),
+    jsonb_build_object('id','C','text','$11$','explanation','This incorrectly computes $7-(-4)$ instead of $7+(-4)$.'),
+    jsonb_build_object('id','D','text','$-3$','explanation','Sign error: $7+(-4)=3$, not $-3$.')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'Use additivity on adjacent intervals: $\int_{1}^{9} f=\int_{1}^{5} f+\int_{5}^{9} f=7+(-4)=3$.',
+  recommendation_reasons = ARRAY['Reinforces combining definite integrals across subintervals.','Targets common sign mistakes with negative areas.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 1,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: additivity of the definite integral on contiguous intervals.',
+  weight_primary = 0.85,
+  weight_supporting = 0.15,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.6-P2';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.6',
+  section_id = '6.6',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 2,
+  target_time_seconds = 70,
+  skill_tags = ARRAY['SK_EVEN_ODD', 'SK_INT_PROPERTIES'],
+  primary_skill_id = 'SK_EVEN_ODD',
+  supporting_skill_ids = ARRAY['SK_INT_PROPERTIES'],
+error_tags = ARRAY['E_EVEN_ODD_MISUSE', 'E_LIMITS_REVERSAL'],
+  prompt = 'A function $f$ is even and $\displaystyle\int_{-2}^{2} f(x)\,dx=6$. What is $\displaystyle\int_{0}^{2} f(x)\,dx$?',
+  latex = 'A function $f$ is even and $\displaystyle\int_{-2}^{2} f(x)\,dx=6$. What is $\displaystyle\int_{0}^{2} f(x)\,dx$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$6$','explanation','For even $f$, $\int_{-2}^{2} f=2\int_{0}^{2} f$, so $\int_{0}^{2} f=3$.'),
+    jsonb_build_object('id','B','text','$-3$','explanation','Even symmetry does not make the half-interval integral negative; this is a sign error.'),
+    jsonb_build_object('id','C','text','$0$','explanation','$0$ would match an odd function on symmetric limits, not an even function.'),
+    jsonb_build_object('id','D','text','$3$','explanation','Since $f$ is even, $\int_{-2}^{2} f(x)\,dx=2\int_{0}^{2} f(x)\,dx$, so $\int_{0}^{2} f=3$.')
+  ),
+  correct_option_id = 'D',
+  tolerance = 0.0010,
+  explanation = 'Even symmetry: $\int_{-a}^{a} f=2\int_{0}^{a} f$. Here, $6=2\int_{0}^{2} f$, so $\int_{0}^{2} f=3$.',
+  recommendation_reasons = ARRAY['Uses even symmetry to reduce an integral on symmetric bounds.','Targets confusion between even/odd symmetry results.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: even symmetry property on symmetric bounds.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.6-P3';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.6',
+  section_id = '6.6',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 3,
+  target_time_seconds = 85,
+  skill_tags = ARRAY['SK_INT_BOUNDS', 'SK_INT_PROPERTIES'],
+  primary_skill_id = 'SK_INT_BOUNDS',
+  supporting_skill_ids = ARRAY['SK_INT_PROPERTIES'],
+error_tags = ARRAY['E_UNITS_MISMATCH', 'E_SIGN_CHART_ERROR'],
+  prompt = 'On the interval $[0,2]$, a function $f$ satisfies $1\le f(x)\le 3$ for all $x$. Which statement must be true?',
+  latex = 'On the interval $[0,2]$, a function $f$ satisfies $1\le f(x)\le 3$ for all $x$. Which statement must be true?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$2\le \displaystyle\int_{0}^{2} f(x)\,dx\le 6$','explanation','Multiply bounds by interval length: $\int_0^2 1\,dx=2$ and $\int_0^2 3\,dx=6$, so the integral must lie between.'),
+    jsonb_build_object('id','B','text','$1\le \displaystyle\int_{0}^{2} f(x)\,dx\le 3$','explanation','The integral scales with interval length; you must multiply by $2$.'),
+    jsonb_build_object('id','C','text','$\displaystyle\int_{0}^{2} f(x)\,dx=4$','explanation','Not enough information for an exact value.'),
+    jsonb_build_object('id','D','text','$\displaystyle\int_{0}^{2} f(x)\,dx\ge 6$','explanation','The integral is at most $6$, not at least $6$.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Comparison property: if $m\le f(x)\le M$ on $[a,b]$, then $m(b-a)\le\int_a^b f\le M(b-a)$. Here $b-a=2$, so $2\le\int_0^2 f\le 6$.',
+  recommendation_reasons = ARRAY['Applies comparison bounds for integrals from pointwise inequalities.','Targets the common mistake of forgetting the interval length.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: bound a definite integral using bounds on the integrand.',
+  weight_primary = 0.75,
+  weight_supporting = 0.25,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.6-P4';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.6',
+  section_id = '6.6',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 2,
+  target_time_seconds = 70,
+  skill_tags = ARRAY['SK_EVEN_ODD', 'SK_INT_PROPERTIES'],
+  primary_skill_id = 'SK_EVEN_ODD',
+  supporting_skill_ids = ARRAY['SK_INT_PROPERTIES'],
+error_tags = ARRAY['E_EVEN_ODD_MISUSE', 'E_SIGN_NET_CHANGE'],
+  prompt = 'The graph of an odd function $h$ is shown in the figure. What is $\displaystyle\int_{-3}^{3} h(x)\,dx$?',
+  latex = 'The graph of an odd function $h$ is shown in the figure. What is $\displaystyle\int_{-3}^{3} h(x)\,dx$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$6$','explanation','An odd function has symmetric positive/negative areas on $[-a,a]$ that cancel to $0$.'),
+    jsonb_build_object('id','B','text','$-6$','explanation','On symmetric limits, an odd function’s integral is $0$, not negative.'),
+    jsonb_build_object('id','C','text','$0$','explanation','For odd $h$, $\int_{-a}^{a} h(x)\,dx=0$ by symmetry.'),
+    jsonb_build_object('id','D','text','Cannot be determined without an equation for $h$.','explanation','Odd symmetry alone determines the value on symmetric bounds: it must be $0$.')
+  ),
+  correct_option_id = 'C',
+  tolerance = 0.0010,
+  explanation = 'If $h$ is odd, then $h(-x)=-h(x)$, so areas cancel on $[-3,3]$ and the integral equals $0$.',
+  recommendation_reasons = ARRAY['Uses odd symmetry to evaluate an integral on symmetric bounds instantly.','Targets the misconception that a graph/equation is required despite symmetry.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: odd symmetry property on symmetric bounds; includes figure for context.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+  prompt_type = 'text_and_image',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.6-P5';
+
+
+-- Unit 6.7 (The Fundamental Theorem of Calculus and Definite Integrals) — Practice 1–5
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.7',
+  section_id = '6.7',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 2,
+  target_time_seconds = 90,
+  skill_tags = ARRAY['SK_FTC_DEFINT_EVAL', 'SK_AREA_GEOMETRY'],
+  primary_skill_id = 'SK_FTC_DEFINT_EVAL',
+  supporting_skill_ids = ARRAY['SK_AREA_GEOMETRY'],
+error_tags = ARRAY['E_SIGN_BELOW_AXIS', 'E_EVAL_BOUNDS'],
+  prompt = 'The graph of $f$ is shown. What is the value of $\\int_{0}^{4} f(x)\\,dx$?',
+  latex = 'The graph of $f$ is shown. What is the value of $\\int_{0}^{4} f(x)\\,dx$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$6$','explanation','The area is a left triangle ($1$) + rectangle ($4$) + right triangle ($1$), totaling $6$.'),
+    jsonb_build_object('id','B','text','$5$','explanation','This misses one of the triangular pieces (each contributes $1$).'),
+    jsonb_build_object('id','C','text','$7$','explanation','This overcounts the area; the correct decomposition sums to $6$.'),
+    jsonb_build_object('id','D','text','$8$','explanation','This treats the entire region as a rectangle of height $2$ and width $4$, which does not match the graph.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Compute the signed area under $f$ from $0$ to $4$ using geometry. From $0$ to $1$, the region is a triangle with base $1$ and height $2$, so area $=\\tfrac12(1)(2)=1$. From $1$ to $3$, the region is a rectangle of width $2$ and height $2$, so area $=4$. From $3$ to $4$, the region is another triangle with base $1$ and height $2$, so area $=1$. Total $=1+4+1=6$.',
+  recommendation_reasons = ARRAY['Reinforces interpreting $\\int_a^b f(x)\\,dx$ as signed area from a graph.', 'Builds speed using geometric decomposition before using antiderivatives.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 0.90,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Use geometric area; do not approximate numerically.',
+  weight_primary = 0.70,
+  weight_supporting = 0.30,
+  prompt_type = 'text_and_image',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.7-P1';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.7',
+  section_id = '6.7',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 1,
+  target_time_seconds = 60,
+  skill_tags = ARRAY['SK_FTC_PART1'],
+  primary_skill_id = 'SK_FTC_PART1',
+  supporting_skill_ids = ARRAY[]::text[],
+error_tags = ARRAY['E_CONFUSE_ACCUM_WITH_DERIV', 'E_EVAL_BOUNDS'],
+  prompt = 'Let $F(x)=\\int_{2}^{x} (t^2-3)\\,dt$. What is $F''(5)$?',
+  latex = 'Let $F(x)=\\int_{2}^{x} (t^2-3)\\,dt$. What is $F''(5)$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$22$','explanation','By FTC Part 1, $F''(x)=x^2-3$, so $F''(5)=25-3=22$.'),
+    jsonb_build_object('id','B','text','$\\int_{2}^{5} (t^2-3)\\,dt$','explanation','That is $F(5)$, not $F''(5)$.'),
+    jsonb_build_object('id','C','text','$1$','explanation','This incorrectly uses the lower limit: $2^2-3=1$, but $F''(x)$ depends on the variable upper limit.'),
+    jsonb_build_object('id','D','text','$\\frac{5^3}{3}-15$','explanation','This is part of evaluating $F(5)$ using an antiderivative; it is not the derivative value.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'FTC Part 1: if $F(x)=\\int_{2}^{x} f(t)\\,dt$, then $F''(x)=f(x)$. Here $f(t)=t^2-3$, so $F''(x)=x^2-3$ and $F''(5)=25-3=22$.',
+  recommendation_reasons = ARRAY['Targets FTC Part 1 recognition: derivative of an accumulation function.', 'Prevents confusion between $F(x)$ and $F''(x)$.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 1,
+  mastery_weight = 0.80,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus on FTC Part 1; no integration needed.',
+  weight_primary = 1.00,
+  weight_supporting = 0.00,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.7-P2';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.7',
+  section_id = '6.7',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 3,
+  target_time_seconds = 120,
+  skill_tags = ARRAY['SK_FTC_DEFINT_EVAL', 'SK_ANTIDERIV_PATTERN'],
+  primary_skill_id = 'SK_FTC_DEFINT_EVAL',
+  supporting_skill_ids = ARRAY['SK_ANTIDERIV_PATTERN'],
+error_tags = ARRAY['E_EVAL_BOUNDS', 'E_PATTERN_MISID'],
+  prompt = 'Evaluate $\\int_{1}^{3} \\frac{2x}{x^2+1}\\,dx$.',
+  latex = 'Evaluate $\\int_{1}^{3} \\frac{2x}{x^2+1}\\,dx$.',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$\\ln(10)-\\ln(2)$','explanation','Correct: an antiderivative is $\\ln(x^2+1)$, giving $\\ln(10)-\\ln(2)$.'),
+    jsonb_build_object('id','B','text','$\\ln(10)$','explanation','You forgot to subtract the value at $x=1$.'),
+    jsonb_build_object('id','C','text','$\\ln(3)-\\ln(1)$','explanation','You treated the integrand as $\\frac{1}{x}$ instead of $\\frac{2x}{x^2+1}$.'),
+    jsonb_build_object('id','D','text','$\\frac{2}{x^2+1}\\Big|_{1}^{3}$','explanation','This is not a correct antiderivative approach for the given integrand.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Recognize $\\frac{2x}{x^2+1}$ as the derivative of $\\ln(x^2+1)$. Thus $\\int \\frac{2x}{x^2+1}\\,dx=\\ln(x^2+1)+C$. Apply FTC Part 2: $\\ln(3^2+1)-\\ln(1^2+1)=\\ln(10)-\\ln(2)=\\ln(5)$.',
+  recommendation_reasons = ARRAY['Builds fluency with FTC Part 2 via pattern-based antiderivatives.', 'Emphasizes correct evaluation at both bounds.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Accept equivalent simplified form $\\ln(5)$.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.7-P3';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.7',
+  section_id = '6.7',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 4,
+  target_time_seconds = 150,
+  skill_tags = ARRAY['SK_FTC_PART1', 'SK_CHAIN_RULE_LIMITS'],
+  primary_skill_id = 'SK_FTC_PART1',
+  supporting_skill_ids = ARRAY['SK_CHAIN_RULE_LIMITS'],
+error_tags = ARRAY['E_FORGOT_CHAIN_RULE', 'E_EVAL_BOUNDS'],
+  prompt = 'Let $g(x)=\\int_{0}^{x^2} \\sin t\\,dt$. What is $g''(1)$?',
+  latex = 'Let $g(x)=\\int_{0}^{x^2} \\sin t\\,dt$. What is $g''(1)$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$\\sin(1)$','explanation','This misses the chain rule factor from differentiating the upper limit $x^2$.'),
+    jsonb_build_object('id','B','text','$2\\sin(1)$','explanation','Correct: $g''(x)=\\sin(x^2)\\cdot 2x$, so $g''(1)=2\\sin(1)$.'),
+    jsonb_build_object('id','C','text','$\\cos(1)$','explanation','This differentiates $\\sin t$ incorrectly and ignores FTC structure.'),
+    jsonb_build_object('id','D','text','$2\\cos(1)$','explanation','This combines a wrong trig derivative with a wrong structure.')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'If $g(x)=\\int_{0}^{u(x)} f(t)\\,dt$, then $g''(x)=f(u(x))u''(x)$. Here $f(t)=\\sin t$ and $u(x)=x^2$, so $g''(x)=\\sin(x^2)\\cdot 2x$, and $g''(1)=2\\sin(1)$.',
+  recommendation_reasons = ARRAY['Strengthens FTC Part 1 with composite upper limits.', 'Targets the most common miss: forgetting the chain rule factor.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 4,
+  mastery_weight = 1.10,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Emphasize $f(u(x))u''(x)$ structure.',
+  weight_primary = 0.70,
+  weight_supporting = 0.30,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.7-P4';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.7',
+  section_id = '6.7',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 2,
+  target_time_seconds = 75,
+  skill_tags = ARRAY['SK_FTC_PART1'],
+  primary_skill_id = 'SK_FTC_PART1',
+  supporting_skill_ids = ARRAY[]::text[],
+error_tags = ARRAY['E_LOWER_LIMIT_SIGN', 'E_EVAL_BOUNDS'],
+  prompt = 'Let $h(x)=\\int_{x}^{4} f(t)\\,dt$, where $f$ is continuous. Which expression equals $h''(x)$?',
+  latex = 'Let $h(x)=\\int_{x}^{4} f(t)\\,dt$, where $f$ is continuous. Which expression equals $h''(x)$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$f(x)$','explanation','This would be correct for $\\int_{4}^{x} f(t)\\,dt$, not $\\int_{x}^{4}$.'),
+    jsonb_build_object('id','B','text','$-f(x)$','explanation','Correct: reversing limits introduces a negative sign; derivative is $-f(x)$.'),
+    jsonb_build_object('id','C','text','$f(4)$','explanation','This is constant and does not represent $h''(x)$.'),
+    jsonb_build_object('id','D','text','$-f(4)$','explanation','Also constant; $h''(x)$ depends on $x$ through the lower limit.')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'Flip limits: $h(x)=\\int_{x}^{4} f(t)\\,dt=-\\int_{4}^{x} f(t)\\,dt$. By FTC Part 1, $\\frac{d}{dx}\\int_{4}^{x} f(t)\\,dt=f(x)$, so $h''(x)=-f(x)$.',
+  recommendation_reasons = ARRAY['Targets sign control with variable lower limits.', 'Builds quick recognition of FTC limit-direction rules.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 0.90,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Classic FTC sign trap with variable lower limit.',
+  weight_primary = 1.00,
+  weight_supporting = 0.00,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.7-P5';
+
+
+
+-- Unit 6.8 (Finding Antiderivatives and Indefinite Integrals — Basic Rules and Notation) — Practice 1–5
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.8',
+  section_id = '6.8',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 2,
+  target_time_seconds = 90,
+  skill_tags = ARRAY['SK_INDEF_POWER_RULE', 'SK_INDEF_LOG_RULE'],
+  primary_skill_id = 'SK_INDEF_POWER_RULE',
+  supporting_skill_ids = ARRAY['SK_INDEF_LOG_RULE'],
+error_tags = ARRAY['E_POWER_RULE', 'E_LOG_ABS', 'E_MISSING_C'],
+  prompt = 'Find $\\int \\left(5x^4-\\frac{2}{x}\\right)\\,dx$.',
+  latex = 'Find $\\int \\left(5x^4-\\frac{2}{x}\\right)\\,dx$.',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$x^5-2\\ln|x|$','explanation','Missing $+C$.'),
+    jsonb_build_object('id','B','text','$x^5-2\\ln|x|+C$','explanation','Correct: $\\int 5x^4 dx=x^5$ and $\\int \\frac{2}{x}dx=2\\ln|x|$.'),
+    jsonb_build_object('id','C','text','$x^5-\\frac{2}{x}+C$','explanation','You integrated $\\frac{1}{x}$ incorrectly; it should become $\\ln|x|$.'),
+    jsonb_build_object('id','D','text','$x^5-2\\ln(x)+C$','explanation','For a general antiderivative, use $\\ln|x|$, not $\\ln(x)$.')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'Use basic antiderivative rules: $\\int 5x^4\\,dx=x^5$ and $\\int \\frac{2}{x}\\,dx=2\\ln|x|$. Therefore $\\int \\left(5x^4-\\frac{2}{x}\\right)dx=x^5-2\\ln|x|+C$.',
+  recommendation_reasons = ARRAY['Reinforces core antiderivative rules (power and $\\frac{1}{x}$).', 'Targets two common misses: $+C$ and absolute value in logs.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Require $\\ln|x|$ and $+C$.',
+  weight_primary = 0.70,
+  weight_supporting = 0.30,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.8-P1';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.8',
+  section_id = '6.8',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 1,
+  target_time_seconds = 60,
+  skill_tags = ARRAY['SK_INDEF_EXP_RULE'],
+  primary_skill_id = 'SK_INDEF_EXP_RULE',
+  supporting_skill_ids = ARRAY[]::text[],
+error_tags = ARRAY['E_PATTERN_MISID'],
+  prompt = 'An antiderivative of $e^x$ is',
+  latex = 'An antiderivative of $e^x$ is',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$e^x$','explanation','Correct: $\\frac{d}{dx}(e^x)=e^x$, so an antiderivative is $e^x+C$; choosing $e^x$ is valid (with $C=0$).'),
+    jsonb_build_object('id','B','text','$xe^x$','explanation','Derivative of $xe^x$ is $e^x+xe^x$, not $e^x$.'),
+    jsonb_build_object('id','C','text','$\\ln|x|$','explanation','This differentiates to $\\frac{1}{x}$, not $e^x$.'),
+    jsonb_build_object('id','D','text','$\\frac{1}{e^x}$','explanation','This equals $e^{-x}$; its derivative is $-e^{-x}$.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Since $\\frac{d}{dx}(e^x)=e^x$, any function of the form $e^x+C$ is an antiderivative. The expression $e^x$ represents one such antiderivative (with $C=0$).',
+  recommendation_reasons = ARRAY['Locks in the special property of $e^x$ as its own derivative.', 'Reduces overthinking about constants in multiple-choice contexts.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 1,
+  mastery_weight = 0.70,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'AP-style: “an antiderivative” allows any one member of the family.',
+  weight_primary = 1.00,
+  weight_supporting = 0.00,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.8-P2';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.8',
+  section_id = '6.8',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 3,
+  target_time_seconds = 120,
+  skill_tags = ARRAY['SK_INDEF_TRIG_RULE'],
+  primary_skill_id = 'SK_INDEF_TRIG_RULE',
+  supporting_skill_ids = ARRAY[]::text[],
+error_tags = ARRAY['E_MISSING_C', 'E_PATTERN_MISID'],
+  prompt = 'Find $\\int \\sec^2 x\\,dx$.',
+  latex = 'Find $\\int \\sec^2 x\\,dx$.',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$\\sec x\\tan x + C$','explanation','This is the derivative of $\\sec x$, not an antiderivative of $\\sec^2 x$.'),
+    jsonb_build_object('id','B','text','$\\tan x$','explanation','Missing $+C$.'),
+    jsonb_build_object('id','C','text','$\\tan x + C$','explanation','Correct because $\\frac{d}{dx}(\\tan x)=\\sec^2 x$.'),
+    jsonb_build_object('id','D','text','$\\cot x + C$','explanation','Derivative of $\\cot x$ is $-\\csc^2 x$.')
+  ),
+  correct_option_id = 'C',
+  tolerance = 0.0010,
+  explanation = 'Use the basic trig antiderivative: since $\\frac{d}{dx}(\\tan x)=\\sec^2 x$, we have $\\int \\sec^2 x\\,dx=\\tan x + C$.',
+  recommendation_reasons = ARRAY['Reinforces core trig antiderivative facts used repeatedly later.', 'Targets the constant-of-integration habit.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 0.90,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Direct recall + precision check (include $+C$).',
+  weight_primary = 1.00,
+  weight_supporting = 0.00,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.8-P3';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.8',
+  section_id = '6.8',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 3,
+  target_time_seconds = 135,
+  skill_tags = ARRAY['SK_IVP_FROM_DERIV', 'SK_INDEF_POWER_RULE'],
+  primary_skill_id = 'SK_IVP_FROM_DERIV',
+  supporting_skill_ids = ARRAY['SK_INDEF_POWER_RULE'],
+error_tags = ARRAY['E_MISSING_C', 'E_POWER_RULE'],
+  prompt = 'A function $y$ satisfies $y''(x)=3x^2-4$ and $y(0)=2$. What is $y(x)$?',
+  latex = 'A function $y$ satisfies $y''(x)=3x^2-4$ and $y(0)=2$. What is $y(x)$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$y(x)=x^3-4x+2$','explanation','Correct: integrate to get $x^3-4x+C$, then use $y(0)=2$ so $C=2$.'),
+    jsonb_build_object('id','B','text','$y(x)=x^3-4x$','explanation','You forgot to apply the initial condition; $y(0)$ would be $0$, not $2$.'),
+    jsonb_build_object('id','C','text','$y(x)=3x^3-4x+2$','explanation','You did not divide by the new exponent when integrating $3x^2$.'),
+    jsonb_build_object('id','D','text','$y(x)=x^3-2$','explanation','You integrated $-4$ incorrectly; it should become $-4x$, then apply $y(0)=2$.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Integrate: $y(x)=\\int (3x^2-4)\\,dx=x^3-4x+C$. Use $y(0)=2$: $2=C$. So $y(x)=x^3-4x+2$.',
+  recommendation_reasons = ARRAY['Connects indefinite integrals to initial value problems (AP core).', 'Targets frequent errors: power rule coefficient and applying the initial condition.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'IVP framing; solve for $C$ using $y(0)=2$.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.8-P4';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_Integration',
+  sub_topic_id = '6.8',
+  section_id = '6.8',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 4,
+  target_time_seconds = 150,
+  skill_tags = ARRAY['SK_INDEF_LOG_RULE', 'SK_ANTIDERIV_PATTERN'],
+  primary_skill_id = 'SK_INDEF_LOG_RULE',
+  supporting_skill_ids = ARRAY['SK_ANTIDERIV_PATTERN'],
+error_tags = ARRAY['E_LOG_ABS', 'E_PATTERN_MISID', 'E_MISSING_C'],
+  prompt = 'Find $\\int \\frac{3}{2x-1}\\,dx$.',
+  latex = 'Find $\\int \\frac{3}{2x-1}\\,dx$.',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$\\frac{3}{2}\\ln|2x-1|+C$','explanation','Correct: $\\int \\frac{1}{2x-1}dx=\\frac12\\ln|2x-1|+C$, then multiply by $3$.'),
+    jsonb_build_object('id','B','text','$3\\ln|2x-1|+C$','explanation','Missing the factor $\\frac12$ from the derivative of $2x-1$.'),
+    jsonb_build_object('id','C','text','$\\frac{3}{2x-1}+C$','explanation','This is not an antiderivative; it resembles the original integrand.'),
+    jsonb_build_object('id','D','text','$\\frac{3}{2}\\ln(2x-1)+C$','explanation','For a general antiderivative, use $\\ln|2x-1|$.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Since $\\frac{d}{dx}(2x-1)=2$, $\\int \\frac{1}{2x-1}\\,dx=\\frac12\\ln|2x-1|+C$. Multiply by $3$ to get $\\int \\frac{3}{2x-1}\\,dx=\\frac{3}{2}\\ln|2x-1|+C$.',
+  recommendation_reasons = ARRAY['Builds precision with log antiderivatives of linear denominators.', 'Targets the common miss: forgetting the inner-derivative factor.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 4,
+  mastery_weight = 1.10,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Answer requires the $\\frac12$ factor; accept equivalent forms.',
+  weight_primary = 0.70,
+  weight_supporting = 0.30,
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_Integration',
+  updated_at = NOW()
+WHERE title = '6.8-P5';

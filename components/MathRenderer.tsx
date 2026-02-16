@@ -52,6 +52,25 @@ export const MathRenderer: React.FC<MathRendererProps> = ({ content, block = fal
         }
     }
 
+    // Fix for Double Escaped Backslashes in KaTeX (e.g. \\text -> \text)
+    // This happens when content comes from JSON string input
+    if (mixedContent) {
+        mixedContent = mixedContent.map(item => {
+            if (item.includes('\\\\')) {
+                return item.replace(/\\\\/g, '\\');
+            }
+            return item;
+        });
+    } else if (content.includes('\\\\')) {
+        // Also fix single content strings
+        const fixedContent = content.replace(/\\\\/g, '\\');
+        // Use the fixed content for further processing? 
+        // Actually, let's just use it when rendering below if it's NOT mixed content.
+        // But wait, "content" prop is read-only. We should output the fixed version.
+
+        // Since we can't mutate "content", we'll just handle it in the render logic if not mixed.
+    }
+
     if (mixedContent) {
         return (
             <div className={`markdown-body text-inherit ${className}`}>
@@ -97,15 +116,44 @@ export const MathRenderer: React.FC<MathRendererProps> = ({ content, block = fal
         );
     }
 
-    // Heuristics for legacy support or convenience:
-    // If 'block' is true and content doesn't start with $$ or $, wrap it in $$
-    // This maintains backward compatibility with the previous component usage
-    // where <MathRenderer content="x^2" block /> expected math rendering.
+    // Fix: We do NOT globally replace \\ with \ here anymore, because it breaks LaTeX newlines (\\).
+    // The previous issue was due to bad data (8 backslashes), which is now fixed at the source.
     let processedContent = content;
-    if (block) {
-        const trimmed = content.trim();
-        if (!trimmed.startsWith('$') && !trimmed.startsWith('\\[')) {
-            processedContent = `$$${trimmed}$$`;
+
+    // 1. Normalize Delimiters
+    // Replace \[ ... \] with $$ ... $$
+    processedContent = processedContent.replace(/\\\[([\s\S]*?)\\\]/g, '$$$$$1$$$$');
+    // Replace \( ... \) with $ ... $
+    processedContent = processedContent.replace(/\\\(([\s\S]*?)\\\)/g, '$$$1$$');
+
+    // 2. Ensure LaTeX environments like \begin{array} are wrapped in $$ if they aren't already.
+    // This fixes issues where arrays render as raw red text.
+    // Use a broader check that matches \begin{array} ... \end{array} even across newlines
+    if (/\\begin\{array\}/.test(processedContent) && !/\$\$\s*\\begin\{array\}/.test(processedContent)) {
+        // Wrap the ENTIRE content if it's primarily an array, or just the array part?
+        // Safer to replace the block.
+        processedContent = processedContent.replace(/(\\begin\{array\}[\s\S]*?\\end\{array\})/g, '$$$$$1$$$$');
+    }
+
+    // 3. Auto-Wrap Raw Latex
+    // If content contains common latex commands but NO delimiters, wrap it.
+    // We check for absence of $, $$, \[, \( to avoid double-wrapping.
+    const hasDelimiters = /\$\$|\$|\\\[|\\\(/.test(processedContent);
+    const hasLatexCommand = /\\[a-zA-Z]+/.test(processedContent); // e.g. \frac, \lim, \int
+
+    if (!hasDelimiters && hasLatexCommand) {
+        if (block) {
+            processedContent = `$$$$${processedContent.trim()}$$$$`;
+        } else {
+            // For inline/mixed content, we only wrap if it looks like a standalone equation
+            // OR we check if it's likely just math.
+            processedContent = `$${processedContent.trim()}$`;
+        }
+    } else if (block) {
+        const trimmed = processedContent.trim();
+        // If block is requested but no block delimiters (even after normalization), add them
+        if (!trimmed.startsWith('$$') && !trimmed.startsWith('\\[')) {
+            processedContent = `$$$$${trimmed}$$$$`;
         }
     }
 
@@ -117,6 +165,7 @@ export const MathRenderer: React.FC<MathRendererProps> = ({ content, block = fal
                     display: inline-block !important; 
                     line-height: 1.2;
                     white-space: nowrap; /* Prevent breaking formula in half */
+                    font-family: KaTeX_Main, 'Times New Roman', serif !important; /* Force serif font for math */
                 }
                 /* Allow display math to be block */
                 .katex-display .katex { 

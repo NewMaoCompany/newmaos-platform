@@ -2159,8 +2159,8 @@ export const Practice = () => {
                             )}
 
                             {/* Question Section */}
-                            <div className={`lg:col-span-7 flex flex-col ${isSubmitted ? 'min-h-[250px]' : 'h-[calc(100vh-280px)] min-h-[450px]'}`}>
-                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col gap-4 relative h-full scroll-bounce ${isSubmitted ? 'p-3 opacity-90' : 'p-6'}`}>
+                            <div className={`lg:col-span-7 flex flex-col ${isSubmitted ? 'min-h-[250px]' : 'h-auto min-h-[300px] lg:h-[calc(100vh-280px)] lg:min-h-[450px]'} overflow-hidden`}>
+                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col gap-4 relative h-full scroll-bounce !overflow-y-auto ${isSubmitted ? 'p-3 opacity-90' : 'p-6'}`}>
                                     <div className="flex justify-between items-start border-b border-gray-100 dark:border-gray-800 pb-3 mb-2">
                                         <div className="flex items-center gap-2 mr-6">
                                             <button onClick={() => setActiveTool(activeTool === 'scratchpad' ? 'none' : 'scratchpad')} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTool === 'scratchpad' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'}`}>
@@ -2215,7 +2215,7 @@ export const Practice = () => {
                             </div>
 
                             {/* Options Section */}
-                            <div className={`lg:col-span-5 flex flex-col gap-4 ${isSubmitted ? 'min-h-[250px]' : 'h-[calc(100vh-280px)] min-h-[450px]'}`}>
+                            <div className={`lg:col-span-5 flex flex-col gap-4 ${isSubmitted ? 'min-h-[250px]' : 'h-auto lg:h-[calc(100vh-280px)] lg:min-h-[450px]'}`}>
                                 <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-2' : 'p-6'}`}>
                                     {/* Hide Header on Submit to save space as requested */}
                                     {!isSubmitted && (

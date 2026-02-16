@@ -941,7 +941,7 @@ const QuestionListSidebar = ({
                 </div>
             )}
 
-            <div className="w-80 border-r border-gray-200 h-full bg-white flex flex-col flex-shrink-0">
+            <div className="w-[22%] min-w-[240px] max-w-[360px] border-r border-gray-200 h-full bg-white flex flex-col flex-shrink-0">
                 <div className="p-4 border-b border-gray-100">
                     <div className="flex items-center justify-between mb-3">
                         <p className="text-[12px] font-bold text-gray-900">Questions ({displayQuestions.length})</p>
@@ -1206,7 +1206,15 @@ export const QuestionCreator = () => {
         const skillTags = q.skillTags || [];
         const errorTags = q.errorTags || [];
 
-        const primarySkillId = q.primarySkillId || (skillTags.length > 0 ? skillTags[0] : '');
+        // Fix: Backend returns snake_case 'primary_skill_id', frontend expects camelCase
+        const primarySkillId = q.primarySkillId || (q as any).primary_skill_id || (skillTags.length > 0 ? skillTags[0] : '');
+
+        // FIX: Ensure Primary Skill is in the dropdown list options
+        if (primarySkillId && !fetchedSkills.find(s => s.value === primarySkillId)) {
+            const newOpt = { label: primarySkillId, value: primarySkillId };
+            setFetchedSkills(prev => [...prev, newOpt]);
+        }
+
         const supportingSkillIds = q.supportingSkillIds && q.supportingSkillIds.length > 0
             ? q.supportingSkillIds
             : (skillTags.length > 1 ? skillTags.slice(1) : []);
@@ -1415,27 +1423,6 @@ export const QuestionCreator = () => {
         setFetchedErrors(prev => prev.filter(e => e.value !== id));
     };
 
-    const handleDeleteAllMetadata = async () => {
-        if (!window.confirm("ARE YOU SURE? This will DELETE ALL SKILLS and ERROR TAGS from the database immediately. This cannot be undone.")) return;
-
-        setIsResetting(true);
-        try {
-            await supabase.from('question_skills').delete().neq('question_id', '00000000-0000-0000-0000-000000000000');
-            await supabase.from('question_error_patterns').delete().neq('question_id', '00000000-0000-0000-0000-000000000000');
-            await supabase.from('user_skill_mastery').delete().neq('user_id', '00000000-0000-0000-0000-000000000000');
-            await supabase.from('skills').delete().neq('id', '_');
-            await supabase.from('error_tags').delete().neq('id', '_');
-
-            showToast("All metadata deleted successfully from Supabase.", "success");
-            setFetchedSkills([]);
-            setFetchedErrors([]);
-        } catch (e: any) {
-            console.error(e);
-            showToast(`Delete failed: ${e.message}`, 'error');
-        } finally {
-            setIsResetting(false);
-        }
-    };
 
     const handleSaveQuestion = async () => {
         // Validation for required fields
@@ -1875,7 +1862,7 @@ export const QuestionCreator = () => {
                         {viewMode === 'editor' && (
                             <div className="max-w-4xl mx-auto pb-20">
                                 {/* Editor Header */}
-                                <div className="flex items-center justify-between mb-8">
+                                <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
                                     <div>
                                         <div className={`inline-block px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-md mb-2 ${formData.status === 'published'
                                             ? 'bg-green-100 text-green-700'
@@ -1888,7 +1875,7 @@ export const QuestionCreator = () => {
                                     <div className="flex gap-3">
                                         <button
                                             onClick={() => setViewMode('settings')}
-                                            className="px-6 py-2.5 font-bold text-gray-500 hover:bg-gray-100 rounded-xl transition-colors"
+                                            className="px-6 py-2.5 font-bold text-gray-500 hover:bg-gray-100 rounded-xl transition-colors whitespace-nowrap shrink-0"
                                         >
                                             Cancel
                                         </button>
@@ -1896,7 +1883,7 @@ export const QuestionCreator = () => {
                                             <button
                                                 onClick={handleDeleteQuestion}
                                                 disabled={isSaving}
-                                                className="px-6 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl transition-all flex items-center gap-2 disabled:opacity-50"
+                                                className="px-6 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl transition-all flex items-center gap-2 disabled:opacity-50 whitespace-nowrap shrink-0"
                                             >
                                                 <span className="material-symbols-outlined text-lg">delete</span>
                                                 Delete
@@ -1905,7 +1892,7 @@ export const QuestionCreator = () => {
                                         <button
                                             onClick={handleSaveQuestion}
                                             disabled={isSaving}
-                                            className="px-8 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-black font-black rounded-xl shadow-lg shadow-yellow-400/20 transition-all flex items-center gap-2 disabled:opacity-50"
+                                            className="px-8 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-black font-black rounded-xl shadow-lg shadow-yellow-400/20 transition-all flex items-center gap-2 disabled:opacity-50 whitespace-nowrap shrink-0"
                                         >
                                             {isSaving ? 'Saving...' : 'Save'}
                                         </button>
@@ -1917,18 +1904,10 @@ export const QuestionCreator = () => {
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Classification & Metadata</h3>
 
-                                        {/* RESET BUTTON for User Request */}
-                                        <button
-                                            onClick={handleDeleteAllMetadata}
-                                            className="text-[10px] text-red-400 hover:text-red-600 underline font-medium"
-                                            title="Clears all Skills and Error Tags from DB"
-                                        >
-                                            [DEV] Clear Supabase Metadata
-                                        </button>
                                     </div>
 
                                     {/* Row 1: Name & Status */}
-                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                                    <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 mb-6">
                                         <div className="md:col-span-3 space-y-1">
                                             <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Question Name <span className="text-red-500">*</span></label>
                                             <input
@@ -1951,7 +1930,7 @@ export const QuestionCreator = () => {
                                     </div>
 
                                     {/* Row 2: Target Course & Question Type */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
                                         <div className="space-y-1">
                                             <CustomSelect
                                                 label="Target Course"
@@ -1973,7 +1952,7 @@ export const QuestionCreator = () => {
                                     </div>
 
                                     {/* Row 3: Calculator & Difficulty */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
                                         <div className="space-y-1">
                                             <CustomSelect
                                                 label="Calculator Policy"
@@ -1995,7 +1974,7 @@ export const QuestionCreator = () => {
                                     </div>
 
                                     {/* Row 3.5: Estimated Time (New per User Request) */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Estimated Time (Min)</label>
                                             <input
@@ -2011,7 +1990,7 @@ export const QuestionCreator = () => {
                                     </div>
 
                                     {/* Row 4: Skills & Weights */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4 mb-4">
                                         <div className="space-y-1">
                                             <div className="flex justify-between">
                                                 <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-red-500">Primary Skill *</label>
@@ -2069,7 +2048,7 @@ export const QuestionCreator = () => {
                                     </div>
 
                                     {/* Row 5: Topic, Chapter */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-red-500">Topic (Unit) *</label>
                                             <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-500 cursor-not-allowed flex items-center justify-between">
@@ -2102,7 +2081,7 @@ export const QuestionCreator = () => {
                                     </div>
 
                                     {/* Row 6: Source & Error Patterns */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4 mb-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Source</label>
                                             <input
@@ -2323,25 +2302,25 @@ export const QuestionCreator = () => {
                                                         </button>
                                                         <div className="flex-1 space-y-4">
                                                             {/* Option Content Header */}
-                                                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-1.5 border border-gray-100">
-                                                                <span className="text-[10px] font-bold text-gray-400 px-2 uppercase tracking-wider">Option {opt.label || String.fromCharCode(65 + idx)} Content</span>
-                                                                <div className="flex gap-1">
+                                                            <div className="flex flex-wrap justify-between items-center bg-gray-50 rounded-lg p-1.5 border border-gray-100 gap-2">
+                                                                <span className="text-[10px] font-bold text-gray-400 px-2 uppercase tracking-wider whitespace-nowrap">Option {opt.label || String.fromCharCode(65 + idx)} Content</span>
+                                                                <div className="flex gap-1 shrink-0">
                                                                     <button onClick={() => {
                                                                         const ops = [...formData.options]; ops[idx].type = 'text'; setFormData({ ...formData, options: ops });
-                                                                    }} className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${opt.type === 'text' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}>Text</button>
+                                                                    }} className={`text-[10px] font-bold px-2.5 py-1 rounded-md transition-all whitespace-nowrap ${opt.type === 'text' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}>Text</button>
                                                                     <button onClick={() => {
                                                                         const ops = [...formData.options];
                                                                         ops[idx].type = 'image';
                                                                         setFormData({ ...formData, options: ops });
                                                                         setOptionPreviews(prev => ({ ...prev, [idx]: false }));
-                                                                    }} className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${opt.type === 'image' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}>Image</button>
+                                                                    }} className={`text-[10px] font-bold px-2.5 py-1 rounded-md transition-all whitespace-nowrap ${opt.type === 'image' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}>Image</button>
 
                                                                     {opt.type === 'text' && (
                                                                         <>
                                                                             <div className="w-px bg-gray-300 my-1 mx-1"></div>
                                                                             <button
                                                                                 onClick={() => setOptionPreviews(prev => ({ ...prev, [idx]: !prev[idx] }))}
-                                                                                className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all flex items-center gap-1 ${optionPreviews[idx] ? 'bg-black text-white' : 'text-gray-400 hover:text-gray-600'}`}
+                                                                                className={`text-[10px] font-bold px-2.5 py-1 rounded-md transition-all flex items-center gap-1 whitespace-nowrap ${optionPreviews[idx] ? 'bg-black text-white' : 'text-gray-400 hover:text-gray-600'}`}
                                                                             >
                                                                                 <span className="material-symbols-outlined text-[14px]">{optionPreviews[idx] ? 'visibility_off' : 'visibility'}</span>
                                                                                 {optionPreviews[idx] ? 'Edit' : 'Preview'}
@@ -2383,8 +2362,8 @@ export const QuestionCreator = () => {
                                                             {/* Explanation */}
                                                             <div>
                                                                 <div className="flex justify-between items-center mb-2">
-                                                                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Explanation (Correct/Incorrect Reason) <span className="text-red-500">*</span></label>
-                                                                    <div className="flex items-center gap-1">
+                                                                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Explanation <span className="text-red-500">*</span></label>
+                                                                    <div className="flex items-center gap-1 shrink-0">
                                                                         <InputTypeToggle
                                                                             type={opt.explanationType || 'text'}
                                                                             onChange={(t) => {

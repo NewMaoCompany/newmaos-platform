@@ -1,0 +1,636 @@
+-- Unit 7.7 (Finding Particular Solutions Using Initial Conditions and Separation of Variables) — Practice 1–5
+
+BEGIN;
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.7',
+  section_id = '7.7',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 2,
+  target_time_seconds = 120,
+  skill_tags = ARRAY['SK_SEPARATION', 'SK_INITIAL_CONDITION', 'SK_ALGEBRA'],
+  error_tags = ARRAY['E_SEPARATION_SETUP', 'E_MISSING_C', 'E_IC_SUBSTITUTION', 'E_ALGEBRA'],
+  prompt = 'Solve the differential equation with the given initial condition.\n\n$$\\frac{dy}{dx}=2xy^2,\\quad y(0)=1$$\n\nWhat is $y$ as a function of $x$ on the interval where the solution is defined?',
+  latex = 'Solve the differential equation with the given initial condition.\n\n$$\\frac{dy}{dx}=2xy^2,\\quad y(0)=1$$\n\nWhat is $y$ as a function of $x$ on the interval where the solution is defined?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$y=\\dfrac{1}{1-x^2}$','explanation','Correct. Separate: $y^{-2}dy=2x\\,dx$. Integrate: $-\\dfrac{1}{y}=x^2+C$. Use $y(0)=1$ to get $C=-1$, so $y=\\dfrac{1}{1-x^2}$.'),
+    jsonb_build_object('id','B','text','$y=\\dfrac{1}{1+x^2}$','explanation','Sign error when applying the initial condition to $-\\dfrac{1}{y}=x^2+C$.'),
+    jsonb_build_object('id','C','text','$y=1-x^2$','explanation','Drops the factor $y^2$ and treats the equation like $y''=2x$.'),
+    jsonb_build_object('id','D','text','$y=e^{x^2}$','explanation','Incorrectly separates as $\\dfrac{1}{y}dy=2x\\,dx$ (uses $y$ instead of $y^2$).')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Separate and integrate:\n$$\\frac{dy}{dx}=2xy^2\\Rightarrow y^{-2}dy=2x\\,dx$$\n$$\\int y^{-2}dy=\\int 2x\\,dx\\Rightarrow -\\frac{1}{y}=x^2+C$$\nApply $y(0)=1$:\n$$-1=C\\Rightarrow -\\frac{1}{y}=x^2-1\\Rightarrow y=\\frac{1}{1-x^2}.$$',
+  recommendation_reasons = ARRAY['Practices separation of variables with a power of $y$.', 'Targets sign control when applying an initial condition.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Separable IVP; watch the sign from integrating $y^{-2}$.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+    primary_skill_id = 'SK_SEPARATION',
+  supporting_skill_ids = ARRAY['SK_INITIAL_CONDITION','SK_ALGEBRA'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.7-P1';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.7',
+  section_id = '7.7',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 3,
+  target_time_seconds = 150,
+  skill_tags = ARRAY['SK_SEPARATION', 'SK_INITIAL_CONDITION', 'SK_ALGEBRA'],
+  error_tags = ARRAY['E_SEPARATION_SETUP', 'E_MISSING_C', 'E_IC_SUBSTITUTION', 'E_ALGEBRA'],
+  prompt = 'Solve the differential equation with the given initial condition.\n\n$$\\frac{dy}{dx}=\\frac{3x^2}{y},\\quad y(1)=2$$\n\nWhich function satisfies the initial value problem?',
+  latex = 'Solve the differential equation with the given initial condition.\n\n$$\\frac{dy}{dx}=\\frac{3x^2}{y},\\quad y(1)=2$$\n\nWhich function satisfies the initial value problem?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$y=\\sqrt{x^3+3}$','explanation','Differentiating gives $y''=\\dfrac{3x^2}{2y}$, which is off by a factor of $\\tfrac12$.'),
+    jsonb_build_object('id','B','text','$y=\\sqrt{2x^3+6}$','explanation','Comes from forgetting the $\\tfrac12$ in $\\int y\\,dy=\\tfrac12 y^2$.'),
+    jsonb_build_object('id','C','text','$y=\\sqrt{2x^3+2}$','explanation','Correct. From $y\\,dy=3x^2\\,dx$, get $\\tfrac12 y^2=x^3+C$. Use $y(1)=2$ to get $C=1$, so $y=\\sqrt{2x^3+2}$.'),
+    jsonb_build_object('id','D','text','$y=2x^{3/2}$','explanation','Ignores the constant determined by $y(1)=2$.')
+  ),
+  correct_option_id = 'C',
+  tolerance = 0.0010,
+  explanation = 'Separate:\n$$\\frac{dy}{dx}=\\frac{3x^2}{y}\\Rightarrow y\\,dy=3x^2\\,dx$$\nIntegrate:\n$$\\frac12 y^2=x^3+C$$\nApply $y(1)=2$:\n$$2=1+C\\Rightarrow C=1$$\nSo $y^2=2x^3+2$ and the branch matching $y(1)=2$ is $y=\\sqrt{2x^3+2}$.',
+  recommendation_reasons = ARRAY['Reinforces correct integration of $y\\,dy$.', 'Checks applying an initial condition after integrating.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.05,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Common trap: missing the factor $\\tfrac12$ in $\\int y\\,dy$.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+    primary_skill_id = 'SK_SEPARATION',
+  supporting_skill_ids = ARRAY['SK_INITIAL_CONDITION','SK_ALGEBRA'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.7-P2';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.7',
+  section_id = '7.7',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 1,
+  target_time_seconds = 90,
+  skill_tags = ARRAY['SK_SEPARATION', 'SK_INITIAL_CONDITION', 'SK_BRANCH_CHOICE'],
+  error_tags = ARRAY['E_SEPARATION_SETUP', 'E_IC_SUBSTITUTION', 'E_BRANCH_CHOICE', 'E_ALGEBRA'],
+  prompt = 'Solve the initial value problem.\n\n$$\\frac{dy}{dx}=\\frac{x}{y+1},\\quad y(0)=0$$\n\nWhat is $y$ as a function of $x$?',
+  latex = 'Solve the initial value problem.\n\n$$\\frac{dy}{dx}=\\frac{x}{y+1},\\quad y(0)=0$$\n\nWhat is $y$ as a function of $x$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$y=\\sqrt{x^2+2}-1$','explanation','Uses an incorrect constant after applying $y(0)=0$.'),
+    jsonb_build_object('id','B','text','$y=\\sqrt{x^2+1}-1$','explanation','Correct. Integrating gives $(y+1)^2=x^2+1$, and $y(0)=0$ selects the positive branch.'),
+    jsonb_build_object('id','C','text','$y=-\\sqrt{x^2+1}-1$','explanation','Wrong branch: it gives $y(0)=-2$, not $0$.'),
+    jsonb_build_object('id','D','text','$y=\\dfrac{x^2}{2}-1$','explanation','Does not separate correctly; treats $y+1$ as constant during integration.')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'Separate:\n$$(y+1)\\,dy=x\\,dx$$\nIntegrate:\n$$\\frac12 (y+1)^2=\\frac12 x^2+C$$\nApply $y(0)=0$:\n$$\\frac12(1)^2=C\\Rightarrow C=\\frac12$$\nSo $(y+1)^2=x^2+1$. The initial condition implies $y+1=\\sqrt{x^2+1}$, hence $y=\\sqrt{x^2+1}-1$.',
+  recommendation_reasons = ARRAY['Builds separation fluency with a simple IVP.', 'Targets correct branch selection using the initial condition.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 0.90,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Key idea: use $y(0)=0$ to pick the correct square-root branch.',
+  weight_primary = 0.70,
+  weight_supporting = 0.30,
+    primary_skill_id = 'SK_SEPARATION',
+  supporting_skill_ids = ARRAY['SK_INITIAL_CONDITION','SK_BRANCH_CHOICE'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.7-P3';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.7',
+  section_id = '7.7',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 4,
+  target_time_seconds = 210,
+  skill_tags = ARRAY['SK_SEPARATION', 'SK_PARTIAL_FRACTIONS', 'SK_LOG_RULES', 'SK_INITIAL_CONDITION'],
+  error_tags = ARRAY['E_LOG_MIST', 'E_MISSING_C', 'E_IC_SUBSTITUTION', 'E_ALGEBRA'],
+  prompt = 'Solve the initial value problem.\n\n$$\\frac{dy}{dx}=y(1-y),\\quad y(0)=\\frac12$$\n\nWhich expression for $y$ is correct?',
+  latex = 'Solve the initial value problem.\n\n$$\\frac{dy}{dx}=y(1-y),\\quad y(0)=\\frac12$$\n\nWhich expression for $y$ is correct?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$y=\\dfrac{1}{1+e^{-x}}$','explanation','Correct. Separation gives $\\ln\\left|\\dfrac{y}{1-y}\\right|=x+C$. Using $y(0)=\\tfrac12$ gives $C=0$ and $y=\\dfrac{1}{1+e^{-x}}$.'),
+    jsonb_build_object('id','B','text','$y=\\dfrac{1}{1+e^{x}}$','explanation','Exponent sign error from mishandling the log difference.'),
+    jsonb_build_object('id','C','text','$y=\\dfrac{e^x}{1-e^x}$','explanation','Algebra error when solving $\\dfrac{y}{1-y}=e^x$ for $y$.'),
+    jsonb_build_object('id','D','text','$y=\\dfrac{1}{1-e^{-x}}$','explanation','Would make $y(0)$ undefined, contradicting the initial condition.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Separate:\n$$\\frac{dy}{dx}=y(1-y)\\Rightarrow \\frac{1}{y(1-y)}dy=dx$$\nUse partial fractions: $\\dfrac{1}{y(1-y)}=\\dfrac{1}{y}+\\dfrac{1}{1-y}.$\nIntegrate:\n$$\\ln|y|-\\ln|1-y|=x+C\\Rightarrow \\ln\\left|\\frac{y}{1-y}\\right|=x+C$$\nExponentiate: $\\dfrac{y}{1-y}=Ke^x.$\nApply $y(0)=\\tfrac12$: $1=K.$\nSolve: $y=\\dfrac{e^x}{1+e^x}=\\dfrac{1}{1+e^{-x}}.$',
+  recommendation_reasons = ARRAY['High-frequency logistic-separation pathway.', 'Targets partial fractions and log manipulation errors.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 4,
+  mastery_weight = 1.15,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'AP-style: partial fractions + logs + initial condition.',
+  weight_primary = 0.70,
+  weight_supporting = 0.30,
+    primary_skill_id = 'SK_SEPARATION',
+  supporting_skill_ids = ARRAY['SK_PARTIAL_FRACTIONS','SK_LOG_RULES','SK_INITIAL_CONDITION'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.7-P4';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.7',
+  section_id = '7.7',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 3,
+  target_time_seconds = 170,
+  skill_tags = ARRAY['SK_SEPARATION', 'SK_LOG_RULES', 'SK_INITIAL_CONDITION', 'SK_ALGEBRA'],
+  error_tags = ARRAY['E_LOG_MIST', 'E_MISSING_C', 'E_IC_SUBSTITUTION', 'E_ALGEBRA'],
+  prompt = 'A function $y(x)$ satisfies\n\n$$\\frac{dy}{dx}=\\frac{2y}{x},\\quad y(3)=-6$$\n\nWhich is the correct particular solution?',
+  latex = 'A function $y(x)$ satisfies\n\n$$\\frac{dy}{dx}=\\frac{2y}{x},\\quad y(3)=-6$$\n\nWhich is the correct particular solution?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$y=-2x$','explanation','Fits $y(3)=-6$ but fails the DE: $y''=-2$ while $\\dfrac{2y}{x}=-4$.'),
+    jsonb_build_object('id','B','text','$y=-6x^2$','explanation','Wrong constant from the initial condition: $y(3)=-54$.'),
+    jsonb_build_object('id','C','text','$y=-\\dfrac{2}{3}x^2$','explanation','Correct. From $\\ln|y|=2\\ln|x|+C$, get $y=Cx^2$; use $y(3)=-6$ to find $C=-\\tfrac23$.'),
+    jsonb_build_object('id','D','text','$y=\\dfrac{2}{3}x^2$','explanation','Sign error when applying $y(3)=-6$.')
+  ),
+  correct_option_id = 'C',
+  tolerance = 0.0010,
+  explanation = 'Separate and integrate:\n$$\\frac{dy}{dx}=\\frac{2y}{x}\\Rightarrow \\frac{1}{y}dy=\\frac{2}{x}dx$$\n$$\\ln|y|=2\\ln|x|+C\\Rightarrow y=Cx^2$$\nApply $y(3)=-6$:\n$$-6=9C\\Rightarrow C=-\\frac{2}{3}$$\nThus $y=-\\dfrac{2}{3}x^2$.',
+  recommendation_reasons = ARRAY['Connects $y''/y$ structure to a power-law solution.', 'Targets constant/sign errors after exponentiating logs.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Classic result: $y=Cx^2$ from $y''/y=2/x$.',
+  weight_primary = 0.75,
+  weight_supporting = 0.25,
+    primary_skill_id = 'SK_SEPARATION',
+  supporting_skill_ids = ARRAY['SK_LOG_RULES','SK_INITIAL_CONDITION','SK_ALGEBRA'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.7-P5';
+
+
+
+-- Unit 7.8 (Exponential Models with Differential Equations) — Practice 1–5
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.8',
+  section_id = '7.8',
+  type = 'MCQ',
+  calculator_allowed = TRUE,
+  difficulty = 2,
+  target_time_seconds = 150,
+  skill_tags = ARRAY['SK_EXP_MODEL', 'SK_PARAMETER_ESTIMATION', 'SK_LOG_RULES', 'SK_DATA_FROM_TABLE'],
+  error_tags = ARRAY['E_FORGET_DIVIDE_BY_INTERVAL', 'E_LOG_MIST', 'E_GROWTH_VS_DECAY'],
+  prompt = 'The population $P(t)$ (in cells) is modeled by $\\dfrac{dP}{dt}=kP$, where $t$ is measured in hours. The table in the image shows sample values of $P(t)$. Using the values at $t=0$ and $t=5$, estimate $k$.\n\nIMAGE: 7.8-P1.png',
+  latex = 'The population $P(t)$ (in cells) is modeled by $\\dfrac{dP}{dt}=kP$, where $t$ is measured in hours. The table in the image shows sample values of $P(t)$. Using the values at $t=0$ and $t=5$, estimate $k$.',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$k\\approx 0.14$','explanation','Too small; it is about half of $\\dfrac{\\ln 4}{5}$.'),
+    jsonb_build_object('id','B','text','$k\\approx 0.28$','explanation','Correct. $k=\\dfrac{\\ln\\left(\\frac{2000}{500}\\right)}{5}=\\dfrac{\\ln 4}{5}\\approx \\dfrac{1.386}{5}\\approx 0.277$.'),
+    jsonb_build_object('id','C','text','$k\\approx 1.39$','explanation','Forgets to divide by the 5-hour interval (uses $k=\\ln 4$).'),
+    jsonb_build_object('id','D','text','$k\\approx -0.28$','explanation','Wrong sign; the data show growth (increasing $P$).')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'For $\\dfrac{dP}{dt}=kP$, $P(t)=P_0e^{kt}$. Using $P(0)=500$ and $P(5)=2000$:\n$$2000=500e^{5k}\\Rightarrow 4=e^{5k}\\Rightarrow k=\\frac{\\ln 4}{5}\\approx 0.277.$$',
+  recommendation_reasons = ARRAY['Uses data to estimate $k$ in an exponential differential equation model.', 'Targets the frequent mistake of forgetting to divide by elapsed time.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Estimate $k$ from two points: $k=\\ln(P_2/P_1)/(\\Delta t)$.',
+  weight_primary = 0.75,
+  weight_supporting = 0.25,
+    primary_skill_id = 'SK_EXP_MODEL',
+  supporting_skill_ids = ARRAY['SK_PARAMETER_ESTIMATION','SK_LOG_RULES','SK_DATA_FROM_TABLE'],
+  prompt_type = 'text_and_image',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.8-P1';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.8',
+  section_id = '7.8',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 3,
+  target_time_seconds = 170,
+  skill_tags = ARRAY['SK_EXP_MODEL', 'SK_PARAMETER_ESTIMATION', 'SK_ALGEBRA'],
+  error_tags = ARRAY['E_TIME_SCALING', 'E_ALGEBRA', 'E_GROWTH_VS_DECAY'],
+  prompt = 'A quantity $Q(t)$ satisfies $\\dfrac{dQ}{dt}=kQ$ with $Q(0)=120$.\n\nIf $Q(3)=150$, which expression gives $Q(t)$?',
+  latex = 'A quantity $Q(t)$ satisfies $\\dfrac{dQ}{dt}=kQ$ with $Q(0)=120$.\n\nIf $Q(3)=150$, which expression gives $Q(t)$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$Q(t)=120\\left(\\frac{150}{120}\\right)^t$','explanation','Uses the 3-hour growth factor as if it were per 1 hour (missing the $t/3$ exponent).'),
+    jsonb_build_object('id','B','text','$Q(t)=120\\left(\\frac{150}{120}\\right)^{t/3}$','explanation','Correct. From $150=120e^{3k}$, we get $e^{3k}=\\frac{150}{120}$ and $Q(t)=120(e^{3k})^{t/3}$.'),
+    jsonb_build_object('id','C','text','$Q(t)=120+30e^{t/3}$','explanation','Additive form does not match $\\dfrac{dQ}{dt}=kQ$ (which is multiplicative).'),
+    jsonb_build_object('id','D','text','$Q(t)=150\\left(\\frac{120}{150}\\right)^{t/3}$','explanation','Anchors the model at $t=0$ incorrectly (gives $Q(0)=150$).')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'Model: $Q(t)=120e^{kt}$. Use $Q(3)=150$:\n$$150=120e^{3k}\\Rightarrow e^{3k}=\\frac{150}{120}$$\nThen\n$$Q(t)=120e^{kt}=120(e^{3k})^{t/3}=120\\left(\\frac{150}{120}\\right)^{t/3}.$$',
+  recommendation_reasons = ARRAY['Builds correct interpretation of a growth factor over multiple time units.', 'Targets the common time-scaling mistake in exponent models.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.05,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Key idea: the ratio corresponds to 3 time units, so exponent is $t/3$.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+    primary_skill_id = 'SK_EXP_MODEL',
+  supporting_skill_ids = ARRAY['SK_PARAMETER_ESTIMATION','SK_ALGEBRA'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.8-P2';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.8',
+  section_id = '7.8',
+  type = 'MCQ',
+  calculator_allowed = TRUE,
+  difficulty = 4,
+  target_time_seconds = 220,
+  skill_tags = ARRAY['SK_EXP_MODEL', 'SK_SOLVE_FOR_TIME', 'SK_LOG_RULES'],
+  error_tags = ARRAY['E_LOG_MIST', 'E_TIME_SCALING', 'E_GROWTH_VS_DECAY'],
+  prompt = 'A radioactive substance decays according to $\\dfrac{dM}{dt}=kM$, where $t$ is in years.\n\nThe half-life is 12 years. How long does it take for the amount to reach $10\\%$ of its initial value?',
+  latex = 'A radioactive substance decays according to $\\dfrac{dM}{dt}=kM$, where $t$ is in years.\n\nThe half-life is 12 years. How long does it take for the amount to reach $10\\%$ of its initial value?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$t=12\\log_2(0.1)$','explanation','This is negative because $\\log_2(0.1)<0$; time must be positive.'),
+    jsonb_build_object('id','B','text','$t=12\\log_2(10)\\approx 39.9$ years','explanation','Correct. $(\\tfrac12)^{t/12}=0.1$ implies $2^{t/12}=10$, so $t=12\\log_2(10)$.'),
+    jsonb_build_object('id','C','text','$t=\\dfrac{12}{10}=1.2$ years','explanation','Treats decay as linear rather than exponential.'),
+    jsonb_build_object('id','D','text','$t=12\\ln(10)$','explanation','Uses the wrong log base/relationship for half-life; the model is naturally in base 2 here.')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'Half-life model:\n$$\\frac{M(t)}{M_0}=\\left(\\frac12\\right)^{t/12}$$\nSet $M(t)=0.1M_0$:\n$$\\left(\\frac12\\right)^{t/12}=0.1$$\nTake reciprocals:\n$$2^{t/12}=10$$\nSo\n$$t=12\\log_2(10)\\approx 39.9\\text{ years}.$$',
+  recommendation_reasons = ARRAY['Classic AP task: solve for time using exponential decay and logs.', 'Targets sign mistakes when taking logarithms of numbers less than 1.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 4,
+  mastery_weight = 1.15,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Use $(1/2)^{t/12}=0.1$ then convert to $2^{t/12}=10$.',
+  weight_primary = 0.75,
+  weight_supporting = 0.25,
+    primary_skill_id = 'SK_EXP_MODEL',
+  supporting_skill_ids = ARRAY['SK_SOLVE_FOR_TIME','SK_LOG_RULES'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.8-P3';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.8',
+  section_id = '7.8',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 2,
+  target_time_seconds = 120,
+  skill_tags = ARRAY['SK_EXP_MODEL', 'SK_INTERPRET_K'],
+  error_tags = ARRAY['E_GROWTH_VS_DECAY', 'E_TIME_SCALING'],
+  prompt = 'A population $P(t)$ satisfies $\\dfrac{dP}{dt}=kP$ and is modeled by\n\n$$P(t)=900e^{-0.06t},$$\n\nwhere $t$ is measured in days. Which statement is true?',
+  latex = 'A population $P(t)$ satisfies $\\dfrac{dP}{dt}=kP$ and is modeled by\n\n$$P(t)=900e^{-0.06t},$$\n\nwhere $t$ is measured in days. Which statement is true?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','The population is increasing at $6\\%$ per day.','explanation','The negative sign indicates decay, not growth.'),
+    jsonb_build_object('id','B','text','The population decreases by $0.06$ cells per day.','explanation','The rate is proportional to $P(t)$, not a constant decrease.'),
+    jsonb_build_object('id','C','text','At any time $t$, the instantaneous rate of change is $-0.06P(t)$ cells per day.','explanation','Correct. Differentiating gives $P''(t)=-0.06\\cdot 900e^{-0.06t}=-0.06P(t)$.'),
+    jsonb_build_object('id','D','text','The half-life is $0.06$ days.','explanation','Half-life requires solving $(1/2)=e^{-0.06t}$; it is not equal to the coefficient.')
+  ),
+  correct_option_id = 'C',
+  tolerance = 0.0010,
+  explanation = 'Differentiate:\n$$P(t)=900e^{-0.06t}\\Rightarrow P''(t)=900(-0.06)e^{-0.06t}=-0.06\\cdot 900e^{-0.06t}=-0.06P(t).$$\nThus the instantaneous rate of change is always $-0.06P(t)$ cells per day.',
+  recommendation_reasons = ARRAY['Checks interpretation of $k$ and units in $P(t)=P_0e^{kt}$.', 'Targets confusion between proportional decay and constant change.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 0.95,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Interpret $k=-0.06$ as proportional rate per day; rate equals $P''=kP$.',
+  weight_primary = 0.85,
+  weight_supporting = 0.15,
+    primary_skill_id = 'SK_EXP_MODEL',
+  supporting_skill_ids = ARRAY['SK_INTERPRET_K'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.8-P4';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.8',
+  section_id = '7.8',
+  type = 'MCQ',
+  calculator_allowed = TRUE,
+  difficulty = 5,
+  target_time_seconds = 260,
+  skill_tags = ARRAY['SK_EXP_MODEL', 'SK_PARAMETER_ESTIMATION', 'SK_SOLVE_FOR_TIME', 'SK_LOG_RULES'],
+  error_tags = ARRAY['E_FORGET_DIVIDE_BY_INTERVAL', 'E_TIME_SCALING', 'E_LOG_MIST', 'E_ALGEBRA'],
+  prompt = 'A medication in the bloodstream follows $\\dfrac{dA}{dt}=kA$, where $t$ is in hours.\n\nImmediately after a dose, $A(0)=80$ mg. After 4 hours, $A(4)=50$ mg.\n\nAt what time $t$ will $A(t)=20$ mg? Choose the closest value.',
+  latex = 'A medication in the bloodstream follows $\\dfrac{dA}{dt}=kA$, where $t$ is in hours.\n\nImmediately after a dose, $A(0)=80$ mg. After 4 hours, $A(4)=50$ mg.\n\nAt what time $t$ will $A(t)=20$ mg? Choose the closest value.',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$t\\approx 9.3$','explanation','Correct. Find $k=\\dfrac{1}{4}\\ln\\left(\\frac{50}{80}\\right)$, then solve $20=80e^{kt}$ to get $t=\\dfrac{\\ln(1/4)}{k}\\approx 9.3$.'),
+    jsonb_build_object('id','B','text','$t\\approx 6.4$','explanation','Forgets that the ratio $50/80$ corresponds to 4 hours (missing the factor of 4 in $k$).'),
+    jsonb_build_object('id','C','text','$t\\approx 3.2$','explanation','Too small because $A(4)=50$ is still above $20$.'),
+    jsonb_build_object('id','D','text','$t\\approx 12.8$','explanation','Typically comes from using $k=\\ln(50/80)$ instead of $\\ln(50/80)/4$.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Model: $A(t)=80e^{kt}$. Use $A(4)=50$:\n$$50=80e^{4k}\\Rightarrow k=\\frac{1}{4}\\ln\\left(\\frac{50}{80}\\right).$$\nSolve $A(t)=20$:\n$$20=80e^{kt}\\Rightarrow e^{kt}=\\frac14\\Rightarrow t=\\frac{\\ln(1/4)}{k}\\approx 9.3.$$',
+  recommendation_reasons = ARRAY['Two-step AP pattern: estimate $k$ from data, then solve for time.', 'Targets scaling-by-interval mistakes when computing $k$.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 5,
+  mastery_weight = 1.25,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Compute $k$ using the 4-hour ratio; then solve for $t$ with logs.',
+  weight_primary = 0.70,
+  weight_supporting = 0.30,
+    primary_skill_id = 'SK_EXP_MODEL',
+  supporting_skill_ids = ARRAY['SK_PARAMETER_ESTIMATION','SK_SOLVE_FOR_TIME','SK_LOG_RULES'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.8-P5';-- Unit 7.9 (BC ONLY) Logistic Models with Differential Equations — Practice 1–5
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.9',
+  section_id = '7.9',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 2,
+  target_time_seconds = 105,
+  skill_tags = ARRAY['SK_LOGISTIC_MODEL', 'SK_PARAMETER_INTERPRET'],
+  error_tags = ARRAY['E_MIXUP_K_R', 'E_UNITS_MISREAD'],
+  prompt = 'A population $P(t)$ is modeled by the logistic differential equation\n$$\\frac{dP}{dt}=0.4P\\left(1-\\frac{P}{800}\\right),$$\nwhere $t$ is measured in years and $P$ is measured in individuals. Which statement is correct?',
+  latex = 'A population $P(t)$ is modeled by the logistic differential equation\n$$\\frac{dP}{dt}=0.4P\\left(1-\\frac{P}{800}\\right),$$\nwhere $t$ is measured in years and $P$ is measured in individuals. Which statement is correct?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','The carrying capacity is $0.4$.','explanation','In logistic form, the carrying capacity is the value that makes $1-\\frac{P}{K}=0$, here $K=800$, not $0.4$.'),
+    jsonb_build_object('id','B','text','The carrying capacity is $800$.','explanation','Correct: $\\frac{dP}{dt}=0$ at $P=800$, so the long-term limiting population is $800$.'),
+    jsonb_build_object('id','C','text','The population decreases whenever $0<P<800$.','explanation','For $0<P<800$, both $P>0$ and $1-\\frac{P}{800}>0$, so $\\frac{dP}{dt}>0$ (increasing).'),
+    jsonb_build_object('id','D','text','The population increases whenever $P>800$.','explanation','If $P>800$, then $1-\\frac{P}{800}<0$, so $\\frac{dP}{dt}<0$ (decreasing).')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'In a logistic model\n$$\\frac{dP}{dt}=rP\\left(1-\\frac{P}{K}\\right),$$\nthe carrying capacity is $K$. Here, $K=800$.',
+  recommendation_reasons = ARRAY['Builds correct identification of carrying capacity from differential-equation form.', 'Targets common confusion between growth rate $r$ and carrying capacity $K$.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 1.00,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: interpret parameters $r$ and $K$ directly from a logistic differential equation.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+    primary_skill_id = 'SK_LOGISTIC_MODEL',
+  supporting_skill_ids = ARRAY['SK_PARAMETER_INTERPRET'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.9-P1';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.9',
+  section_id = '7.9',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 3,
+  target_time_seconds = 120,
+  skill_tags = ARRAY['SK_LOGISTIC_MODEL', 'SK_EQUILIBRIA_STABILITY'],
+  error_tags = ARRAY['E_WRONG_EQUILIBRIUM', 'E_SIGN_ERROR_SEPARATION'],
+  prompt = 'Consider the logistic differential equation\n$$\\frac{dP}{dt}=P(6-P).$$\nWhich statement about equilibrium solutions is correct?',
+  latex = 'Consider the logistic differential equation\n$$\\frac{dP}{dt}=P(6-P).$$\nWhich statement about equilibrium solutions is correct?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','The only equilibrium solution is $P=0$.','explanation','Set $\\frac{dP}{dt}=0$: both factors can be zero, giving $P=0$ and $P=6$.'),
+    jsonb_build_object('id','B','text','The only equilibrium solution is $P=6$.','explanation','There are two equilibria: $P=0$ and $P=6$.'),
+    jsonb_build_object('id','C','text','The equilibrium solutions are $P=0$ and $P=6$.','explanation','Correct: equilibria occur when $P(6-P)=0$, i.e., $P=0$ or $P=6$.'),
+    jsonb_build_object('id','D','text','There are no equilibrium solutions because $\\frac{dP}{dt}$ depends on $P$.','explanation','Equilibria are constant solutions where $\\frac{dP}{dt}=0$ for that constant value of $P$.')
+  ),
+  correct_option_id = 'C',
+  tolerance = 0.0010,
+  explanation = 'Equilibrium solutions satisfy $\\frac{dP}{dt}=0$.\n$$P(6-P)=0 \\implies P=0\\ \\text{or}\\ P=6.$$',
+  recommendation_reasons = ARRAY['Reinforces equilibrium identification by setting derivative to zero.', 'Prevents missing equilibria from factored forms.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 2,
+  mastery_weight = 1.05,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: find equilibria of a logistic-style autonomous differential equation.',
+  weight_primary = 0.85,
+  weight_supporting = 0.15,
+    primary_skill_id = 'SK_LOGISTIC_MODEL',
+  supporting_skill_ids = ARRAY['SK_EQUILIBRIA_STABILITY'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.9-P2';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.9',
+  section_id = '7.9',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 4,
+  target_time_seconds = 160,
+  skill_tags = ARRAY['SK_LOGISTIC_MODEL', 'SK_EQUILIBRIA_STABILITY'],
+  error_tags = ARRAY['E_WRONG_EQUILIBRIUM', 'E_SIGN_ERROR_SEPARATION'],
+  prompt = 'A population $P(t)$ satisfies\n$$\\frac{dP}{dt}=P(10-P).$$\nAssume $P(0)=12$. Which statement about $P(t)$ is true for $t>0$?',
+  latex = 'A population $P(t)$ satisfies\n$$\\frac{dP}{dt}=P(10-P).$$\nAssume $P(0)=12$. Which statement about $P(t)$ is true for $t>0$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$P(t)$ increases without bound.','explanation','For large $P$, the factor $(10-P)$ is negative, so growth is negative; it will not blow up upward.'),
+    jsonb_build_object('id','B','text','$P(t)$ decreases and approaches $10$.','explanation','Correct: if $P>10$, then $10-P<0$ so $\\frac{dP}{dt}<0$ and $P$ decreases toward the stable equilibrium $10$.'),
+    jsonb_build_object('id','C','text','$P(t)$ decreases and approaches $0$.','explanation','When $P$ is near $10$ from above, $\\frac{dP}{dt}<0$ but $P=0$ is not the attracting equilibrium for $P(0)=12$.'),
+    jsonb_build_object('id','D','text','$P(t)$ increases and approaches $10$.','explanation','If $P(0)=12>10$, the derivative is negative initially, so $P$ must decrease, not increase.')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'Because $P(0)=12>10$, we have $10-P<0$, so\n$$\\frac{dP}{dt}=P(10-P)<0,$$\nmeaning $P(t)$ decreases. In a logistic model, solutions move toward the stable equilibrium $P=10$, so $P(t)\\to 10$ as $t\\to\\infty$.',
+  recommendation_reasons = ARRAY['Connects sign of $\\frac{dP}{dt}$ to long-term behavior in logistic models.', 'Targets the common mistake of assuming “approaches 0” whenever decreasing.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.15,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: use phase-line reasoning for logistic/autonomous DEs to predict monotonicity and limiting value.',
+  weight_primary = 0.75,
+  weight_supporting = 0.25,
+    primary_skill_id = 'SK_LOGISTIC_MODEL',
+  supporting_skill_ids = ARRAY['SK_EQUILIBRIA_STABILITY'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.9-P3';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.9',
+  section_id = '7.9',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 5,
+  target_time_seconds = 190,
+  skill_tags = ARRAY['SK_LOGISTIC_MODEL', 'SK_SEPARATION', 'SK_ALGEBRA_PARTIAL_FRACTIONS'],
+  error_tags = ARRAY['E_ALGEBRA_PARTIAL_FRACTIONS', 'E_FORGET_CONSTANT', 'E_SIGN_ERROR_SEPARATION'],
+  prompt = 'A population satisfies the logistic equation\n$$\\frac{dP}{dt}=2P\\left(1-\\frac{P}{5}\\right).$$\nIf $P(0)=1$, which explicit solution is correct?',
+  latex = 'A population satisfies the logistic equation\n$$\\frac{dP}{dt}=2P\\left(1-\\frac{P}{5}\\right).$$\nIf $P(0)=1$, which explicit solution is correct?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','$P(t)=\\dfrac{5}{1+4e^{-2t}}$','explanation','Correct: logistic solution form with $K=5$, $r=2$, and $P(0)=1$ gives the constant $4$.'),
+    jsonb_build_object('id','B','text','$P(t)=\\dfrac{5}{1+e^{-2t}}$','explanation','This would give $P(0)=\\dfrac{5}{2}=2.5$, not $1$.'),
+    jsonb_build_object('id','C','text','$P(t)=\\dfrac{5}{1+4e^{2t}}$','explanation','Wrong sign in the exponent causes $P(t)$ to decrease toward $0$ as $t\\to\\infty$, contradicting the model for $P(0)=1<5$.'),
+    jsonb_build_object('id','D','text','$P(t)=\\dfrac{1}{1+4e^{-2t}}$','explanation','The carrying capacity should be $5$, so the numerator must be $5$, not $1$.')
+  ),
+  correct_option_id = 'A',
+  tolerance = 0.0010,
+  explanation = 'Rewrite as\n$$\\frac{dP}{dt}=2P\\left(1-\\frac{P}{5}\\right)=\\frac{2}{5}P(5-P).$$\nA standard logistic solution has the form\n$$P(t)=\\frac{K}{1+Ce^{-rt}},$$\nwhere $K=5$ and $r=2$. Use $P(0)=1$:\n$$1=\\frac{5}{1+C}\\Rightarrow 1+C=5\\Rightarrow C=4.$$ \nThus\n$$P(t)=\\frac{5}{1+4e^{-2t}}.$$',
+  recommendation_reasons = ARRAY['Tests full logistic explicit-solution recognition and IVP constant fitting.', 'Targets exponent-sign and constant-solving errors common in AP BC.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 5,
+  mastery_weight = 1.30,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: identify correct explicit logistic solution and apply initial condition to determine constant.',
+  weight_primary = 0.70,
+  weight_supporting = 0.30,
+    primary_skill_id = 'SK_LOGISTIC_MODEL',
+  supporting_skill_ids = ARRAY['SK_SEPARATION','SK_ALGEBRA_PARTIAL_FRACTIONS'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.9-P4';
+
+
+UPDATE public.questions
+SET
+  course = 'Both',
+  topic = 'Both_DiffEq',
+  sub_topic_id = '7.9',
+  section_id = '7.9',
+  type = 'MCQ',
+  calculator_allowed = FALSE,
+  difficulty = 3,
+  target_time_seconds = 135,
+  skill_tags = ARRAY['SK_LOGISTIC_MODEL', 'SK_PARAMETER_INTERPRET'],
+  error_tags = ARRAY['E_MIXUP_K_R', 'E_UNITS_MISREAD'],
+  prompt = 'A population is modeled by\n$$\\frac{dP}{dt}=rP\\left(1-\\frac{P}{K}\\right).$$\nWhich statement is always true about the rate of change $\\frac{dP}{dt}$?',
+  latex = 'A population is modeled by\n$$\\frac{dP}{dt}=rP\\left(1-\\frac{P}{K}\\right).$$\nWhich statement is always true about the rate of change $\\frac{dP}{dt}$?',
+  options = jsonb_build_array(
+    jsonb_build_object('id','A','text','The maximum value of $\\frac{dP}{dt}$ occurs at $P=K$.','explanation','At $P=K$, $\\frac{dP}{dt}=0$, not a maximum.'),
+    jsonb_build_object('id','B','text','If $0<P<K$, then $\\frac{dP}{dt}>0$.','explanation','Correct: for $0<P<K$, both $P>0$ and $1-\\frac{P}{K}>0$, so the product is positive.'),
+    jsonb_build_object('id','C','text','If $P>K$, then $\\frac{dP}{dt}>0$.','explanation','If $P>K$, then $1-\\frac{P}{K}<0$, so $\\frac{dP}{dt}<0$.'),
+    jsonb_build_object('id','D','text','If $P=\\frac{K}{2}$, then $\\frac{dP}{dt}=0$.','explanation','At $P=\\frac{K}{2}$, the growth rate is typically maximal (positive), not zero.')
+  ),
+  correct_option_id = 'B',
+  tolerance = 0.0010,
+  explanation = 'For $0<P<K$, we have $P>0$ and $1-\\frac{P}{K}>0$, so\n$$\\frac{dP}{dt}=rP\\left(1-\\frac{P}{K}\\right)>0,$$\nmeaning the population increases in that range.',
+  recommendation_reasons = ARRAY['Strengthens sign analysis for logistic growth without requiring solving.', 'Targets the common misconception that “largest at $K$” because of carrying capacity language.'],
+  status = 'published',
+  version = version + 1,
+  reasoning_level = 3,
+  mastery_weight = 1.10,
+  source = 'NewMaoS',
+  source_year = 2026,
+  notes = 'Focus: interpret sign of logistic growth rate across population ranges relative to $K$.',
+  weight_primary = 0.80,
+  weight_supporting = 0.20,
+    primary_skill_id = 'SK_LOGISTIC_MODEL',
+  supporting_skill_ids = ARRAY['SK_PARAMETER_INTERPRET'],
+  prompt_type = 'text',
+  representation_type = 'symbolic',
+  topic_id = 'Both_DiffEq',
+  updated_at = NOW()
+WHERE title = '7.9-P5';
+
+COMMIT;
