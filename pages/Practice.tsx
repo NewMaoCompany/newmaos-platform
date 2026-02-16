@@ -2519,6 +2519,13 @@ export const Practice = () => {
                 DescLen: {subTopicData?.description_2?.length || 0} |
                 Scope: {subTopicData?.courseScope || 'N/A'} |
                 KeyMatch: {Object.keys(topicContent).find(k => k.includes(cleanTopic))} |
+                SectKey: {Object.keys(sections).find(k => k.includes(cleanTopic)) || 'None'} |
+                RawD2: {(() => {
+                    const k = Object.keys(sections).find(key => key.includes(cleanTopic));
+                    if (!k || !sections[k]) return 'NoKey';
+                    const s = sections[k].find(sec => String(sec.id) === String(subTopicId));
+                    return s ? (s.description_2 ? s.description_2.length : 'Empty') : 'NotFound';
+                })()} |
                 CurrentCourse: {user?.currentCourse}
             </div>
         </div >
