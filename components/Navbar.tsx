@@ -244,7 +244,7 @@ export const Navbar = () => {
 
         {/* Central Navigation - Scrollable on mobile, Centered on desktop */}
         <div
-          className="flex-1 flex items-center justify-start sm:justify-center gap-2 lg:gap-3 overflow-x-auto no-scrollbar mx-2 sm:mx-4 pl-2 pr-6 sm:px-0 [&::-webkit-scrollbar]:hidden"
+          className="flex-1 flex items-center justify-start sm:justify-center gap-2 lg:gap-3 overflow-x-auto sm:overflow-visible no-scrollbar mx-2 sm:mx-4 pl-2 pr-6 sm:px-0 [&::-webkit-scrollbar]:hidden"
           style={{
             scrollbarWidth: 'none',
             msOverflowStyle: 'none'
