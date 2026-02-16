@@ -392,9 +392,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                         : COURSE_CONTENT_DATA[topicId]?.subTopics || [];
 
                     if (subSections.length > 0 && baseSubTopics.length > 0) {
-                        if (topicId === 'Both_Derivatives') {
-                            console.log(`[AppContext] Merging Both_Derivatives. Base: ${baseSubTopics.length}, DB: ${subSections.length}`);
-                        }
                         updated[topicId] = {
                             ...updated[topicId],
                             subTopics: baseSubTopics.map((sub: any) => {

@@ -2532,23 +2532,7 @@ export const Practice = () => {
 
             {/* Report Modal Removed */}
 
-            {/* DEBUGGING OVERLAY */}
-            <div className="fixed bottom-0 left-0 right-0 bg-black/80 text-white p-2 text-xs font-mono z-[99999] opacity-75 hover:opacity-100 transition-opacity">
-                [v2.4 DIRECT FIX] D: {cleanTopic} | TP: {topicParam} | ST: {subTopicId} |
-                SecCount: {Object.keys(sections).length} |
-                DBUnit: {String(!!topicContent[topicParam])} |
-                DescLen: {subTopicData?.description_2?.length || 0} |
-                Scope: {subTopicData?.courseScope || 'N/A'} |
-                KeyMatch: {Object.keys(topicContent).find(k => k.includes(cleanTopic))} |
-                SectKey: {Object.keys(sections).find(k => k.includes(cleanTopic)) || 'None'} |
-                RawD2: {(() => {
-                    const k = Object.keys(sections).find(key => key.includes(cleanTopic));
-                    if (!k || !sections[k]) return 'NoKey';
-                    const s = sections[k].find(sec => String(sec.id) === String(subTopicId));
-                    return s ? (s.description_2 ? s.description_2.length : 'Empty') : 'NotFound';
-                })()} |
-                CurrentCourse: {user?.currentCourse}
-            </div>
+            {/* DEBUGGING OVERLAY REMOVED */}
         </div >
     );
 };
