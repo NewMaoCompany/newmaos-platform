@@ -6,7 +6,10 @@
 // In production, force use of Railway backend to bypass broken Vercel env var or routing
 // In production, force use of Railway backend to bypass broken Vercel env var or routing
 const isProd = import.meta.env.PROD || (typeof window !== 'undefined' && window.location.hostname !== 'localhost');
-const API_BASE_URL = import.meta.env.VITE_API_URL || (isProd ? 'https://cheerful-patience-production-206d.up.railway.app/api' : 'http://localhost:4005/api');
+// FORCE production URL if isProd is true, ignoring VITE_API_URL to avoid misconfiguration
+const API_BASE_URL = isProd
+    ? 'https://cheerful-patience-production-206d.up.railway.app/api'
+    : (import.meta.env.VITE_API_URL || 'http://localhost:4005/api');
 
 // Helper to get auth token from Supabase session
 const getAuthToken = (): string | null => {
