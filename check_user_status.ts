@@ -27,7 +27,7 @@ async function checkUser() {
         return;
     }
 
-    const user = users.find(u => u.email === email);
+    const user = (users as any[]).find(u => u.email === email);
 
     if (user) {
         console.log('User found:', {

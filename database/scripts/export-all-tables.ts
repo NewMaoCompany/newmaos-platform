@@ -192,7 +192,7 @@ function generateTablesDocs(result: any, outputDir: string) {
     };
 
     for (const [category, tables] of Object.entries(categories)) {
-        const existing = tables.filter((t: string) => result.tables[t]);
+        const existing = (tables as string[]).filter((t: string) => (result.tables as any)[t]);
         if (existing.length > 0) {
             md += `### ${category}\n\n`;
             existing.forEach((t: string) => {
