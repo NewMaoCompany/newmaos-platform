@@ -392,21 +392,15 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                         : COURSE_CONTENT_DATA[topicId]?.subTopics || [];
 
                     if (subSections.length > 0 && baseSubTopics.length > 0) {
+                        if (topicId === 'Both_Derivatives') {
+                            console.log(`[AppContext] Merging Both_Derivatives. Base: ${baseSubTopics.length}, DB: ${subSections.length}`);
+                        }
                         updated[topicId] = {
                             ...updated[topicId],
                             subTopics: baseSubTopics.map((sub: any) => {
                                 // Relaxed find: Check for string vs number ID mismatch
                                 const dbSection = subSections.find(s => String(s.id) === String(sub.id));
-
                                 if (dbSection) {
-                                    // Debug log for critical section
-                                    if (dbSection.id === '1.1') {
-                                        console.log('DEBUG: Mapping Section 1.1', {
-                                            dbDesc2: dbSection.description2,
-                                            snakeDesc2: dbSection.description_2,
-                                            full: dbSection
-                                        });
-                                    }
 
                                     return {
                                         ...sub,
