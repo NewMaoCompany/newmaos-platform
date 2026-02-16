@@ -694,7 +694,18 @@ export const Practice = () => {
     // --- Separated Effect for Metadata Sync (Lesson Content) ---
     useEffect(() => {
         if (subTopicId && subTopicId !== 'unit_test' && topicParam) {
-            const dbUnit = topicContent[topicParam];
+            // SMART LOOKUP: Handle prefix mismatches (e.g. usage of 'Series' vs 'BC_Series')
+            let resolvedTopicKey = cleanTopic;
+            if (!topicContent[resolvedTopicKey]) {
+                // Try explicit prefixes if direct match fails
+                if (topicContent[`BC_${cleanTopic}`]) resolvedTopicKey = `BC_${cleanTopic}`;
+                else if (topicContent[`Both_${cleanTopic}`]) resolvedTopicKey = `Both_${cleanTopic}`;
+                else if (topicContent[`AB_${cleanTopic}`]) resolvedTopicKey = `AB_${cleanTopic}`;
+                // Fallback to topicParam if it's different and exists
+                else if (topicContent[topicParam]) resolvedTopicKey = topicParam;
+            }
+
+            const dbUnit = topicContent[resolvedTopicKey];
             if (dbUnit) {
                 const dbSubTopic = dbUnit.subTopics?.find((s: any) => s.id === subTopicId);
                 if (dbSubTopic) {
