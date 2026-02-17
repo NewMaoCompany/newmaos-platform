@@ -48,7 +48,7 @@ const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
 
 const PageLayer = ({ active, children, zIndex = 0 }: { active: boolean; children: React.ReactNode; zIndex?: number }) => (
   <div
-    className={`absolute inset-0 transition-all duration-500 ease-in-out ${active ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+    className={`absolute inset-0 transition-[opacity,transform] duration-500 ease-in-out ${active ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}
     style={{ zIndex }}
   >
     {children}
