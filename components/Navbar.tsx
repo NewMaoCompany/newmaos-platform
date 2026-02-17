@@ -241,10 +241,10 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   }, [totalUnreadCount]);
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-gray-200/70 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface-light/60 h-[72px] lg:h-[80px] flex items-center transition-all duration-300">
-      <div className="w-full px-4 sm:px-6 flex items-center justify-between min-h-[48px]">
+    <nav className="sticky top-0 z-50 w-full border-b border-gray-200/70 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface-light/60 h-[72px] lg:h-[80px] flex items-center">
+      <div className="w-full h-full px-4 sm:px-6 flex items-center justify-between relative">
         {/* Left Side Group (Logo + Notification) */}
-        <div className="flex items-center">
+        <div className="flex items-center h-full">
           {/* Logo Area - Always Visible */}
           <Link to="/dashboard" className="flex items-center gap-2 group cursor-pointer shrink-0">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-text-main shadow-glow transition-transform group-hover:scale-105 overflow-hidden">
@@ -360,94 +360,96 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
           </div>
         ) : (
           <div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-1 lg:gap-2 h-full"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-1 lg:gap-2 h-full pointer-events-none"
           >
-            <Link
-              to="/dashboard"
-              className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
-            >
-              <span>Dashboard</span>
-              {needsCheckin && (
-                <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark">
-                  1
-                </span>
-              )}
-            </Link>
-            <Link to="/practice" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all whitespace-nowrap ${isActive('/practice') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
-              Practice
-            </Link>
-            {isAuthenticated && isPro ? (
-              <Link to="/analysis" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
-                <span>Analysis</span>
-                {analysisUnreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
-                    {analysisUnreadCount > 9 ? '9+' : analysisUnreadCount}
-                  </span>
-                )}
-              </Link>
-            ) : (
-              <div
-                className="relative group cursor-pointer shrink-0"
-                onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
-              >
-                <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
-                  <span>Analysis</span>
-                  <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
-                </div>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
-                  {!isAuthenticated ? "Sign in required" : "Pro Membership required"}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
-                </div>
-              </div>
-            )}
-            {isAuthenticated && isPro ? (
-              <Link to="/forum" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/forum') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
-                <span>Forum</span>
-                {totalUnreadChatCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
-                    {totalUnreadChatCount > 99 ? '99+' : totalUnreadChatCount}
-                  </span>
-                )}
-              </Link>
-            ) : (
-              <div
-                className="relative group cursor-pointer shrink-0"
-                onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
-              >
-                <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
-                  <span>Forum</span>
-                  <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
-                </div>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
-                  {!isAuthenticated ? "Sign in required" : "Pro Membership required"}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
-                </div>
-              </div>
-            )}
-            {isAuthenticated ? (
+            <div className="pointer-events-auto flex items-center gap-1 lg:gap-2">
               <Link
-                to="/settings"
-                className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
+                to="/dashboard"
+                className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
               >
-                <span>Settings</span>
-                {settingsHasUnread && (
-                  <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
+                <span>Dashboard</span>
+                {needsCheckin && (
+                  <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark">
                     1
                   </span>
                 )}
               </Link>
-            ) : (
-              <div className="relative group shrink-0">
-                <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 cursor-not-allowed opacity-60 whitespace-nowrap">
+              <Link to="/practice" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all whitespace-nowrap ${isActive('/practice') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+                Practice
+              </Link>
+              {isAuthenticated && isPro ? (
+                <Link to="/analysis" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+                  <span>Analysis</span>
+                  {analysisUnreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
+                      {analysisUnreadCount > 9 ? '9+' : analysisUnreadCount}
+                    </span>
+                  )}
+                </Link>
+              ) : (
+                <div
+                  className="relative group cursor-pointer shrink-0"
+                  onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
+                >
+                  <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
+                    <span>Analysis</span>
+                    <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
+                  </div>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
+                    {!isAuthenticated ? "Sign in required" : "Pro Membership required"}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                  </div>
+                </div>
+              )}
+              {isAuthenticated && isPro ? (
+                <Link to="/forum" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/forum') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+                  <span>Forum</span>
+                  {totalUnreadChatCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
+                      {totalUnreadChatCount > 99 ? '99+' : totalUnreadChatCount}
+                    </span>
+                  )}
+                </Link>
+              ) : (
+                <div
+                  className="relative group cursor-pointer shrink-0"
+                  onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
+                >
+                  <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
+                    <span>Forum</span>
+                    <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
+                  </div>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
+                    {!isAuthenticated ? "Sign in required" : "Pro Membership required"}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                  </div>
+                </div>
+              )}
+              {isAuthenticated ? (
+                <Link
+                  to="/settings"
+                  className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
+                >
                   <span>Settings</span>
-                  <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
+                  {settingsHasUnread && (
+                    <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
+                      1
+                    </span>
+                  )}
+                </Link>
+              ) : (
+                <div className="relative group shrink-0">
+                  <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 cursor-not-allowed opacity-60 whitespace-nowrap">
+                    <span>Settings</span>
+                    <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
+                  </div>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    Sign in required
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                  </div>
                 </div>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                  Sign in required
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
 
