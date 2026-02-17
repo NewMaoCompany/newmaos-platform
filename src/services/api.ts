@@ -9,7 +9,7 @@ const isProd = import.meta.env.PROD || (typeof window !== 'undefined' && window.
 // FORCE production URL if isProd is true, ignoring VITE_API_URL to avoid misconfiguration
 // FORCE production URL if isProd is true, ignoring VITE_API_URL to avoid misconfiguration
 const API_BASE_URL = isProd
-    ? 'https://cheerful-patience-production-206d.up.railway.app/api'
+    ? 'https://newmaos-api.vercel.app/api'
     : '/api';
 
 // Helper to get auth token from Supabase session
