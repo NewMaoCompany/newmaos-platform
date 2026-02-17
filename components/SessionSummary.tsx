@@ -67,6 +67,11 @@ export const SessionSummary = ({
             const index = summaryHistory.findIndex(h => h.label === justCompletedSessionLabel);
             if (index !== -1) return index;
         }
+        // FIX: If we have current results (props), prefer showing them immediately (index -1)
+        // instead of falling back to old history (index 0) which causes a "flash" of old scores.
+        if (initialQuestionResults && Object.keys(initialQuestionResults).length > 0) {
+            return -1;
+        }
         return summaryHistory.length > 0 ? 0 : -1;
     };
 
@@ -79,7 +84,6 @@ export const SessionSummary = ({
         console.log('🔍 [SessionSummary useEffect] triggered');
         console.log('  justCompletedSessionLabel:', justCompletedSessionLabel);
         console.log('  summaryHistory length:', summaryHistory.length);
-        console.log('  summaryHistory labels:', summaryHistory.map(h => h.label));
 
         if (justCompletedSessionLabel && summaryHistory.length > 0) {
             const index = summaryHistory.findIndex(h => h.label === justCompletedSessionLabel);
@@ -90,11 +94,16 @@ export const SessionSummary = ({
             }
         }
 
-        // Fallback: if history exists but no justCompleted, select newest
+        // Fallback Logic:
+        // Only switch to history[0] if we DON'T have a valid current session to show.
+        // If we have current session results, stay on -1.
         if (summaryHistory.length > 0) {
-            setSelectedHistoryIndex(0);
+            const hasCurrentResults = initialQuestionResults && Object.keys(initialQuestionResults).length > 0;
+            if (!hasCurrentResults && !justCompletedSessionLabel) {
+                setSelectedHistoryIndex(0);
+            }
         }
-    }, [justCompletedSessionLabel, summaryHistory]);
+    }, [justCompletedSessionLabel, summaryHistory, initialQuestionResults]);
 
     // Derived Data based on selection
     const activeUserAnswers = selectedHistoryIndex === -1
@@ -502,6 +511,16 @@ export const SessionSummary = ({
                             <div className="text-left">
                                 <div className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Mistakes</div>
                                 <div className="text-lg font-black text-gray-900 dark:text-white leading-tight">{incorrectCount}</div>
+                            </div>
+                        </div>
+                        <div className="h-8 w-px bg-gray-200 dark:bg-gray-700"></div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                                <span className="material-symbols-outlined text-lg">monetization_on</span>
+                            </div>
+                            <div className="text-left">
+                                <div className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Coins</div>
+                                <div className="text-lg font-black text-gray-900 dark:text-white leading-tight">+{correctCount * 5}</div>
                             </div>
                         </div>
                     </div>

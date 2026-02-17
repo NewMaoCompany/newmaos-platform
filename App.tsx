@@ -20,6 +20,8 @@ import { Insights } from './pages/Insights';
 import { Profile } from './pages/Profile';
 import { PointsPage } from './pages/PointsPage';
 import { CheckinPage } from './pages/CheckinPage';
+import { DebugQA } from './pages/DebugQA';
+import { PrestigePage } from './pages/PrestigePage';
 import { ProWelcomeModal } from './components/ProWelcomeModal';
 import { useNavigate } from 'react-router-dom';
 import { StreakModal } from './components/StreakModal';
@@ -197,6 +199,7 @@ const AppRoutes = () => {
           <Route path="/practice/unit/:unitId" element={<TopicDetail />} />
           <Route path="/practice/session" element={<Practice />} />
           <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
+          <Route path="/prestige" element={<ProtectedRoute><PrestigePage /></ProtectedRoute>} />
           <Route path="/profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/points" element={<ProtectedRoute><PointsPage /></ProtectedRoute>} />
           <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
@@ -206,6 +209,7 @@ const AppRoutes = () => {
           <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
           <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionSettings /></ProtectedRoute>} />
           <Route path="/settings/creator" element={<ProtectedRoute><QuestionCreator /></ProtectedRoute>} />
+          <Route path="/debug-qa" element={<ProtectedRoute><DebugQA /></ProtectedRoute>} />
 
           {/* Static Pages */}
           <Route path="/privacy" element={<Privacy />} />

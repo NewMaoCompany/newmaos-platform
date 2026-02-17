@@ -325,3 +325,12 @@ export interface UserSectionProgress {
   entity_type?: 'course' | 'unit' | 'section';
 }
 
+export interface UserPrestige {
+  user_id: string;
+  planet_level: number; // 1-10
+  star_level: number; // 0-3
+  current_stardust: number;
+  total_stardust_collected: number;
+}
+
+

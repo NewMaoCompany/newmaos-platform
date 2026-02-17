@@ -225,8 +225,9 @@ export const Dashboard = () => {
     const fetchDailyStats = async () => {
       if (!user?.id) return;
 
-      // Use rolling 24h window
-      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      // Use Start of Today (Midnight) instead of rolling 24h
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
 
       try {
         // Direct Query to 'question_attempts' (Most robust method)
@@ -234,7 +235,7 @@ export const Dashboard = () => {
           .from('question_attempts')
           .select('question_id, is_correct, time_spent_seconds, created_at')
           .eq('user_id', user.id)
-          .gte('created_at', oneDayAgo.toISOString());
+          .gte('created_at', startOfDay.toISOString());
 
         if (error) {
           console.error('Fetch daily stats failed:', error);
@@ -292,12 +293,11 @@ export const Dashboard = () => {
             }
           });
 
-          // 3. Count unique questions correctly solved (latest attempt today is correct)
+          // 3. Count unique questions correctly solved (ANY attempt today is correct)
           let solvedCount = 0;
           attemptsMap.forEach((attempts) => {
-            // Sort by time descending to get the latest
-            attempts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-            if (attempts[0].is_correct) {
+            // Check if user has ANY correct attempt for this question ID today
+            if (attempts.some(a => a.is_correct)) {
               solvedCount++;
             }
           });
@@ -448,7 +448,7 @@ export const Dashboard = () => {
               onClick={() => navigate('/analysis')}
             >
               <div className="flex flex-col gap-2">
-                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Accuracy Rate <span className="text-[10px] text-gray-400 font-normal">(24h refresh)</span></span>
+                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Accuracy Rate <span className="text-[10px] text-gray-400 font-normal">(Today)</span></span>
                 <div className="flex flex-col items-start">
                   <span className="text-4xl font-black text-text-main dark:text-white tracking-tighter">{dailyStats.accuracy_rate.toFixed(0)}%</span>
                   {/* Reuse trend or show streak? Keeping trend for now or just generic + */}
@@ -466,7 +466,7 @@ export const Dashboard = () => {
               onClick={() => navigate('/practice')}
             >
               <div className="flex justify-between items-start">
-                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Problems Solved <span className="text-[10px] text-gray-400 font-normal block sm:inline">(24h refresh)</span></span>
+                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Problems Solved <span className="text-[10px] text-gray-400 font-normal block sm:inline">(Today)</span></span>
                 <div className="bg-primary/20 p-2 rounded-lg text-yellow-700 dark:text-primary">
                   <span className="material-symbols-outlined block text-lg">edit_note</span>
                 </div>
@@ -483,7 +483,7 @@ export const Dashboard = () => {
               onClick={() => navigate('/analysis')}
             >
               <div className="flex flex-col gap-1 mb-2">
-                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Study Time <span className="text-[10px] text-gray-400 font-normal">(24h refresh)</span></span>
+                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Study Time <span className="text-[10px] text-gray-400 font-normal">(Today)</span></span>
                 <div className="flex items-baseline gap-1">
                   {/* Show Today's Stats from DB or fallback to calculation */}
                   <span className="text-4xl font-black text-text-main dark:text-white tracking-tighter">

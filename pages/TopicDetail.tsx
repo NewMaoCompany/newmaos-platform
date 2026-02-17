@@ -377,7 +377,7 @@ export const TopicDetail = () => {
                                             return null;
                                         }
 
-                                        // Robust total questions detection: Use global question set for consistency
+                                        // Robust total questions detection
                                         const relevantUnitQuestions = allQuestions.filter(q => {
                                             const qBase = q.topic.includes('_') ? q.topic.split('_')[1] : q.topic;
                                             const unitBase = unitId?.includes('_') ? unitId.split('_')[1] : unitId;
@@ -385,14 +385,12 @@ export const TopicDetail = () => {
                                         });
                                         const totalQuestions = relevantUnitQuestions.length || progress?.total_questions || 5;
 
-                                        // FIX: Aggregate correct answers from ALL sources (top-level results, sub-attempts)
-                                        // Mastery is cumulative: Unique correct answers found across all attempts
+                                        // Aggregate correct answers
                                         const aggregatedResults: Record<string, any> = {
                                             ...(firstAttempt?.questionResults || {}),
                                             ...(progressData?.questionResults || {})
                                         };
 
-                                        // Include results from reviews if they exist
                                         if (progressData?.review?.questionResults) {
                                             Object.assign(aggregatedResults, progressData.review.questionResults);
                                         }
@@ -400,9 +398,15 @@ export const TopicDetail = () => {
                                         const correctCount = Object.values(aggregatedResults).filter((r: any) => r === true || r === 'correct').length;
                                         const percent = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
 
-                                        // 100% = Completed, otherwise In Progress
+                                        // 100% = Completed
+                                        // LOGIC UPDATE: Trust local calculation IF we have verified questions locally.
+                                        // Otherwise (if filter failed), fall back to strict DB status to avoid premature completion.
                                         const actualIncorrectCount = progressData?.currentIncorrectIds?.length || 0;
-                                        if (percent === 100 && actualIncorrectCount === 0) {
+                                        const status = getSectionStatus(sub.id);
+                                        const hasVerifiedQuestions = relevantUnitQuestions.length > 0;
+                                        const isLocallyCompleted = hasVerifiedQuestions && percent === 100 && actualIncorrectCount === 0;
+
+                                        if ((status === 'completed' || isLocallyCompleted)) {
                                             return (
                                                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                                                     <span className="material-symbols-outlined text-[18px]">check_circle</span>

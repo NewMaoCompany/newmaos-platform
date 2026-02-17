@@ -20,7 +20,7 @@ import { initEmailScheduler } from './services/emailScheduler';
 initEmailScheduler();
 
 const app = express();
-const PORT = process.env.PORT || 4005;
+const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(cors({

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
-import { User, CourseType, Activity, TopicMastery, Title, CourseState, Recommendation, SessionMode, Question, AppNotification, UnitContent, SubTopic, UserInsights, SubmitAttemptParams, SubmitAttemptResult, ReviewQueueItem, SubTopicProgress, UserSectionProgress } from './types';
+import { User, CourseType, Activity, TopicMastery, Title, CourseState, Recommendation, SessionMode, Question, AppNotification, UnitContent, SubTopic, UserInsights, SubmitAttemptParams, SubmitAttemptResult, ReviewQueueItem, SubTopicProgress, UserSectionProgress, UserPrestige } from './types';
 import { INITIAL_USER, INITIAL_ACTIVITIES, INITIAL_RADAR_DATA, INITIAL_LINE_DATA, INITIAL_COURSES, PRACTICE_QUESTIONS, INITIAL_NOTIFICATIONS, COURSE_CONTENT_DATA } from './constants';
 import { supabase } from './src/services/supabaseClient';
 import { notificationsApi, contentApi, questionsApi, sectionsApi } from './src/services/api';
@@ -116,6 +116,12 @@ interface AppContextType {
     // Modal Orchestration
     isStreakModalOpen: boolean;
     setIsStreakModalOpen: (isOpen: boolean) => void;
+
+    // Prestige System
+    userPrestige: UserPrestige | null;
+    fetchUserPrestige: () => Promise<void>;
+    purchaseStardust: (amountCoins: number) => Promise<{ success: boolean; message?: string }>;
+    injectStardust: (amount: number) => Promise<{ success: boolean; message?: string }>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -202,6 +208,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     // Points Economy State
     const [userPoints, setUserPoints] = useState<{ balance: number; lifetimeEarned: number }>({ balance: 0, lifetimeEarned: 0 });
     const pointsBalanceRef = React.useRef<HTMLElement>(null);
+    const [userPrestige, setUserPrestige] = useState<UserPrestige | null>(null);
 
     const [recentPointsTransaction, setRecentPointsTransaction] = useState<{ amount: number; description: string } | null>(null);
     const [checkinStatus, setCheckinStatus] = useState<'checked_in' | 'not_checked_in' | 'loading'>('loading');
@@ -2056,6 +2063,79 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
     };
 
+    const fetchUserPrestige = useCallback(async () => {
+        if (!user?.id) return;
+        try {
+            const { data, error } = await supabase
+                .from('user_prestige')
+                .select('*')
+                .eq('user_id', user.id)
+                .single();
+
+            if (error && error.code !== 'PGRST116') {
+                console.error('Error fetching prestige:', error);
+            }
+
+            if (data) {
+                setUserPrestige(data);
+            } else {
+                // Default / Initial State
+                setUserPrestige({
+                    user_id: user.id,
+                    planet_level: 1,
+                    star_level: 0,
+                    current_stardust: 0,
+                    total_stardust_collected: 0
+                });
+            }
+        } catch (err) {
+            console.error('Exception fetching prestige:', err);
+        }
+    }, [user?.id]);
+
+    const purchaseStardust = async (amountCoins: number) => {
+        if (!user?.id) return { success: false, message: 'User not found' };
+        try {
+            const { data, error } = await supabase.rpc('purchase_stardust', { amount_coins: amountCoins });
+            if (error) throw error;
+
+            if (data.success) {
+                await fetchUserPoints();
+                await fetchUserPrestige();
+                return { success: true };
+            } else {
+                return { success: false, message: data.message };
+            }
+        } catch (err: any) {
+            console.error('Purchase stardust failed:', err);
+            return { success: false, message: err.message || 'Transaction failed' };
+        }
+    };
+
+    const injectStardust = async (amount: number) => {
+        if (!user?.id) return { success: false, message: 'User not found' };
+        try {
+            const { data, error } = await supabase.rpc('inject_stardust', { amount_to_inject: amount });
+            if (error) throw error;
+
+            if (data.success) {
+                await fetchUserPrestige();
+                return { success: true };
+            } else {
+                return { success: false, message: data.message };
+            }
+        } catch (err: any) {
+            console.error('Inject stardust failed:', err);
+            return { success: false, message: err.message || 'Injection failed' };
+        }
+    };
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchUserPrestige();
+        }
+    }, [isAuthenticated, fetchUserPrestige]);
+
     const performDailyCheckin = useCallback(async () => {
         if (!user.id) return { success: false, reason: 'not_authenticated' };
         try {
@@ -2141,9 +2221,27 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 console.error('getCheckinStatus RPC error:', error);
                 return { checkedInToday: false, currentStreak: 0, monthCheckins: 0, monthCalendar: [] };
             }
+            // Calculate display logic:
+            // If NOT checked in today, we want to show "Yesterday's Streak" instead of 0
+            // so the user sees what they are maintaining.
+            let displayStreak = data?.current_streak || 0;
+            const checkedInToday = data?.checked_in_today || false;
+
+            if (!checkedInToday && data?.month_calendar) {
+                // Find yesterday's record
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yStr = yesterday.toLocaleDateString('en-CA');
+
+                const yRecord = data.month_calendar.find((d: any) => d.date === yStr);
+                if (yRecord) {
+                    displayStreak = yRecord.streak_day;
+                }
+            }
+
             return {
-                checkedInToday: data?.checked_in_today || false,
-                currentStreak: data?.current_streak || 0,
+                checkedInToday: checkedInToday,
+                currentStreak: displayStreak, // Use modified display streak
                 monthCheckins: data?.month_checkins || 0,
                 monthCalendar: data?.month_calendar || []
             };
@@ -2624,7 +2722,12 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             checkinStatus,
             refreshCheckinStatus,
             proUpgradeDismissed,
-            dismissProUpgrade
+            dismissProUpgrade,
+            // Prestige
+            userPrestige,
+            fetchUserPrestige,
+            purchaseStardust,
+            injectStardust
         }}>
             {children}
         </AppContext.Provider>

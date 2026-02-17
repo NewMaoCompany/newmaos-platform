@@ -5,163 +5,7 @@ import { useToast } from '../components/Toast';
 import { supabase } from '../src/services/supabaseClient';
 import { Navbar } from '../components/Navbar';
 import { PointsCoin } from '../components/PointsCoin';
-
-const TITLE_STYLES: Record<string, { bg: string, border: string, text: string, glow: string, icon: string, extraClasses?: string }> = {
-    streak: {
-        bg: 'from-orange-400 via-red-500 to-red-600',
-        border: 'border-orange-300',
-        text: 'text-white',
-        glow: 'shadow-orange-500/20',
-        icon: 'local_fire_department'
-    },
-    mastery_unit: {
-        bg: 'from-cyan-400 via-blue-500 to-blue-600',
-        border: 'border-cyan-300',
-        text: 'text-white',
-        glow: 'shadow-cyan-500/20',
-        icon: 'workspace_premium'
-    },
-    mastery_course: {
-        bg: 'from-fuchsia-400 via-purple-600 to-indigo-700',
-        border: 'border-purple-300',
-        text: 'text-white',
-        glow: 'shadow-purple-500/20',
-        icon: 'trophy'
-    },
-    social: {
-        bg: 'from-emerald-400 via-teal-500 to-teal-600',
-        border: 'border-emerald-300',
-        text: 'text-white',
-        glow: 'shadow-emerald-500/20',
-        icon: 'diversity_3'
-    },
-    influence: {
-        bg: 'from-yellow-300 via-amber-500 to-orange-600',
-        border: 'border-yellow-200',
-        text: 'text-[#1c1a0d]',
-        glow: 'shadow-amber-500/20',
-        icon: 'auto_awesome'
-    },
-    seniority: {
-        bg: 'from-amber-500 via-amber-800 to-stone-900',
-        border: 'border-amber-400/50',
-        text: 'text-amber-50',
-        glow: 'shadow-amber-900/40',
-        icon: 'military_tech'
-    }
-};
-
-const getTitleVisualLevel = (category: string, threshold: number): number => {
-    const t = Number(threshold);
-
-    if (category === 'mastery_course') {
-        return t === 1 ? 5 : 6; // AB = Level 5, BC = Level 6
-    }
-
-    if (category === 'seniority') {
-        if (t >= 3650) return 6;
-        if (t >= 2555) return 5;
-        if (t >= 1460) return 4;
-        if (t >= 730) return 3;
-        if (t >= 365) return 2;
-        return 1;
-    } else if (category === 'streak') {
-        if (t >= 365) return 6;
-        if (t >= 180) return 5;
-        if (t >= 100) return 4;
-        if (t >= 30) return 3;
-        if (t >= 7) return 2;
-        return 1;
-    } else if (category === 'mastery_unit') {
-        if (t >= 10) return 6;
-        if (t >= 8) return 5;
-        if (t >= 6) return 4;
-        if (t >= 4) return 3;
-        if (t >= 2) return 2;
-        return 1;
-    } else if (category === 'social') {
-        if (t >= 200) return 6;
-        if (t >= 100) return 5;
-        if (t >= 50) return 4;
-        if (t >= 30) return 3;
-        if (t >= 10) return 2;
-        return 1;
-    } else if (category === 'influence') {
-        if (t >= 5000) return 6;
-        if (t >= 2500) return 5;
-        if (t >= 1000) return 4;
-        if (t >= 250) return 3;
-        if (t >= 50) return 2;
-        return 1;
-    }
-    return 1;
-};
-
-const getIconCount = (level: number) => {
-    if (level >= 5) return 3;
-    if (level >= 3) return 2;
-    return 1;
-};
-
-const getTitleTierStyles = (level: number, category: string) => {
-    const base = TITLE_STYLES[category] || TITLE_STYLES.streak;
-
-    // L6: Mythic / Divine (Mesh/Liquid Gradient Deviation)
-    if (level === 6) {
-        const isDark = category !== 'influence';
-        return {
-            ...base,
-            bg: category === 'seniority'
-                ? 'from-black via-amber-900 to-black'
-                : (isDark ? 'from-black via-primary/40 to-black' : 'from-yellow-200 via-white to-amber-500'),
-            border: `border-white/80 shadow-[0_0_30px_rgba(255,255,255,0.4)] ring-2 ring-primary/60 scale-110`,
-            text: isDark ? 'text-white' : 'text-black',
-            glow: 'shadow-primary/60 animate-pulse-neon',
-            extraClasses: 'mesh-liquid overflow-hidden !border-opacity-100 shimmer-sweep'
-        };
-    }
-
-    // L5: Legendary (Shimmer + Neon Pulse)
-    if (level === 5) {
-        return {
-            ...base,
-            border: 'border-white/60 shadow-[0_0_20px_rgba(255,255,255,0.3)] ring-1 ring-white/40',
-            glow: 'shadow-primary/40 animate-pulse',
-            extraClasses: 'shimmer-sweep scale-105 overflow-hidden'
-        };
-    }
-
-    // L4: Epic (Moving Flowing Gradient)
-    if (level === 4) {
-        return {
-            ...base,
-            border: 'border-white/40 ring-1 ring-white/20 shadow-[0_0_15px_rgba(255,255,255,0.2)]',
-            glow: base.glow.replace('/20', '/60'),
-            extraClasses: 'animate-gradient-x'
-        };
-    }
-
-    // L3: Rare (Vibrant + Inner Glow)
-    if (level === 3) {
-        return {
-            ...base,
-            border: 'border-white/30 shadow-[inset_0_0_10px_rgba(255,255,255,0.2)]',
-            glow: base.glow.replace('/20', '/40'),
-        };
-    }
-
-    // L2: Advanced (Glassy Border)
-    if (level === 2) {
-        return {
-            ...base,
-            border: 'border-white/20',
-            glow: base.glow.replace('/20', '/30'),
-        };
-    }
-
-    // L1: Starter
-    return base;
-};
+import { getUniqueTitleStyle } from '../src/utils/titleStyles';
 
 export const Profile = () => {
     const { userId } = useParams<{ userId: string }>();
@@ -388,29 +232,15 @@ export const Profile = () => {
 
                                     {profile.equipped_title && (
                                         (() => {
-                                            const level = getTitleVisualLevel(profile.equipped_title.category, profile.equipped_title.threshold);
-                                            const style = getTitleTierStyles(level, profile.equipped_title.category);
+                                            const style = getUniqueTitleStyle(profile.equipped_title.category, profile.equipped_title.threshold);
                                             return (
                                                 <div
-                                                    className={`flex items-center gap-1 bg-gradient-to-br ${style.bg} px-3.5 py-1.5 rounded-full border ${style.border} shadow-lg ${style.glow} hover:scale-105 transition-all duration-300 relative overflow-hidden ${style.extraClasses || ''}`}
-                                                    style={{ backgroundSize: level >= 4 ? '200% 200%' : 'auto' }}
+                                                    className={`flex items-center gap-1.5 bg-gradient-to-br ${style.bg} px-4 py-2 rounded-full border ${style.border} shadow-lg ${style.glow} hover:scale-105 transition-all duration-300 relative overflow-hidden ${style.extraClasses || ''}`}
                                                 >
-                                                    <div className={`flex items-center relative z-10 ${getIconCount(level) === 1 ? '' : getIconCount(level) === 2 ? '-space-x-1' : getIconCount(level) === 3 ? '-space-x-1.5' : '-space-x-2'}`}>
-                                                        {Array.from({ length: getIconCount(level) }).map((_, i) => (
-                                                            <span
-                                                                key={i}
-                                                                className={`material-symbols-outlined relative z-10 transition-all duration-300 ${style.text}`}
-                                                                style={{
-                                                                    fontSize: getIconCount(level) === 1 ? '18px' : getIconCount(level) === 2 ? '16px' : getIconCount(level) === 3 ? '14px' : '12px',
-                                                                    opacity: getIconCount(level) > 1 ? 0.9 + (i * 0.03) : 1,
-                                                                    transform: getIconCount(level) > 1 ? `translateY(${i % 2 === 0 ? '-1.5px' : '1.5px'})` : 'none'
-                                                                }}
-                                                            >
-                                                                {style.icon}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                    <span className={`text-xs font-black ${style.text} ml-1.5 uppercase tracking-widest relative z-10 ${level >= 5 ? 'drop-shadow-sm' : ''}`}>
+                                                    <span className={`material-symbols-outlined ${style.text} text-[18px]`}>
+                                                        {style.icon}
+                                                    </span>
+                                                    <span className={`text-xs font-black ${style.text} uppercase tracking-widest relative z-10`}>
                                                         {profile.equipped_title.name}
                                                     </span>
                                                 </div>

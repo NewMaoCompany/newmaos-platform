@@ -91,7 +91,8 @@
     border-radius: 999px;
     cursor: pointer;
     white-space: nowrap;
-    min-width: 140px;
+    min-width: 130px;
+    min-height: 36px;
     /* 1.5x longer than before (~80-90px) */
 
     /* Premium Glassmorphism */

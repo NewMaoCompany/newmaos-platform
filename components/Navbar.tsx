@@ -7,8 +7,9 @@ import { supabase } from '../src/services/supabaseClient';
 import { notificationsApi } from '../src/services/api';
 import { AchievementUnlockModal } from './AchievementUnlockModal';
 import { PointsBalanceBadge } from './PointsCoin';
+import { PrestigeWidget } from './PrestigeWidget';
 
-export const Navbar = () => {
+export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   const {
     user, logout, isAuthenticated, isPro, notifications,
     markAllNotificationsRead, markNotificationRead,
@@ -123,10 +124,10 @@ export const Navbar = () => {
   };
 
   const visibleNotifications = notifications.filter(n => !isNotificationMuted(n));
-  const unreadCount = visibleNotifications.filter(n => n.unread).length;
-  const totalUnreadChatCount = Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
-
-  const displayedNotifications = visibleNotifications;
+  // Filter out chat notifications from the main list to avoid double counting with unreadCounts
+  const unreadCount = notifications.filter(n => n.unread && !n.chatId && !n.channelId && n.type !== 'dm').length;
+  const totalUnreadChatCount = Object.values(unreadCounts).reduce((a, b) => a + b, 0);
+  const totalUnreadCount = unreadCount + totalUnreadChatCount;
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -228,118 +229,237 @@ export const Navbar = () => {
   const settingsHasUnread = visibleNotifications.some(n => n.unread && n.text?.includes('[Membership]'));
 
   // No more pseudo notifications — all notifications come from the database
-  const totalUnreadCount = unreadCount;
-  const allDisplayed = displayedNotifications;
+  const allDisplayed = visibleNotifications;
+
+  // Update document title with unread count
+  useEffect(() => {
+    if (totalUnreadCount > 0) {
+      document.title = `(${totalUnreadCount}) NewMaoS`;
+    } else {
+      document.title = 'NewMaoS';
+    }
+  }, [totalUnreadCount]);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-gray-200/70 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface-light/60 pt-6 pb-2 lg:pt-8 lg:pb-3 transition-padding duration-300">
       <div className="w-full px-4 sm:px-6 flex items-center justify-between min-h-[48px]">
-        {/* Logo Area - Always Visible */}
-        <Link to="/dashboard" className="flex items-center gap-2 group cursor-pointer shrink-0">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-text-main shadow-glow transition-transform group-hover:scale-105 overflow-hidden">
-            <span className="material-symbols-outlined font-bold" style={{ fontSize: '20px' }}>function</span>
-          </div>
-          <h1 className="text-lg sm:text-xl font-bold tracking-tight text-text-main dark:text-white">NewMaoS</h1>
-        </Link>
+        {/* Left Side Group (Logo + Notification) */}
+        <div className="flex items-center">
+          {/* Logo Area - Always Visible */}
+          <Link to="/dashboard" className="flex items-center gap-2 group cursor-pointer shrink-0">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-text-main shadow-glow transition-transform group-hover:scale-105 overflow-hidden">
+              <span className="material-symbols-outlined font-bold" style={{ fontSize: '20px' }}>function</span>
+            </div>
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-text-main dark:text-white">NewMaoS</h1>
+          </Link>
 
-        {/* Central Navigation - Scrollable on mobile, Centered on desktop */}
-        <div
-          className="flex-1 flex items-center justify-start sm:justify-center gap-2 lg:gap-3 overflow-x-auto sm:overflow-visible no-scrollbar mx-2 sm:mx-4 pl-2 pr-6 sm:px-0 [&::-webkit-scrollbar]:hidden"
-          style={{
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
-          }}
-        >
-          <Link
-            to="/dashboard"
-            className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
-          >
-            <span>Dashboard</span>
-            {needsCheckin && (
-              <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark">
-                1
-              </span>
-            )}
-          </Link>
-          <Link to="/practice" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all whitespace-nowrap ${isActive('/practice') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
-            Practice
-          </Link>
-          {isAuthenticated && isPro ? (
-            <Link to="/analysis" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
-              <span>Analysis</span>
-              {analysisUnreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
-                  {analysisUnreadCount > 9 ? '9+' : analysisUnreadCount}
-                </span>
+          {/* Notification Bell - Moved next to Logo */}
+          {isAuthenticated && (
+            <div className="ml-2 sm:ml-4 relative shrink-0" ref={notifRef}>
+              <button
+                onClick={handleBellClick}
+                className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${showNotifications ? 'bg-primary/20 text-text-main' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10'}`}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>notifications</span>
+                {totalUnreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark transition-transform">
+                    {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Notification Dropdown */}
+              {showNotifications && (
+                <div className="absolute left-0 mt-2 w-80 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-fade-in origin-top-left z-50">
+                  <div className="p-3 border-b border-gray-100 dark:border-gray-800/50 flex justify-between items-center">
+                    <span className="text-sm font-bold">Notifications</span>
+                    {totalUnreadCount > 0 && (
+                      <button
+                        onClick={() => {
+                          markAllNotificationsRead();
+                          dismissProUpgrade();
+                        }}
+                        className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors"
+                      >
+                        Mark all read
+                      </button>
+                    )}
+                  </div>
+                  <div className="max-h-[300px] overflow-y-auto scroll-bounce">
+                    {allDisplayed.length > 0 ? (
+                      allDisplayed.map(notif => {
+                        // Parse link for action
+                        let senderId = null;
+                        if (notif.link && notif.link.includes('action=friend_request')) {
+                          const urlParams = new URLSearchParams(notif.link.split('?')[1]);
+                          senderId = urlParams.get('sender_id');
+                        }
+
+                        // Check if item was already accepted (from persistent metadata or session state)
+                        const isAccepted = notif.isAccepted ||
+                          acceptedNotifIds.has(notif.id) ||
+                          (notif.metadata?.accepted === true);
+
+                        return (
+                          <div
+                            key={notif.id}
+                            onClick={() => handleNotificationClick(notif.id, notif.link, notif.type)}
+                            className={`p-3 border-b border-gray-100 dark:border-gray-800/50 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer flex gap-3 ${notif.unread ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''}`}
+                          >
+                            <div className={`mt-1.5 min-w-[8px] h-2 rounded-full ${notif.unread ? 'bg-primary' : 'bg-transparent'}`}></div>
+                            <div className="flex flex-col gap-0.5 w-full">
+                              <p className={`text-[11px] leading-relaxed mb-0.5 ${notif.unread ? 'font-bold text-text-main dark:text-zinc-100' : 'font-medium text-text-secondary dark:text-gray-400'}`}>
+                                {notif.text}
+                              </p>
+                              {senderId && !isAccepted && (
+                                <div className="mt-2 flex gap-2">
+                                  <button
+                                    onClick={(e) => senderId && handleAcceptFriend(e, notif.id, senderId)}
+                                    className="px-3 py-1 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold rounded-lg hover:opacity-80 transition-opacity"
+                                  >
+                                    Accept
+                                  </button>
+                                </div>
+                              )}
+                              {isAccepted && notif.type !== 'gift_claim' && (
+                                <div className="mt-2">
+                                  <span className="text-[10px] text-green-500 font-bold flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[12px]">check_circle</span>
+                                    Accepted
+                                  </span>
+                                </div>
+                              )}
+                              <span className="text-[10px] text-text-secondary dark:text-gray-500">{notif.time}</span>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="p-8 text-center text-text-secondary dark:text-gray-500 text-xs">
+                        No notifications
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
-            </Link>
-          ) : (
-            <div
-              className="relative group cursor-pointer shrink-0"
-              onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
-            >
-              <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
-                <span>Analysis</span>
-                <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
-              </div>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
-                {!isAuthenticated ? "Sign in required" : "Pro Membership required"}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
-              </div>
-            </div>
-          )}
-          {isAuthenticated && isPro ? (
-            <Link to="/forum" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/forum') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
-              <span>Forum</span>
-              {totalUnreadChatCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
-                  {totalUnreadChatCount > 99 ? '99+' : totalUnreadChatCount}
-                </span>
-              )}
-            </Link>
-          ) : (
-            <div
-              className="relative group cursor-pointer shrink-0"
-              onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
-            >
-              <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
-                <span>Forum</span>
-                <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
-              </div>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
-                {!isAuthenticated ? "Sign in required" : "Pro Membership required"}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
-              </div>
-            </div>
-          )}
-          {isAuthenticated ? (
-            <Link
-              to="/settings"
-              className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
-            >
-              <span>Settings</span>
-              {settingsHasUnread && (
-                <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
-                  1
-                </span>
-              )}
-            </Link>
-          ) : (
-            <div className="relative group shrink-0">
-              <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 cursor-not-allowed opacity-60 whitespace-nowrap">
-                <span>Settings</span>
-                <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
-              </div>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                Sign in required
-                <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
-              </div>
             </div>
           )}
         </div>
 
+
+        {/* Central Navigation - Absolutely Centered */}
+        {minimal ? (
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 rounded-full transition-colors text-sm font-bold text-text-secondary dark:text-gray-300 ring-1 ring-black/5 dark:ring-white/10"
+            >
+              <span className="material-symbols-outlined text-lg">keyboard_return</span>
+              <span>Return</span>
+            </button>
+          </div>
+        ) : (
+          <div
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-1 lg:gap-2"
+          >
+            <Link
+              to="/dashboard"
+              className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
+            >
+              <span>Dashboard</span>
+              {needsCheckin && (
+                <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark">
+                  1
+                </span>
+              )}
+            </Link>
+            <Link to="/practice" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all whitespace-nowrap ${isActive('/practice') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+              Practice
+            </Link>
+            {isAuthenticated && isPro ? (
+              <Link to="/analysis" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+                <span>Analysis</span>
+                {analysisUnreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
+                    {analysisUnreadCount > 9 ? '9+' : analysisUnreadCount}
+                  </span>
+                )}
+              </Link>
+            ) : (
+              <div
+                className="relative group cursor-pointer shrink-0"
+                onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
+              >
+                <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
+                  <span>Analysis</span>
+                  <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
+                </div>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
+                  {!isAuthenticated ? "Sign in required" : "Pro Membership required"}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                </div>
+              </div>
+            )}
+            {isAuthenticated && isPro ? (
+              <Link to="/forum" className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/forum') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+                <span>Forum</span>
+                {totalUnreadChatCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
+                    {totalUnreadChatCount > 99 ? '99+' : totalUnreadChatCount}
+                  </span>
+                )}
+              </Link>
+            ) : (
+              <div
+                className="relative group cursor-pointer shrink-0"
+                onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
+              >
+                <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
+                  <span>Forum</span>
+                  <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
+                </div>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
+                  {!isAuthenticated ? "Sign in required" : "Pro Membership required"}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                </div>
+              </div>
+            )}
+            {isAuthenticated ? (
+              <Link
+                to="/settings"
+                className={`shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg transition-all relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
+              >
+                <span>Settings</span>
+                {settingsHasUnread && (
+                  <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
+                    1
+                  </span>
+                )}
+              </Link>
+            ) : (
+              <div className="relative group shrink-0">
+                <div className="text-sm font-medium px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-text-secondary dark:text-gray-400 cursor-not-allowed opacity-60 whitespace-nowrap">
+                  <span>Settings</span>
+                  <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
+                </div>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  Sign in required
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Right Actions - Always Visible */}
-        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        <div className="flex items-center gap-4 shrink-0">
+
+          {/* Prestige Widget - Desktop Only to save space */}
+          {!minimal && isAuthenticated && (
+            <div className="hidden md:block shrink-0">
+              <PrestigeWidget compact />
+            </div>
+          )}
 
           {/* Mobile Menu Button - DISABLED FOR DESKTOP ONLY MODE */}
           {/* <button
@@ -357,97 +477,8 @@ export const Navbar = () => {
                 onClick={() => navigate('/points')}
                 ref={pointsBalanceRef as any}
               />
-              {/* Notifications */}
-              <div className="relative" ref={notifRef}>
-                <button
-                  onClick={handleBellClick}
-                  className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${showNotifications ? 'bg-primary/20 text-text-main' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10'}`}
-                >
-                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>notifications</span>
-                  {totalUnreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark transition-transform">
-                      {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
-                    </span>
-                  )}
-                </button>
-
-                {/* Notification Dropdown */}
-                {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-fade-in origin-top-right">
-                    <div className="p-3 border-b border-gray-100 dark:border-gray-800/50 flex justify-between items-center">
-                      <span className="text-sm font-bold">Notifications</span>
-                      {totalUnreadCount > 0 && (
-                        <button
-                          onClick={() => {
-                            markAllNotificationsRead();
-                            dismissProUpgrade();
-                          }}
-                          className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors"
-                        >
-                          Mark all read
-                        </button>
-                      )}
-                    </div>
-                    <div className="max-h-[300px] overflow-y-auto scroll-bounce">
-                      {allDisplayed.length > 0 ? (
-                        allDisplayed.map(notif => {
 
 
-                          // Parse link for action
-                          let senderId = null;
-                          if (notif.link && notif.link.includes('action=friend_request')) {
-                            const urlParams = new URLSearchParams(notif.link.split('?')[1]);
-                            senderId = urlParams.get('sender_id');
-                          }
-
-                          // Check if item was already accepted (from persistent metadata or session state)
-                          const isAccepted = notif.isAccepted ||
-                            acceptedNotifIds.has(notif.id) ||
-                            (notif.metadata?.accepted === true);
-
-                          return (
-                            <div
-                              key={notif.id}
-                              onClick={() => handleNotificationClick(notif.id, notif.link, notif.type)}
-                              className={`p-3 border-b border-gray-100 dark:border-gray-800/50 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer flex gap-3 ${notif.unread ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''}`}
-                            >
-                              <div className={`mt-1.5 min-w-[8px] h-2 rounded-full ${notif.unread ? 'bg-primary' : 'bg-transparent'}`}></div>
-                              <div className="flex flex-col gap-0.5 w-full">
-                                <p className={`text-[11px] leading-relaxed mb-0.5 ${notif.unread ? 'font-bold text-text-main dark:text-zinc-100' : 'font-medium text-text-secondary dark:text-gray-400'}`}>
-                                  {notif.text}
-                                </p>
-                                {senderId && !isAccepted && (
-                                  <div className="mt-2 flex gap-2">
-                                    <button
-                                      onClick={(e) => senderId && handleAcceptFriend(e, notif.id, senderId)}
-                                      className="px-3 py-1 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold rounded-lg hover:opacity-80 transition-opacity"
-                                    >
-                                      Accept
-                                    </button>
-                                  </div>
-                                )}
-                                {isAccepted && notif.type !== 'gift_claim' && (
-                                  <div className="mt-2">
-                                    <span className="px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-bold rounded">
-                                      Accepted
-                                    </span>
-                                  </div>
-                                )}
-                                <p className="text-[10px] text-gray-400 mt-1">{notif.time}</p>
-                              </div>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="p-4 text-center text-xs text-gray-400">
-                          No notifications
-                        </div>
-                      )}
-                    </div>
-
-                  </div>
-                )}
-              </div>
 
               {/* User Menu */}
               <div className="relative" ref={profileRef}>

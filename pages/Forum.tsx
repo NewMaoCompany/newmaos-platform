@@ -10,6 +10,7 @@ import api from '../src/services/api';
 import { EMOJI_CATEGORIES } from '../src/constants/emojiData';
 import { PointsCoin } from '../components/PointsCoin';
 import { AddFriendModal } from '../components/AddFriendModal';
+import { getUniqueTitleStyle } from '../src/utils/titleStyles';
 // --- Types ---
 interface Channel {
     id: string;
@@ -61,162 +62,7 @@ interface PresenceUser {
     } | null;
 }
 
-const TITLE_STYLES: Record<string, { bg: string, border: string, text: string, glow: string, icon: string, extraClasses?: string }> = {
-    streak: {
-        bg: 'from-orange-400 via-red-500 to-red-600',
-        border: 'border-orange-300',
-        text: 'text-white',
-        glow: 'shadow-orange-500/20',
-        icon: 'local_fire_department'
-    },
-    mastery_unit: {
-        bg: 'from-cyan-400 via-blue-500 to-blue-600',
-        border: 'border-cyan-300',
-        text: 'text-white',
-        glow: 'shadow-cyan-500/20',
-        icon: 'workspace_premium'
-    },
-    mastery_course: {
-        bg: 'from-fuchsia-400 via-purple-600 to-indigo-700',
-        border: 'border-purple-300',
-        text: 'text-white',
-        glow: 'shadow-purple-500/20',
-        icon: 'trophy'
-    },
-    social: {
-        bg: 'from-emerald-400 via-teal-500 to-teal-600',
-        border: 'border-emerald-300',
-        text: 'text-white',
-        glow: 'shadow-emerald-500/20',
-        icon: 'diversity_3'
-    },
-    influence: {
-        bg: 'from-yellow-300 via-amber-500 to-orange-600',
-        border: 'border-yellow-200',
-        text: 'text-[#1c1a0d]',
-        glow: 'shadow-amber-500/20',
-        icon: 'auto_awesome'
-    },
-    seniority: {
-        bg: 'from-amber-500 via-amber-800 to-stone-900',
-        border: 'border-amber-400/50',
-        text: 'text-amber-50',
-        glow: 'shadow-amber-900/40',
-        icon: 'military_tech'
-    }
-};
-
-const getTitleVisualLevel = (category: string, threshold: number): number => {
-    const t = Number(threshold);
-
-    if (category === 'mastery_course') {
-        return t === 1 ? 5 : 6; // AB = Level 5, BC = Level 6
-    }
-
-    if (category === 'seniority') {
-        if (t >= 3650) return 6;
-        if (t >= 2555) return 5;
-        if (t >= 1460) return 4;
-        if (t >= 730) return 3;
-        if (t >= 365) return 2;
-        return 1;
-    } else if (category === 'streak') {
-        if (t >= 365) return 6;
-        if (t >= 180) return 5;
-        if (t >= 100) return 4;
-        if (t >= 30) return 3;
-        if (t >= 7) return 2;
-        return 1;
-    } else if (category === 'mastery_unit') {
-        if (t >= 10) return 6;
-        if (t >= 8) return 5;
-        if (t >= 6) return 4;
-        if (t >= 4) return 3;
-        if (t >= 2) return 2;
-        return 1;
-    } else if (category === 'social') {
-        if (t >= 200) return 6;
-        if (t >= 100) return 5;
-        if (t >= 50) return 4;
-        if (t >= 30) return 3;
-        if (t >= 10) return 2;
-        return 1;
-    } else if (category === 'influence') {
-        if (t >= 5000) return 6;
-        if (t >= 2500) return 5;
-        if (t >= 1000) return 4;
-        if (t >= 250) return 3;
-        if (t >= 50) return 2;
-        return 1;
-    }
-    return 1;
-};
-
-const getIconCount = (level: number) => {
-    if (level >= 5) return 3;
-    if (level >= 3) return 2;
-    return 1;
-};
-
-const getTitleTierStyles = (level: number, category: string, isTiny: boolean = false) => {
-    const base = TITLE_STYLES[category] || TITLE_STYLES.streak;
-
-    // L6: Mythic / Divine (Mesh/Liquid Gradient Deviation)
-    if (level === 6) {
-        const isDark = category !== 'influence';
-        return {
-            ...base,
-            bg: category === 'seniority'
-                ? 'from-black via-amber-900 to-black'
-                : (isDark ? 'from-black via-primary/40 to-black' : 'from-yellow-200 via-white to-amber-500'),
-            border: `border-white/80 shadow-[0_0_30px_rgba(255,255,255,0.4)] ${isTiny ? 'ring-1' : 'ring-2'} ring-primary/60 scale-110`,
-            text: isDark ? 'text-white' : 'text-black',
-            glow: 'shadow-primary/60 animate-pulse-neon',
-            extraClasses: 'mesh-liquid overflow-hidden !border-opacity-100 shimmer-sweep'
-        };
-    }
-
-    // L5: Legendary (Shimmer + Neon Pulse)
-    if (level === 5) {
-        return {
-            ...base,
-            border: 'border-white/60 shadow-[0_0_20px_rgba(255,255,255,0.3)]',
-            glow: 'shadow-primary/40 animate-pulse',
-            extraClasses: 'shimmer-sweep overflow-hidden'
-        };
-    }
-
-    // L4: Epic (Moving Flowing Gradient)
-    if (level === 4) {
-        return {
-            ...base,
-            border: 'border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.2)]',
-            glow: base.glow.replace('/20', '/60'),
-            extraClasses: 'animate-gradient-x'
-        };
-    }
-
-    // L3: Rare (Vibrant + Inner Glow)
-    if (level === 3) {
-        return {
-            ...base,
-            border: 'border-white/30 shadow-[inset_0_0_10px_rgba(255,255,255,0.2)]',
-            glow: base.glow.replace('/20', '/40'),
-        };
-    }
-
-    // L2: Advanced (Glassy Border)
-    if (level === 2) {
-        return {
-            ...base,
-            border: 'border-white/20',
-            glow: base.glow.replace('/20', '/30'),
-        };
-    }
-
-    // L1: Starter
-    return base;
-};
+// Removed old local TITLE_STYLES logic in favor of src/utils/titleStyles.ts
 
 // --- Helper Components ---
 
@@ -277,35 +123,27 @@ const ChatSkeleton = () => (
 
 const TitleBadge = ({ title, size = 'sm' }: { title: { name: string, category: string, threshold?: number }, size?: 'xs' | 'sm' | 'md' }) => {
     const isTiny = size === 'xs';
-    const level = getTitleVisualLevel(title.category, title.threshold || 1);
-    const style = getTitleTierStyles(level, title.category, isTiny);
+    const style = getUniqueTitleStyle(title.category, title.threshold || 1);
 
     return (
         <div
-            className={`inline-flex items-center bg-gradient-to-br ${style.bg} ${isTiny ? 'px-2 py-0.5 gap-1.5' : 'px-2.5 py-1 gap-1.5'} rounded-full border ${style.border} shadow-sm ${style.glow} hover:scale-105 hover:-rotate-1 opacity-95 transition-all cursor-default relative overflow-hidden flex-shrink-0 ${style.extraClasses || ''}`}
+            className={`inline-flex items-center bg-gradient-to-br ${style.bg} ${isTiny ? 'px-2 py-0.5 gap-1' : 'px-2.5 py-1 gap-1.5'} rounded-full border ${style.border} shadow-sm ${style.glow} hover:scale-105 hover:-rotate-1 opacity-95 transition-all cursor-default relative overflow-hidden flex-shrink-0 ${style.extraClasses || ''}`}
             style={{
-                backgroundSize: level >= 4 ? '200% 200%' : 'auto',
                 height: isTiny ? '18px' : '22px'
             }}
         >
-            <div className={`flex items-center relative z-10 ${getIconCount(level) === 1 ? '' : getIconCount(level) === 2 ? '-space-x-1' : '-space-x-1.5'}`}>
-                {Array.from({ length: getIconCount(level) }).map((_, i) => (
-                    <span
-                        key={i}
-                        className={`material-symbols-outlined relative z-10 transition-all duration-300 ${style.text}`}
-                        style={{
-                            fontSize: isTiny
-                                ? (getIconCount(level) === 1 ? '12px' : '10px')
-                                : (getIconCount(level) === 1 ? '16px' : '13px'),
-                            opacity: getIconCount(level) > 1 ? 0.9 + (i * 0.03) : 1,
-                            transform: getIconCount(level) > 1 ? `translateY(${i % 2 === 0 ? '-1px' : '1px'})` : 'none'
-                        }}
-                    >
-                        {style.icon}
-                    </span>
-                ))}
+            <div className="flex items-center relative z-10 justify-center">
+                <span
+                    className={`material-symbols-outlined relative z-10 transition-all duration-300 ${style.text}`}
+                    style={{
+                        fontSize: isTiny ? '12px' : '16px',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                    }}
+                >
+                    {style.icon}
+                </span>
             </div>
-            <span className={`${isTiny ? 'text-[9px]' : 'text-[10px]'} font-black ${style.text} uppercase tracking-wider relative z-10 ${level >= 5 ? 'drop-shadow-sm' : ''}`}>
+            <span className={`${isTiny ? 'text-[9px]' : 'text-[10px]'} font-black ${style.text} uppercase tracking-wider relative z-10 drop-shadow-sm`}>
                 {title.name}
             </span>
         </div>
@@ -751,7 +589,7 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
     // Show preloaded channels immediately on open
     useEffect(() => {
         if (isOpen && preloadedChannels && !hasLoaded) {
-            setResults(preloadedChannels.slice(0, 10));
+            setResults(preloadedChannels.slice(0, 50));
         }
     }, [isOpen, preloadedChannels, hasLoaded]);
 
@@ -759,7 +597,7 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
         if (!isOpen) { setHasLoaded(false); return; }
         if (!query.trim()) {
             if (preloadedChannels) {
-                setResults(preloadedChannels.slice(0, 10));
+                setResults(preloadedChannels.slice(0, 50));
                 setHasLoaded(true);
             }
             return;
@@ -779,7 +617,11 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
                 const mapped = (data as any[]).map(c => ({
                     ...c,
                     member_count: c.channel_members?.[0]?.count || 0
-                })).sort((a, b) => (b.member_count || 0) - (a.member_count || 0));
+                })).sort((a, b) => {
+                    const diff = (b.member_count || 0) - (a.member_count || 0);
+                    if (diff !== 0) return diff;
+                    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                });
                 setResults(mapped);
                 setHasLoaded(true);
             } catch (e) {
@@ -796,8 +638,8 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm pt-20 px-4 pb-4" onClick={onClose}>
-            <div className="bg-white dark:bg-zinc-800 rounded-3xl p-6 w-[480px] max-h-[min(480px,calc(100vh-6rem))] shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col animate-fade-in-up" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 pb-4" onClick={onClose}>
+            <div className="bg-white dark:bg-zinc-800 rounded-3xl p-6 w-[480px] max-h-[min(600px,calc(100vh-6rem))] shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col animate-fade-in-up" onClick={e => e.stopPropagation()}>
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-black text-text-main dark:text-white flex items-center gap-2">
                         <span className="material-symbols-outlined text-primary">explore</span>
@@ -1129,6 +971,33 @@ export const Forum = () => {
             clearUnread(id);
         }
     }, [activeChannelId, activeChatId, viewMode, unreadCounts, clearUnread]);
+
+    // Cleanup Ghost Notifications
+    useEffect(() => {
+        if (isLoadingChannels || isLoadingDMs) return;
+
+        // Build set of valid IDs
+        const validIds = new Set<string>();
+        channels.forEach(c => validIds.add(c.id));
+        dmChats.forEach(dm => {
+            if (dm.chat_id) validIds.add(dm.chat_id);
+        });
+
+        // Find keys in unreadCounts that are NOT in validIds
+        let hasChanges = false;
+        Object.keys(unreadCounts).forEach(key => {
+            if (!validIds.has(key)) {
+                console.log(`🧹 Removing ghost notification for ID: ${key}`);
+                clearUnread(key);
+                hasChanges = true;
+            }
+        });
+
+        if (hasChanges) {
+            console.log('✨ Cleanup complete: Ghost notifications removed.');
+        }
+
+    }, [isLoadingChannels, isLoadingDMs, channels, dmChats, unreadCounts, clearUnread]);
 
     // Sidebar State — Channels and Private Messages open by default, Courses collapsed
     const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({
@@ -1823,7 +1692,11 @@ export const Forum = () => {
                     const mapped = (discoveryRes.data as any[]).map(c => ({
                         ...c,
                         member_count: c.channel_members?.[0]?.count || 0
-                    })).sort((a, b) => (b.member_count || 0) - (a.member_count || 0));
+                    })).sort((a, b) => {
+                        const diff = (b.member_count || 0) - (a.member_count || 0);
+                        if (diff !== 0) return diff;
+                        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                    });
                     setBrowsableChannels(mapped);
                 }
 
@@ -3119,6 +2992,25 @@ export const Forum = () => {
     const generalChannel = channels.find(c => c.category === 'Community' && c.name.toLowerCase() === 'general');
     const generalUnread = generalChannel ? (unreadCounts[generalChannel.id] || 0) : 0;
 
+
+    // Calculate unread counts for sidebar sections
+    const coursesUnread = (groupedChannels['Courses'] || [])
+        .reduce((sum, ch) => sum + (unreadCounts[ch.id] || 0), 0);
+
+    const myChannelsUnread = channels
+        .filter(c => ['User', 'Official', 'Custom'].includes(c.category) && String(c.creator_id).toLowerCase() === String(user?.id).toLowerCase())
+        .reduce((sum, ch) => sum + (unreadCounts[ch.id] || 0), 0);
+
+    const joinedChannelsUnread = channels
+        .filter(c => ['User', 'Official', 'Custom'].includes(c.category) && String(c.creator_id).toLowerCase() !== String(user?.id).toLowerCase() && joinedChannelIds.has(c.id))
+        .reduce((sum, ch) => sum + (unreadCounts[ch.id] || 0), 0);
+
+    const channelsTotalUnread = myChannelsUnread + joinedChannelsUnread;
+
+    const dmTotalUnread = dmChats.reduce((sum, chat) => {
+        return sum + (chat.chat_id ? (unreadCounts[chat.chat_id] || 0) : 0);
+    }, 0);
+
     return (
         <div className="flex flex-col h-full bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans overflow-hidden">
             {renderProfileModal()}
@@ -3214,9 +3106,14 @@ export const Forum = () => {
                                 className={`flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer select-none group transition-all ${activeSidebarSection === 'Courses' ? 'bg-primary/10' : 'hover:bg-gray-100 dark:hover:bg-white/5'}`}
                                 onClick={() => toggleCategory('Courses')}
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 flex-1">
                                     <span className="material-symbols-outlined text-[16px] text-primary">school</span>
                                     <span className="text-[10px] font-black uppercase tracking-widest text-primary">Courses</span>
+                                    {coursesUnread > 0 && (collapsedCategories['Courses'] || activeSidebarSection !== 'Courses') && (
+                                        <div className="min-w-[16px] h-[16px] flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform ml-auto mr-2">
+                                            {coursesUnread > 99 ? '99+' : coursesUnread}
+                                        </div>
+                                    )}
                                 </div>
                                 <span className={`material-symbols-outlined text-xs text-gray-400 transition-transform ${collapsedCategories['Courses'] ? '-rotate-90' : 'rotate-0'}`}>
                                     expand_more
@@ -3258,9 +3155,14 @@ export const Forum = () => {
                                 className={`flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer select-none group transition-all ${activeSidebarSection === 'Channels' ? 'bg-primary/10' : 'hover:bg-gray-100 dark:hover:bg-white/5'}`}
                                 onClick={() => toggleCategory('Channels')}
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 flex-1">
                                     <span className="material-symbols-outlined text-[16px] text-primary">tag</span>
                                     <span className="text-[10px] font-black uppercase tracking-widest text-primary">Channels</span>
+                                    {channelsTotalUnread > 0 && (collapsedCategories['Channels'] || activeSidebarSection !== 'Channels') && (
+                                        <div className="min-w-[16px] h-[16px] flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform ml-auto mr-2">
+                                            {channelsTotalUnread > 99 ? '99+' : channelsTotalUnread}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <button
@@ -3351,9 +3253,14 @@ export const Forum = () => {
                                     className={`flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer select-none group transition-all ${activeSidebarSection === 'PrivateMessages' ? 'bg-primary/10' : 'hover:bg-gray-100 dark:hover:bg-white/5'}`}
                                     onClick={() => toggleCategory('PrivateMessages')}
                                 >
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 flex-1">
                                         <span className="material-symbols-outlined text-[16px] text-primary">chat</span>
                                         <span className="text-[10px] font-black uppercase tracking-widest text-primary">Friend Chats</span>
+                                        {dmTotalUnread > 0 && (collapsedCategories['PrivateMessages'] || activeSidebarSection !== 'PrivateMessages') && (
+                                            <div className="min-w-[16px] h-[16px] flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform ml-auto mr-2">
+                                                {dmTotalUnread > 99 ? '99+' : dmTotalUnread}
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <button

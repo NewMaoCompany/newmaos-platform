@@ -9,6 +9,8 @@ import { Title, UserTitle } from '../types';
 import { PointsCoin } from '../components/PointsCoin';
 
 
+import { getUniqueTitleStyle } from '../src/utils/titleStyles';
+
 const SubpageLayout = ({ title, children, maxWidth = "max-w-4xl" }: { title: string, children: React.ReactNode, maxWidth?: string }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -59,162 +61,7 @@ const GRADIENTS = [
   { name: 'Lavender', value: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)' }
 ];
 
-const TITLE_STYLES: Record<string, { bg: string, border: string, text: string, glow: string, icon: string, extraClasses?: string }> = {
-  streak: {
-    bg: 'from-orange-400 via-red-500 to-red-600',
-    border: 'border-orange-300',
-    text: 'text-white',
-    glow: 'shadow-orange-500/20',
-    icon: 'local_fire_department'
-  },
-  mastery_unit: {
-    bg: 'from-cyan-400 via-blue-500 to-blue-600',
-    border: 'border-cyan-300',
-    text: 'text-white',
-    glow: 'shadow-cyan-500/20',
-    icon: 'workspace_premium'
-  },
-  mastery_course: {
-    bg: 'from-fuchsia-400 via-purple-600 to-indigo-700',
-    border: 'border-purple-300',
-    text: 'text-white',
-    glow: 'shadow-purple-500/20',
-    icon: 'trophy'
-  },
-  social: {
-    bg: 'from-emerald-400 via-teal-500 to-teal-600',
-    border: 'border-emerald-300',
-    text: 'text-white',
-    glow: 'shadow-emerald-500/20',
-    icon: 'diversity_3'
-  },
-  influence: {
-    bg: 'from-yellow-300 via-amber-500 to-orange-600',
-    border: 'border-yellow-200',
-    text: 'text-[#1c1a0d]',
-    glow: 'shadow-amber-500/20',
-    icon: 'auto_awesome'
-  },
-  seniority: {
-    bg: 'from-amber-500 via-amber-800 to-stone-900',
-    border: 'border-amber-400/50',
-    text: 'text-amber-50',
-    glow: 'shadow-amber-900/40',
-    icon: 'military_tech'
-  }
-};
-
-const getTitleVisualLevel = (category: string, threshold: number): number => {
-  const t = Number(threshold);
-
-  if (category === 'mastery_course') {
-    return t === 1 ? 5 : 6; // AB = Level 5, BC = Level 6
-  }
-
-  if (category === 'seniority') {
-    if (t >= 3650) return 6;
-    if (t >= 2555) return 5;
-    if (t >= 1460) return 4;
-    if (t >= 730) return 3;
-    if (t >= 365) return 2;
-    return 1;
-  } else if (category === 'streak') {
-    if (t >= 365) return 6;
-    if (t >= 180) return 5;
-    if (t >= 100) return 4;
-    if (t >= 30) return 3;
-    if (t >= 7) return 2;
-    return 1;
-  } else if (category === 'mastery_unit') {
-    if (t >= 10) return 6;
-    if (t >= 8) return 5;
-    if (t >= 6) return 4;
-    if (t >= 4) return 3;
-    if (t >= 2) return 2;
-    return 1;
-  } else if (category === 'social') {
-    if (t >= 200) return 6;
-    if (t >= 100) return 5;
-    if (t >= 50) return 4;
-    if (t >= 30) return 3;
-    if (t >= 10) return 2;
-    return 1;
-  } else if (category === 'influence') {
-    if (t >= 5000) return 6;
-    if (t >= 2500) return 5;
-    if (t >= 1000) return 4;
-    if (t >= 250) return 3;
-    if (t >= 50) return 2;
-    return 1;
-  }
-  return 1;
-};
-
-const getTitleTierStyles = (level: number, category: string) => {
-  const base = TITLE_STYLES[category] || TITLE_STYLES.streak;
-
-  // L6: Mythic / Divine (Mesh/Liquid Gradient Deviation)
-  if (level === 6) {
-    const isDark = category !== 'influence';
-    return {
-      ...base,
-      bg: category === 'seniority'
-        ? 'from-black via-amber-900 to-black'
-        : (isDark ? 'from-black via-primary/40 to-black' : 'from-yellow-200 via-white to-amber-500'),
-      border: 'border-white/80 shadow-[0_0_30px_rgba(255,255,255,0.4)] ring-2 ring-primary/60 scale-110',
-      text: isDark ? 'text-white' : 'text-black',
-      glow: 'shadow-primary/60 animate-pulse-neon',
-      extraClasses: 'mesh-liquid overflow-hidden !border-opacity-100 shimmer-sweep'
-    };
-  }
-
-  // L5: Legendary (Shimmer + Neon Pulse)
-  if (level === 5) {
-    return {
-      ...base,
-      border: 'border-white/60 shadow-[0_0_20px_rgba(255,255,255,0.3)]',
-      glow: 'shadow-primary/40 animate-pulse',
-      extraClasses: 'shimmer-sweep scale-105 overflow-hidden'
-    };
-  }
-
-  // L4: Epic (Moving Flowing Gradient)
-  if (level === 4) {
-    return {
-      ...base,
-      border: 'border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.2)]',
-      glow: base.glow.replace('/20', '/60'),
-      extraClasses: 'animate-gradient-x'
-    };
-  }
-
-  // L3: Rare (Vibrant + Inner Glow)
-  if (level === 3) {
-    return {
-      ...base,
-      border: 'border-white/30 shadow-[inset_0_0_10px_rgba(255,255,255,0.2)]',
-      glow: base.glow.replace('/20', '/40'),
-    };
-  }
-
-  // L2: Advanced (Glassy Border)
-  if (level === 2) {
-    return {
-      ...base,
-      border: 'border-white/20',
-      glow: base.glow.replace('/20', '/30'),
-    };
-  }
-
-  // L1: Starter
-  return base;
-};
-
-const getIconCount = (level: number) => {
-  if (level >= 5) return 3;
-  if (level >= 3) return 2;
-  return 1;
-};
+// Removed old local TITLE_STYLES logic in favor of src/utils/titleStyles.ts
 
 export const ProfileSettings = () => {
   const { user, updateUser, isPro, setShowPaywall, availableTitles } = useApp();
@@ -654,8 +501,8 @@ export const ProfileSettings = () => {
                   .map(t => {
                     const isUnlocked = unlockedTitles.some(ut => ut.title_id === t.id);
                     const isEquipped = selectedTitleId === t.id;
-                    const level = getTitleVisualLevel(t.category, t.threshold);
-                    const style = getTitleTierStyles(level, t.category);
+                    // Use unified logic
+                    const style = getUniqueTitleStyle(t.category, t.threshold);
 
                     return (
                       <div key={t.id} className="flex flex-col items-center group relative hover:z-[110]">
@@ -690,7 +537,6 @@ export const ProfileSettings = () => {
                               ? 'bg-gray-200/50 shadow-inner'
                               : `bg-gradient-to-br ${style.bg} ${style.extraClasses || ''}`
                               }`}
-                            style={{ backgroundSize: level >= 3 ? '200% 200%' : 'auto' }}
                           />
 
                           {/* 2. Equipped Glow/Pulse */}
@@ -698,21 +544,17 @@ export const ProfileSettings = () => {
                             <div className={`absolute inset-0 bg-white/10 animate-pulse z-10 ${style.glow}`} />
                           )}
 
-                          {/* 3. Icon Content */}
-                          <div className={`flex items-center relative z-20 ${style.text} ${getIconCount(level) === 1 ? '' : getIconCount(level) === 2 ? '-space-x-0.5' : getIconCount(level) === 3 ? '-space-x-1' : '-space-x-1.5'}`}>
-                            {Array.from({ length: getIconCount(level) }).map((_, i) => (
-                              <span
-                                key={i}
-                                className="material-symbols-outlined relative z-10 transition-all duration-300"
-                                style={{
-                                  fontSize: getIconCount(level) === 1 ? '28px' : getIconCount(level) === 2 ? '24px' : getIconCount(level) === 3 ? '20px' : '18px',
-                                  opacity: getIconCount(level) > 1 ? 0.9 + (i * 0.03) : 1,
-                                  transform: getIconCount(level) > 1 ? `translateY(${i % 2 === 0 ? '-2px' : '2px'})` : 'none'
-                                }}
-                              >
-                                {style.icon}
-                              </span>
-                            ))}
+                          {/* 3. Icon Content - Single Unique Icon */}
+                          <div className={`flex items-center justify-center relative z-20 w-full h-full`}>
+                            <span
+                              className={`material-symbols-outlined relative z-10 transition-all duration-300 ${style.text}`}
+                              style={{
+                                fontSize: '24px',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                              }}
+                            >
+                              {style.icon}
+                            </span>
                           </div>
 
                           {/* 4. Border Overlay (To ensure perfect edge) */}
@@ -724,7 +566,7 @@ export const ProfileSettings = () => {
                           {/* 5. Lock Overlay */}
                           {!isUnlocked && (
                             <div className="absolute inset-0 flex items-center justify-center bg-black/5 z-40">
-                              <span className="material-symbols-outlined text-[8px] opacity-60">lock</span>
+                              <span className="material-symbols-outlined text-[10px] opacity-60">lock</span>
                             </div>
                           )}
                         </button>
@@ -804,30 +646,23 @@ export const ProfileSettings = () => {
                       (() => {
                         const title = availableTitles.find(t => t.id === selectedTitleId);
                         if (!title) return null;
-                        const level = getTitleVisualLevel(title.category, title.threshold);
-                        const style = getTitleTierStyles(level, title.category);
+
+                        // Use unified logic
+                        const style = getUniqueTitleStyle(title.category, title.threshold);
 
                         return (
                           <div
-                            className={`flex items-center gap-1 bg-gradient-to-br ${style.bg} px-3 py-1.5 rounded-full border ${style.border} shadow-lg ${style.glow} group/title hover:scale-105 transition-all duration-500 overflow-hidden relative ${style.extraClasses || ''}`}
-                            style={{ backgroundSize: level >= 4 ? '200% 200%' : 'auto' }}
+                            className={`flex items-center gap-1.5 bg-gradient-to-br ${style.bg} px-3 py-1.5 rounded-full border ${style.border} shadow-lg ${style.glow} group/title hover:scale-105 transition-all duration-300 overflow-hidden relative ${style.extraClasses || ''}`}
                           >
-                            <div className={`flex items-center relative z-10 ${getIconCount(level) === 1 ? '' : getIconCount(level) === 2 ? '-space-x-0.5' : getIconCount(level) === 3 ? '-space-x-1' : '-space-x-1.5'}`}>
-                              {Array.from({ length: getIconCount(level) }).map((_, i) => (
-                                <span
-                                  key={i}
-                                  className={`material-symbols-outlined relative z-10 transition-all duration-300 ${style.text}`}
-                                  style={{
-                                    fontSize: getIconCount(level) === 1 ? '16px' : getIconCount(level) === 2 ? '14px' : getIconCount(level) === 3 ? '12px' : '11px',
-                                    opacity: getIconCount(level) > 1 ? 0.9 + (i * 0.03) : 1,
-                                    transform: getIconCount(level) > 1 ? `translateY(${i % 2 === 0 ? '-1px' : '1px'})` : 'none'
-                                  }}
-                                >
-                                  {style.icon}
-                                </span>
-                              ))}
+                            <div className={`flex items-center relative z-10 justify-center`}>
+                              <span
+                                className={`material-symbols-outlined relative z-10 transition-all duration-300 ${style.text}`}
+                                style={{ fontSize: '16px' }}
+                              >
+                                {style.icon}
+                              </span>
                             </div>
-                            <span className={`text-[10px] font-black ${style.text} ml-1 uppercase tracking-wider relative z-10 ${level >= 5 ? 'drop-shadow-sm' : ''}`}>
+                            <span className={`text-[10px] font-black ${style.text} uppercase tracking-wider relative z-10 drop-shadow-sm`}>
                               {title.name}
                             </span>
                           </div>

@@ -1,0 +1,1403 @@
+[
+  {
+    "id": "0d7a6634-ab75-4860-ba8b-2cf78455ec41",
+    "matches": [
+      "PROMPT: $[0,\\pi/2]$",
+      "EXPLANATION: $x=\\pi/4$, $[0,\\pi/4]$, $[\\pi/4,\\pi/2]$, $A=\\int_0^{\\pi/4}(\\cos x-\\sin x)\\,dx+\\int_{\\pi/4}^{\\pi/2}(\\sin x-\\cos x)\\,dx.$",
+      "OPTION: $\\int_0^{\\pi/2}(\\sin x-\\cos x)\\,dx$",
+      "OPTION: $\\int_0^{\\pi/4}(\\cos x-\\sin x)\\,dx+\\int_{\\pi/4}^{\\pi/2}(\\sin x-\\cos x)\\,dx$",
+      "OPT_EXPL: $x=\\pi/4$",
+      "OPTION: $\\int_0^{\\pi/2}|\\sin x-\\cos x|\\,dx$",
+      "OPTION: $\\int_0^{\\pi/4}(\\sin x-\\cos x)\\,dx+\\int_{\\pi/4}^{\\pi/2}(\\sin x-\\cos x)\\,dx$",
+      "OPT_EXPL: $[0,\\pi/4]$"
+    ]
+  },
+  {
+    "id": "11652131-659e-4281-ae3c-af903e5bf9c5",
+    "matches": [
+      "EXPLANATION: $y'=-x/y$, $y''=-\\frac{y+x^2/y}{y^2}=-\\frac{(y^2+x^2)/y}{y^2}=-\\frac{1}{y^3}.$, $y=\\sqrt{2}/2$, $y''=-\\frac{1}{(\\sqrt{2}/2)^3}=-2\\sqrt{2}.$",
+      "OPT_EXPL: $y''=-1/y^3$",
+      "OPT_EXPL: $y''=-1/y^2$, $-1/y^3$",
+      "OPT_EXPL: $y'=-x/y$, $y''=-1/y^3$, $y=\\sqrt{2}/2$"
+    ]
+  },
+  {
+    "id": "165c0b5a-2cc7-4b38-82a6-ae753a9573f1",
+    "matches": [
+      "EXPLANATION: $0/0$, $\\lim_{x\\to 0}\\frac{e^x-1-x}{x^2} =\\lim_{x\\to 0}\\frac{e^x-1}{2x}\\quad(0/0) =\\lim_{x\\to 0}\\frac{e^x}{2} =\\frac{1}{2}.$"
+    ]
+  },
+  {
+    "id": "141ebcb4-37bf-41f0-9a6a-3c5a0c9860e3",
+    "matches": [
+      "OPT_EXPL: $0/0$"
+    ]
+  },
+  {
+    "id": "189a2d07-8793-45ff-a936-b4fe913d8e43",
+    "matches": [
+      "OPT_EXPL: $s(5)/5$"
+    ]
+  },
+  {
+    "id": "1cbf9be0-4580-42cc-99af-8b8e92c9b97b",
+    "matches": [
+      "OPT_EXPL: $(\\ln x)'=1/x$",
+      "OPT_EXPL: $-(\\sin x)/x$"
+    ]
+  },
+  {
+    "id": "1e7386ae-1611-4ac5-8530-597cde004fa5",
+    "matches": [
+      "EXPLANATION: $(x-2)/(x-3)$",
+      "OPT_EXPL: $(x-2)/(x-3)$"
+    ]
+  },
+  {
+    "id": "1ea9d9c6-c358-4a09-b6e6-d88f014bc71f",
+    "matches": [
+      "EXPLANATION: $(-3,\\pi/4)\\equiv(3,\\pi/4+\\pi)=(3,5\\pi/4).$"
+    ]
+  },
+  {
+    "id": "20a746ae-7223-4895-8a78-79cbdeaf172a",
+    "matches": [
+      "OPT_EXPL: $g'(x)=\\sec^2 x=1/\\cos^2 x$"
+    ]
+  },
+  {
+    "id": "243a4a21-b161-4357-9fe7-c0288508f525",
+    "matches": [
+      "EXPLANATION: $\\int_0^4\\left(\\sqrt{x}-\\frac{x}{2}\\right)dx=\\left[\\frac{2}{3}x^{3/2}-\\frac{x^2}{4}\\right]_0^4=\\frac{16}{3}-4=\\frac{4}{3}.$"
+    ]
+  },
+  {
+    "id": "268ba7f8-215d-4348-b7bb-31e8d908a45d",
+    "matches": [
+      "EXPLANATION: $T_2(4.1)=2+\\frac{1}{4}(0.1)+\\frac{-1/32}{2}(0.1)^2=2+0.025-0.00015625=2.02484375.$",
+      "OPT_EXPL: $-(0.01)/64=0.00015625$",
+      "OPT_EXPL: $T_2(4.1)=2+\\dfrac{1}{4}(0.1)+\\dfrac{-1/32}{2}(0.1)^2=2.02484375$"
+    ]
+  },
+  {
+    "id": "2c8a01b6-04cf-4640-8859-1e7693ddff10",
+    "matches": [
+      "OPT_EXPL: $(f^{-1})'(0)=1/f'(-1)=1$",
+      "OPT_EXPL: $f'(0)=1/2$"
+    ]
+  },
+  {
+    "id": "2f1454f2-8e5d-4a7e-beb6-709f5fab1daa",
+    "matches": [
+      "EXPLANATION: $V=\\pi\\int_0^4(2\\sqrt{x}-x)\\,dx=\\pi\\left[\\frac{4}{3}x^{3/2}-\\frac{x^2}{2}\\right]_0^4=\\pi\\left(\\frac{32}{3}-8\\right)=\\frac{8\\pi}{3}.$"
+    ]
+  },
+  {
+    "id": "32dad1dc-44f2-4d16-8891-658a35c6949a",
+    "matches": [
+      "EXPLANATION: $\\frac{d}{dx}\\arctan\\left(\\frac{1}{x}\\right)=\\frac{-1/x^2}{1+1/x^2}=\\frac{-1/x^2}{(x^2+1)/x^2}=-\\frac{1}{x^2+1}.$",
+      "OPT_EXPL: $u=1/x$, $u'=-1/x^2$, $\\dfrac{u'}{1+u^2}=\\dfrac{-1/x^2}{1+1/x^2}=-\\dfrac{1}{1+x^2}$",
+      "OPT_EXPL: $u'=-1/x^2$",
+      "OPT_EXPL: $u'=-1/x^2$"
+    ]
+  },
+  {
+    "id": "33417a9d-1493-4c9e-a5d0-ea936767a6b7",
+    "matches": [
+      "OPT_EXPL: $[0,\\pi/2]$"
+    ]
+  },
+  {
+    "id": "c47718c9-0fce-43d6-b659-10083653ae99",
+    "matches": [
+      "EXPLANATION: $v(6)=\\frac{2-6}{7-5}=-2\\\\ \\text{m/s}.$",
+      "OPTION: $-2\\\\ \\text{m/s}$",
+      "OPTION: $2\\\\ \\text{m/s}$",
+      "OPTION: $-4\\\\ \\text{m/s}$",
+      "OPTION: $0\\\\ \\text{m/s}$"
+    ]
+  },
+  {
+    "id": "c51dff4b-9a2e-4a4a-9eb1-c4d47bbb6534",
+    "matches": [
+      "OPT_EXPL: $\\infty/\\infty$",
+      "OPT_EXPL: $0/0$"
+    ]
+  },
+  {
+    "id": "3b29f4ec-ca55-439b-b075-6a54545873ae",
+    "matches": [
+      "PROMPT: $ m/min. When the radius is $",
+      "EXPLANATION: $\\frac{dA}{dt}=2\\pi(10)(0.4)=8\\pi\\text{ m}^2/\\text{min}.$"
+    ]
+  },
+  {
+    "id": "3dfb37b2-bd9d-49a2-92b3-88e1eb012b0f",
+    "matches": [
+      "OPT_EXPL: $C(50)/50$"
+    ]
+  },
+  {
+    "id": "13902af2-4907-43b2-aa1a-54a26bdcf1d2",
+    "matches": [
+      "EXPLANATION: $\\sqrt[3]{n^2}=n^{2/3}$, $\\sum 5n^{-2/3}$",
+      "OPT_EXPL: $\\frac{5}{\\sqrt[3]{n^2}}=\\frac{5}{n^{2/3}}$"
+    ]
+  },
+  {
+    "id": "40cf5eee-8569-4fd3-b249-1e1da7d56406",
+    "matches": [
+      "EXPLANATION: $\\frac{a_{n+1}}{a_n}=\\frac{(n+1)!/(n+1)^{n+1}}{n!/n^n}=\\left(\\frac{n}{n+1}\\right)^n.$",
+      "OPT_EXPL: $1/e<1$"
+    ]
+  },
+  {
+    "id": "44f58c63-78f3-4a23-91d4-0e6e48196efe",
+    "matches": [
+      "OPT_EXPL: $(\\ln x)'=1/x$",
+      "OPT_EXPL: $1/x$"
+    ]
+  },
+  {
+    "id": "cdd9bb9b-31fa-418d-ab79-c23a5bd62dd3",
+    "matches": [
+      "PROMPT: $f(x)=x^{1/3}$",
+      "EXPLANATION: $f^{\\prime\\prime}(x)=-\\dfrac{2}{9}x^{-5/3}$, $|f^{\\prime\\prime}(x)|=\\dfrac{2}{9}x^{-5/3}$",
+      "OPT_EXPL: $f^{\\prime\\prime}(x)=-\\dfrac{2}{9}x^{-5/3}$, $|f^{\\prime\\prime}(x)|=\\dfrac{2}{9}x^{-5/3}$",
+      "OPTION: $\\dfrac{2}{9}(1.1)^{-5/3}\\cdot\\dfrac{(0.1)^2}{2}$",
+      "OPT_EXPL: $x^{-5/3}$",
+      "OPT_EXPL: $|x-1|^2/2!$"
+    ]
+  },
+  {
+    "id": "475ba097-a67d-4b5b-bd7a-846abc4aaf8f",
+    "matches": [
+      "EXPLANATION: $\\frac{5}{x^2-1}=\\frac{5}{(x-1)(x+1)}=\\frac{5/2}{x-1}-\\frac{5/2}{x+1}.$",
+      "OPT_EXPL: $1/(x^2+a^2)$, $1/(x^2-1)$",
+      "OPT_EXPL: $\\frac{5}{(x-1)(x+1)}=\\frac{5/2}{x-1}-\\frac{5/2}{x+1}$"
+    ]
+  },
+  {
+    "id": "4823b93a-40eb-4dc5-bd37-d1b2fd59209e",
+    "matches": [
+      "EXPLANATION: $\\dfrac{dy}{dx}=\\dfrac{dy/dt}{dx/dt}$, $dx/dt=e^t$, $dy/dt=2e^{2t}$",
+      "OPT_EXPL: $dx/dt=e^t$, $dy/dt=2e^{2t}$, $dy/dx=\\dfrac{2e^{2t}}{e^t}=2e^t$",
+      "OPT_EXPL: $dy/dt$, $dy/dx$",
+      "OPT_EXPL: $dx/dt$"
+    ]
+  },
+  {
+    "id": "4a6a2096-8f92-432b-9a6b-9b3695cf8df6",
+    "matches": [
+      "OPT_EXPL: $\\int \\frac{1}{u^2+a^2}du=\\frac{1}{a}\\arctan(u/a)+C$"
+    ]
+  },
+  {
+    "id": "4cf08aad-480a-4ee7-8ad3-aa81da9665a5",
+    "matches": [
+      "OPT_EXPL: $ is noticeably steeper than /bin/zsh.2$"
+    ]
+  },
+  {
+    "id": "4d6ae2c6-93a4-4a6f-85f0-3d30b41d2e68",
+    "matches": [
+      "EXPLANATION: $y(1)=2e^{3/2}$",
+      "OPTION: $2e^{3/4}$",
+      "OPTION: $2e^{3/2}$",
+      "OPT_EXPL: $y(1)=2e^{3/2}$"
+    ]
+  },
+  {
+    "id": "512e4ef2-cfb6-48ac-91da-fae6d237ea84",
+    "matches": [
+      "OPT_EXPL: $ over /bin/zsh.2$",
+      "OPT_EXPL: $ instead of the full symmetric width /bin/zsh.2$"
+    ]
+  },
+  {
+    "id": "517f0d4c-d735-47fc-bbac-90231c61b275",
+    "matches": [
+      "OPT_EXPL: $0/0$"
+    ]
+  },
+  {
+    "id": "5913ba03-f895-428e-8bb6-d6c9dc9995f7",
+    "matches": [
+      "PROMPT: $ ft/s. What is $",
+      "EXPLANATION: $\\frac{dy}{dt}= -\\frac{6}{8}(0.5)=-0.375\\text{ ft/s}.$",
+      "OPT_EXPL: $\\dfrac{dy}{dt}=-(x/y)\\dfrac{dx}{dt}=-(6/8)(0.5)=-0.375$",
+      "OPT_EXPL: $x/y$"
+    ]
+  },
+  {
+    "id": "60d6066b-c923-453a-8378-50cfda9ea539",
+    "matches": [
+      "OPTION: $4\\\\ \\text{m/s}$",
+      "OPTION: $6\\\\ \\text{m/s}$",
+      "OPTION: $8\\\\ \\text{m/s}$",
+      "OPTION: $10\\\\ \\text{m/s}$"
+    ]
+  },
+  {
+    "id": "0015173b-cc1a-4da5-9bd2-4c6aaeecd720",
+    "matches": [
+      "EXPLANATION: $\\frac{3-7/x^2}{2+5/x}\\xrightarrow[x\\to\\infty]{}\\frac{3}{2}.$"
+    ]
+  },
+  {
+    "id": "66325853-9fdb-4d14-950a-a5f88a160fc2",
+    "matches": [
+      "PROMPT: $ cm/s. The area is $"
+    ]
+  },
+  {
+    "id": "68155b09-054b-4b23-a58c-10c2556aa329",
+    "matches": [
+      "PROMPT: $/min. The pile maintains the ratio $"
+    ]
+  },
+  {
+    "id": "33834e0b-ccaa-4ed4-aa1a-214f4b38864b",
+    "matches": [
+      "OPT_EXPL: $dt/dS$"
+    ]
+  },
+  {
+    "id": "7241dd8c-c26b-4261-9a4b-2e9f8556b1de",
+    "matches": [
+      "EXPLANATION: $20=80e^{kt}\\Rightarrow e^{kt}=\\frac14\\Rightarrow t=\\frac{\\ln(1/4)}{k}\\approx 9.3.$",
+      "OPT_EXPL: $t=\\dfrac{\\ln(1/4)}{k}\\approx 9.3$",
+      "OPT_EXPL: $50/80$",
+      "OPT_EXPL: $k=\\ln(50/80)$, $\\ln(50/80)/4$"
+    ]
+  },
+  {
+    "id": "726a89a7-aea6-4a2d-a58b-4b0f2e4347fe",
+    "matches": [
+      "OPTION: $y=2x^{3/2}$"
+    ]
+  },
+  {
+    "id": "0bd58cb6-c0a7-49e4-b58c-257add05db9f",
+    "matches": [
+      "OPT_EXPL: $1/n^2$"
+    ]
+  },
+  {
+    "id": "0a06b090-8f23-4df6-b80a-14ce98166bf1",
+    "matches": [
+      "EXPLANATION: $\\sum 1/n^2$",
+      "OPT_EXPL: $1/n$"
+    ]
+  },
+  {
+    "id": "7c8368dd-0ea5-455b-8154-293369c9fbe0",
+    "matches": [
+      "EXPLANATION: $dx/dt=2t$, $dy/dt=-1/t^2$, $\\frac{dy}{dx}=\\frac{-1/t^2}{2t}=-\\frac{1}{2t^3}.$, $\\frac{d^2y}{dx^2}=\\frac{\\frac{d}{dt}(dy/dx)}{dx/dt}=\\frac{\\frac{3}{2t^4}}{2t}=\\frac{3}{4t^5}.$",
+      "OPT_EXPL: $\\dfrac{d}{dt}(dy/dx)$, $dx/dt$"
+    ]
+  },
+  {
+    "id": "0e38b63c-dc56-4c17-b47b-b315f12ab916",
+    "matches": [
+      "PROMPT: $/min. When $"
+    ]
+  },
+  {
+    "id": "0f685f6a-9fcd-4555-afd2-03d2b1a2e899",
+    "matches": [
+      "PROMPT: $y=x\\sin(1/x)$, $\\lim_{x\\to 0} x\\sin(1/x)$",
+      "EXPLANATION: $-1\\le \\sin(1/x)\\le 1$, $-|x|\\le x\\sin(1/x)\\le |x|$",
+      "OPT_EXPL: $-1\\le \\sin(1/x)\\le 1$, $-|x|\\le x\\sin(1/x)\\le |x|$"
+    ]
+  },
+  {
+    "id": "71e7d4b1-ae1e-4c40-a3c4-491615482fde",
+    "matches": [
+      "EXPLANATION: $\\int_{0}^{2}x^{-1/2}dx=\\lim_{a\\to 0^+}\\int_{a}^{2}x^{-1/2}dx=\\lim_{a\\to 0^+}\\left[2\\sqrt{x}\\right]_{a}^{2}=2\\sqrt{2}. $",
+      "OPT_EXPL: $\\int x^{-1/2}dx=2x^{1/2}$",
+      "OPT_EXPL: $\\lim_{a\\to 0^+}\\int_a^2 x^{-1/2}dx$"
+    ]
+  },
+  {
+    "id": "0afb802a-fe10-4200-9842-e3272499ad62",
+    "matches": [
+      "OPT_EXPL: $dx/d\\theta$",
+      "OPT_EXPL: $dy/dx$",
+      "OPT_EXPL: $dy/d\\theta$, $dx/d\\theta$",
+      "OPT_EXPL: $dy/d\\theta$"
+    ]
+  },
+  {
+    "id": "a3d4039d-b209-4027-9fd1-093c022401d0",
+    "matches": [
+      "OPT_EXPL: $0/0$"
+    ]
+  },
+  {
+    "id": "819027ac-a51f-4f1d-81d5-bfa34752667e",
+    "matches": [
+      "EXPLANATION: $\\theta=\\pm\\pi/3$, $A=\\frac12\\int_{-\\pi/3}^{\\pi/3}\\left((2\\cos\\theta)^2-1\\right)d\\theta=\\frac12\\int_{-\\pi/3}^{\\pi/3}(4\\cos^2\\theta-1)d\\theta.$",
+      "OPT_EXPL: $\\theta=\\pm\\pi/3$"
+    ]
+  },
+  {
+    "id": "878d6f75-6746-419a-9dfd-5a10fae3966f",
+    "matches": [
+      "EXPLANATION: $ is continuous. The one-sided slopes at /bin/zsh$, $ is not differentiable at /bin/zsh$",
+      "OPTION: $ is differentiable at /bin/zsh$",
+      "OPTION: $ is continuous but not differentiable at /bin/zsh$",
+      "OPTION: $ is not continuous at /bin/zsh$",
+      "OPTION: $ is neither continuous nor differentiable at /bin/zsh$",
+      "OPT_EXPL: $ is continuous at /bin/zsh$"
+    ]
+  },
+  {
+    "id": "7fbb7ea2-ee5c-4d46-8c39-b0c8289d6dbe",
+    "matches": [
+      "OPT_EXPL: $1/V$"
+    ]
+  },
+  {
+    "id": "8d676d26-b96a-4f4b-8b5e-6b034eabc24a",
+    "matches": [
+      "OPT_EXPL: $y'=(1-0)/1 = 1 \\neq 0$"
+    ]
+  },
+  {
+    "id": "0f8a7302-5790-4b3d-8ce3-46ad6264a000",
+    "matches": [
+      "EXPLANATION: $L=\\int_1^2\\sqrt{u}\\,du=\\left[\\frac{2}{3}u^{3/2}\\right]_1^2=\\frac{2}{3}\\left(2\\sqrt{2}-1\\right).$"
+    ]
+  },
+  {
+    "id": "b1c77136-6321-4ebc-a48e-77c4df7e2982",
+    "matches": [
+      "EXPLANATION: $\\theta=\\pi/2$",
+      "OPT_EXPL: $\\theta=\\pi/2$, $=2/(-\\pi)=-2/\\pi$"
+    ]
+  },
+  {
+    "id": "91e575ac-d954-4834-9b2f-92b384c33240",
+    "matches": [
+      "EXPLANATION: $-\\pi/4\\le\\theta\\le\\pi/4$, $A=\\frac12\\int_{-\\pi/4}^{\\pi/4}(2\\cos(2\\theta))^2\\,d\\theta =2\\int_{-\\pi/4}^{\\pi/4}\\cos^2(2\\theta)\\,d\\theta.$",
+      "OPT_EXPL: $-\\pi/4\\le\\theta\\le\\pi/4$, $A=\\dfrac12\\int_{-\\pi/4}^{\\pi/4}(2\\cos(2\\theta))^2\\,d\\theta=\\dfrac{\\pi}{4}$"
+    ]
+  },
+  {
+    "id": "b47292a2-5ca2-486b-af57-cabf8ff5f4fe",
+    "matches": [
+      "PROMPT: $g(x)=\\sin(1/x)$",
+      "EXPLANATION: $-1\\le \\sin(1/x)\\le 1$"
+    ]
+  },
+  {
+    "id": "03c293e2-ff62-49bd-b115-f409f4e423e3",
+    "matches": [
+      "EXPLANATION: $\\frac{a_{n+1}}{a_n}=\\frac{(n+1)^5/2^{n+1}}{n^5/2^n}=\\left(\\frac{n+1}{n}\\right)^5\\cdot\\frac{1}{2}.$"
+    ]
+  },
+  {
+    "id": "040b5ab8-a45a-4b95-b83a-4a33f2cc71a1",
+    "matches": [
+      "OPT_EXPL: $V=\\pi\\int_1^3(1/x^2)\\,dx=\\frac{2\\pi}{3}$",
+      "OPT_EXPL: $1/x$, $(1/x)^2$"
+    ]
+  },
+  {
+    "id": "17555163-7087-48a1-b2c9-4dde865d05ec",
+    "matches": [
+      "OPTION: $F'(x)=\\frac{1}{2}(1+x^4)^{-1/2}$"
+    ]
+  },
+  {
+    "id": "b1d50a83-ca4c-4198-a784-fb80940e42e6",
+    "matches": [
+      "EXPLANATION: $dx/dt=1$, $4+2\\,dy/dt+3=0\\Rightarrow dy/dt=-7/2$",
+      "OPT_EXPL: $2x\\,dx/dt + x\\,dy/dt + y\\,dx/dt=0\\Rightarrow 7+2\\,dy/dt=0$",
+      "OPT_EXPL: $dy/dt$",
+      "OPT_EXPL: $dy/dt$"
+    ]
+  },
+  {
+    "id": "b1fdc896-1b99-4753-b986-7ee1fcdb27ac",
+    "matches": [
+      "OPTION: $0\\text{ m/s}$",
+      "OPTION: $-3\\text{ m/s}$",
+      "OPTION: $-1\\text{ m/s}$",
+      "OPTION: $3\\text{ m/s}$"
+    ]
+  },
+  {
+    "id": "04b79e6f-f9fb-4190-9081-3cb20e4c85e3",
+    "matches": [
+      "OPT_EXPL: $1/\\sqrt{n}$"
+    ]
+  },
+  {
+    "id": "051cdc2e-fd06-4eb2-b3b1-ba75e807a64a",
+    "matches": [
+      "EXPLANATION: $f(x)=\\frac{\\sqrt{x^2(1+4/x+1/x^2)}}{x}=\\frac{|x|}{x}\\sqrt{1+4/x+1/x^2}.$",
+      "OPT_EXPL: $f(x)\\sim|x|/x$"
+    ]
+  },
+  {
+    "id": "c60cde02-5979-43df-a804-8d1240d029bd",
+    "matches": [
+      "EXPLANATION: $\\sin x=\\cos x\\Rightarrow x=\\pi/4$, $[0,\\pi/2]$, $[0,\\pi/4]$, $[\\pi/4,\\pi/2]$, $\\int_0^{\\pi/4} (\\cos x-\\sin x)\\,dx+\\int_{\\pi/4}^{\\pi/2} (\\sin x-\\cos x)\\,dx.$",
+      "OPTION: $\\displaystyle \\int_0^{\\pi/2} (\\cos x-\\sin x)\\,dx$",
+      "OPT_EXPL: $x=\\pi/4$",
+      "OPTION: $\\displaystyle \\int_0^{\\pi/2} (\\sin x-\\cos x)\\,dx$",
+      "OPTION: $\\displaystyle \\int_0^{\\pi/4} (\\cos x-\\sin x)\\,dx+\\int_{\\pi/4}^{\\pi/2} (\\sin x-\\cos x)\\,dx$",
+      "OPTION: $\\displaystyle \\left|\\int_0^{\\pi/2} (\\cos x-\\sin x)\\,dx\\right|$"
+    ]
+  },
+  {
+    "id": "064151a0-0ebb-4a10-8b79-d93609c59ee9",
+    "matches": [
+      "EXPLANATION: $u'=1/x$",
+      "OPT_EXPL: $(u/v)'=(u'v-uv')/v^2$"
+    ]
+  },
+  {
+    "id": "d10d386b-09ab-4640-a890-a8d539079078",
+    "matches": [
+      "PROMPT: $/min. What is $",
+      "EXPLANATION: $0.5=\\frac{\\pi}{4}(4)\\frac{dh}{dt}=\\pi\\frac{dh}{dt}\\;\\Rightarrow\\;\\frac{dh}{dt}=\\frac{1}{2\\pi}\\text{ m/min}.$"
+    ]
+  },
+  {
+    "id": "d28d772a-f986-4e1c-9d43-eca1932375a2",
+    "matches": [
+      "EXPLANATION: $x=\\pi/3,5\\pi/3$, $0,\\pi/3,\\pi,5\\pi/3,2\\pi$",
+      "OPT_EXPL: $x=0,\\pi/3,\\pi,5\\pi/3,2\\pi$"
+    ]
+  },
+  {
+    "id": "0739596b-f665-4184-8a88-72611b959d50",
+    "matches": [
+      "EXPLANATION: $dx/dt=-\\sin t$, $dy/dt=\\cos t$"
+    ]
+  },
+  {
+    "id": "408aed1b-0bf7-4b20-9168-ce3048175967",
+    "matches": [
+      "EXPLANATION: $|x\\sin(1/x)|\\le |x|\\to 0$, $. Differentiability: 19967h'(0)=\\lim_{t\\to 0}\\sin(1/t),19967 which does not exist. Hence continuous but not differentiable at /bin/zsh$",
+      "OPT_EXPL: $|x\\sin(1/x)|\\le |x|$, $ is /bin/zsh$",
+      "OPTION: $ but not differentiable at /bin/zsh$",
+      "OPTION: $ but not continuous at /bin/zsh$"
+    ]
+  },
+  {
+    "id": "f21fd267-cdeb-4bf3-9cae-b4bb0a62153d",
+    "matches": [
+      "OPT_EXPL: $u'/u$"
+    ]
+  },
+  {
+    "id": "75fec008-8348-4ecc-a5a3-7ba55ceeb0fc",
+    "matches": [
+      "OPT_EXPL: $\\Delta x=3/n$",
+      "OPT_EXPL: $\\Delta x=3/n$"
+    ]
+  },
+  {
+    "id": "866720da-cafa-4f06-a648-aee393ee7f3e",
+    "matches": [
+      "EXPLANATION: $0/0$",
+      "OPT_EXPL: $0/0$"
+    ]
+  },
+  {
+    "id": "a6a3c6b6-2ec2-4fe4-a1a2-ad557114a914",
+    "matches": [
+      "OPT_EXPL: $1/3$"
+    ]
+  },
+  {
+    "id": "dbc7fdf0-87a5-4611-ac9f-895147a576f4",
+    "matches": [
+      "EXPLANATION: $V=\\int_0^{\\pi/4}2x(\\cos x-\\sin x)\\,dx=2\\left[ x(\\sin x+\\cos x)+(\\cos x-\\sin x)\\right]_0^{\\pi/4}.$, $x=\\pi/4$",
+      "OPT_EXPL: $V=\\int_0^{\\pi/4} 2x(\\cos x-\\sin x)\\,dx=\\frac{\\pi\\sqrt2}{2}-2$"
+    ]
+  },
+  {
+    "id": "a7018ceb-3cad-4609-9972-38ca922657a9",
+    "matches": [
+      "OPT_EXPL: $(1-x^2)/2$"
+    ]
+  },
+  {
+    "id": "dd3a2c56-664a-458c-9a3e-905e58aad0a4",
+    "matches": [
+      "EXPLANATION: $dx/dt=1$, $dy/dt=\\cos t$, $dy/dx=\\cos t$",
+      "OPT_EXPL: $d^2y/dx^2=-\\sin t<0$"
+    ]
+  },
+  {
+    "id": "ca7b241f-f31f-4270-94cf-769fb44fd3b2",
+    "matches": [
+      "EXPLANATION: $\\theta=\\pm\\pi/3$, $-\\pi/2\\le\\theta\\le\\pi/2$, $A=\\frac12\\left(\\int_{-\\pi/3}^{\\pi/3}1^2\\,d\\theta+2\\int_{\\pi/3}^{\\pi/2}(2\\cos\\theta)^2\\,d\\theta\\right) =\\frac{\\pi}{3}+4\\int_{\\pi/3}^{\\pi/2}\\cos^2\\theta\\,d\\theta.$, $\\int_{\\pi/3}^{\\pi/2}\\cos^2\\theta\\,d\\theta=\\left[\\frac{\\theta}{2}+\\frac{\\sin(2\\theta)}{4}\\right]_{\\pi/3}^{\\pi/2}=\\frac{\\pi}{12}+\\frac{\\sqrt3}{8}.$",
+      "OPT_EXPL: $2\\cos\\theta=1\\Rightarrow \\theta=\\pm\\pi/3$, $\\frac12\\!\\left(\\int_{-\\pi/3}^{\\pi/3}1^2\\,d\\theta+2\\int_{\\pi/3}^{\\pi/2}(2\\cos\\theta)^2\\,d\\theta\\right)=\\dfrac{\\pi}{3}+\\dfrac{\\sqrt{3}}{2}$"
+    ]
+  },
+  {
+    "id": "a823f4a2-1879-462b-898a-0e9012dc13a3",
+    "matches": [
+      "OPT_EXPL: $y'=-(2x+y)/(x+2y)$"
+    ]
+  },
+  {
+    "id": "e171fcf8-a3f7-44ef-999f-b520b6d1d6e3",
+    "matches": [
+      "OPT_EXPL: $x^n/n$, $1/n$",
+      "OPT_EXPL: $1/(1+x)$"
+    ]
+  },
+  {
+    "id": "b961c6ba-5b7a-43c0-9f8a-6244590197aa",
+    "matches": [
+      "EXPLANATION: $\\text{m}/\\text{s}$, $\\text{m}/\\text{s}$",
+      "OPT_EXPL: $ has units m/s and $, $1/\\text{s}$",
+      "OPT_EXPL: $\\text{m}^2/\\text{s}$"
+    ]
+  },
+  {
+    "id": "d52be690-9c99-43fa-bc11-50debe357dc6",
+    "matches": [
+      "OPT_EXPL: $2/n$",
+      "OPT_EXPL: $\\Delta x=2/n$, $1+2i/n$"
+    ]
+  },
+  {
+    "id": "e5e544b7-f580-4ba8-9c91-99a252ab4ecc",
+    "matches": [
+      "EXPLANATION: $0/0$",
+      "OPT_EXPL: $0/0$"
+    ]
+  },
+  {
+    "id": "e60d81e0-4425-4572-9928-c7dcfe2002d3",
+    "matches": [
+      "PROMPT: $ ft/s, what is $"
+    ]
+  },
+  {
+    "id": "ec9c3034-0e0b-4c16-92c8-2825d2fd9553",
+    "matches": [
+      "PROMPT: $\\dfrac{dr}{dt}=3\\ \\mathrm{cm/s}$",
+      "EXPLANATION: $\\dfrac{dA}{dt}=30\\pi\\ \\mathrm{cm^2/s}$",
+      "OPTION: $15\\pi\\ \\mathrm{cm^2/s}$",
+      "OPT_EXPL: $dA/dt=2\\pi r\\,dr/dt$",
+      "OPTION: $30\\pi\\ \\mathrm{cm^2/s}$",
+      "OPT_EXPL: $dA/dt=2\\pi(5)(3)=30\\pi$",
+      "OPTION: $75\\pi\\ \\mathrm{cm^2/s}$",
+      "OPT_EXPL: $\\pi r^2(dr/dt)$",
+      "OPTION: $3\\ \\mathrm{cm^2/s}$",
+      "OPT_EXPL: $dA/dt$, $dr/dt$"
+    ]
+  },
+  {
+    "id": "26ddd8ee-cb48-4236-b190-515c0e31b2fa",
+    "matches": [
+      "PROMPT: $\\sum_{n=1}^{\\infty}\\frac{1}{n^{3/2}}$",
+      "OPTION: $\\lim_{n\\to\\infty}\\frac{1}{n^{3/2}}=0$"
+    ]
+  },
+  {
+    "id": "ed4b4584-0d83-4c1d-b439-52edfce9e94f",
+    "matches": [
+      "OPT_EXPL: $d(-2t)/dt=-2$, $d(e^t)/dt=e^t$"
+    ]
+  },
+  {
+    "id": "fbe34459-8675-4443-b7d9-b50ffe6be4bf",
+    "matches": [
+      "OPT_EXPL: $, so both converge/diverge together. Since $"
+    ]
+  },
+  {
+    "id": "abc23348-c024-424f-a267-69f7f9abc944",
+    "matches": [
+      "PROMPT: $ liters/hour for $"
+    ]
+  },
+  {
+    "id": "3e8de532-f3da-4d86-aeb0-16147bcba5b3",
+    "matches": [
+      "PROMPT: $ (meters/second) for $"
+    ]
+  },
+  {
+    "id": "37b207d5-829d-4863-bcca-611285028ba3",
+    "matches": [
+      "PROMPT: $\\mathrm{mg/L}$, $\\mathrm{mg/(L\\cdot min)}$"
+    ]
+  },
+  {
+    "id": "f81101d0-5204-4707-85c4-c9b3d1993e3f",
+    "matches": [
+      "OPT_EXPL: $1/x$"
+    ]
+  },
+  {
+    "id": "b23e9a3e-70de-46bf-aa8c-12774fef5dc5",
+    "matches": [
+      "OPT_EXPL: $y/x=3$",
+      "OPT_EXPL: $y/x=\\dfrac{6}{x^2}$",
+      "OPT_EXPL: $y/x=3x$"
+    ]
+  },
+  {
+    "id": "b96cd360-58fe-46d9-acc7-d4f901c06ca7",
+    "matches": [
+      "OPT_EXPL: $(1/2)=e^{-0.06t}$"
+    ]
+  },
+  {
+    "id": "afcd22f1-edc2-4d3e-86db-ca417bf118b6",
+    "matches": [
+      "PROMPT: $\\dfrac{ds}{dt}=-0.4\\ \\mathrm{cm/s}$",
+      "EXPLANATION: $\\dfrac{dV}{dt}=3(36)(-0.4)=-43.2\\ \\mathrm{cm^3/s}$",
+      "OPTION: $-7.2\\ \\mathrm{cm^3/s}$",
+      "OPT_EXPL: $dV/dt=3s^2\\,ds/dt$",
+      "OPTION: $-43.2\\ \\mathrm{cm^3/s}$",
+      "OPT_EXPL: $dV/dt=3(6)^2(-0.4)=-43.2$",
+      "OPTION: $-86.4\\ \\mathrm{cm^3/s}$",
+      "OPT_EXPL: $ds/dt$",
+      "OPTION: $0.4\\ \\mathrm{cm^3/s}$"
+    ]
+  },
+  {
+    "id": "f04b3e25-07c5-4b20-889f-3ebb72a715ae",
+    "matches": [
+      "EXPLANATION: $y=e^{x^2/2}$",
+      "OPTION: $y=e^{x^2/2}$"
+    ]
+  },
+  {
+    "id": "15648368-5038-4fcf-ad02-e2258e887161",
+    "matches": [
+      "PROMPT: $ (m/s$, $ (m/s). At what time $"
+    ]
+  },
+  {
+    "id": "eb432132-45c2-4c67-a8dc-b16e3e885d16",
+    "matches": [
+      "OPT_EXPL: $3x^2+3y^2y'=0\\Rightarrow y'=-x^2/y^2$, $-4/4=-1$",
+      "OPT_EXPL: $dy/dx$"
+    ]
+  },
+  {
+    "id": "a21d2655-f3a7-481f-9c33-b4eec9928136",
+    "matches": [
+      "OPT_EXPL: $x^{-1/2}$",
+      "OPT_EXPL: $x^{-1/2}$"
+    ]
+  },
+  {
+    "id": "ddd27b7b-19ad-4540-8b4e-644ed93bd859",
+    "matches": [
+      "OPT_EXPL: $1/f'(2)$"
+    ]
+  },
+  {
+    "id": "c5246fab-da2c-4f2b-a719-b7831b4d40aa",
+    "matches": [
+      "EXPLANATION: $1\\\\ ^\\circ\\!\\text{C}/\\text{hour}$",
+      "OPTION: $1.0\\\\ ^\\circ\\!\\text{C}/\\text{hour}$",
+      "OPTION: $0.1\\\\ ^\\circ\\!\\text{C}/\\text{hour}$",
+      "OPTION: $10\\\\ ^\\circ\\!\\text{C}/\\text{hour}$",
+      "OPTION: $-1.0\\\\ ^\\circ\\!\\text{C}/\\text{hour}$"
+    ]
+  },
+  {
+    "id": "6c619343-3297-49f3-ae60-2e872bbbf542",
+    "matches": [
+      "PROMPT: $a(t)=-3\\\\ \\text{m/s}^2$, $v(0)=12\\\\ \\text{m/s}$"
+    ]
+  },
+  {
+    "id": "fd1cfd71-973b-46ed-8be3-8fec56c4d3a7",
+    "matches": [
+      "EXPLANATION: $0/0$"
+    ]
+  },
+  {
+    "id": "cbfc7bee-a1c8-44a0-9250-06fd686a8cfd",
+    "matches": [
+      "OPTION: $\\int_0^4(\\sqrt{x}-x/2)\\,dx$",
+      "OPT_EXPL: $y=x/2$"
+    ]
+  },
+  {
+    "id": "e87db5fb-fd83-4ca6-b12e-c2a8d02b4f23",
+    "matches": [
+      "EXPLANATION: $a=\\frac{10-(-2)}{8-0}=\\frac{12}{8}=1.5\\\\ \\text{m/s}^2.$",
+      "OPTION: $-2\\\\ \\text{m/s}^2$",
+      "OPTION: $0.75\\\\ \\text{m/s}^2$",
+      "OPTION: $1.5\\\\ \\text{m/s}^2$",
+      "OPTION: $3\\\\ \\text{m/s}^2$"
+    ]
+  },
+  {
+    "id": "ad9b29d7-485b-43d8-956c-8770a3f580c5",
+    "matches": [
+      "EXPLANATION: $-1\\le \\cos(1/x)\\le 1$, $-x^2\\le x^2\\cos(1/x)\\le x^2$",
+      "OPTION: $\\cos(1/x)$",
+      "OPT_EXPL: $-1\\le \\cos(1/x)\\le 1$, $-x^2\\le x^2\\cos(1/x)\\le x^2$"
+    ]
+  },
+  {
+    "id": "8ecbf18e-f7d8-4bd1-a813-36872f5c9367",
+    "matches": [
+      "PROMPT: $ miles/hour for $"
+    ]
+  },
+  {
+    "id": "965e82a6-505e-4854-8bc4-925baecd03ff",
+    "matches": [
+      "EXPLANATION: $f(x)=x^{-1/2}$, $f'(x)=(-\\tfrac12)x^{-3/2}=-\\frac{1}{2x\\sqrt{x}}.$",
+      "OPT_EXPL: $x^{-1/2}$",
+      "OPT_EXPL: $x^{-1/2}\\to (-\\tfrac12)x^{-3/2}=-\\dfrac{1}{2x\\sqrt{x}}$"
+    ]
+  },
+  {
+    "id": "6c28814b-a841-476c-826b-79f1bb72338b",
+    "matches": [
+      "EXPLANATION: $f'(x)=1/x$",
+      "OPT_EXPL: $1/x$, $(1/x)^2$",
+      "OPT_EXPL: $y'=1/x$, $\\sqrt{1+(y')^2}=\\sqrt{1+1/x^2}$"
+    ]
+  },
+  {
+    "id": "ce32f269-295d-4f9d-ab4b-93ec80550b59",
+    "matches": [
+      "EXPLANATION: $\\frac{a_{n+1}}{a_n}=\\frac{(n+1)!/3^{n+1}}{n!/3^n}=\\frac{n+1}{3}.$"
+    ]
+  },
+  {
+    "id": "ef57750a-04fe-4568-acfb-b9006785b543",
+    "matches": [
+      "EXPLANATION: $C=5/9$, $y(6)= (5/9)\\cdot36=20$"
+    ]
+  },
+  {
+    "id": "dd3c2656-532f-4d68-9849-d5935e8da185",
+    "matches": [
+      "OPT_EXPL: $S=\\frac{5}{1-(-1/2)}=\\frac{10}{3}$"
+    ]
+  },
+  {
+    "id": "ca6b2eda-8919-4bff-9da7-84bdb3322cb2",
+    "matches": [
+      "OPT_EXPL: $, not /bin/zsh.01$"
+    ]
+  },
+  {
+    "id": "8819d62b-11ae-4131-9a73-f9060b516421",
+    "matches": [
+      "OPT_EXPL: $ at /bin/zsh$"
+    ]
+  },
+  {
+    "id": "72dd142e-bef9-4f05-b426-56c2c61e8c27",
+    "matches": [
+      "OPT_EXPL: $ instead of /bin/zsh.10$"
+    ]
+  },
+  {
+    "id": "3828181b-4115-4bf0-bc85-5f5813ca1857",
+    "matches": [
+      "OPT_EXPL: $10x^3/x^2 = 10x$"
+    ]
+  },
+  {
+    "id": "e1ccd149-62f7-4418-a18c-6c850e37dcb2",
+    "matches": [
+      "OPT_EXPL: $-3/x$"
+    ]
+  },
+  {
+    "id": "46b646bc-d1b6-4ad7-8725-37e8e7c61c15",
+    "matches": [
+      "EXPLANATION: $\\sum_{n=1}^{\\infty}\\frac{1}{\\sqrt{n}}=\\sum_{n=1}^{\\infty}n^{-1/2}.$",
+      "OPT_EXPL: $\\sum n^{-1/2}$"
+    ]
+  },
+  {
+    "id": "920e1416-6289-45ce-92a2-1027907218b5",
+    "matches": [
+      "OPT_EXPL: $a_n=1/n^k\\downarrow 0$",
+      "OPT_EXPL: $\\sum 1/n^k$"
+    ]
+  },
+  {
+    "id": "ba3f16c0-8b0c-4f94-9500-0afd823b569b",
+    "matches": [
+      "EXPLANATION: $\\dfrac{dy}{dx}=\\dfrac{dy/dt}{dx/dt}$, $dy/dt=3$, $dx/dt=2t$, $dx/dt=4$",
+      "OPT_EXPL: $dx/dt=2t$, $dy/dt=3$, $dy/dx=3/4$, $3/2$",
+      "OPT_EXPL: $dx/dt=2t\\Rightarrow 4$, $dy/dt=3$, $dy/dx=3/4$",
+      "OPT_EXPL: $dx/dy$"
+    ]
+  },
+  {
+    "id": "0b0c9c39-63ef-4bb4-a286-cb7998fa387b",
+    "matches": [
+      "EXPLANATION: $\\frac{a_{n+1}}{a_n}=\\frac{1/(n+1)}{1/n}=\\frac{n}{n+1},$"
+    ]
+  },
+  {
+    "id": "4a678e98-928a-4ccf-afa5-f32327fd71a6",
+    "matches": [
+      "OPT_EXPL: $0.0016/24=0.000066666\\ldots$"
+    ]
+  },
+  {
+    "id": "cce12eb3-a477-4d78-b0b0-9eb767064903",
+    "matches": [
+      "EXPLANATION: $\\int \\frac{3x^2}{\\sqrt{1+x^3}}\\,dx=\\int u^{-1/2}\\,du=2u^{1/2}+C=2\\sqrt{1+x^3}+C.$",
+      "OPT_EXPL: $\\int u^{-1/2}du=2u^{1/2}+C$",
+      "OPT_EXPL: $u^{-3/2}$, $u^{-1/2}$"
+    ]
+  },
+  {
+    "id": "6b7a2074-faa9-4942-96db-1e5de6d14c41",
+    "matches": [
+      "EXPLANATION: $Q(t)=120e^{kt}=120(e^{3k})^{t/3}=120\\left(\\frac{150}{120}\\right)^{t/3}.$",
+      "OPT_EXPL: $t/3$",
+      "OPTION: $Q(t)=120\\left(\\frac{150}{120}\\right)^{t/3}$",
+      "OPT_EXPL: $Q(t)=120(e^{3k})^{t/3}$",
+      "OPTION: $Q(t)=120+30e^{t/3}$",
+      "OPTION: $Q(t)=150\\left(\\frac{120}{150}\\right)^{t/3}$"
+    ]
+  },
+  {
+    "id": "90b198f2-a263-4484-82c2-787c21c487a4",
+    "matches": [
+      "OPT_EXPL: $(0.2)^4/4!$"
+    ]
+  },
+  {
+    "id": "813fb837-2d2c-496e-a3d0-9d2aabd140cc",
+    "matches": [
+      "EXPLANATION: $y''=-\\frac{1}{4}+\\frac{3(-3/4)}{16}=-\\frac{1}{4}-\\frac{9}{64}=-\\frac{25}{64}.$",
+      "OPT_EXPL: $y'=-x/y$, $y''=-1/y+(xy')/y^2$, $-25/64$",
+      "OPT_EXPL: $y'=-x/y$"
+    ]
+  },
+  {
+    "id": "697b6cb2-2669-456d-a106-a8fb589f82ef",
+    "matches": [
+      "OPT_EXPL: $2^5/5!$"
+    ]
+  },
+  {
+    "id": "508e7862-41d7-44c8-8b0e-acd4c0c8346e",
+    "matches": [
+      "OPT_EXPL: $\\sum 1/n^p$"
+    ]
+  },
+  {
+    "id": "2c689f9b-7fc2-470a-9237-5b69245cfcba",
+    "matches": [
+      "OPT_EXPL: $V=\\pi\\int_0^1 y\\,dy=\\pi/2$"
+    ]
+  },
+  {
+    "id": "e19748f6-4f34-40ef-9aa4-0df1647b9c05",
+    "matches": [
+      "EXPLANATION: $b_n=1/\\sqrt{n}$",
+      "OPT_EXPL: $\\sum 1/\\sqrt{n}$, $p=1/2$",
+      "OPT_EXPL: $\\sum 1/\\sqrt{n}$",
+      "OPT_EXPL: $1/\\sqrt{n}\\downarrow 0$"
+    ]
+  },
+  {
+    "id": "e063ba9c-05e6-485f-9e64-669d16a20025",
+    "matches": [
+      "EXPLANATION: $b_n=1/n^2$",
+      "OPT_EXPL: $b_{11}=1/11^2\\approx 0.00826$",
+      "OPT_EXPL: $b_{21}=1/21^2\\approx 0.00227$",
+      "OPT_EXPL: $b_{32}=1/32^2=1/1024\\approx 0.0009766<0.001$, $b_{31}=1/31^2>0.001$"
+    ]
+  },
+  {
+    "id": "fb57cb49-8fba-460a-9d4e-6b3083b153b1",
+    "matches": [
+      "OPT_EXPL: $\\sum (-1)^n/n$, $\\sum 1/n$",
+      "OPT_EXPL: $\\sum 1/n$"
+    ]
+  },
+  {
+    "id": "666c5f5d-1271-48bf-b652-9db85c1d0fc8",
+    "matches": [
+      "EXPLANATION: $S=\\frac{a}{1-r}=\\frac{6}{1-2/3}=18.$",
+      "OPT_EXPL: $|r|=2/3<1$, $S=\\frac{a}{1-r}=\\frac{6}{1-2/3}=18$"
+    ]
+  },
+  {
+    "id": "92bae04d-d00c-4bc0-b282-d26745ea0354",
+    "matches": [
+      "OPT_EXPL: $y'=-x/y$",
+      "OPT_EXPL: $y'=-x/y$"
+    ]
+  },
+  {
+    "id": "55c69a80-4192-41a8-8b8f-5c8858a6ac2f",
+    "matches": [
+      "EXPLANATION: $a_n=\\left(\\frac{n}{n+1}\\right)^n=\\left(\\frac{1}{1+1/n}\\right)^n$"
+    ]
+  },
+  {
+    "id": "97eec5a9-a1f7-4ef3-accb-77d0b9449762",
+    "matches": [
+      "EXPLANATION: $\\theta=\\pm\\pi/3$, $\\frac12\\int_{-\\pi/3}^{\\pi/3}\\left((2\\cos\\theta)^2-1\\right)d\\theta.$",
+      "OPTION: $\\displaystyle \\frac12\\int_{0}^{\\pi/3}\\left(1-(2\\cos\\theta)^2\\right)d\\theta$",
+      "OPTION: $\\displaystyle \\frac12\\int_{-\\pi/3}^{\\pi/3}\\left((2\\cos\\theta)^2-1\\right)d\\theta$",
+      "OPTION: $\\displaystyle \\frac12\\int_{-\\pi/3}^{\\pi/3}\\left((2\\cos\\theta)-1\\right)d\\theta$",
+      "OPTION: $\\displaystyle \\int_{-\\pi/3}^{\\pi/3}\\left((2\\cos\\theta)^2-1\\right)d\\theta$"
+    ]
+  },
+  {
+    "id": "349834af-f515-42db-ac6a-7eb43fdf272a",
+    "matches": [
+      "EXPLANATION: $A=\\frac12\\int_{-\\pi/2}^{\\pi/2}\\Big((2+\\cos\\theta)^2-2^2\\Big)\\,d\\theta =\\frac12\\int_{-\\pi/2}^{\\pi/2}\\big(4\\cos\\theta+\\cos^2\\theta\\big)\\,d\\theta =\\frac12\\Big(8+\\frac{\\pi}{2}\\Big)=4+\\frac{\\pi}{4}.$",
+      "OPT_EXPL: $\\frac12\\int_{-\\pi/2}^{\\pi/2}\\big((2+\\cos\\theta)^2-2^2\\big)\\,d\\theta=4+\\frac{\\pi}{4}$"
+    ]
+  },
+  {
+    "id": "484483f3-2d2c-4b36-be4b-c993094bd87d",
+    "matches": [
+      "OPT_EXPL: $\\sqrt{(dx/dt)^2+(dy/dt)^2}$"
+    ]
+  },
+  {
+    "id": "fbf71205-f3fb-4f8e-ad1b-6d874bfc8ee9",
+    "matches": [
+      "PROMPT: $\\left.\\dfrac{dy}{dx}\\right|_{t=\\pi/3}$",
+      "EXPLANATION: $dx/dt=-\\sin t$, $dy/dt=\\cos(2t)$, $t=\\pi/3$, $\\frac{-1/2}{-\\sqrt{3}/2}=\\frac{\\sqrt{3}}{3}$"
+    ]
+  },
+  {
+    "id": "c1b75290-daeb-4489-a3d3-bb72835900e7",
+    "matches": [
+      "OPT_EXPL: $dy/dx$"
+    ]
+  },
+  {
+    "id": "672114f3-4c91-40ff-97fe-ff2929909282",
+    "matches": [
+      "PROMPT: $g(x)=x^{1/3}$",
+      "EXPLANATION: $g(x)=x^{1/3}$, $g'(x)=\\frac{1}{3}x^{-2/3}.$, $64^{2/3}=(\\sqrt[3]{64})^2=16$"
+    ]
+  },
+  {
+    "id": "a5249bf3-7689-4fc9-ba07-6cc4d6026e53",
+    "matches": [
+      "EXPLANATION: $\\theta\\in[-\\pi/6,\\pi/6]$, $A=\\frac12\\int_{-\\pi/6}^{\\pi/6}(2\\cos(3\\theta))^2\\,d\\theta=2\\int_{-\\pi/6}^{\\pi/6}\\cos^2(3\\theta)\\,d\\theta.$"
+    ]
+  },
+  {
+    "id": "92db6ddb-3bb0-42cb-9087-6a9cca80e8ad",
+    "matches": [
+      "EXPLANATION: $\\frac{dy}{dx}=\\frac{dy/dt}{dx/dt}=\\frac{-\\sin t}{\\cos t}=-\\tan t.$, $\\frac{d^2y}{dx^2}=\\frac{\\frac{d}{dt}(dy/dx)}{dx/dt}=\\frac{-\\sec^2 t}{\\cos t}=-\\sec^3 t.$, $t=\\pi/4$, $\\sec(\\pi/4)=\\sqrt2$",
+      "OPT_EXPL: $d/dt(dy/dx)$",
+      "OPT_EXPL: $\\sec^2(\\pi/4)=2$, $dx/dt$",
+      "OPT_EXPL: $\\dfrac{d}{dt}(dy/dx)=-\\sec^2 t$, $\\dfrac{d^2y}{dx^2}=\\dfrac{-\\sec^2 t}{dx/dt}=\\dfrac{-\\sec^2 t}{\\cos t}=-\\sec^3 t$, $t=\\pi/4$"
+    ]
+  },
+  {
+    "id": "7559e9da-c720-4e69-9fc5-4729294d9249",
+    "matches": [
+      "EXPLANATION: $\\sum 1/n^2$",
+      "OPT_EXPL: $\\sum (-1)^n/n^2$, $\\sum 1/n^2$"
+    ]
+  },
+  {
+    "id": "5394b544-91ab-4e9f-a0c0-97c81fefa39d",
+    "matches": [
+      "EXPLANATION: $\\frac{a_{n+1}}{a_n}=\\frac{3^{n+1}/(n+1)!}{3^n/n!}=\\frac{3}{n+1}\\to 0<1.$"
+    ]
+  },
+  {
+    "id": "9c6fbc86-85a4-488b-bf6e-b4a098dffabd",
+    "matches": [
+      "EXPLANATION: $\\left|\\frac{a_{n+1}}{a_n}\\right|=\\left|\\frac{k^{n+1}/(n+1)}{k^n/n}\\right|=|k|\\cdot\\frac{n}{n+1}\\to |k|<1,$"
+    ]
+  },
+  {
+    "id": "9b8a1428-e64e-4826-93cf-3167497f581d",
+    "matches": [
+      "EXPLANATION: $(5.004001-5)/0.001\\approx 4.001$, $(4.996001-5)/(-0.001)\\approx 3.999$",
+      "OPT_EXPL: $(5.004001-5)/0.001\\approx 4.001$, $(4.996001-5)/(-0.001)\\approx 3.999$"
+    ]
+  },
+  {
+    "id": "19aba183-3185-4f86-b435-f00ea53718fb",
+    "matches": [
+      "OPT_EXPL: $\\sum (x/3)^n=\\frac{1}{1-x/3}=\\frac{3}{3-x}$"
+    ]
+  },
+  {
+    "id": "5961cd7f-2039-4be5-adf6-bbd6e0efe68d",
+    "matches": [
+      "EXPLANATION: $\\lim_{n\\to\\infty}\\frac{n}{n+1}=\\lim_{n\\to\\infty}\\frac{1}{1+1/n}=1\\ne 0.$"
+    ]
+  },
+  {
+    "id": "f9a938c4-e47f-429b-ba7e-79040b4f3e6b",
+    "matches": [
+      "EXPLANATION: $\\left|\\frac{a_{n+1}}{a_n}\\right|=\\frac{3^{n+1}/(n+1)!}{3^n/n!}=\\frac{3}{n+1}.$"
+    ]
+  },
+  {
+    "id": "cd2f5536-8076-4d9a-9d8a-4d2f54c3a2a6",
+    "matches": [
+      "EXPLANATION: $dy/dt=1/t$, $dx/dt=2t$, $\\frac{dy}{dx}=\\frac{dy/dt}{dx/dt}=\\frac{1/t}{2t}=\\frac{1}{2t^2}.$",
+      "OPT_EXPL: $\\dfrac{dy}{dx}=\\dfrac{dy/dt}{dx/dt}=\\dfrac{(1/t)}{2t}=\\dfrac{1}{2t^2}$",
+      "OPT_EXPL: $dx/dt$",
+      "OPT_EXPL: $\\dfrac{(1/t)}{2t}=\\dfrac{1}{2t^2}$"
+    ]
+  },
+  {
+    "id": "4ab23ec2-7fee-4ecc-a197-8b7d7573d46d",
+    "matches": [
+      "OPT_EXPL: $0/0$"
+    ]
+  },
+  {
+    "id": "d318fc58-5c23-43b0-9d6d-f277f567c543",
+    "matches": [
+      "EXPLANATION: $s=\\int_0^2 \\sqrt{(dx/dt)^2+(dy/dt)^2}\\,dt$, $dx/dt=2t$, $dy/dt=2$",
+      "OPT_EXPL: $\\sqrt{(dx/dt)^2+(dy/dt)^2}$"
+    ]
+  },
+  {
+    "id": "c59e6b78-2259-4480-ab21-1078ebe83e12",
+    "matches": [
+      "PROMPT: $/s. When $"
+    ]
+  },
+  {
+    "id": "15e56497-6963-444b-a54e-4cec0bc1d1ad",
+    "matches": [
+      "OPT_EXPL: $\\frac{5}{x(x+2)}=\\frac{5/2}{x}-\\frac{5/2}{x+2}$",
+      "OPT_EXPL: $\\frac{5/2}{x+2}-\\frac{5/2}{x}$"
+    ]
+  },
+  {
+    "id": "49185dae-c4b0-4acd-ac13-d1a5118919a4",
+    "matches": [
+      "OPT_EXPL: $1/r^2$"
+    ]
+  },
+  {
+    "id": "e2dbe0c5-c426-455d-bb28-5165d0b7d59b",
+    "matches": [
+      "EXPLANATION: $dx/dt=2t$, $dy/dt=2t^2$, $L=\\int_1^2 \\sqrt{u}\\,du=\\left[\\frac{2}{3}u^{3/2}\\right]_1^2=\\frac{2}{3}(2^{3/2}-1)=\\frac{2}{3}(2\\sqrt{2}-1).$",
+      "OPT_EXPL: $u^{3/2}$, $2^{3/2}-1$, $2^{3/2}+1$"
+    ]
+  },
+  {
+    "id": "7794304a-14a7-421b-b325-c554ea6b66da",
+    "matches": [
+      "EXPLANATION: $-\\pi/2\\le\\theta\\le\\pi/2$, $A=\\frac12\\int_{-\\pi/2}^{\\pi/2}\\left[(2\\cos\\theta)^2-(\\cos\\theta)^2\\right]d\\theta =\\frac12\\int_{-\\pi/2}^{\\pi/2}3\\cos^2\\theta\\,d\\theta.$, $\\int_{-\\pi/2}^{\\pi/2}\\cos^2\\theta\\,d\\theta=\\frac{\\pi}{2}$",
+      "OPT_EXPL: $A=\\dfrac12\\int_{-\\pi/2}^{\\pi/2}\\big((2\\cos\\theta)^2-(\\cos\\theta)^2\\big)\\,d\\theta=\\dfrac{3\\pi}{4}$"
+    ]
+  },
+  {
+    "id": "75e5fa48-b47f-4bf4-b2ab-65a3dfd8e00f",
+    "matches": [
+      "EXPLANATION: $0/0$, $0/0$"
+    ]
+  },
+  {
+    "id": "1b426fb4-0188-4cb3-8bde-df050cd920a7",
+    "matches": [
+      "PROMPT: $ liters/minute for $"
+    ]
+  },
+  {
+    "id": "ddd4ee5e-66fa-4959-a070-c6c3edcf2b66",
+    "matches": [
+      "OPT_EXPL: $f^{\\prime}(x)/f(x)$"
+    ]
+  },
+  {
+    "id": "6d1f1f2e-5090-4f8f-a00d-16a85041bf56",
+    "matches": [
+      "OPT_EXPL: $1/u^2$",
+      "OPT_EXPL: $p'(x)=2\\cdot 1/x=2/x$"
+    ]
+  },
+  {
+    "id": "b0746c49-7371-46d0-9cfc-7d3c1500cfd5",
+    "matches": [
+      "EXPLANATION: $\\theta=\\pi/3$"
+    ]
+  },
+  {
+    "id": "aec34f1c-1ed9-4dd8-a80a-eae2e091722e",
+    "matches": [
+      "EXPLANATION: $\\frac{-4+7/x^2-1/x^4}{2+5/x^3-9/x^4}.$, $1/x^k$"
+    ]
+  },
+  {
+    "id": "11ae027c-0215-4834-aa74-0e88e3ca6b6b",
+    "matches": [
+      "EXPLANATION: $-1\\le \\sin(1/x)\\le 1$, $-x^2\\le x^2\\sin(1/x)\\le x^2.$",
+      "OPT_EXPL: $\\sin(1/x)$",
+      "OPT_EXPL: $-1\\le \\sin(1/x)\\le 1$, $-x^2\\le x^2\\sin(1/x)\\le x^2$"
+    ]
+  },
+  {
+    "id": "12429fb2-5293-418d-87bf-140f7b17f6f2",
+    "matches": [
+      "OPT_EXPL: $-2/\\sqrt{1-(2x)^2}$"
+    ]
+  },
+  {
+    "id": "2ab50910-fd85-4325-9555-0c09b4f2b8b3",
+    "matches": [
+      "EXPLANATION: $\\frac{M(t)}{M_0}=\\left(\\frac12\\right)^{t/12}$, $\\left(\\frac12\\right)^{t/12}=0.1$, $2^{t/12}=10$",
+      "OPT_EXPL: $(\\tfrac12)^{t/12}=0.1$, $2^{t/12}=10$"
+    ]
+  },
+  {
+    "id": "6d0ae77d-f1ad-4445-b420-6d5b88b87f8e",
+    "matches": [
+      "PROMPT: $\\displaystyle \\lim_{x\\to \\infty}\\frac{\\ln x}{x^{1/3}}$",
+      "EXPLANATION: $\\infty/\\infty$, $\\frac{(1/x)}{(1/3)x^{-2/3}}=3x^{-1/3}\\to 0$",
+      "OPT_EXPL: $x^{-1/3}\\to 0$"
+    ]
+  },
+  {
+    "id": "1d1df4d4-390a-4763-98ee-9a9154aa7101",
+    "matches": [
+      "OPT_EXPL: $0/0$"
+    ]
+  },
+  {
+    "id": "799a24f2-d9e9-4ec7-84b6-e9d0bba1beed",
+    "matches": [
+      "PROMPT: $8\\ \\mathrm{L/min}$, $2\\sqrt{V}\\ \\mathrm{L/min}$",
+      "EXPLANATION: $\\dfrac{dV}{dt}=8-2\\cdot 5=-2\\ \\mathrm{L/min}$",
+      "OPTION: $-2\\ \\mathrm{L/min}$",
+      "OPTION: $18\\ \\mathrm{L/min}$",
+      "OPTION: $2\\ \\mathrm{L/min}$",
+      "OPTION: $0.8\\ \\mathrm{L/min}$"
+    ]
+  },
+  {
+    "id": "65f2104c-b6a9-4779-8ba7-c0b69ff96576",
+    "matches": [
+      "EXPLANATION: $x=y/2$, $A=\\int_0^4\\left(\\sqrt{y}-\\frac{y}{2}\\right)dy=\\left[\\frac{2}{3}y^{3/2}-\\frac{y^2}{4}\\right]_0^4=\\frac{4}{3}.$",
+      "OPT_EXPL: $\\int_0^4(\\sqrt{y}-y/2)\\,dy=\\frac{4}{3}$",
+      "OPT_EXPL: $-y^2/4$"
+    ]
+  },
+  {
+    "id": "61431c58-5f91-4526-aeb4-56966039a60f",
+    "matches": [
+      "EXPLANATION: $d^2y/dx^2=2$",
+      "OPT_EXPL: $d^2y/dx^2=2$",
+      "OPT_EXPL: $dy/dx$",
+      "OPT_EXPL: $dx/dt$, $d^2y/dx^2$"
+    ]
+  },
+  {
+    "id": "6bd8cbb5-d228-485c-89bd-91faa5c3d805",
+    "matches": [
+      "EXPLANATION: $dx/dt=2t$, $dy/dt=3t^2-2$, $m=\\dfrac{dy/dt}{dx/dt}=\\dfrac{1}{2}$",
+      "OPT_EXPL: $dy/dx$, $dx/dy$"
+    ]
+  },
+  {
+    "id": "a7551acd-9ec0-4b1f-80b9-5588244d4b62",
+    "matches": [
+      "EXPLANATION: $dx/dt=\\cos t$, $dy/dt=-2\\sin(2t)$, $dy/dt=0$, $dx/dt\\ne 0$",
+      "OPT_EXPL: $dy/dt=0$",
+      "OPT_EXPL: $dx/dt\\ne 0$",
+      "OPT_EXPL: $dy/dt=0$, $dx/dt\\ne 0$"
+    ]
+  },
+  {
+    "id": "bc798f16-fc48-4db1-bcf5-41b57770ff85",
+    "matches": [
+      "EXPLANATION: $g(x)=5x^{-3}-2x^{1/2}.$, $g'(x)=-15x^{-4}-x^{-1/2}=-\\frac{15}{x^4}-\\frac{1}{\\sqrt{x}}.$",
+      "OPT_EXPL: $5x^{-3}-2x^{1/2}$, $g'(x)=5(-3)x^{-4}-2\\cdot\\frac12 x^{-1/2}=-15x^{-4}-x^{-1/2}=-\\dfrac{15}{x^4}-\\dfrac{1}{\\sqrt{x}}$"
+    ]
+  },
+  {
+    "id": "7b3d2dba-b960-4bf7-a060-6c46a37be0fc",
+    "matches": [
+      "EXPLANATION: $dx/dt=2t-4$, $dx/dt=0$, $dy/dt=1\\ne 0$",
+      "OPT_EXPL: $dx/dt=2t-4=0\\Rightarrow t=2$, $dy/dt=1\\ne 0$",
+      "OPT_EXPL: $dx/dt=0$",
+      "OPT_EXPL: $dx/dt=0$, $dy/dt\\ne 0$"
+    ]
+  },
+  {
+    "id": "d316a9a3-6487-497d-a3b7-84cf86731c9c",
+    "matches": [
+      "PROMPT: $\\dfrac{dV}{dt}=6\\ \\mathrm{cm^3/s}$",
+      "EXPLANATION: $r/h=4/12=1/3$, $r=h/3$",
+      "OPT_EXPL: $dh/dt$",
+      "OPT_EXPL: $r=h/3$, $dV/dt=\\dfrac{1}{9}\\pi h^2\\,dh/dt$, $\\pi\\,dh/dt$"
+    ]
+  },
+  {
+    "id": "f4d01517-39c2-459a-82cb-00808ce9d450",
+    "matches": [
+      "EXPLANATION: $dx/dt=1$, $dy/dt=2t$, $\\frac{dy}{dx}=\\frac{dy/dt}{dx/dt}=2t.$",
+      "OPT_EXPL: $dy/dt=t$, $dy/dt=2t$",
+      "OPT_EXPL: $dx/dy$",
+      "OPT_EXPL: $dx/dt=1$, $dy/dt=2t$, $dy/dx=2t$"
+    ]
+  },
+  {
+    "id": "ffa716d6-6dfa-4e60-aef7-f7a2abad2420",
+    "matches": [
+      "PROMPT: $ (m/s) for $"
+    ]
+  },
+  {
+    "id": "78779b1b-59fd-4aea-965a-52b1579635b7",
+    "matches": [
+      "EXPLANATION: $dy/dx=(dy/dt)/(dx/dt)=(3t^2)/(2t)=(3/2)t$, $\\frac{d^2y}{dx^2}=\\frac{\\frac{d}{dt}(dy/dx)}{dx/dt}=\\frac{\\frac{3}{2}}{2t}=\\frac{3}{4t}.$",
+      "OPT_EXPL: $\\dfrac{d}{dt}(dy/dx)$, $dx/dt$",
+      "OPT_EXPL: $\\dfrac{d^2y}{dx^2}=\\dfrac{\\frac{d}{dt}(dy/dx)}{dx/dt}$",
+      "OPT_EXPL: $dy/dx$"
+    ]
+  },
+  {
+    "id": "677d688f-31c0-4733-b9eb-77aa4991f2a2",
+    "matches": [
+      "EXPLANATION: $dr/d\\theta=3\\cos\\theta$, $\\theta=\\pi/3$",
+      "OPT_EXPL: $dr/d\\theta=3\\cos\\theta$, $\\cos(\\pi/3)=1/2$",
+      "OPT_EXPL: $\\sin(\\pi/3)$, $\\cos(\\pi/3)$",
+      "OPT_EXPL: $\\cos(\\pi/3)$"
+    ]
+  },
+  {
+    "id": "04feded2-5fed-4e6b-b12e-126331a4138c",
+    "matches": [
+      "EXPLANATION: $\\frac{dy}{dx}=\\frac{dy/dt}{dx/dt}=\\frac{3t^2}{2t}=\\frac{3}{2}t.$, $\\frac{d^2y}{dx^2}=\\frac{\\frac{d}{dt}(dy/dx)}{dx/dt}=\\frac{3/2}{2t}=\\frac{3}{4t}.$",
+      "OPT_EXPL: $dy/dx=\\dfrac{3t^2}{2t}=\\dfrac{3}{2}t$, $\\dfrac{d^2y}{dx^2}=\\dfrac{d/dt(dy/dx)}{dx/dt}=\\dfrac{(3/2)}{2t}=\\dfrac{3}{4t}$",
+      "OPT_EXPL: $d/dt(dy/dx)=3/2$"
+    ]
+  },
+  {
+    "id": "2c04142c-7ae9-4f17-b8fd-e08212579543",
+    "matches": [
+      "EXPLANATION: $A=\\frac12\\int_{-\\pi/3}^{\\pi/3}\\left((4\\cos\\theta)^2-2^2\\right)d\\theta =\\frac12\\int_{-\\pi/3}^{\\pi/3}(16\\cos^2\\theta-4)\\,d\\theta.$, $A=\\frac12\\left[4\\cdot\\frac{2\\pi}{3}+4\\big(\\sin2\\theta\\big)\\Big|_{-\\pi/3}^{\\pi/3}\\right] =\\frac12\\left(\\frac{8\\pi}{3}+4\\sqrt3\\right)=\\frac{4\\pi}{3}+2\\sqrt3.$",
+      "OPT_EXPL: $-\\pi/3$, $\\pi/3$",
+      "OPT_EXPL: $\\pi/3$"
+    ]
+  },
+  {
+    "id": "76612946-d553-43b6-9814-4f1effddd06d",
+    "matches": [
+      "PROMPT: $\\dfrac{dr}{dt}=0.2\\ \\mathrm{cm/s}$",
+      "EXPLANATION: $\\dfrac{dV}{dt}=4\\pi(100)(0.2)=80\\pi\\ \\mathrm{cm^3/s}$",
+      "OPTION: $\\dfrac{dV}{dt}=4\\pi(10)^2(0.2)=80\\pi\\ \\mathrm{cm^3/s}$",
+      "OPTION: $\\dfrac{dV}{dt}=4\\pi(10)(0.2)=8\\pi\\ \\mathrm{cm^3/s}$",
+      "OPTION: $\\dfrac{dV}{dt}=\\dfrac{4}{3}\\pi(10)^3=\\dfrac{4000}{3}\\pi\\ \\mathrm{cm^3/s}$"
+    ]
+  },
+  {
+    "id": "8a5a8c88-80f4-400b-90f4-87883453669a",
+    "matches": [
+      "PROMPT: $ m/s, how fast is the length of the person’s shadow changing when the person is $",
+      "EXPLANATION: $\\frac{ds}{dt}=\\frac{1}{2}\\frac{dx}{dt}=\\frac{1}{2}(1.5)=0.75\\text{ m/s}.$"
+    ]
+  },
+  {
+    "id": "96138cdc-b2b2-4f5e-b04e-50c283db5e65",
+    "matches": [
+      "EXPLANATION: $L=\\int_{0}^{\\pi/2}\\sqrt{\\left(\\frac{dx}{dt}\\right)^2+\\left(\\frac{dy}{dt}\\right)^2}\\,dt.$, $L=\\int_0^{\\pi/2}1\\,dt=\\frac{\\pi}{2}.$",
+      "OPT_EXPL: $\\int_0^{\\pi/2}1\\,dt=\\frac{\\pi}{2}$"
+    ]
+  },
+  {
+    "id": "5ba089cb-f6b9-427f-8b66-dec62446e2f6",
+    "matches": [
+      "OPT_EXPL: $(\\ln u)'=u'/u$",
+      "OPT_EXPL: $u'/u$"
+    ]
+  },
+  {
+    "id": "5e620428-3fe0-4c61-a644-8f749e2041be",
+    "matches": [
+      "PROMPT: $p(x)=x^{1/3}$",
+      "EXPLANATION: $p'(x)=\\frac{1}{3}x^{-2/3}.$",
+      "OPTION: $p'(x)=\\dfrac{1}{3}x^{1/3}$",
+      "OPTION: $p'(x)=\\dfrac{1}{3}x^{-2/3}$",
+      "OPT_EXPL: $\\dfrac{d}{dx}x^{1/3}=\\dfrac{1}{3}x^{1/3-1}=\\dfrac{1}{3}x^{-2/3}$",
+      "OPTION: $p'(x)=3x^{-2/3}$",
+      "OPT_EXPL: $1/3$",
+      "OPTION: $p'(x)=\\dfrac{1}{x^{2/3}}$"
+    ]
+  },
+  {
+    "id": "a16483b4-f4a1-484b-ba15-d49bb794eb2a",
+    "matches": [
+      "EXPLANATION: $s=\\int_0^{\\pi/2}2\\,dt=\\pi$"
+    ]
+  },
+  {
+    "id": "abaf3722-b983-4100-9912-80b38d064984",
+    "matches": [
+      "PROMPT: $\\dfrac{dx}{dt}=2\\ \\mathrm{ft/s}$",
+      "EXPLANATION: $\\dfrac{dy}{dt}=-(6/8)(2)=-1.5\\ \\mathrm{ft/s}$",
+      "OPTION: $-\\dfrac{8}{3}\\ \\mathrm{ft/s}$",
+      "OPT_EXPL: $2x\\,dx/dt+2y\\,dy/dt=0$, $dy/dt=-(x/y)dx/dt$",
+      "OPTION: $-\\dfrac{1}{3}\\ \\mathrm{ft/s}$",
+      "OPTION: $1.5\\ \\mathrm{ft/s}$",
+      "OPT_EXPL: $dy/dt<0$",
+      "OPTION: $-1.5\\ \\mathrm{ft/s}$",
+      "OPT_EXPL: $x^2+y^2=100\\Rightarrow dy/dt=-(x/y)dx/dt$, $dy/dt=-(6/8)\\cdot 2=-1.5$"
+    ]
+  },
+  {
+    "id": "85bda686-1664-4841-b4fc-81ef3370758f",
+    "matches": [
+      "EXPLANATION: $x=\\pi/3$, $\\sec(\\pi/3) = 2$, $\\tan(\\pi/3) = \\sqrt{3}$, $y'(\\pi/3) = 2(2)(\\sqrt{3}) = 4\\sqrt{3}$",
+      "OPT_EXPL: $\\sec(\\pi/3)=2, \\tan(\\pi/3)=\\sqrt{3}$",
+      "OPT_EXPL: $\\pi/3$"
+    ]
+  },
+  {
+    "id": "c6542f5f-130c-40af-8d35-f076a169a5ae",
+    "matches": [
+      "OPT_EXPL: $y'=-\\dfrac{1}{2x^{3/2}}$"
+    ]
+  },
+  {
+    "id": "c7e2157f-3b11-430a-944f-da89fcc8e729",
+    "matches": [
+      "EXPLANATION: $dy/dt=0$, $dx/dt\\ne 0$, $dy/dt=2t-4=0\\Rightarrow t=2$, $dx/dt=3t^2=12\\ne 0$, $\\frac{d^2y}{dx^2}=\\frac{\\frac{d}{dt}(dy/dx)}{dx/dt}=\\frac{1/6}{12}=\\frac{1}{72}.$",
+      "OPT_EXPL: $dy/dx=0$, $d^2y/dx^2=0$",
+      "OPT_EXPL: $\\dfrac{d}{dt}(dy/dx)$, $dx/dt$"
+    ]
+  },
+  {
+    "id": "ad734da9-97cd-49e3-b713-50bd7bbbfc3e",
+    "matches": [
+      "EXPLANATION: $\\theta=\\pi/2$, $\\theta=\\pi/2$"
+    ]
+  },
+  {
+    "id": "de4e8d68-db18-4bc8-b282-21fcb614344f",
+    "matches": [
+      "EXPLANATION: $\\frac{1}{(y-1)(y+2)}=\\frac{1/3}{y-1}-\\frac{1/3}{y+2}.$"
+    ]
+  },
+  {
+    "id": "fca9dfc7-9f43-4d82-8627-bbf1cccb0eb6",
+    "matches": [
+      "OPT_EXPL: $f(x)=1/x$"
+    ]
+  }
+]

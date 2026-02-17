@@ -11,6 +11,8 @@ import { MathRenderer } from '../components/MathRenderer';
 import { questionsApi, practiceApi, contentApi, sectionsApi } from '../src/services/api';
 import { supabase } from '../src/services/supabaseClient';
 import { QuestionCommentSection } from '../components/QuestionCommentSection';
+import { PointsBalanceBadge } from '../components/PointsCoin';
+import confetti from 'canvas-confetti';
 
 // Markdown-ish renderer for the lesson content
 // Markdown-ish renderer for the lesson content
@@ -43,7 +45,13 @@ const getOrdinal = (n: number): string => {
 
 
 export const Practice = () => {
-    const { user, completePractice, questions: allQuestions, topicContent, submitAttempt, getTopicProgress, saveSectionProgress, completeSectionSession, getSectionProgress, sections, incorrectQuestionIds, resetSectionProgress, getSectionProgressData, fetchAllUserProgress, logUserActivity, getUserActivities } = useApp();
+    const {
+        user, completePractice, questions: allQuestions, topicContent, submitAttempt,
+        getTopicProgress, saveSectionProgress, completeSectionSession, getSectionProgress,
+        sections, incorrectQuestionIds, resetSectionProgress, getSectionProgressData,
+        fetchAllUserProgress, logUserActivity, getUserActivities,
+        awardPoints, triggerCoinAnimation, userPoints, pointsBalanceRef
+    } = useApp();
     const navigate = useNavigate();
     const { showToast } = useToast();
     const location = useLocation();
@@ -503,7 +511,7 @@ export const Practice = () => {
     // Dual Submission Mode States
     const [submitMode, setSubmitMode] = useState<'immediate' | 'batch'>('immediate');
     const [userAnswers, setUserAnswers] = useState<Record<string, string>>({}); // qId -> selectedOptionId for batch mode
-    const [showSummary, setShowSummary] = useState(false);
+    const [showSummary, setShowSummary] = useState(effectiveState?.showSummary === true);
     const [justCompletedSessionLabel, setJustCompletedSessionLabel] = useState<string | null>(null);
     const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
 
@@ -749,6 +757,7 @@ export const Practice = () => {
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const question = questions[currentQuestionIndex];
+
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
@@ -971,6 +980,34 @@ export const Practice = () => {
         }
     };
 
+    const playCoinSound = () => {
+        if (user.preferences && user.preferences.soundEffects === false) return;
+        try {
+            const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+            const ctx = new AudioContextClass();
+            const now = ctx.currentTime;
+
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1200, now);
+            osc.frequency.exponentialRampToValueAtTime(2000, now + 0.1);
+
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(0.15, now + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.5);
+        } catch (err) {
+            console.error('Failed to play coin sound:', err);
+        }
+    };
+
     const handleShowAnswer = async () => {
         setIsSubmitted(true);
         setFeedback('incorrect');
@@ -1000,7 +1037,7 @@ export const Practice = () => {
     };
 
     // Immediate mode: submit and show feedback right away
-    const handleSubmit = async () => {
+    const handleSubmit = async (e?: React.MouseEvent) => {
         if (!selectedAnswer) return;
 
         setIsSubmitted(true);
@@ -1043,7 +1080,15 @@ export const Practice = () => {
         if (isCorrect) {
             setFeedback('correct');
             setSessionResults(prev => ({ ...prev, correct: prev.correct + 1 }));
-            playCorrectSound();
+
+            // Award 5 points
+            awardPoints(5, 'practice_correct', question.id).then(() => {
+                const x = e ? e.clientX : window.innerWidth / 2;
+                const y = e ? e.clientY : window.innerHeight / 2;
+                triggerCoinAnimation(5, x, y);
+                playCoinSound();
+                playCorrectSound();
+            });
         } else {
             setFeedback('incorrect');
         }
@@ -1139,6 +1184,22 @@ export const Practice = () => {
         // Recalculate correctCount from final localResults (includes both batch and individually submitted)
         correctCount = Object.values(localResults).filter(r => r === 'correct').length;
 
+        // Award points for newly correct answers
+        let newlyCorrectCount = 0;
+        Object.entries(localResults).forEach(([qid, status]) => {
+            if (status === 'correct' && questionResults[qid] !== 'correct') {
+                newlyCorrectCount++;
+            }
+        });
+
+        if (newlyCorrectCount > 0) {
+            const totalPoints = newlyCorrectCount * 5;
+            awardPoints(totalPoints, 'practice_batch', `session_${Date.now()}`).then(() => {
+                triggerCoinAnimation(totalPoints);
+                playCoinSound();
+            });
+        }
+
         // 1. Instantly update all local session states to avoid intermediate flashes
         console.log('🚀 [handleBatchSubmit] Processing', questions.length, 'questions');
         console.log('🚀 [handleBatchSubmit] Local Results:', localResults);
@@ -1183,7 +1244,8 @@ export const Practice = () => {
             setFeedback(null);
             questionStartTimeRef.current = Date.now(); // Reset timer for new question
         } else {
-            finishSession();
+            // FINISH SESSION: Use handleBatchSubmit to ensure ALL answers (including previously skipped ones) are graded
+            handleBatchSubmit();
         }
     };
 
@@ -1581,6 +1643,12 @@ export const Practice = () => {
     };
 
     const handleExitRequest = () => {
+        // If showing summary, exit directly without confirmation (session is already done)
+        if (showSummary) {
+            handleExitSummary();
+            return;
+        }
+
         if (viewState === 'practice' && subTopicId) {
             setShowExitConfirm(true); // Show confirmation dialog for ALL practice types
         } else {
@@ -1956,30 +2024,59 @@ export const Practice = () => {
     // --- RENDER CELEBRATION SUMMARY VIEW ---
     if (showSummary) {
         return (
-            <SessionSummary
-                questions={questions}
-                userAnswers={userAnswers}
-                questionResults={questionResults}
-                onExit={handleExitSummary}
-                onRetake={() => {
-                    setShowSummary(false);
-                    handleStartNewSession();
-                }}
-                onReviewErrors={() => {
-                    navigate('/practice/session', {
-                        state: {
-                            topic: topicParam,
-                            subTopicId: subTopicId,
-                            mode: 'Review',
-                            forceStartNew: true
-                        },
-                        replace: true
-                    });
-                }}
-                summaryHistory={sessionHistory}
-                justCompletedSessionLabel={justCompletedSessionLabel}
-                discussSlug={discussSlug}
-            />
+            <div className="h-screen flex flex-col bg-background-light dark:bg-background-dark text-text-main font-display overflow-hidden animate-fade-in">
+                <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border-light dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 sm:px-6 lg:px-12 pt-6 pb-2 shrink-0">
+                    <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
+                        <div className="size-8 flex items-center justify-center text-text-main dark:text-white bg-primary rounded-lg shrink-0">
+                            <span className="material-symbols-outlined text-xl font-bold">functions</span>
+                        </div>
+                        <h1 className="text-text-main dark:text-white text-lg font-bold tracking-tight truncate hidden sm:block">NewMaoS</h1>
+                    </div>
+                    <div className="flex items-center gap-4 sm:gap-6 shrink-0">
+                        <PointsBalanceBadge
+                            balance={userPoints.balance}
+                            onClick={() => navigate('/points?from=practice', { state: { ...effectiveState, showSummary: true } })}
+                            ref={pointsBalanceRef as React.Ref<HTMLButtonElement>}
+                        />
+                        <button onClick={handleExitRequest} className="group flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors">
+                            <span className="material-symbols-outlined text-lg">logout</span>
+                            <span className="hidden sm:inline">Exit</span>
+                        </button>
+                        <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-1 sm:mx-2"></div>
+                        <div
+                            className="bg-center bg-no-repeat bg-cover rounded-full size-9 ring-2 ring-transparent group-hover:ring-primary transition-all cursor-pointer shrink-0"
+                            style={{ backgroundImage: `url(${user.avatarUrl})` }}
+                        ></div>
+                    </div>
+                </header>
+
+                <div className="flex-grow overflow-y-auto scroll-bounce">
+                    <SessionSummary
+                        questions={questions}
+                        userAnswers={userAnswers}
+                        questionResults={questionResults}
+                        onExit={handleExitSummary}
+                        onRetake={() => {
+                            setShowSummary(false);
+                            handleStartNewSession();
+                        }}
+                        onReviewErrors={() => {
+                            navigate('/practice/session', {
+                                state: {
+                                    topic: topicParam,
+                                    subTopicId: subTopicId,
+                                    mode: 'Review',
+                                    forceStartNew: true
+                                },
+                                replace: true
+                            });
+                        }}
+                        summaryHistory={sessionHistory}
+                        justCompletedSessionLabel={justCompletedSessionLabel}
+                        discussSlug={discussSlug}
+                    />
+                </div>
+            </div>
         );
     }
 
@@ -2033,6 +2130,11 @@ export const Practice = () => {
                     <h1 className="text-text-main dark:text-white text-lg font-bold tracking-tight truncate hidden sm:block">NewMaoS</h1>
                 </div>
                 <div className="flex items-center gap-4 sm:gap-6 shrink-0">
+                    <PointsBalanceBadge
+                        balance={userPoints.balance}
+                        onClick={() => navigate('/points?from=practice')}
+                        ref={pointsBalanceRef as React.Ref<HTMLButtonElement>}
+                    />
                     <button onClick={handleExitRequest} className="group flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors">
                         <span className="material-symbols-outlined text-lg">logout</span>
                         <span className="hidden sm:inline">Exit</span>
@@ -2151,7 +2253,7 @@ export const Practice = () => {
                             )}
 
                             {/* Question Section */}
-                            <div className={`lg:col-span-7 flex flex-col ${isSubmitted ? 'min-h-[250px]' : 'h-auto min-h-[300px] lg:h-[calc(100vh-280px)] lg:min-h-[450px]'} overflow-hidden`}>
+                            <div className={`lg:col-span-6 flex flex-col ${isSubmitted ? 'min-h-[250px]' : 'h-auto min-h-[300px] lg:h-[calc(100vh-280px)] lg:min-h-[450px]'} overflow-hidden`}>
                                 <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col gap-4 relative h-full scroll-bounce !overflow-y-auto ${isSubmitted ? 'p-3 opacity-90' : 'p-6'}`}>
                                     <div className="flex justify-between items-start border-b border-gray-100 dark:border-gray-800 pb-3 mb-2">
                                         <div className="flex items-center gap-2 mr-6">
@@ -2207,7 +2309,7 @@ export const Practice = () => {
                             </div>
 
                             {/* Options Section */}
-                            <div className={`lg:col-span-5 flex flex-col gap-4 ${isSubmitted ? 'min-h-[250px]' : 'h-auto lg:h-[calc(100vh-280px)] lg:min-h-[450px]'}`}>
+                            <div className={`lg:col-span-6 flex flex-col gap-4 ${isSubmitted ? 'min-h-[250px]' : 'h-auto lg:h-[calc(100vh-280px)] lg:min-h-[450px]'}`}>
                                 <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-2' : 'p-6'}`}>
                                     {/* Hide Header on Submit to save space as requested */}
                                     {!isSubmitted && (

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "995d20ab-7ad4-4fc2-aa05-06031445ebb2",
+    "prompt": "Use the table to determine $\\displaystyle \\lim_{x\\to 0} f(x)$.  $$ \\begin{array}{c|cccccc} x & -0.1 & -0.01 & -0.001 & 0.001 & 0.01 & 0.1\\\\\\\\ \\hline f(x) & 1 & -1 & 1 & -1 & 1 & -1 \\end{array} $$",
+    "explanation": "As $x$ gets closer to $0$, the outputs keep switching between $1$ and $-1$. Since the values do not settle on a single number, $\\lim_{x\\to 0} f(x)$ does not exist."
+  },
+  {
+    "id": "42aacaf5-0631-49b3-ae54-46805526a3ac",
+    "prompt": "Use the table to evaluate the limit.  $$ \\begin{array}{c|cccccc} x & -0.1 & -0.01 & -0.001 & 0.001 & 0.01 & 0.1\\\\\\\\ \\hline f(x) & 10 & 100 & 1000 & 1000 & 100 & 10 \\end{array} $$  Find $\\displaystyle \\lim_{x\\to 0} f(x)$.",
+    "explanation": "When $x$ is closer to $0$ (e.g., $\\pm 0.001$), $f(x)$ is much larger (1000) than when $x$ is farther (e.g., $\\pm 0.1$ gives 10). The values increase without bound as $x\\to 0$, so $\\lim_{x\\to 0} f(x)=\\infty$."
+  },
+  {
+    "id": "45053b2f-bb1a-40db-ba92-8b4cb8d8b544",
+    "prompt": "Use the table to determine $\\displaystyle \\lim_{x\\to 2} f(x)$.  $$ \\begin{array}{c|cccccc} x & 1.9 & 1.99 & 1.999 & 2.001 & 2.01 & 2.1\\\\\\\\ \\hline f(x) & -1.1 & -1.01 & -1.001 & 3.001 & 3.01 & 3.1 \\end{array} $$",
+    "explanation": "From the left of $2$, $f(x)$ approaches $-1$ (e.g., $-1.001$). From the right of $2$, $f(x)$ approaches $3$ (e.g., $3.001$). Since the one-sided limits are unequal, $\\lim_{x\\to 2} f(x)$ does not exist."
+  },
+  {
+    "id": "d938642b-9344-4467-ab9b-72853a0f6845",
+    "prompt": "A function has values of $f'(x)$ shown below:  $\\begin{array}{c|ccc}  x & 1.9 & 2.0 & 2.1 \\hline  f'(x) & 4.2 & 4.6 & 5.0 \\end{array}$ \\nUsing a symmetric difference quotient, estimate $f''(2)$.",
+    "explanation": "Estimate $f''(2)$ by the symmetric difference on $f'$: $$f''(2)\\approx \\frac{f'(2.1)-f'(1.9)}{2.1-1.9}=\\frac{5.0-4.2}{0.2}=\\frac{0.8}{0.2}=4.$$"
+  },
+  {
+    "id": "c256c221-d33b-437e-b5b9-e9e5f9cfa85a",
+    "prompt": "The region bounded by $y=x$, $y=0$, and $0\\le x\\le 2$ is revolved about the line $y=3$. What is the volume?",
+    "explanation": "About $y=3$, outer radius to $y=0$ is $R=3$, inner radius to $y=x is $r=3-x$. $$V=\\pi\\int_0^2\\left(R^2-r^2\\right)dx=\\pi\\int_0^2\\left(9-(3-x)^2\\right)dx.$$ Since $9-(3-x)^2=6x-x^2$, $$V=\\pi\\int_0^2(6x-x^2)\\,dx=\\pi\\left[3x^2-\\frac{x^3}{3}\\right]_0^2=\\pi\\left(12-\\frac{8}{3}\\right)=\\frac{28\\pi}{3}.$$"
+  },
+  {
+    "id": "f625c885-89ec-4710-97bd-12c5b697f4be",
+    "prompt": "A function $f$ is defined near $x=3$. Use the table to estimate $\\displaystyle \\lim_{x\\to 3} f(x)$.  $$ \\begin{array}{c|cccccc} x & 2.9 & 2.99 & 2.999 & 3.001 & 3.01 & 3.1\\\\\\\\ \\hline f(x) & 5.7 & 5.97 & 5.997 & 6.003 & 6.03 & 6.3 \\end{array} $$",
+    "explanation": "As $x$ approaches $3$ from the left, $f(x)$ moves from $5.97$ to $5.997$. From the right, it moves from $6.03$ to $6.003$. These values cluster around $6$, so $\\lim_{x\\to 3} f(x)\\approx 6$."
+  },
+  {
+    "id": "9b8a1428-e64e-4826-93cf-3167497f581d",
+    "prompt": "A function $f$ is defined near $x=2$. Use the table to estimate $$\\displaystyle \\lim_{x\\to 2}\\frac{f(x)-f(2)}{x-2}.$$  $$ \\begin{array}{c|cccccc} x & 1.9 & 1.99 & 1.999 & 2.001 & 2.01 & 2.1\\\\\\\\ \\hline f(x) & 4.61 & 4.9601 & 4.996001 & 5.004001 & 5.0401 & 5.41 \\end{array} $$  Assume $f(2)=5$.",
+    "explanation": "Compute the difference quotient near $2$. From the right: $(5.004001-5)/0.001\\approx 4.001$. From the left: $(4.996001-5)/(-0.001)\\approx 3.999$. Both sides approach $4$, so the limit is approximately $4$."
+  }
+]

@@ -133,11 +133,10 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
             .eq('id', userId)
             .single();
 
-        // Temporarily disabled for development - any logged-in user can create questions
-        // if (!profile?.is_creator) {
-        //     res.status(403).json({ error: 'Creator access required' });
-        //     return;
-        // }
+        if (!profile?.is_creator) {
+            res.status(403).json({ error: 'Creator access required' });
+            return;
+        }
         console.log(`📝 User ${userId} creating question (is_creator: ${profile?.is_creator})`);
 
         const {
@@ -259,8 +258,7 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
         await supabaseAdmin.from('question_versions').insert({
             question_id: question.id,
             version: 1,
-            data: question,
-            created_by: userId
+            snapshot: question
         });
 
         res.status(201).json({ ...question, primarySkillId, supportingSkillIds, errorPatternIds });
@@ -283,11 +281,10 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
             .eq('id', userId)
             .single();
 
-        // Temporarily disabled for development
-        // if (!profile?.is_creator) {
-        //     res.status(403).json({ error: 'Creator access required' });
-        //     return;
-        // }
+        if (!profile?.is_creator) {
+            res.status(403).json({ error: 'Creator access required' });
+            return;
+        }
         console.log(`📝 User ${userId} updating question ${id} (is_creator: ${profile?.is_creator})`);
 
         const {
@@ -419,8 +416,7 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
         await supabaseAdmin.from('question_versions').insert({
             question_id: id,
             version: newVersion,
-            data: data,
-            created_by: userId
+            snapshot: data
         });
 
         res.json({ ...data, primarySkillId, supportingSkillIds, errorPatternIds });
@@ -443,11 +439,10 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response): Promi
             .eq('id', userId)
             .single();
 
-        // Temporarily disabled for development
-        // if (!profile?.is_creator) {
-        //     res.status(403).json({ error: 'Creator access required' });
-        //     return;
-        // }
+        if (!profile?.is_creator) {
+            res.status(403).json({ error: 'Creator access required' });
+            return;
+        }
         console.log(`🗑️ User ${userId} deleting question ${id} (is_creator: ${profile?.is_creator})`);
 
         const { error } = await supabaseAdmin

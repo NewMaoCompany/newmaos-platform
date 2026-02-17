@@ -294,66 +294,51 @@ const ImageUploader = ({
     const uploadImages = async (files: File[]) => {
         setIsUploading(true);
         try {
-            // Get auth token from Supabase session - prefer sb-* prefixed keys
-            let token: string | null = null;
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
-                    try {
-                        const session = localStorage.getItem(key);
-                        if (session) {
-                            const parsed = JSON.parse(session);
-                            if (parsed.access_token) {
-                                token = parsed.access_token;
-                                break;
-                            }
-                        }
-                    } catch { continue; }
-                }
-            }
-
-            if (!token) {
-                console.error('No auth token found for image upload');
-                showToast('Please log in to upload images', 'error');
-                return;
-            }
-
+            // Use client-side upload to match MathToolbar logic
+            // This avoids backend proxy complexity and manual token parsing issues
             const uploadedUrls: string[] = [];
 
-            // Upload sequentially
             for (const file of files) {
-                const formData = new FormData();
-                formData.append('image', file, 'upload.jpg');
-                const apiBase = '/api';
+                // Generate unique path
+                const fileExt = file.name.split('.').pop() || 'png';
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                const filePath = `mixed_content/${fileName}`; // Use same folder as MathToolbar
 
-                const res = await fetch(`${apiBase}/upload/image`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
+                // Upload to Supabase Storage
+                const { error: uploadError } = await supabase.storage
+                    .from('images')
+                    .upload(filePath, file);
 
-                if (!res.ok) {
-                    console.error(`Failed to upload ${file.name}`);
+                if (uploadError) {
+                    console.error(`Failed to upload ${file.name}`, uploadError);
+                    showToast(`Failed to upload ${file.name}: ${uploadError.message}`, 'error');
                     continue;
                 }
-                const data = await res.json();
-                uploadedUrls.push(data.url);
+
+                // Get Public URL
+                const { data } = supabase.storage
+                    .from('images')
+                    .getPublicUrl(filePath);
+
+                if (data.publicUrl) {
+                    uploadedUrls.push(data.publicUrl);
+                }
             }
 
             if (uploadedUrls.length > 0) {
                 const newImages = [...images, ...uploadedUrls];
-                // Store as JSON if multiple or strict consistency desired
-                // Given existing single-string usage, we adapt:
+                // Store as JSON if multiple
                 if (newImages.length === 1) {
                     onChange(newImages[0]);
                 } else {
                     onChange(JSON.stringify(newImages));
                 }
+                showToast('Image uploaded successfully!', 'success');
             }
 
-        } catch (e) {
+        } catch (e: any) {
             console.error('Image upload failed:', e);
-            showToast('Image upload failed. Please try again.', 'error');
+            showToast(`Image upload failed: ${e.message}`, 'error');
         } finally {
             setIsUploading(false);
         }
@@ -664,6 +649,18 @@ const NavigationSidebar = ({
                         );
                     })}
                 </div>
+            </div>
+
+            {/* Footer: Debug QA */}
+            <div className="p-4 border-t border-gray-100 mt-auto">
+                <a
+                    href="#/debug-qa"
+                    target="_blank"
+                    className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-primary transition-colors px-2 py-2 rounded-lg hover:bg-gray-50 group"
+                >
+                    <span className="material-symbols-outlined text-[16px] group-hover:animate-spin">build</span>
+                    Debug QA Tool
+                </a>
             </div>
         </div>
     );
@@ -1478,17 +1475,7 @@ export const QuestionCreator = () => {
         });
 
         if (mathErrors.length > 0) {
-            // We use confirm to allow them to proceed if they really want to (false positive fallback)
-            // But for now, let's treat it as a hard error or toast warning?
-            // User requested "warn". Let's use window.confirm or just block.
-            // Blocking is safer for the "Fix" objective.
-            // Let's block but with a very clear message.
-            const message = "Math Formatting Issues Detected:\n\n" + mathErrors.join('\n') + "\n\nPlease wrap math in $...$ delimiters.";
-
-            // Allow override via confirm
-            if (!window.confirm(message + "\n\nDo you want to Save anyway? (Not Recommended)")) {
-                return;
-            }
+            console.warn("Math formatting issues detected (ignoring per user preference):", mathErrors);
         }
 
         if (errors.length > 0) {
@@ -1504,10 +1491,8 @@ export const QuestionCreator = () => {
             if (formData.prompt) promptArray.push(formData.prompt);
             if (formData.promptImage) promptArray.push(formData.promptImage);
 
-            // If both empty, maybe empty string? But let's keep array if user wants array.
-            // If only text, maybe just array with one item?
-            // User said "prompt area should be an array".
-            const combinedPrompt = JSON.stringify(promptArray.length > 0 ? promptArray : [""]);
+            // Use the raw array directly (Supabase handles JSON/Array serialization)
+            const combinedPrompt = promptArray.length > 0 ? promptArray : [""];
 
             // Dynamic Topic ID Calculation
             let calculatedTopicId = selectedTopicId;
