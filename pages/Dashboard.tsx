@@ -63,7 +63,7 @@ const CourseCard = ({
   return (
     <div
       onClick={onSelect}
-      className={`group relative overflow-hidden bg-surface-light dark:bg-surface-dark rounded-2xl sm:rounded-[32px] p-5 sm:p-8 border-2 transition-all duration-300 cursor-pointer flex flex-col justify-between min-h-[280px] sm:min-h-[340px]
+      className={`group relative overflow-hidden bg-surface-light dark:bg-surface-dark rounded-2xl sm:rounded-[32px] p-5 sm:p-8 border-2 transition-[border-color,box-shadow,transform] duration-300 cursor-pointer flex flex-col justify-between min-h-[280px] sm:min-h-[340px]
           ${isActive ? 'border-primary shadow-soft scale-[1.01] z-10' : 'border-white dark:border-white/5 hover:border-gray-200 dark:hover:border-gray-700'}`}
     >
       {/* Background Icon */}
@@ -393,7 +393,7 @@ export const Dashboard = () => {
             onClick={() => {
               navigate('/checkin');
             }}
-            className="w-full bg-white dark:bg-surface-dark rounded-[28px] p-5 sm:p-6 border border-white dark:border-white/5 shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-between group animate-fade-in relative"
+            className="w-full bg-white dark:bg-surface-dark rounded-[28px] p-5 sm:p-6 border border-white dark:border-white/5 shadow-sm hover:shadow-md transition-[box-shadow,transform] cursor-pointer flex items-center justify-between group animate-fade-in relative"
           >
             {needsCheckin && (
               <div className="absolute top-4 right-4 flex h-3 w-3">
