@@ -34,8 +34,8 @@ export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
                     }}
                 />
 
-                <div className="ml-1 z-10 scale-90">
-                    <PlanetVisual level={level} size="sm" showAtmosphere={false} />
+                <div className="ml-1 z-10 flex items-center justify-center w-8 h-8 rounded-full overflow-visible relative group-hover:drop-shadow-[0_0_8px_rgba(249,212,6,0.6)] transition-all">
+                    <PlanetVisual level={level} size="sm" showAtmosphere={true} floating={false} />
                 </div>
 
                 {/* Content Container (Z-index to sit above hover layer) */}

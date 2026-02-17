@@ -128,6 +128,7 @@ interface PlanetVisualProps {
     className?: string;
     style?: React.CSSProperties;
     showAtmosphere?: boolean;
+    floating?: boolean;
 }
 
 /**
@@ -138,10 +139,11 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
     size = 'lg',
     className = '',
     style = {},
-    showAtmosphere = true
+    showAtmosphere = true,
+    floating = true
 }) => {
     const sizeMap = {
-        sm: 'w-7 h-7',
+        sm: 'w-8 h-8', // Increased from w-7 h-7 for better visibility in widget
         md: 'w-12 h-12',
         lg: 'w-32 h-32 md:w-48 md:h-48',
         xl: 'w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96'
@@ -348,7 +350,7 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
 
     return (
         <div
-            className={`relative ${sizeMap[size]} transition-all animate-float ${className}`}
+            className={`relative ${sizeMap[size]} transition-all ${floating ? 'animate-float' : ''} ${className}`}
             style={style}
         >
             {/* Global Atmosphere Glow - Layered Radial Gradients for natural falloff */}

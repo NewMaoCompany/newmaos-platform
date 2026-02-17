@@ -241,7 +241,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   }, [totalUnreadCount]);
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-gray-200/70 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface-light/60 pt-6 pb-2 lg:pt-8 lg:pb-3 transition-padding duration-300">
+    <nav className="sticky top-0 z-50 w-full border-b border-gray-200/70 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface-light/60 h-[72px] lg:h-[80px] flex items-center transition-all duration-300">
       <div className="w-full px-4 sm:px-6 flex items-center justify-between min-h-[48px]">
         {/* Left Side Group (Logo + Notification) */}
         <div className="flex items-center">
@@ -360,7 +360,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
           </div>
         ) : (
           <div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-1 lg:gap-2"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-1 lg:gap-2 h-full"
           >
             <Link
               to="/dashboard"
