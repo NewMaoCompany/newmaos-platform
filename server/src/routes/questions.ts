@@ -1,15 +1,31 @@
 import { Router, Request, Response } from 'express';
-import { supabaseAdmin } from '../config/supabase';
+import { createClient } from '@supabase/supabase-js';
+import { supabaseUrl, supabaseAnonKey, supabaseAdmin } from '../config/supabase';
 import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth';
 
 const router = Router();
+
+// Helper to get authenticated client
+const getAuthenticatedClient = (req: Request) => {
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+        return createClient(supabaseUrl!, supabaseAnonKey!, {
+            global: { headers: { Authorization: authHeader } }
+        });
+    }
+    // Fallback if no auth (e.g. public access), though RLS might restrict it
+    return createClient(supabaseUrl!, supabaseAnonKey!);
+};
 
 // GET /api/questions - Get questions with optional filters
 router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
         const { course, topic, subTopicId, difficulty, limit = 10000 } = req.query;
 
-        let query = supabaseAdmin
+        // Use authenticated client to respect RLS (Creators see drafts, Public sees published)
+        const supabase = getAuthenticatedClient(req);
+
+        let query = supabase
             .from('questions')
             .select(`
                 *,
@@ -124,10 +140,10 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
 router.post('/', authMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = req.user!.id;
+        const supabase = getAuthenticatedClient(req);
 
-        // DEV MODE: Allow any authenticated user to create questions
-        // In production, uncomment the is_creator check below
-        const { data: profile } = await supabaseAdmin
+        // Check creator status using AUTHENTICATED client (RLS safe)
+        const { data: profile } = await supabase
             .from('user_profiles')
             .select('is_creator')
             .eq('id', userId)
@@ -185,7 +201,7 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
         }
 
         // 1. Insert question
-        const { data: question, error: questionError } = await supabaseAdmin
+        const { data: question, error: questionError } = await supabase
             .from('questions')
             .insert({
                 course,
@@ -243,7 +259,7 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
             });
         });
 
-        await supabaseAdmin.from('question_skills').insert(skillRows);
+        await supabase.from('question_skills').insert(skillRows);
 
         // 3. Insert question_error_patterns
         if (errorPatternIds && errorPatternIds.length > 0) {
@@ -251,11 +267,11 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
                 question_id: question.id,
                 error_tag_id: tagId
             }));
-            await supabaseAdmin.from('question_error_patterns').insert(errorRows);
+            await supabase.from('question_error_patterns').insert(errorRows);
         }
 
         // 4. Create initial version snapshot
-        await supabaseAdmin.from('question_versions').insert({
+        await supabase.from('question_versions').insert({
             question_id: question.id,
             version: 1,
             snapshot: question
@@ -273,9 +289,10 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
     try {
         const userId = req.user!.id;
         const { id } = req.params;
+        const supabase = getAuthenticatedClient(req);
 
         // DEV MODE: Allow any authenticated user to update questions
-        const { data: profile } = await supabaseAdmin
+        const { data: profile } = await supabase
             .from('user_profiles')
             .select('is_creator')
             .eq('id', userId)
@@ -296,7 +313,7 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
         } = req.body;
 
         // Get current version
-        const { data: currentQ } = await supabaseAdmin
+        const { data: currentQ } = await supabase
             .from('questions')
             .select('version')
             .eq('id', id)
@@ -368,7 +385,7 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
         if (supportingSkillIds !== undefined) updates.supporting_skill_ids = supportingSkillIds;
 
         // 1. Update question
-        const { data, error } = await supabaseAdmin
+        const { data, error } = await supabase
             .from('questions')
             .update(updates)
             .eq('id', id)
@@ -382,7 +399,7 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
 
         // 2. Update skills (delete and recreate)
         if (primarySkillId !== undefined || supportingSkillIds !== undefined) {
-            await supabaseAdmin.from('question_skills').delete().eq('question_id', id);
+            await supabase.from('question_skills').delete().eq('question_id', id);
 
             // We need to ensure we have values if only one was passed (unlikely but safe)
             // Ideally frontend sends both if updating skills.
@@ -396,24 +413,24 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
                         skillRows.push({ question_id: id, skill_id: sid, role: 'supporting', weight: weightSupporting || 0.5 });
                     });
                 }
-                await supabaseAdmin.from('question_skills').insert(skillRows);
+                await supabase.from('question_skills').insert(skillRows);
             }
         }
 
         // 3. Update error patterns
         if (errorPatternIds !== undefined) {
-            await supabaseAdmin.from('question_error_patterns').delete().eq('question_id', id);
+            await supabase.from('question_error_patterns').delete().eq('question_id', id);
             if (errorPatternIds.length > 0) {
                 const errorRows = errorPatternIds.map((tagId: string) => ({
                     question_id: id,
                     error_tag_id: tagId
                 }));
-                await supabaseAdmin.from('question_error_patterns').insert(errorRows);
+                await supabase.from('question_error_patterns').insert(errorRows);
             }
         }
 
         // 4. Create version snapshot
-        await supabaseAdmin.from('question_versions').insert({
+        await supabase.from('question_versions').insert({
             question_id: id,
             version: newVersion,
             snapshot: data
@@ -431,9 +448,10 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response): Promi
     try {
         const userId = req.user!.id;
         const { id } = req.params;
+        const supabase = getAuthenticatedClient(req);
 
         // DEV MODE: Allow any authenticated user to delete questions
-        const { data: profile } = await supabaseAdmin
+        const { data: profile } = await supabase
             .from('user_profiles')
             .select('is_creator')
             .eq('id', userId)
@@ -445,7 +463,7 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response): Promi
         }
         console.log(`🗑️ User ${userId} deleting question ${id} (is_creator: ${profile?.is_creator})`);
 
-        const { error } = await supabaseAdmin
+        const { error } = await supabase
             .from('questions')
             .delete()
             .eq('id', id);
