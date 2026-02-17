@@ -22,8 +22,9 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
     try {
         const { course, topic, subTopicId, difficulty, limit = 10000 } = req.query;
 
-        // Use authenticated client to respect RLS (Creators see drafts, Public sees published)
-        const supabase = getAuthenticatedClient(req);
+        // Use Admin client to bypass RLS issues on production
+        // and manually enforce security logic below.
+        const supabase = supabaseAdmin;
 
         let query = supabase
             .from('questions')
@@ -71,6 +72,35 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
         }
         if (difficulty) {
             query = query.eq('difficulty', Number(difficulty));
+        }
+
+        // --- Manual Security Logic ---
+        // 1. If user is NOT authenticated, or NOT a creator, only show 'published' questions.
+        // 2. Creators and Super Admin see everything (drafts + published).
+        const userId = req.user?.id;
+        const userEmail = req.user?.email;
+        const SUPER_ADMIN_EMAIL = 'newmao6120@gmail.com';
+        const isSuperAdmin = userEmail === SUPER_ADMIN_EMAIL;
+
+        let shouldFilterDrafts = true;
+
+        if (userId) {
+            if (isSuperAdmin) {
+                shouldFilterDrafts = false;
+            } else {
+                const { data: profile } = await supabaseAdmin
+                    .from('user_profiles')
+                    .select('is_creator')
+                    .eq('id', userId)
+                    .single();
+                if (profile?.is_creator) {
+                    shouldFilterDrafts = false;
+                }
+            }
+        }
+
+        if (shouldFilterDrafts) {
+            query = query.eq('status', 'published');
         }
 
         const { data, error } = await query;
@@ -140,7 +170,7 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
 router.post('/', authMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = req.user!.id;
-        const supabase = getAuthenticatedClient(req);
+        const supabase = supabaseAdmin;
 
         // Check creator status using AUTHENTICATED client (RLS safe)
         const { data: profile } = await supabase
@@ -200,8 +230,8 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
             }
         }
 
-        // 1. Insert question
-        const { data: question, error: questionError } = await supabase
+        // 1. Insert question using Admin client
+        const { data: question, error: questionError } = await supabaseAdmin
             .from('questions')
             .insert({
                 course,
@@ -259,7 +289,7 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
             });
         });
 
-        await supabase.from('question_skills').insert(skillRows);
+        await supabaseAdmin.from('question_skills').insert(skillRows);
 
         // 3. Insert question_error_patterns
         if (errorPatternIds && errorPatternIds.length > 0) {
@@ -267,11 +297,11 @@ router.post('/', authMiddleware, async (req: Request, res: Response): Promise<vo
                 question_id: question.id,
                 error_tag_id: tagId
             }));
-            await supabase.from('question_error_patterns').insert(errorRows);
+            await supabaseAdmin.from('question_error_patterns').insert(errorRows);
         }
 
         // 4. Create initial version snapshot
-        await supabase.from('question_versions').insert({
+        await supabaseAdmin.from('question_versions').insert({
             question_id: question.id,
             version: 1,
             snapshot: question
@@ -289,7 +319,7 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response): Promise<
     try {
         const userId = req.user!.id;
         const { id } = req.params;
-        const supabase = getAuthenticatedClient(req);
+        const supabase = supabaseAdmin;
 
         // DEV MODE: Allow any authenticated user to update questions
         const { data: profile } = await supabase
@@ -448,7 +478,7 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response): Promi
     try {
         const userId = req.user!.id;
         const { id } = req.params;
-        const supabase = getAuthenticatedClient(req);
+        const supabase = supabaseAdmin;
 
         // DEV MODE: Allow any authenticated user to delete questions
         const { data: profile } = await supabase

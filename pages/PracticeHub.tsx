@@ -7,7 +7,7 @@ import { SessionMode, Question } from '../types';
 
 // Sub-component for Unit Card to handle its own async progress fetching
 const UnitCard = ({ topic, idx, onClick }: { topic: any, idx: number, onClick: () => void }) => {
-    const { getUnitProgress, topicContent, questions, sections, getSectionStatus } = useApp();
+    const { getUnitProgress, topicContent, questions, sections, getSectionStatus, user } = useApp();
     const [progress, setProgress] = useState(0);
 
     const content = topicContent[topic.id];
@@ -38,7 +38,16 @@ const UnitCard = ({ topic, idx, onClick }: { topic: any, idx: number, onClick: (
     const topicQuestions = questions.filter((q: Question) => {
         const qBase = q.topic.includes('_') ? q.topic.split('_')[1] : q.topic;
         const tBase = topic.id.includes('_') ? topic.id.split('_')[1] : topic.id;
-        const isMatch = q.topic === topic.id || (q.course === 'Both' && qBase === tBase);
+
+        // Match if IDs are identical OR if the base topic matches AND the course is compatible
+        const isMatch = q.topic === topic.id || (
+            qBase === tBase && (
+                q.course === 'Both' ||
+                q.course === user.currentCourse ||
+                !q.course // Fallback for legacy data
+            )
+        );
+
         const isStatusValid = q.status === 'published' || !q.status;
         return isMatch && isStatusValid;
     });

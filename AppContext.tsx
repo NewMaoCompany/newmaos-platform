@@ -808,6 +808,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         try {
             console.log('🔄 Fetching questions from database...');
             const data = await questionsApi.getQuestions({ limit: 10000 });
+
             if (data && data.length > 0) {
                 // Merge with static questions, preferring DB versions for duplicates
                 setQuestions(prev => {
@@ -816,8 +817,14 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     return [...data, ...staticOnly];
                 });
                 console.log('✅ Questions loaded from DB:', data.length);
+                if (data.status === 'error') {
+                    console.error('❌ Backend returned error in data payload:', data);
+                }
             } else {
-                console.log('ℹ️ No questions in DB, using static data');
+                console.log('ℹ️ No questions in DB (empty array returned), using static data');
+                if (data === null || data === undefined) {
+                    console.warn('⚠️ data is null/undefined during fetchQuestions');
+                }
             }
         } catch (error) {
             console.error('Failed to fetch questions:', error);
@@ -1644,7 +1651,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     fetchNotifications(),
                     getUserInsights(),
                     fetchFriends(),
-                    fetchUserPoints()
+                    fetchUserPoints(),
+                    fetchQuestions()
                 ]);
             };
             loadData();

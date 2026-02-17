@@ -683,6 +683,7 @@ const QuestionListSidebar = ({
     onDeleteQuestion: (qId: string) => void;
     activeQuestionId?: string;
 }) => {
+    const { user } = useApp();
     const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
     const [draggingId, setDraggingId] = useState<string | null>(null);
     const [localOrder, setLocalOrder] = useState<string[]>([]);
@@ -715,13 +716,13 @@ const QuestionListSidebar = ({
             } else if (searchScope === 'unit') {
                 const qBase = getBase(q.topic);
                 return q.topic === selectedTopicId ||
-                    (q.course === 'Both' && qBase === selectedBase) ||
+                    (qBase === selectedBase && (q.course === 'Both' || q.course === user.currentCourse || !q.course)) ||
                     (q as any).topicId === selectedTopicId;
             } else {
                 // Section Scope
                 const qBase = getBase(q.topic);
                 const isTopicMatch = q.topic === selectedTopicId ||
-                    (q.course === 'Both' && qBase === selectedBase) ||
+                    (qBase === selectedBase && (q.course === 'Both' || q.course === user.currentCourse || !q.course)) ||
                     (q as any).topicId === selectedTopicId;
 
                 if (!isTopicMatch) return false;
@@ -1049,7 +1050,7 @@ const QuestionListSidebar = ({
 
 export const QuestionCreator = () => {
     const {
-        questions, addQuestion, updateQuestion, deleteQuestion, topicContent, sections, updateSection, fetchSections, fetchQuestions, topicContent: rawTopicContent
+        questions, addQuestion, updateQuestion, deleteQuestion, topicContent, sections, updateSection, fetchSections, fetchQuestions, topicContent: rawTopicContent, user
     } = useApp();
 
     // -- State --

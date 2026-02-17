@@ -241,8 +241,8 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   }, [totalUnreadCount]);
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-gray-200/70 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface-light/60 h-16 flex items-center">
-      <div className="w-full h-full px-4 sm:px-6 flex items-center justify-between relative">
+    <nav className="sticky top-0 z-50 w-full border-b border-gray-200/70 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md supports-[backdrop-filter]:bg-surface-light/60 h-20 min-h-[80px] flex-shrink-0 flex items-center overflow-visible">
+      <div className="w-full max-w-none h-full px-6 flex items-center justify-between relative mx-0">
         {/* Left Side Group (Logo + Notification) */}
         <div className="flex items-center h-full">
           {/* Logo Area - Always Visible */}
