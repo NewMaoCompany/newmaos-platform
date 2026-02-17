@@ -377,7 +377,7 @@ export const Dashboard = () => {
     <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans overflow-x-auto overflow-y-hidden">
       <Navbar />
 
-      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-8 sm:gap-12 w-full animate-fade-in overflow-y-auto scroll-bounce">
+      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-8 sm:gap-12 w-full overflow-y-auto">
         <header className="flex flex-col gap-2">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-text-main dark:text-white">
             Hello, {user.name ? user.name.split(' ')[0] : 'Student'}
