@@ -16,7 +16,7 @@ export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
         return (
             <div
                 onClick={() => navigate('/prestige')}
-                className="cursor-pointer group relative flex flex-row items-center gap-3 pl-1.5 pr-4 py-1 rounded-[999px] transition-all min-w-[130px] h-[36px] justify-between"
+                className="cursor-pointer group relative flex flex-row items-center gap-3 pl-1.5 pr-4 py-1 rounded-[999px] transition-all min-w-[120px] h-[36px] justify-between"
                 style={{
                     background: 'rgba(255, 255, 255, 0.75)',
                     backdropFilter: 'blur(12px)',
