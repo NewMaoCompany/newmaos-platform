@@ -4,6 +4,43 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../AppContext';
 
 import { StarBackground, ShootingStars, PlanetVisual, getPlanetName } from '../components/SpaceVisuals';
+import { PointsCoin } from '../components/PointsCoin';
+
+// Simple Synth for Sound Effects (reused logic)
+const playSound = (type: 'coin' | 'stardust') => {
+    try {
+        const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+        const ctx = new AudioContextClass();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'coin') {
+            // High pitch ping
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1200, now);
+            osc.frequency.exponentialRampToValueAtTime(2000, now + 0.1);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+            osc.start(now);
+            osc.stop(now + 0.3);
+        } else {
+            // Magical shimmer
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.linearRampToValueAtTime(800, now + 0.2);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.linearRampToValueAtTime(0, now + 0.5);
+            osc.start(now);
+            osc.stop(now + 0.5);
+        }
+    } catch (e) { console.error(e); }
+};
+
+interface Rect { top: number; left: number; width: number; height: number; }
 
 export const PrestigePage = () => {
     const { user, userPoints, userPrestige, purchaseStardust, injectStardust } = useApp();
@@ -27,9 +64,62 @@ export const PrestigePage = () => {
     const nextStarCost = 100 * level;
     const canUpgrade = currentStardust >= nextStarCost;
 
+    const [flyItems, setFlyItems] = useState<{ id: number; type: 'coin' | 'stardust'; start: Rect; end: Rect }[]>([]);
+
+    // Refs for Animation Targets
+    const moneyRef = useRef<HTMLButtonElement>(null);
+    const stardustRef = useRef<HTMLButtonElement>(null);
+    const buyButtonRef = useRef<HTMLButtonElement>(null);
+
     const handleBuy = async () => {
+        if (!buyButtonRef.current || !moneyRef.current) return;
         setIsBuying(true);
-        await purchaseStardust(buyAmount);
+
+        // 1. Coin Animation (Money -> Buy Button)
+        const startRect = moneyRef.current.getBoundingClientRect();
+        const endRect = buyButtonRef.current.getBoundingClientRect();
+
+        // Spawn multiple coins
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                playSound('coin');
+                setFlyItems(prev => [...prev, {
+                    id: Date.now() + Math.random(),
+                    type: 'coin',
+                    start: { top: startRect.top, left: startRect.left, width: startRect.width, height: startRect.height },
+                    end: { top: endRect.top + endRect.height / 2, left: endRect.left + endRect.width / 2, width: 0, height: 0 }
+                }]);
+            }, i * 50);
+        }
+
+        // Wait for coins to arrive
+        await new Promise(r => setTimeout(r, 600));
+
+        // 2. Perform Purchase
+        const result = await purchaseStardust(buyAmount);
+
+        if (result.success) {
+            // 3. Stardust Animation (Buy Button -> Stardust Counter)
+            if (stardustRef.current) {
+                const stardustEnd = stardustRef.current.getBoundingClientRect();
+                const stardustStart = buyButtonRef.current.getBoundingClientRect();
+
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        playSound('stardust');
+                        setFlyItems(prev => [...prev, {
+                            id: Date.now() + Math.random(),
+                            type: 'stardust',
+                            start: { top: stardustStart.top, left: stardustStart.left + stardustStart.width / 2, width: 0, height: 0 },
+                            end: { top: stardustEnd.top, left: stardustEnd.left, width: stardustEnd.width, height: stardustEnd.height }
+                        }]);
+                    }, i * 40);
+                }
+            }
+        } else {
+            console.error(result.message);
+        }
+
         setIsBuying(false);
     };
 
@@ -109,18 +199,35 @@ export const PrestigePage = () => {
             </div>
 
             <div className="absolute top-6 right-4 z-50 flex items-center gap-3">
-                <div className="flex items-center gap-4 bg-black/40 px-5 py-2.5 rounded-full backdrop-blur-md border border-white/10 shadow-xl">
-                    <span className="text-amber-400 font-bold flex items-center gap-1.5 text-sm">
-                        <span className="material-symbols-outlined text-base">monetization_on</span>
-                        {userPoints.balance}
-                    </span>
-                    <span className="h-4 w-px bg-white/20"></span>
-                    <span className="text-purple-300 font-bold flex items-center gap-1.5 text-sm">
-                        <span className="material-symbols-outlined text-base">auto_awesome</span>
-                        {currentStardust}
-                    </span>
+                <div className="flex items-center bg-black/40 rounded-full backdrop-blur-md border border-white/10 shadow-xl overflow-hidden">
+                    {/* Money Section */}
+                    <button
+                        ref={moneyRef}
+                        onClick={() => navigate('/wallet')}
+                        className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 transition-colors"
+                    >
+                        <PointsCoin size="sm" />
+                        <span className="text-amber-400 font-bold text-sm tabular-nums">{userPoints.balance.toLocaleString()}</span>
+                    </button>
+
+                    <div className="w-px h-5 bg-white/20"></div>
+
+                    {/* Stardust Section */}
+                    <button
+                        ref={stardustRef}
+                        onClick={() => navigate('/prestige')}
+                        className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 transition-colors"
+                    >
+                        <span className="material-symbols-outlined text-purple-400 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+                        <span className="text-purple-300 font-bold text-sm tabular-nums">{currentStardust.toLocaleString()}</span>
+                    </button>
                 </div>
             </div>
+
+            {/* FLYING ITEMS LAYER */}
+            {flyItems.map(item => (
+                <FlyingItem key={item.id} item={item} onComplete={() => setFlyItems(prev => prev.filter(i => i.id !== item.id))} />
+            ))}
 
             {/* GALAXY RING SWIPER */}
             <main
@@ -264,11 +371,13 @@ export const PrestigePage = () => {
                             </div>
                             {/* Buy Button */}
                             <button
+                                ref={buyButtonRef}
                                 onClick={handleBuy}
                                 disabled={isBuying || userPoints.balance < buyAmount}
-                                className="h-full px-6 bg-[#FFCC00] hover:bg-[#ffda33] text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:bg-gray-600 disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center"
+                                className="h-full px-6 bg-[#FFCC00] hover:bg-[#ffda33] text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:bg-gray-600 disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center relative overflow-hidden"
                             >
                                 {isBuying ? <span className="material-symbols-outlined animate-spin text-sm">refresh</span> : 'Buy'}
+                                {/* Ripple or Shine effect could go here */}
                             </button>
                         </div>
                     </div>
@@ -286,6 +395,50 @@ export const PrestigePage = () => {
                     -moz-appearance: textfield;
                 }
             `}} />
+        </div>
+    );
+};
+
+const FlyingItem = ({ item, onComplete }: { item: { type: 'coin' | 'stardust'; start: Rect; end: Rect }; onComplete: () => void }) => {
+    const [style, setStyle] = useState<React.CSSProperties>({
+        top: item.start.top,
+        left: item.start.left,
+        opacity: 1,
+        transform: 'scale(1)',
+        position: 'fixed',
+        zIndex: 100,
+        pointerEvents: 'none',
+        transition: 'all 0.6s cubic-bezier(0.2, 1, 0.3, 1)'
+    });
+
+    useEffect(() => {
+        // Trigger flight next tick
+        requestAnimationFrame(() => {
+            setStyle({
+                top: item.end.top,
+                left: item.end.left,
+                opacity: 0,
+                transform: 'scale(0.5)',
+                position: 'fixed',
+                zIndex: 100,
+                pointerEvents: 'none',
+                transition: 'all 0.6s cubic-bezier(0.2, 1, 0.3, 1)'
+            });
+        });
+
+        const timer = setTimeout(onComplete, 600);
+        return () => clearTimeout(timer);
+    }, []);
+
+    return (
+        <div style={style}>
+            {item.type === 'coin' ? (
+                <PointsCoin size="sm" animate />
+            ) : (
+                <span className="material-symbols-outlined text-purple-400 text-xl drop-shadow-[0_0_10px_rgba(192,132,252,0.8)]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    auto_awesome
+                </span>
+            )}
         </div>
     );
 };

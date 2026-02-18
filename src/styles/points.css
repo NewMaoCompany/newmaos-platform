@@ -237,3 +237,26 @@
 .dark .points-balance-number {
     color: #FFFFFF;
 }
+
+/* Purple Stardust Variant - 3D with Gradient */
+.points-coin--stardust {
+    background: linear-gradient(135deg, #d8b4fe 0%, #a855f7 50%, #7e22ce 100%);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.4),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+    color: #f3e8ff;
+    text-shadow: 0 1px 1px rgba(88, 28, 135, 0.5);
+    border: none;
+}
+
+/* Stardust Badge Style */
+.stardust-balance-badge {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.dark .stardust-balance-badge {
+    background: rgba(20, 10, 40, 0.6);
+    border-color: rgba(168, 85, 247, 0.4);
+}

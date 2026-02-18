@@ -6,7 +6,7 @@ import confetti from 'canvas-confetti';
 import { supabase } from '../src/services/supabaseClient';
 import { notificationsApi } from '../src/services/api';
 import { AchievementUnlockModal } from './AchievementUnlockModal';
-import { PointsBalanceBadge } from './PointsCoin';
+import { PointsBalanceBadge, PointsCoin } from './PointsCoin';
 import { PrestigeWidget } from './PrestigeWidget';
 
 export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
@@ -16,7 +16,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
     newlyUnlockedTitle, setNewlyUnlockedTitle,
     showPaywall, setShowPaywall, unreadCounts, clearUnread,
     userPoints, pointsBalanceRef, fetchUserPoints, getCheckinStatus, awardPoints,
-    checkinStatus, proUpgradeDismissed, dismissProUpgrade
+    checkinStatus, proUpgradeDismissed, dismissProUpgrade, userPrestige
   } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
@@ -474,11 +474,36 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
           {isAuthenticated ? (
             <>
               {/* Points Balance */}
-              <PointsBalanceBadge
-                balance={userPoints.balance}
-                onClick={() => navigate('/points')}
-                ref={pointsBalanceRef as any}
-              />
+              {/* Points & Stardust Combined Badge */}
+              {/* Points & Stardust Combined Widget - Unified Capsule */}
+              <div className="flex items-center h-10 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark overflow-hidden group/widget hover:shadow-md transition-shadow cursor-default">
+
+                {/* Left: Points (Big Head / Major) */}
+                <div
+                  className="flex-1 flex items-center pl-1 pr-3 py-1 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors relative"
+                  onClick={() => navigate('/points')}
+                >
+                  <PointsBalanceBadge
+                    balance={userPoints.balance}
+                    ref={pointsBalanceRef as any}
+                    className="border-none shadow-none bg-transparent p-0 min-w-0 min-h-0 pointer-events-none"
+                  />
+                  {/* Note: pointer-events-none on badge to let parent div handle click/hover for seamless feel */}
+                </div>
+
+                {/* Right: Stardust (Small Head / Minor) */}
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1 h-full bg-gray-50 dark:bg-white/5 border-l border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                  onClick={() => navigate('/prestige')}
+                  title="Stardust"
+                >
+                  <PointsCoin type="stardust" size="sm" className="group-hover/widget:scale-110 transition-transform" />
+                  <span className="text-xs font-bold text-gray-600 dark:text-gray-300 tabular-nums">
+                    {(userPrestige?.current_stardust || 0).toLocaleString()}
+                  </span>
+                </div>
+
+              </div>
 
 
 
@@ -559,12 +584,16 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
           ... (mobile menu content) ...
       </div> */}
 
-      {newlyUnlockedTitle && (
-        <AchievementUnlockModal
-          title={newlyUnlockedTitle}
-          onClose={() => setNewlyUnlockedTitle(null)}
-        />
-      )}
-    </nav>
+
+
+      {
+        newlyUnlockedTitle && (
+          <AchievementUnlockModal
+            title={newlyUnlockedTitle}
+            onClose={() => setNewlyUnlockedTitle(null)}
+          />
+        )
+      }
+    </nav >
   );
 };

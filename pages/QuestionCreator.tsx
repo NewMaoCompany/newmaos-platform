@@ -1856,7 +1856,7 @@ export const QuestionCreator = () => {
                                             }`}>
                                             {formData.status === 'published' ? 'Published' : 'Drafting'}
                                         </div>
-                                        <h1 className="text-3xl font-black text-gray-900">Question Editor</h1>
+                                        <h1 className="text-3xl font-black text-gray-900">{formData.title || 'Question Editor'}</h1>
                                     </div>
                                     <div className="flex gap-3">
                                         <button

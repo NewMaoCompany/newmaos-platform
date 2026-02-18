@@ -5,6 +5,7 @@ interface PointsCoinProps {
     showGlow?: boolean;
     className?: string;
     animate?: boolean;
+    type?: 'points' | 'stardust';
 }
 
 const SIZES: Record<string, { w: number; font: number }> = {
@@ -15,23 +16,33 @@ const SIZES: Record<string, { w: number; font: number }> = {
 };
 
 /**
- * Golden gem coin with embossed "N".
- * Radial gradient + shimmer sweep + debossed letter via text-shadow.
+ * 3D Coin Component.
+ * Types:
+ * - 'points': Golden coin with 'N'
+ * - 'stardust': Purple coin with Star icon
  */
 export const PointsCoin: React.FC<PointsCoinProps> = ({
     size = 'md',
     className = '',
     animate = false,
+    type = 'points',
 }) => {
     const s = SIZES[size];
+    const isStardust = type === 'stardust';
 
     return (
         <span
-            className={`points-coin points-coin--${size} ${animate ? 'points-coin-pop' : ''} ${className}`}
+            className={`points-coin points-coin--${size} ${isStardust ? 'points-coin--stardust' : ''} ${animate ? 'points-coin-pop' : ''} ${className}`}
             style={{ width: s.w, height: s.w, fontSize: s.font }}
             aria-hidden="true"
         >
-            N
+            {isStardust ? (
+                <span className="material-symbols-outlined" style={{ fontSize: '70%', fontVariationSettings: "'FILL' 1" }}>
+                    auto_awesome
+                </span>
+            ) : (
+                <span style={{ transform: 'translateY(1px)' }}>N</span>
+            )}
         </span>
     );
 };
@@ -105,8 +116,6 @@ export const PointsBalanceBadge = React.forwardRef<HTMLButtonElement, PointsBala
                 <span className="points-balance-number">
                     <AnimatedNumber value={balance} />
                 </span>
-                <div className="points-badge-divider" />
-                <span className="material-symbols-outlined points-badge-action-icon text-amber-600/50">account_balance_wallet</span>
             </button>
         );
     },

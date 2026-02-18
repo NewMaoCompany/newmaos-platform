@@ -113,9 +113,9 @@ export const ShootingStars: React.FC = () => {
             <style dangerouslySetInnerHTML={{
                 __html: `
                 @keyframes shooting-star {
-                    0% { transform: translateX(0) translateY(0) rotate(-35deg) scaleX(0.5); opacity: 0; }
-                    10% { opacity: 1; transform: translateX(20px) translateY(14px) rotate(-35deg) scaleX(1); }
-                    100% { transform: translateX(350px) translateY(245px) rotate(-35deg) scaleX(0.8); opacity: 0; }
+                    0% { transform: translateX(0) translateY(0) rotate(45deg) scaleX(0.5); opacity: 0; }
+                    10% { opacity: 1; transform: translateX(20px) translateY(20px) rotate(45deg) scaleX(1); }
+                    100% { transform: translateX(300px) translateY(300px) rotate(45deg) scaleX(0.8); opacity: 0; }
                 }
             `}} />
         </div>
@@ -317,15 +317,32 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                 );
             case 8: // Nova (Active Star) - HIGH DETAIL
                 return (
-                    <div className="relative w-full h-full rounded-full bg-[#fef08a] shadow-[0_0_50px_rgba(253,224,71,0.6)] z-10 overflow-hidden">
-                        {/* Convection Cells (Granulation) */}
-                        <div className="absolute inset-0 opacity-40 mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] scale-50" />
+                    <div className="relative w-full h-full rounded-full bg-[#f59e0b] shadow-[0_0_60px_rgba(245,158,11,0.8)] z-10 overflow-hidden">
+                        {/* Sun Surface - Granulation Texture */}
+                        <div className="absolute inset-0 opacity-80 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter contrast-125" />
 
-                        {/* Coronal Loops / Flares */}
-                        <div className="absolute -top-[10%] -left-[10%] w-[120%] h-[120%] rounded-full border-[10px] border-white/10 blur-[20px] animate-pulse" />
+                        {/* Dynamic Surface Flow - CSS Conic Gradient */}
+                        <div className="absolute inset-0 opacity-60 animate-spin-slower"
+                            style={{
+                                background: 'conic-gradient(from 0deg, #f59e0b, #d97706, #b45309, #d97706, #f59e0b)',
+                                filter: 'blur(10px)'
+                            }}
+                        />
 
-                        {/* Hot Spots */}
-                        <div className="absolute top-[30%] left-[40%] w-[40%] h-[40%] bg-white/60 rounded-full filter blur-[15px]" />
+                        {/* Sunspots - Realistic Dark Patches */}
+                        <div className="absolute top-[35%] left-[25%] w-[8%] h-[6%] bg-black/70 rounded-full filter blur-[1px] rotate-12" />
+                        <div className="absolute top-[38%] left-[28%] w-[4%] h-[3%] bg-black/80 rounded-full filter blur-[0.5px]" />
+                        <div className="absolute bottom-[25%] right-[30%] w-[12%] h-[8%] bg-black/60 rounded-full filter blur-[2px] -rotate-6" />
+
+                        {/* Solar Flares / Prominences (Edge Effects) */}
+                        <div className="absolute -top-[5%] left-[20%] w-[20%] h-[10%] bg-orange-500/50 rounded-full filter blur-[8px] animate-pulse" />
+                        <div className="absolute top-[40%] -right-[5%] w-[10%] h-[20%] bg-red-500/50 rounded-full filter blur-[8px] animate-pulse delay-75" />
+
+                        {/* Corona Glow */}
+                        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_20px_rgba(255,255,0,0.5)]" />
+
+                        {/* Intense Center */}
+                        <div className="absolute inset-[15%] rounded-full bg-radial-gradient from-yellow-100/50 to-transparent blur-[15px]" />
                     </div>
                 );
             case 9: // Singularity - HIGH DETAIL

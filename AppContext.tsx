@@ -2104,15 +2104,20 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     const purchaseStardust = async (amountCoins: number) => {
         if (!user?.id) return { success: false, message: 'User not found' };
         try {
+            console.log('💰 Purchasing stardust:', amountCoins);
             const { data, error } = await supabase.rpc('purchase_stardust', { amount_coins: amountCoins });
+            console.log('💰 Purchase result:', { data, error });
+
             if (error) throw error;
 
-            if (data.success) {
+            // Handle RPC returning literal boolean or object
+            // The RPC returns jsonb: { success: true, ... }
+            if (data && (data.success || data === true)) {
                 await fetchUserPoints();
                 await fetchUserPrestige();
                 return { success: true };
             } else {
-                return { success: false, message: data.message };
+                return { success: false, message: data?.message || 'Purchase failed' };
             }
         } catch (err: any) {
             console.error('Purchase stardust failed:', err);
