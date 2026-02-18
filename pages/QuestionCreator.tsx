@@ -1019,7 +1019,7 @@ const QuestionListSidebar = ({
                                         </div>
                                     </div>
                                     <div className="text-sm font-bold text-gray-800 mb-1 break-words">
-                                        {q.title || `Question ${q.id.substr(0, 8)}`}
+                                        {q.title}
                                     </div>
                                     <div className="flex justify-between items-center mt-1">
                                         <div className="text-[10px] text-gray-400 font-mono">

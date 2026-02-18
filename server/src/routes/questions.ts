@@ -119,7 +119,7 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
 
             return {
                 id: q.id,
-                title: q.title || `Question ${q.id.substr(0, 8)}`, // Fallback for old questions
+                title: q.title,
                 course: q.course,
                 topic: q.topic,
                 topicId: q.topic_id,
