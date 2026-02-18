@@ -232,8 +232,69 @@ export const PrestigePage = () => {
         }
     };
 
+    // Wheel Event Handler for Trackpad
+    const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const handleWheel = (e: React.WheelEvent) => {
+        // Horizontal scroll preferred, but vertical also works for convenience
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+
+        // Update translate
+        setCurrentTranslate(prev => prev - delta * 1.5); // 1.5 multiplier for sensitivity
+
+        // Debounce snap
+        if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
+        wheelTimeoutRef.current = setTimeout(() => {
+            // Trigger snap logic manually since we can't reuse handleTouchEnd easily without refactoring
+            const step = 600;
+            let nextIndex = -Math.round(currentTranslate / step);
+            // Re-calculate nextIndex based on the *latest* currentTranslate not the closure one? 
+            // Actually closure might be stale. Use ref or functional update if needed, but here we need current value.
+            // Let's rely on the fact that standard state update might be enough or use a ref for currentTranslate if jittery.
+            // For now, let's use a simple approach: call a snap function that uses the state.
+            // But wait, setTimeout closure will have stale state. 
+            // We need a ref to track currentTranslate for the timeout callback.
+        }, 150);
+    };
+
+    // Ref for currentTranslate to access in timeout
+    const currentTranslateRef = useRef(currentTranslate);
+    useEffect(() => { currentTranslateRef.current = currentTranslate; }, [currentTranslate]);
+
+    const performSnap = () => {
+        const step = 600;
+        let nextIndex = -Math.round(currentTranslateRef.current / step);
+        nextIndex = Math.max(0, Math.min(9, nextIndex));
+        setActiveIndex(nextIndex);
+        const finalTranslate = -nextIndex * step;
+        setCurrentTranslate(finalTranslate);
+        setPrevTranslate(finalTranslate);
+        if (containerRef.current) {
+            containerRef.current.style.transition = 'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        }
+    };
+
+    // Update the wheel handler to use performSnap
+    const handleWheelOptimized = (e: React.WheelEvent) => {
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+
+        // Immediate update
+        setCurrentTranslate(prev => prev - delta * 2);
+
+        // Clear existing transition
+        if (containerRef.current) containerRef.current.style.transition = 'none';
+
+        // Debounce snap
+        if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
+        wheelTimeoutRef.current = setTimeout(performSnap, 100);
+    };
+
     return (
-        <div className="fixed inset-0 w-full h-[100dvh] bg-black text-white font-sans flex flex-col overflow-hidden select-none" style={{ overscrollBehavior: 'none' }}>
+        <div
+            className="fixed inset-0 w-full h-[100dvh] bg-black text-white font-sans flex flex-col overflow-hidden select-none"
+            style={{ overscrollBehavior: 'none' }}
+            onWheel={handleWheelOptimized}
+        >
             {/* Dynamic Space Background */}
             <div className="absolute inset-0 z-0 pointer-events-none bg-black">
                 <StarBackground />
@@ -294,17 +355,17 @@ export const PrestigePage = () => {
                 </button>
             </div>
 
-            <div className="absolute top-6 right-4 z-50 flex items-center gap-3">
-                <div className="flex items-center bg-black/40 rounded-full backdrop-blur-md border border-white/10 shadow-xl overflow-hidden">
-                    {/* Money Section */}
-                    {/* Money Section */}
+            <div className="absolute top-6 right-4 z-50 flex items-center gap-3 w-full max-w-[320px] pointer-events-none">
+                {/* Made container full width within max-width constraints, buttons flex-1 for equal sizing */}
+                <div className="flex items-stretch bg-black/40 rounded-full backdrop-blur-md border border-white/10 shadow-xl overflow-hidden w-full pointer-events-auto">
+                    {/* Money Section - LEFT */}
                     <button
                         ref={moneyRef}
-                        onClick={() => navigate('/wallet')}
-                        className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 transition-colors relative"
+                        onClick={() => navigate('/points', { state: { from: 'prestige' } })}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 hover:bg-white/10 transition-colors relative border-r border-white/10 group"
                     >
                         <PointsCoin size="sm" />
-                        <span className="text-amber-400 font-bold text-sm tabular-nums">{userPoints.balance.toLocaleString()}</span>
+                        <span className="text-amber-400 font-bold text-sm tabular-nums group-hover:scale-105 transition-transform">{userPoints.balance.toLocaleString()}</span>
 
                         {/* Floating Change Label */}
                         {balanceChanges.filter(c => c.type === 'points').map(c => (
@@ -314,16 +375,14 @@ export const PrestigePage = () => {
                         ))}
                     </button>
 
-                    <div className="w-px h-5 bg-white/20"></div>
-
-                    {/* Stardust Section */}
+                    {/* Stardust Section - RIGHT */}
                     <button
                         ref={stardustRef}
-                        onClick={() => navigate('/prestige')}
-                        className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 transition-colors relative"
+                        onClick={() => navigate('/stardust', { state: { from: 'prestige' } })}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 hover:bg-white/10 transition-colors relative group"
                     >
-                        <span className="material-symbols-outlined text-purple-400 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
-                        <span className="text-purple-300 font-bold text-sm tabular-nums">{currentStardust.toLocaleString()}</span>
+                        <span className="material-symbols-outlined text-purple-400 text-lg group-hover:rotate-12 transition-transform" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+                        <span className="text-purple-300 font-bold text-sm tabular-nums group-hover:scale-105 transition-transform">{currentStardust.toLocaleString()}</span>
 
                         {/* Floating Change Label */}
                         {balanceChanges.filter(c => c.type === 'stardust').map(c => (

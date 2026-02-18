@@ -22,6 +22,7 @@ import { PointsPage } from './pages/PointsPage';
 import { CheckinPage } from './pages/CheckinPage';
 import { DebugQA } from './pages/DebugQA';
 import { PrestigePage } from './pages/PrestigePage';
+import { StardustPage } from './pages/StardustPage';
 import { ProWelcomeModal } from './components/ProWelcomeModal';
 import { useNavigate } from 'react-router-dom';
 import { StreakModal } from './components/StreakModal';
@@ -200,6 +201,7 @@ const AppRoutes = () => {
           <Route path="/practice/session" element={<Practice />} />
           <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
           <Route path="/prestige" element={<ProtectedRoute><PrestigePage /></ProtectedRoute>} />
+          <Route path="/stardust" element={<ProtectedRoute><StardustPage /></ProtectedRoute>} />
           <Route path="/profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/points" element={<ProtectedRoute><PointsPage /></ProtectedRoute>} />
           <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
