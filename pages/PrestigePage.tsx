@@ -61,6 +61,9 @@ export const PrestigePage = () => {
     const stars = userPrestige?.star_level || 0;
     const currentStardust = userPrestige?.current_stardust || 0;
 
+    const [flyItems, setFlyItems] = useState<{ id: number; type: 'coin' | 'stardust'; start: Rect; end: Rect }[]>([]);
+    const [balanceChanges, setBalanceChanges] = useState<{ id: number; type: 'points' | 'stardust'; amount: number }[]>([]);
+
     const costs = useMemo(() => {
         const base = 100 * Math.pow(5, level - 1);
         return [
@@ -84,8 +87,6 @@ export const PrestigePage = () => {
     const canUpgrade = currentStardust >= nextStarCost;
     const isViewedPlanetCompleted = (activeIndex + 1) < level;
     const isFuturePlanet = (activeIndex + 1) > level;
-
-    const [flyItems, setFlyItems] = useState<{ id: number; type: 'coin' | 'stardust'; start: Rect; end: Rect }[]>([]);
 
     // Refs for Animation Targets
     const moneyRef = useRef<HTMLButtonElement>(null);
@@ -120,12 +121,19 @@ export const PrestigePage = () => {
         const result = await purchaseStardust(buyAmount);
 
         if (result.success) {
+            // Show -Points label
+            const labelId = Date.now();
+            setBalanceChanges(prev => [...prev, { id: labelId, type: 'points', amount: -buyAmount }]);
+            setTimeout(() => setBalanceChanges(prev => prev.filter(l => l.id !== labelId)), 2000);
+
             // 3. Stardust Animation (Buy Button -> Stardust Counter)
             if (stardustRef.current) {
                 const stardustEnd = stardustRef.current.getBoundingClientRect();
                 const stardustStart = buyButtonRef.current.getBoundingClientRect();
 
-                for (let i = 0; i < 8; i++) {
+                // Spawn scaling number of stardust coins
+                const count = Math.min(15, Math.max(5, Math.ceil(buyAmount / 10)));
+                for (let i = 0; i < count; i++) {
                     setTimeout(() => {
                         playSound('stardust');
                         setFlyItems(prev => [...prev, {
@@ -134,8 +142,15 @@ export const PrestigePage = () => {
                             start: { top: stardustStart.top, left: stardustStart.left + stardustStart.width / 2, width: 0, height: 0 },
                             end: { top: stardustEnd.top, left: stardustEnd.left, width: stardustEnd.width, height: stardustEnd.height }
                         }]);
-                    }, i * 40);
+                    }, i * 100); // Slower spacing
                 }
+
+                // Show +Stardust label after a delay
+                setTimeout(() => {
+                    const stardustLabelId = Date.now() + 1;
+                    setBalanceChanges(prev => [...prev, { id: stardustLabelId, type: 'stardust', amount: buyAmount }]);
+                    setTimeout(() => setBalanceChanges(prev => prev.filter(l => l.id !== stardustLabelId)), 2000);
+                }, count * 100 + 1000);
             }
         } else {
             alert(result.message || 'Purchase failed');
@@ -146,7 +161,12 @@ export const PrestigePage = () => {
 
     const handleInject = async () => {
         const result = await injectStardust(nextStarCost);
-        if (!result.success) {
+        if (result.success) {
+            // Show -Stardust label
+            const labelId = Date.now();
+            setBalanceChanges(prev => [...prev, { id: labelId, type: 'stardust', amount: -nextStarCost }]);
+            setTimeout(() => setBalanceChanges(prev => prev.filter(l => l.id !== labelId)), 2000);
+        } else {
             alert(result.message || 'Injection failed');
         }
     };
@@ -263,13 +283,21 @@ export const PrestigePage = () => {
             <div className="absolute top-6 right-4 z-50 flex items-center gap-3">
                 <div className="flex items-center bg-black/40 rounded-full backdrop-blur-md border border-white/10 shadow-xl overflow-hidden">
                     {/* Money Section */}
+                    {/* Money Section */}
                     <button
                         ref={moneyRef}
                         onClick={() => navigate('/wallet')}
-                        className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 transition-colors relative"
                     >
                         <PointsCoin size="sm" />
                         <span className="text-amber-400 font-bold text-sm tabular-nums">{userPoints.balance.toLocaleString()}</span>
+
+                        {/* Floating Change Label */}
+                        {balanceChanges.filter(c => c.type === 'points').map(c => (
+                            <div key={c.id} className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-amber-500 font-black text-xs animate-bounce whitespace-nowrap drop-shadow-lg scale-125 z-50">
+                                {c.amount > 0 ? '+' : ''}{c.amount.toLocaleString()}
+                            </div>
+                        ))}
                     </button>
 
                     <div className="w-px h-5 bg-white/20"></div>
@@ -278,10 +306,17 @@ export const PrestigePage = () => {
                     <button
                         ref={stardustRef}
                         onClick={() => navigate('/prestige')}
-                        className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 transition-colors relative"
                     >
                         <span className="material-symbols-outlined text-purple-400 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
                         <span className="text-purple-300 font-bold text-sm tabular-nums">{currentStardust.toLocaleString()}</span>
+
+                        {/* Floating Change Label */}
+                        {balanceChanges.filter(c => c.type === 'stardust').map(c => (
+                            <div key={c.id} className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-purple-400 font-black text-xs animate-bounce whitespace-nowrap drop-shadow-lg scale-125 z-50">
+                                {c.amount > 0 ? '+' : ''}{c.amount.toLocaleString()}
+                            </div>
+                        ))}
                     </button>
                 </div>
             </div>
@@ -489,35 +524,59 @@ export const PrestigePage = () => {
                         </button>
 
                         {/* Market/Buy Panel */}
-                        <div className="w-full max-w-sm h-16 bg-black/60 backdrop-blur-2xl rounded-2xl border border-white/10 flex items-center justify-between px-1.5 py-1.5 gap-2 shadow-2xl relative">
-                            {/* Market Rate */}
-                            <div className="flex flex-col items-center justify-center pl-3 pr-2 border-r border-white/5 h-full">
-                                <span className="text-[8px] text-white/20 uppercase font-bold tracking-widest text-center">Rate</span>
-                                <div className="flex items-center gap-0.5 text-xs font-bold text-[#FFCC00] mt-0.5">
-                                    <span>10</span>
-                                    <span className="material-symbols-outlined text-[10px]">auto_awesome</span>
+                        <div className="w-full flex flex-col items-center gap-3">
+                            <div className="w-full max-w-sm h-16 bg-black/60 backdrop-blur-2xl rounded-2xl border border-white/10 flex items-center justify-between px-1.5 py-1.5 gap-2 shadow-2xl relative">
+                                {/* Market Rate */}
+                                <div className="flex flex-col items-center justify-center pl-3 pr-2 border-r border-white/5 h-full">
+                                    <span className="text-[8px] text-white/20 uppercase font-bold tracking-widest text-center">Rate</span>
+                                    <div className="flex items-center gap-0.5 text-xs font-bold text-[#FFCC00] mt-0.5">
+                                        <span>10</span>
+                                        <span className="material-symbols-outlined text-[10px]">auto_awesome</span>
+                                    </div>
                                 </div>
+                                {/* Input */}
+                                <div className="flex-grow flex items-center justify-center relative h-full">
+                                    <input
+                                        type="text"
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                        min="0"
+                                        value={buyAmount === 0 ? '' : buyAmount}
+                                        placeholder="0"
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === '') {
+                                                setBuyAmount(0);
+                                            } else {
+                                                const parsed = parseInt(val.replace(/\D/g, ''));
+                                                if (!isNaN(parsed)) setBuyAmount(parsed);
+                                            }
+                                        }}
+                                        className="bg-transparent w-full h-full outline-none font-black text-white text-center text-xl appearance-none m-0 p-0 shadow-none border-none ring-0 no-spin caret-[#FFCC00]"
+                                    />
+                                </div>
+                                {/* Buy Button */}
+                                <button
+                                    ref={buyButtonRef}
+                                    onClick={handleBuy}
+                                    disabled={isBuying || userPoints.balance < buyAmount || buyAmount <= 0}
+                                    className={`h-full px-8 font-black text-[11px] uppercase tracking-[0.2em] rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(255,204,0,0.5)] active:scale-95 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center relative overflow-hidden
+                                        ${isBuying ? 'bg-white/10 text-white' : 'bg-[#FFCC00] hover:bg-[#ffda33] text-black'}`}
+                                >
+                                    {isBuying ? <span className="material-symbols-outlined animate-spin text-sm">refresh</span> : 'Purchase'}
+                                </button>
                             </div>
-                            {/* Input */}
-                            <div className="flex-grow flex items-center justify-center relative h-full">
-                                <input
-                                    type="number"
-                                    min="1"
-                                    max={userPoints.balance}
-                                    value={buyAmount}
-                                    onChange={(e) => setBuyAmount(Math.max(1, parseInt(e.target.value) || 0))}
-                                    className="bg-transparent w-full h-full outline-none font-black text-white text-center text-lg appearance-none m-0 p-0 shadow-none border-none ring-0 no-spin caret-[#FFCC00]"
-                                />
-                            </div>
-                            {/* Buy Button */}
-                            <button
-                                ref={buyButtonRef}
-                                onClick={handleBuy}
-                                disabled={isBuying || userPoints.balance < buyAmount}
-                                className="h-full px-6 bg-[#FFCC00] hover:bg-[#ffda33] text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:bg-gray-600 disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center relative overflow-hidden"
-                            >
-                                {isBuying ? <span className="material-symbols-outlined animate-spin text-sm">refresh</span> : 'Buy'}
-                            </button>
+
+                            {/* Receive Info */}
+                            {buyAmount > 0 && (
+                                <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-black text-white/30 animate-in fade-in slide-in-from-bottom-1 duration-500">
+                                    <span>You will receive</span>
+                                    <div className="flex items-center gap-1 text-purple-400">
+                                        <span className="text-sm font-black text-purple-300">{(buyAmount * 10).toLocaleString()}</span>
+                                        <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -560,11 +619,11 @@ const FlyingItem = ({ item, onComplete }: { item: { type: 'coin' | 'stardust'; s
         top: item.start.top,
         left: item.start.left,
         opacity: 1,
-        transform: 'scale(1)',
+        transform: 'scale(1) rotate(0deg)',
         position: 'fixed',
         zIndex: 100,
         pointerEvents: 'none',
-        transition: 'all 0.6s cubic-bezier(0.2, 1, 0.3, 1)'
+        transition: 'all 1.2s cubic-bezier(0.2, 1, 0.3, 1)'
     });
 
     useEffect(() => {
@@ -574,15 +633,15 @@ const FlyingItem = ({ item, onComplete }: { item: { type: 'coin' | 'stardust'; s
                 top: item.end.top,
                 left: item.end.left,
                 opacity: 0,
-                transform: 'scale(0.5)',
+                transform: 'scale(0.3) rotate(720deg)',
                 position: 'fixed',
                 zIndex: 100,
                 pointerEvents: 'none',
-                transition: 'all 0.6s cubic-bezier(0.2, 1, 0.3, 1)'
+                transition: 'all 1.2s cubic-bezier(0.2, 1, 0.3, 1)'
             });
         });
 
-        const timer = setTimeout(onComplete, 600);
+        const timer = setTimeout(onComplete, 1200);
         return () => clearTimeout(timer);
     }, []);
 
@@ -591,9 +650,12 @@ const FlyingItem = ({ item, onComplete }: { item: { type: 'coin' | 'stardust'; s
             {item.type === 'coin' ? (
                 <PointsCoin size="sm" animate />
             ) : (
-                <span className="material-symbols-outlined text-purple-400 text-xl drop-shadow-[0_0_10px_rgba(192,132,252,0.8)]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    auto_awesome
-                </span>
+                <div className="relative">
+                    <span className="material-symbols-outlined text-purple-400 text-2xl drop-shadow-[0_0_15px_rgba(192,132,252,1)]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                        auto_awesome
+                    </span>
+                    <div className="absolute inset-0 bg-purple-500/20 blur-md rounded-full scale-110" />
+                </div>
             )}
         </div>
     );
