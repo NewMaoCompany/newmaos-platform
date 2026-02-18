@@ -48,23 +48,21 @@ export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
                         </span>
                     </div>
 
-                    {/* Progress Bar Container - 3 Segments with Stars on Top */}
-                    <div className="flex gap-1 w-[60px] mt-1 relative">
-                        {[1, 2, 3].map(s => (
-                            <div key={s} className="h-1 flex-1 bg-gray-200/50 rounded-full overflow-visible relative">
-                                <div
-                                    className={`h-full w-full rounded-full transition-all duration-500 ${s <= stars ? 'bg-gradient-to-r from-amber-300 to-amber-500' : 'opacity-0'}`}
-                                ></div>
-                                {/* Star Icon - Centered on segment */}
-                                <div className="absolute -top-[4px] left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none">
-                                    <span
-                                        className={`material-symbols-outlined text-[7px] drop-shadow-sm ${s <= stars ? 'text-amber-500 fill-current' : 'text-gray-300'}`}
-                                        style={{ fontVariationSettings: "'FILL' 1" }}
-                                    >
-                                        star
-                                    </span>
-                                </div>
-                            </div>
+                    {/* 4-Vertex Progress System */}
+                    <div className="relative w-[70px] h-0.5 bg-gray-200/50 rounded-full flex items-center justify-between mt-1">
+                        {/* Fill Line */}
+                        <div
+                            className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-300 to-amber-500 rounded-full transition-all duration-500"
+                            style={{ width: `${(stars / 3) * 100}%` }}
+                        />
+
+                        {/* 4 Dots */}
+                        {[0, 1, 2, 3].map(i => (
+                            <div
+                                key={i}
+                                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 z-10 ${i <= stars ? 'bg-amber-500 scale-110' : 'bg-gray-300 scale-90'
+                                    }`}
+                            />
                         ))}
                     </div>
                 </div>
