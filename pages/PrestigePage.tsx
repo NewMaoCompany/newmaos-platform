@@ -232,7 +232,7 @@ export const PrestigePage = () => {
         if (!isDragging || dragStartX === null) return;
         const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
         const diff = clientX - dragStartX;
-        setCurrentTranslate(prevTranslate + diff);
+        setCurrentTranslate(prevTranslate + diff * 0.65); // Damping factor to prevent "flying too far"
     };
 
     const handleTouchEnd = () => {
@@ -253,7 +253,7 @@ export const PrestigePage = () => {
         setPrevTranslate(finalTranslate);
 
         if (containerRef.current) {
-            containerRef.current.style.transition = 'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            containerRef.current.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
         }
     };
 
@@ -265,7 +265,7 @@ export const PrestigePage = () => {
         const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
 
         // Update translate
-        setCurrentTranslate(prev => prev - delta * 1.5); // 1.5 multiplier for sensitivity
+        setCurrentTranslate(prev => prev - delta * 0.9); // Reduced multiplier from 1.5 to 0.9
 
         // Debounce snap
         if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
@@ -295,7 +295,7 @@ export const PrestigePage = () => {
         setCurrentTranslate(finalTranslate);
         setPrevTranslate(finalTranslate);
         if (containerRef.current) {
-            containerRef.current.style.transition = 'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            containerRef.current.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
         }
     };
 

@@ -4,63 +4,66 @@ import { useApp } from '../AppContext';
 import { PlanetVisual, getPlanetName } from './SpaceVisuals';
 import { PointsCoin } from './PointsCoin';
 
-export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
-    const { userPrestige } = useApp();
+export const PrestigeWidget = ({ compact = false, prestigeData = null, isReadOnly = false }: { compact?: boolean, prestigeData?: any, isReadOnly?: boolean }) => {
+    const { userPrestige: currentUserPrestige } = useApp();
     const navigate = useNavigate();
 
-    // Default if null (e.g. loading or new user)
-    const level = userPrestige?.planet_level || 1;
-    const stars = userPrestige?.star_level || 0;
-    const stardust = userPrestige?.current_stardust || 0;
+    // Use passed data or fall back to current user
+    const p = prestigeData || currentUserPrestige;
+    const level = p?.planet_level || 1;
+    const stars = p?.star_level || 0;
+    const stardust = p?.current_stardust || 0;
     const name = useMemo(() => getPlanetName(level), [level]);
 
     if (compact) {
         return (
             <div
-                onClick={() => navigate('/prestige')}
-                className="cursor-pointer group relative flex flex-row items-center gap-2 pl-1.5 pr-3 py-1 rounded-[999px] min-w-[210px] h-[36px]"
+                onClick={() => !isReadOnly && navigate('/prestige')}
+                className={`group relative flex flex-row items-center gap-2 pl-2 pr-3 py-1.5 rounded-[999px] min-w-[220px] h-[40px] ${!isReadOnly ? 'cursor-pointer' : 'cursor-default'}`}
                 style={{
-                    background: 'rgba(255, 255, 255, 0.75)',
-                    backdropFilter: 'blur(12px)',
-                    WebkitBackdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(249, 212, 6, 0.45)', // Golden border
-                    boxShadow: '0 4px 15px -1px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+                    background: 'rgba(255, 255, 255, 0.85)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(249, 212, 6, 0.4)',
+                    boxShadow: '0 4px 20px -5px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
                 }}
             >
-                {/* Hover Effect Layer */}
-                <div className="absolute inset-0 rounded-[999px] transition-all opacity-0 group-hover:opacity-100 pointer-events-none"
-                    style={{
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        borderColor: 'rgba(249, 212, 6, 0.7)',
-                        boxShadow: '0 12px 25px -5px rgba(249, 212, 6, 0.25), 0 4px 10px -2px rgba(0, 0, 0, 0.08)'
-                    }}
-                />
+                {/* Hover Effect Layer - Only if not ReadOnly */}
+                {!isReadOnly && (
+                    <div className="absolute inset-0 rounded-[999px] transition-all opacity-0 group-hover:opacity-100 pointer-events-none"
+                        style={{
+                            background: 'rgba(255, 255, 255, 0.98)',
+                            borderColor: 'rgba(249, 212, 6, 0.8)',
+                            boxShadow: '0 12px 30px -5px rgba(249, 212, 6, 0.3)'
+                        }}
+                    />
+                )}
 
-                <div className="ml-0.5 z-10 flex items-center justify-center w-8 h-8 rounded-full overflow-visible relative group-hover:drop-shadow-[0_0_8px_rgba(249,212,6,0.6)] transition-all">
+                <div className="shrink-0 z-10 flex items-center justify-center w-8 h-8 rounded-full overflow-visible relative group-hover:scale-110 transition-transform duration-300">
                     <PlanetVisual level={level} size="sm" showAtmosphere={true} floating={false} />
                 </div>
 
-                {/* Content Container (Z-index to sit above hover layer) */}
+                {/* Content Container */}
                 <div className="flex flex-col flex-grow gap-0.5 justify-center z-10 min-w-0">
-                    <div className="flex justify-between items-end leading-none">
-                        <span className="text-[9px] font-black text-gray-900 uppercase tracking-wider relative top-[1px] truncate">
+                    <div className="flex justify-between items-center leading-none">
+                        <span className="text-[10px] font-black text-gray-900 uppercase tracking-tighter truncate max-w-[80px]">
                             {name}
                         </span>
                     </div>
 
-                    {/* 4-Vertex Progress System */}
-                    <div className="relative w-[70px] h-0.5 bg-gray-200/50 rounded-full flex items-center justify-between mt-1">
+                    {/* Improved 4-Vertex Progress System */}
+                    <div className="relative w-[65px] h-1 bg-gray-200/50 rounded-full flex items-center justify-between mt-0.5 px-[1px]">
                         {/* Fill Line */}
                         <div
-                            className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-300 to-amber-500 rounded-full transition-all duration-500"
-                            style={{ width: `${stars > 0 ? ((Math.min(4, stars) - 1) / 3) * 100 : 0}%` }}
+                            className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-400 via-amber-200 to-amber-500 rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(251,191,36,0.5)]"
+                            style={{ width: `${Math.max(0, stars / 4 * 100)}%` }}
                         />
 
                         {/* 4 Dots */}
                         {[1, 2, 3, 4].map(i => (
                             <div
                                 key={i}
-                                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 z-10 ${i <= stars ? 'bg-amber-500 scale-110' : 'bg-gray-300 scale-90'
+                                className={`w-1.5 h-1.5 rounded-full transition-all duration-500 z-10 ${i <= stars ? 'bg-amber-500 scale-110 shadow-[0_0_4px_rgba(245,158,11,0.6)]' : 'bg-gray-300 scale-90'
                                     }`}
                             />
                         ))}
@@ -68,12 +71,12 @@ export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
                 </div>
 
                 {/* Divider */}
-                <div className="h-4 w-px bg-gray-200 dark:bg-gray-700 z-10 mx-1" />
+                <div className="h-5 w-px bg-gray-300/50 z-10 mx-0.5" />
 
                 {/* Stardust Section */}
-                <div className="flex items-center gap-1.5 z-10 pr-1">
-                    <PointsCoin type="stardust" size="sm" className="group-hover:scale-110 transition-transform" />
-                    <span className="text-[11px] font-bold text-gray-700 dark:text-gray-200 tabular-nums">
+                <div className="flex items-center gap-1.5 z-10 pr-0.5 shrink-0">
+                    <PointsCoin type="stardust" size="sm" className="group-hover:rotate-[15deg] transition-transform" />
+                    <span className="text-[12px] font-black text-slate-800 tabular-nums tracking-tight">
                         {stardust.toLocaleString()}
                     </span>
                 </div>

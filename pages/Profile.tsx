@@ -5,6 +5,7 @@ import { useToast } from '../components/Toast';
 import { supabase } from '../src/services/supabaseClient';
 import { Navbar } from '../components/Navbar';
 import { PointsCoin } from '../components/PointsCoin';
+import { PrestigeWidget } from '../components/PrestigeWidget';
 import { getUniqueTitleStyle } from '../src/utils/titleStyles';
 
 export const Profile = () => {
@@ -27,6 +28,7 @@ export const Profile = () => {
     } | null>(null);
 
     const [stats, setStats] = useState({ posts: 0, friends: 0, channels: 0 });
+    const [prestige, setPrestige] = useState<any>(null);
     const [friendStatus, setFriendStatus] = useState<'none' | 'friends' | 'pending_sent' | 'pending_received'>('none');
     const [isLoading, setIsLoading] = useState(true);
 
@@ -80,6 +82,17 @@ export const Profile = () => {
                 } else {
                     setFriendStatus('none');
                 }
+            }
+
+            // 5. Fetch Prestige Data
+            const { data: prestigeData } = await supabase
+                .from('user_prestige')
+                .select('*')
+                .eq('user_id', userId)
+                .maybeSingle();
+
+            if (prestigeData) {
+                setPrestige(prestigeData);
             }
         } catch (err) {
             console.error('Error fetching profile:', err);
@@ -258,6 +271,17 @@ export const Profile = () => {
                                     >
                                         ID: {profile.id}
                                     </span>
+
+                                    {/* Prestige Status Widget */}
+                                    {prestige && (
+                                        <div className="mt-4 transform hover:scale-[1.02] transition-transform duration-300">
+                                            <PrestigeWidget
+                                                compact={true}
+                                                prestigeData={prestige}
+                                                isReadOnly={true}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
 
                                 {profile.bio && (
