@@ -251,6 +251,7 @@ export const PrestigePage = () => {
                             filter: 'blur(15px)'
                         }}
                     />
+                    );
 
                     {/* The Solid Body - REMOVED RING / INCREASED DETAIL */}
                     <div className="absolute inset-[25%] rounded-full bg-[#fcd34d] shadow-[0_0_120px_rgba(245,158,11,0.6),inset_-40px_-40px_80px_rgba(0,0,0,0.8),inset_20px_20px_40px_rgba(255,255,255,0.4)] overflow-hidden">
@@ -407,14 +408,14 @@ export const PrestigePage = () => {
                                         )}
                                     </div>
 
-                                    {/* PLANET NAME - Extra Careful Centering */}
-                                    <div className={`text-center transition-all duration-700 ${distance === 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'} pointer-events-none absolute -top-24 w-full flex flex-col items-center justify-center`}>
+                                    {/* PLANET NAME - Visually Centered (Compensating for letter spacing) */}
+                                    <div className={`text-center transition-all duration-700 ${distance === 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'} pointer-events-none absolute -top-24 w-full flex flex-col items-center justify-center pl-[0.2em]`}>
                                         <div className="relative">
-                                            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/70 to-white/10 drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] font-mono leading-none pr-[0.4em]">
+                                            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/70 to-white/10 drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] font-mono leading-none mr-[-0.4em]">
                                                 {name}
                                             </h2>
                                         </div>
-                                        <div className="h-1 w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent mt-4" />
+                                        <div className="h-1 w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent mt-4 mr-[0.2em]" />
                                     </div>
                                 </div>
                             );
@@ -437,15 +438,18 @@ export const PrestigePage = () => {
                             </span>
                         </div>
 
-                        {/* 4-Vertex Progress Bar */}
-                        <div className="relative w-full h-[5px] bg-white/5 rounded-full flex items-center justify-between border border-white/5 overflow-hidden">
+                        {/* 4-Vertex Progress Bar - VISIBILITY RESTORED */}
+                        <div className="relative w-full h-[5px] flex items-center justify-between">
+                            {/* Track Background */}
+                            <div className="absolute inset-0 bg-white/10 rounded-full" />
+
                             {/* Filling Effect */}
                             <div
-                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#FFCC00] via-amber-400 to-[#FFCC00] transition-all duration-1000 shadow-[0_0_30px_rgba(251,191,36,0.5)]"
+                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#FFCC00] via-amber-400 to-[#FFCC00] rounded-full transition-all duration-1000 shadow-[0_0_20px_rgba(251,191,36,0.6)]"
                                 style={{ width: `${displayedStars > 0 ? ((Math.min(4, displayedStars) - 1) / 3) * 100 : 0}%` }}
                             />
 
-                            {/* Vertices (4 Dots) */}
+                            {/* Vertices (4 Dots) - Z-Index Boosted */}
                             {[1, 2, 3, 4].map((i) => {
                                 // Logic: 
                                 // i=1: One Star Achieved
@@ -455,7 +459,7 @@ export const PrestigePage = () => {
                                 const isReached = displayedStars >= i;
                                 const labels = ["One Star", "Two Stars", "Three Stars", "Next Level"];
                                 return (
-                                    <div key={i} className="relative z-10 flex flex-col items-center">
+                                    <div key={i} className="relative z-20 flex flex-col items-center">
                                         {/* Dot with glow */}
                                         <div
                                             className={`w-5 h-5 rounded-full transition-all duration-700 border-2 ${isReached
@@ -463,21 +467,20 @@ export const PrestigePage = () => {
                                                 : 'bg-[#050505] border-white/10 scale-90'
                                                 }`}
                                         />
-
-                                        {/* Vertex Labels */}
-                                        <div className={`absolute -bottom-14 whitespace-nowrap flex flex-col items-center transition-all duration-700 ${isReached ? 'opacity-100 translate-y-0' : 'opacity-10 translate-y-4'}`}>
+                                        {/* Vertex Labels - RESTORED */}
+                                        <div className={`absolute -bottom-14 whitespace-nowrap flex flex-col items-center transition-all duration-700 ${isReached ? 'opacity-100 translate-y-0' : 'opacity-30 translate-y-4'}`}>
                                             <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${i === 4 ? 'text-amber-400' : 'text-white/70'}`}>
                                                 {labels[i - 1]}
                                             </span>
                                             <div className="mt-2 flex items-center justify-center">
                                                 {i === 4 ? (
-                                                    <span className={`material-symbols-outlined text-xl ${isReached ? 'text-amber-400' : 'text-white/5'} transition-colors`}>
+                                                    <span className={`material-symbols-outlined text-xl ${isReached ? 'text-amber-400' : 'text-white/20'} transition-colors`}>
                                                         {isReached ? 'check_circle' : 'rocket_launch'}
                                                     </span>
                                                 ) : (
                                                     <div className="flex gap-0.5">
                                                         {Array.from({ length: i }).map((_, si) => (
-                                                            <span key={si} className={`material-symbols-outlined text-[10px] ${isReached ? 'text-amber-500' : 'text-white/5'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                                                            <span key={si} className={`material-symbols-outlined text-[10px] ${isReached ? 'text-amber-500' : 'text-white/20'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
                                                                 star
                                                             </span>
                                                         ))}
@@ -489,6 +492,7 @@ export const PrestigePage = () => {
                                 );
                             })}
                         </div>
+
                     </div>
 
                     {/* Controls */}
@@ -632,7 +636,7 @@ export const PrestigePage = () => {
                             animation: pulse-slow 4s ease-in-out infinite;
                         }
                     `}} />
-        </div>
+        </div >
     );
 };
 
