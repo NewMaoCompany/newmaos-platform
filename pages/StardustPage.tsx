@@ -175,7 +175,7 @@ export const StardustPage = () => {
                             description="Trade your accumulated NMS Points for Stardust in the cosmic marketplace."
                             actionLabel="Go to Market"
                             actionIcon="storefront"
-                            onAction={() => navigate('/prestige')}
+                            onAction={() => navigate('/prestige', { replace: true })}
                             details={[
                                 "Exchange Rate varies based on market conditions and your level",
                                 "Use the 'Buy Stardust' panel on the Prestige main screen",
