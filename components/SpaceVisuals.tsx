@@ -335,31 +335,44 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                         </div>
                     </div>
                 );
-            case 8: // Nova (Sun) - ULTRA REALISM UPGRADE (Plasma Arcs)
+            case 8: // Nova (Sun) - CORE CINEMATIC OVERHAUL (Phase 5)
                 return (
-                    <div className="relative w-full h-full rounded-full bg-[#fbd34d] overflow-visible">
-                        {/* 1. Photosphere & Deep Limb Darkening */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#fff7ed] via-[#f59e0b] to-[#451a03]" />
-                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,transparent_35%,rgba(69,26,3,1)_100%)]" />
+                    <div className="relative w-full h-full rounded-full bg-white overflow-visible filter"
+                        style={{ filter: 'url(#solar-heat-shimmer)' }}>
+                        {/* 1. Photosphere & Extreme Limb Darkening */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-[#f59e0b] to-[#450a0a]" />
+                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_55%,rgba(69,26,3,1)_100%)]" />
 
-                        {/* 2. Fine Solar Granulation Texture */}
-                        <div className="absolute inset-[-10%] opacity-95 mix-blend-overlay"
-                            style={{ filter: 'url(#solar-granulation) contrast(2) brightness(1.3)' }} />
+                        {/* 2. Solar Plasma Convection System */}
+                        <div className="absolute inset-[-5%] opacity-100 mix-blend-screen"
+                            style={{ filter: 'url(#solar-plasma-cells) contrast(1.6) brightness(1.1)' }} />
 
-                        {/* 3. Silhouette-Breaking Solar Prominences */}
-                        <div className="absolute inset-[-25%] opacity-70 mix-blend-color-dodge animate-spin-slower"
-                            style={{ background: 'conic-gradient(from 0deg, transparent, #ffcc00 1%, transparent 3%, #ff4d00 15%, transparent 20%)', filter: 'url(#lava-noise) blur(4px)' }} />
-
-                        {/* 4. Realistic Sunspot Cluster */}
+                        {/* 3. High-Detail Solar Prominences (Silhouette-breaking Loops) */}
                         {[
-                            { t: '35%', l: '35%', s: '22%' },
-                            { t: '60%', l: '55%', s: '14%' }
+                            { r: 'rotate-0', top: '10%', left: '40%' },
+                            { r: 'rotate-[45deg]', top: '20%', left: '70%' },
+                            { r: 'rotate-[200deg]', top: '70%', left: '20%' },
+                        ].map((p, i) => (
+                            <div key={i} className={`absolute w-[30%] h-[30%] z-10 ${p.r} opacity-80 mix-blend-screen overflow-visible`} style={{ top: p.top, left: p.left }}>
+                                <div className="w-full h-full border-[6px] border-amber-400/80 rounded-[60%_40%_70%_30%] blur-[4px] animate-pulse" />
+                                <div className="absolute inset-0 border-[2px] border-white/60 rounded-[60%_40%_70%_30%] blur-[1px]" />
+                            </div>
+                        ))}
+
+                        {/* 4. Realistic Sunspot Hubs */}
+                        {[
+                            { t: '35%', l: '40%', s: '18%' },
+                            { t: '65%', l: '60%', s: '12%' }
                         ].map((s, i) => (
                             <div key={i} className="absolute flex items-center justify-center translate-x-[-50%] translate-y-[-50%]" style={{ top: s.t, left: s.l, width: s.s, height: s.s }}>
-                                <div className="absolute w-[180%] h-[180%] rounded-full bg-[#451a03]/90 blur-[2px] mix-blend-multiply" />
+                                <div className="absolute w-[200%] h-[200%] rounded-full bg-[#450a0a]/90 blur-[3px] mix-blend-multiply" />
                                 <div className="absolute w-full h-full rounded-full bg-black blur-[0.5px]" />
                             </div>
                         ))}
+
+                        {/* 5. Radiant Solar Fringe */}
+                        <div className="absolute inset-[-30%] opacity-30 mix-blend-screen animate-spin-slow"
+                            style={{ background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'url(#surface-noise) blur(10px)' }} />
                     </div>
                 );
             case 9: // Singularity - ULTRA REALISM UPGRADE (Spacetime Threads)
@@ -425,6 +438,18 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                             <feDistantLight azimuth="45" elevation="60" />
                         </feDiffuseLighting>
                         <feDisplacementMap in="SourceGraphic" scale="5" />
+                    </filter>
+                    <filter id="solar-plasma-cells">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="5" seed="8" result="noise" />
+                        <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 5 -2" result="cells" />
+                        <feGaussianBlur in="cells" stdDeviation="1" result="soft-cells" />
+                        <feComposite operator="arithmetic" k1="1" k2="0.6" in="SourceGraphic" in2="soft-cells" />
+                    </filter>
+                    <filter id="solar-heat-shimmer">
+                        <feTurbulence type="turbulence" baseFrequency="0.05 0.1" numOctaves="2" seed="5">
+                            <animate attributeName="seed" from="1" to="100" dur="10s" repeatCount="indefinite" />
+                        </feTurbulence>
+                        <feDisplacementMap in="SourceGraphic" scale="8" />
                     </filter>
                     <filter id="cloud-drift">
                         <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="5" />
