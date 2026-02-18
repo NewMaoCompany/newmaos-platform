@@ -61,7 +61,9 @@ app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
-        deploy_tag: 'v1.0.2_mapping_fix'
+        deploy_tag: 'v1.0.3_env_audit',
+        supabase_url: process.env.SUPABASE_URL || 'NOT_SET',
+        supabase_key_prefix: process.env.SUPABASE_ANON_KEY ? process.env.SUPABASE_ANON_KEY.substring(0, 10) : 'NOT_SET'
     });
 });
 
