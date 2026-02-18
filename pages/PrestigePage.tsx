@@ -148,16 +148,26 @@ export const PrestigePage = () => {
         await injectStardust(nextStarCost);
     };
 
-    // Initialize to current level
+    const lastLevelRef = useRef(level);
+
+    // Initialize/Auto-scroll when level changes
     useEffect(() => {
-        const initialIndex = Math.max(0, level - 1);
-        setActiveIndex(initialIndex);
-        // Calculate initial translate based on index
-        // Item width is approx 300px + gap. Let's say step is 400px for wide spacing.
+        const targetIndex = Math.max(0, level - 1);
+        setActiveIndex(targetIndex);
+
         const step = 600;
-        const initialTranslate = -initialIndex * step;
-        setCurrentTranslate(initialTranslate);
-        setPrevTranslate(initialTranslate);
+        const targetTranslate = -targetIndex * step;
+
+        // If level increased, animate
+        if (level > lastLevelRef.current && containerRef.current) {
+            containerRef.current.style.transition = 'transform 1.2s cubic-bezier(0.22, 1, 0.36, 1)';
+        } else if (containerRef.current) {
+            containerRef.current.style.transition = 'none';
+        }
+
+        setCurrentTranslate(targetTranslate);
+        setPrevTranslate(targetTranslate);
+        lastLevelRef.current = level;
     }, [level]);
 
     // Touch/Mouse Handlers for Ring Swipe
@@ -461,10 +471,10 @@ export const PrestigePage = () => {
                         >
                             <div className="flex items-center gap-2.5 z-10 transition-transform group-hover:scale-110">
                                 <span className="material-symbols-outlined text-2xl font-black">
-                                    {isViewedPlanetCompleted ? 'keyboard_double_arrow_right' : isFuturePlanet ? 'lock' : stars === 2 ? 'auto_mode' : 'offline_bolt'}
+                                    {isViewedPlanetCompleted ? 'keyboard_double_arrow_right' : isFuturePlanet ? 'lock' : stars >= 2 ? 'auto_mode' : 'offline_bolt'}
                                 </span>
                                 <span className="drop-shadow-sm font-black">
-                                    {isViewedPlanetCompleted ? 'Move to Next Planet' : isFuturePlanet ? 'Locked' : stars === 2 ? 'Evolve Planet' : 'Inject Stardust'}
+                                    {isViewedPlanetCompleted ? 'Move to Next Planet' : isFuturePlanet ? 'Locked' : stars >= 2 ? 'Evolve Planet' : 'Inject Stardust'}
                                 </span>
                             </div>
                             {!isViewedPlanetCompleted && !isFuturePlanet && (
