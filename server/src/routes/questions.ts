@@ -33,7 +33,7 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
                 type, calculator_allowed, difficulty, target_time_seconds,
                 skill_tags, error_tags, primary_skill_id, supporting_skill_ids,
                 prompt, prompt_type, latex, options, correct_option_id, tolerance,
-                explanation, explanation_type, micro_explanations, recommendation_reasons,
+                explanation, micro_explanations, recommendation_reasons,
                 version, source, source_year, notes, weight_primary, weight_supporting,
                 question_skills(skill_id, role, weight),
                 question_error_patterns(error_tag_id)
@@ -141,7 +141,7 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
                 errorPatternIds: errorPatterns.length > 0 ? errorPatterns : (q.error_tags || []),
 
                 promptType: q.prompt_type || (q.prompt && (String(q.prompt).startsWith('http') || String(q.prompt).startsWith('data:')) ? 'image' : 'text'),
-                explanationType: q.explanation_type || (q.explanation && (String(q.explanation).startsWith('http') || String(q.explanation).startsWith('data:')) ? 'image' : 'text'),
+                // explanationType: q.explanation_type || (q.explanation && (String(q.explanation).startsWith('http') || String(q.explanation).startsWith('data:')) ? 'image' : 'text'),
 
                 microExplanations: q.micro_explanations,
                 recommendationReasons: q.recommendation_reasons,
