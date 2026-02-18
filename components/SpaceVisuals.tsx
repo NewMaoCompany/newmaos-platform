@@ -153,390 +153,235 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
 
     const renderPlanetContent = () => {
         switch (planetIndex) {
-            case 0: // Celestia (Moon) - ABSOLUTE REALISM OVERHAUL
+            case 0: // Celestia (Moon) - ULTRA REALISM UPGRADE
                 return (
-                    <div className="relative w-full h-full rounded-full bg-[#1a1b1e] overflow-hidden">
+                    <div className="relative w-full h-full rounded-full bg-[#1a1b1e] overflow-visible">
                         {/* 1. Physically Based Surface Base */}
-                        <div className="absolute inset-0 bg-[#d1d5db]" />
+                        <div className="absolute inset-0 rounded-full bg-[#d1d5db] shadow-[inset_-10px_-10px_40px_rgba(0,0,0,0.4)]" />
 
                         {/* 2. Micro-High Frequency Noise (Dust & Regolith) */}
-                        <div className="absolute inset-0 opacity-80 mix-blend-multiply" style={{ filter: 'url(#surface-noise)' }} />
+                        <div className="absolute inset-0 rounded-full opacity-80 mix-blend-multiply" style={{ filter: 'url(#surface-noise)' }} />
 
-                        {/* 3. Large Lunar Maria (Impact Basins) - Non-repetitive organic shapes */}
-                        <div className="absolute top-[10%] left-[25%] w-[40%] h-[30%] bg-[#4b5563] blur-[25px] opacity-40 rounded-[60%_40%_70%_30%]" />
-                        <div className="absolute bottom-[20%] left-[15%] w-[35%] h-[25%] bg-[#374151] blur-[30px] opacity-30 rounded-[40%_60%_30%_70%]" />
+                        {/* 3. Large Lunar Maria (Impact Basins) */}
+                        <div className="absolute top-[15%] left-[30%] w-[45%] h-[35%] bg-[#4b5563] blur-[25px] opacity-40 rounded-[60%_40%_70%_30%]" />
+                        <div className="absolute bottom-[25%] left-[20%] w-[35%] h-[25%] bg-[#374151] blur-[30px] opacity-30 rounded-[40%_60%_30%_70%]" />
 
-                        {/* 4. Subsurface Displacement (SVG Noise based scattering) */}
-                        <div className="absolute inset-0 opacity-10 mix-blend-overlay" style={{ filter: 'contrast(1.5) url(#surface-noise)' }} />
-
-                        {/* 5. Precise Craters with Ray Systems (Ejecta) */}
+                        {/* 4. Realistic Craters with Ray Systems (Breaking silhouette) */}
                         {[
-                            { t: '25%', l: '65%', s: '14%', r: '20deg', ray: true },
-                            { t: '60%', l: '30%', s: '18%', r: '-15deg', ray: true },
-                            { t: '45%', l: '45%', s: '8%', r: '10deg', ray: false },
-                            { t: '75%', l: '55%', s: '10%', r: '45deg', ray: false },
-                            { t: '15%', l: '35%', s: '5%', r: '0deg', ray: false }
+                            { t: '20%', l: '60%', s: '16%', r: '25deg', ray: true },
+                            { t: '65%', l: '25%', s: '20%', r: '-20deg', ray: true },
+                            { t: '40%', l: '40%', s: '10%', r: '15deg', ray: false }
                         ].map((c, i) => (
                             <div key={i} className="absolute overflow-visible" style={{ top: c.t, left: c.l, width: c.s, height: c.s }}>
-                                {/* Ray System (Bright Ejecta) */}
                                 {c.ray && (
-                                    <div className="absolute inset-[-150%] opacity-20"
-                                        style={{
-                                            background: 'conic-gradient(from 0deg, transparent, white 2%, transparent 5%, white 10%, transparent 15%)',
-                                            filter: 'blur(5px)'
-                                        }}
-                                    />
+                                    <div className="absolute inset-[-200%] opacity-20"
+                                        style={{ background: 'conic-gradient(from 0deg, transparent, white 2%, transparent 5%, white 10%, transparent 15%)', filter: 'blur(5px)' }} />
                                 )}
-                                {/* Crater Bowl */}
-                                <div className="absolute inset-0 rounded-full bg-black/40 shadow-[inset_2px_2px_8px_rgba(0,0,0,0.8),1px_1px_2px_rgba(255,255,255,0.4)]"
-                                    style={{ transform: `rotate(${c.r})` }} />
+                                <div className="absolute inset-0 rounded-full bg-black/50 shadow-[inset_2px_2px_10px_rgba(0,0,0,0.9),1px_1px_3px_rgba(255,255,255,0.4)]" />
                             </div>
                         ))}
 
-                        {/* 6. Realistic Global Shadow (Physically Correct Terminator) */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-transparent to-transparent" />
+                        {/* 5. Realistic Global Shadow (Terminator Line) */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-black/80 via-transparent to-transparent" />
                     </div>
                 );
-            case 1: // Ignis (Volcanic) - ABSOLUTE REALISM OVERHAUL
+            case 1: // Ignis (Volcanic) - ULTRA REALISM UPGRADE (Pulsing Lava)
                 return (
-                    <div className="relative w-full h-full rounded-full bg-black overflow-hidden">
-                        {/* 1. Deep Core Heat Foundation */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0500] via-[#330000] to-black" />
+                    <div className="relative w-full h-full rounded-full bg-black overflow-visible">
+                        {/* 1. Magma Ocean (Pulsing Heat) */}
+                        <div className="absolute inset-0 rounded-full bg-[#450a0a] overflow-hidden">
+                            <div className="absolute inset-[-20%] opacity-100 mix-blend-screen animate-pulse"
+                                style={{ background: 'radial-gradient(circle at 40% 40%, #ff4d00 0%, #ff1100 40%, transparent 70%)', filter: 'url(#lava-noise) blur(2px)' }} />
+                        </div>
 
-                        {/* 2. Magma Ocean (Dynamic Noise based heat) */}
-                        <div className="absolute inset-0 opacity-100 mix-blend-screen"
-                            style={{ background: 'radial-gradient(circle at 40% 40%, #ff4d00 0%, #ff1100 30%, transparent 70%)', filter: 'url(#lava-noise) blur(2px)' }} />
+                        {/* 2. Basalt Crust Plates (Floating look) */}
+                        <div className="absolute inset-[-5%] rounded-full opacity-95 mix-blend-multiply"
+                            style={{ background: '#0a0a0a', filter: 'url(#surface-noise) contrast(2.5)' }} />
 
-                        {/* 3. Solidifying Basalt Crust (High-Frequency Displacement) */}
-                        <div className="absolute inset-[-10%] opacity-95 mix-blend-multiply"
-                            style={{ background: '#0a0a0a', filter: 'url(#surface-noise) contrast(2)' }} />
-
-                        {/* 4. Heat Fractures (Lava venting through cracks) */}
-                        <div className="absolute inset-0 opacity-60 mix-blend-color-dodge"
+                        {/* 3. Intense Heat Fractures (Lava Veins) */}
+                        <div className="absolute inset-0 opacity-70 mix-blend-color-dodge animate-pulse"
                             style={{
-                                background: 'conic-gradient(from 0deg at 50% 50%, transparent, #ffbb00 1%, transparent 2%, #ff4d00 15%, transparent 16%)',
+                                background: 'conic-gradient(from 0deg at 50% 50%, transparent, #ffbb00 1%, transparent 3%, #ff4d00 15%, transparent 20%)',
                                 filter: 'url(#lava-noise) blur(1px)'
                             }} />
 
-                        {/* 5. Gaseous Sulfur Clouds */}
-                        <div className="absolute inset-[-20%] opacity-20 mix-blend-screen"
-                            style={{
-                                background: 'radial-gradient(circle at 20% 80%, rgba(255,255,100,0.1) 0%, transparent 50%)',
-                                filter: 'blur(30px)'
-                            }} />
+                        {/* 4. Sulfur Plumes & Atmospheric Glow */}
+                        <div className="absolute inset-[-30%] opacity-30 mix-blend-screen"
+                            style={{ background: 'radial-gradient(circle, #ff4d00 0%, transparent 70%)', filter: 'blur(40px)' }} />
+                    </div>
+                );
+            case 2: // Terra (Earth-like) - ULTRA REALISM UPGRADE (Dual Layer Clouds)
+                return (
+                    <div className="relative w-full h-full rounded-full bg-[#001133] overflow-visible">
+                        {/* 1. Surface: Continents & Shallows */}
+                        <div className="absolute inset-0 rounded-full overflow-hidden">
+                            <div className="absolute inset-[-10%] opacity-100"
+                                style={{ background: 'radial-gradient(circle at 40% 40%, #1a4a1a 0%, #0d2a0d 45%, transparent 75%)', filter: 'url(#surface-noise) contrast(1.4)' }} />
+                            <div className="absolute inset-0 opacity-50 mix-blend-screen"
+                                style={{ background: 'radial-gradient(circle at 45% 45%, #00ffff 0%, transparent 65%)', filter: 'blur(15px)' }} />
+                        </div>
 
-                        {/* 6. Active Magma Plumes (Individual Hotspots) */}
-                        {[
-                            { t: '35%', l: '45%', s: '12%', color: '#ffcc00' },
-                            { t: '65%', l: '25%', s: '8%', color: '#ff8800' },
-                            { t: '20%', l: '60%', s: '10%', color: '#ff4411' }
-                        ].map((p, i) => (
-                            <div key={i} className="absolute rounded-full filter blur-[10px] animate-pulse"
-                                style={{ top: p.t, left: p.l, width: p.s, height: p.s, background: p.color, opacity: 0.6 }} />
+                        {/* 2. Cloud Layer 1 (Low Cumulus) */}
+                        <div className="absolute inset-[-15%] opacity-40 animate-drift-slow"
+                            style={{ background: 'radial-gradient(circle at 50% 50%, white 0%, transparent 60%)', filter: 'url(#cloud-drift) blur(2px)' }} />
+
+                        {/* 3. Cloud Layer 2 (High Cirrus - Opposite direction) */}
+                        <div className="absolute inset-[-10%] opacity-20 scale-110"
+                            style={{ background: 'radial-gradient(circle at 30% 30%, white 0%, transparent 50%)', filter: 'url(#cloud-drift) blur(1px)', animation: 'drift-slow 60s linear reverse infinite' }} />
+
+                        {/* 4. Specular Ocean Glint & Rayleigh Edge */}
+                        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_90px_rgba(0,100,255,0.5),0_0_30px_rgba(0,150,255,0.4)]" />
+                        <div className="absolute top-[25%] left-[25%] w-[35%] h-[35%] bg-white/20 blur-[25px] rounded-full mix-blend-screen" />
+                    </div>
+                );
+            case 3: // Glacies (Ice) - ULTRA REALISM UPGRADE (Subsurface Glow)
+                return (
+                    <div className="relative w-full h-full rounded-full bg-[#f0f9ff] overflow-visible">
+                        {/* 1. Deep Core & Fractures */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#7dd3fc] via-[#0ea5e9] to-[#1e40af]" />
+                        <div className="absolute inset-[-10%] opacity-70 mix-blend-overlay"
+                            style={{ background: '#ffffff', filter: 'url(#surface-noise) contrast(2) brightness(1.6)' }} />
+
+                        {/* 2. Nitro-Frost Haze (Breaking silhouette) */}
+                        <div className="absolute inset-[-30%] opacity-40 mix-blend-screen"
+                            style={{ background: 'radial-gradient(circle, #e0f2fe 0%, transparent 70%)', filter: 'url(#cloud-drift) blur(20px)' }} />
+
+                        {/* 3. Crystalline Specular Glints */}
+                        <div className="absolute top-[15%] left-[15%] w-[40%] h-[40%] bg-white/40 blur-[30px] rounded-full" />
+                        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_70px_rgba(0,255,255,0.4)]" />
+                    </div>
+                );
+            case 4: // Fulata (Gas Giant) - ULTRA REALISM UPGRADE (Turbulent Bands)
+                return (
+                    <div className="relative w-full h-full rounded-full bg-[#3d2b1f] overflow-visible">
+                        {/* 1. Banded Atmosphere */}
+                        <div className="absolute inset-0 rounded-full overflow-hidden">
+                            <div className="absolute inset-[-25%] opacity-90"
+                                style={{ background: 'repeating-linear-gradient(0deg, #5c4033 0%, #8b4513 8%, #d2b48c 15%, #5c4033 25%)', filter: 'url(#cloud-drift) contrast(1.2)' }} />
+                        </div>
+
+                        {/* 2. Great Red Spot (Active Vortex) */}
+                        <div className="absolute bottom-[28%] right-[22%] w-[28%] h-[18%] opacity-100 rotate-[12deg]"
+                            style={{ background: 'radial-gradient(ellipse at center, #7f1d1d 0%, #451a03 70%, transparent 100%)', filter: 'url(#lava-noise) blur(1px)' }} />
+
+                        {/* 3. High-Speed Storm Pearls */}
+                        {[15, 45, 75].map((t, i) => (
+                            <div key={i} className="absolute opacity-50 mix-blend-soft-light"
+                                style={{ top: `${t}%`, left: `${15 + i * 25}%`, width: '10%', height: '8%', background: 'white', filter: 'url(#cloud-drift) blur(2px)' }} />
                         ))}
-
-                        {/* 7. Rim Glow Correction */}
-                        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_40px_rgba(255,50,0,0.3)]" />
                     </div>
                 );
-            case 2: // Terra (Earth-like) - ABSOLUTE REALISM OVERHAUL
+            case 5: // Aureus (Golden Rings) - ULTRA REALISM UPGRADE (Complex Bands)
                 return (
-                    <div className="relative w-full h-full rounded-full bg-[#001133] overflow-hidden">
-                        {/* 1. Deep Oceanic Abyss */}
-                        <div className="absolute inset-0 bg-[#000d1a]" />
-
-                        {/* 2. Continental Crust (High-Frequency organic shapes) */}
-                        <div className="absolute inset-[-10%] opacity-100"
-                            style={{
-                                background: 'radial-gradient(circle at 40% 40%, #225522 0%, #113311 40%, transparent 70%)',
-                                filter: 'url(#surface-noise) contrast(1.2)'
-                            }} />
-
-                        {/* 3. Coastal Shallows (Cyan/Turquoise glow around continents) */}
-                        <div className="absolute inset-0 opacity-40 mix-blend-screen"
-                            style={{
-                                background: 'radial-gradient(circle at 45% 45%, #00ffff 0%, transparent 60%)',
-                                filter: 'blur(20px)'
-                            }} />
-
-                        {/* 4. Polar Ice Sheets */}
-                        <div className="absolute top-[-20%] left-[20%] w-[60%] h-[30%] bg-white/80 blur-[15px] rounded-[50%]" />
-                        <div className="absolute bottom-[-20%] left-[25%] w-[50%] h-[25%] bg-blue-50/70 blur-[20px] rounded-[50%]" />
-
-                        {/* 5. Cloud Systems - Layer 1 (Low Altitude Cumulus) */}
-                        <div className="absolute inset-[-20%] opacity-40 animate-drift-slow"
-                            style={{
-                                background: 'radial-gradient(circle at 50% 50%, white 0%, transparent 50%)',
-                                filter: 'url(#cloud-drift) blur(2px)'
-                            }} />
-
-                        {/* 6. Cloud Shadows (Cast onto surface) */}
-                        <div className="absolute inset-[-18%] opacity-30 mix-blend-multiply animate-drift-slow translate-x-2 translate-y-2"
-                            style={{
-                                background: 'radial-gradient(circle at 50% 50%, black 0%, transparent 50%)',
-                                filter: 'url(#cloud-drift) blur(5px)'
-                            }} />
-
-                        {/* 7. Limb Darkening & Rayleigh Scattering (Horizon Blue) */}
-                        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_80px_rgba(0,100,255,0.4),0_0_20px_rgba(0,150,255,0.3)]" />
-
-                        {/* 8. Specular Water Glint (Simulating background Nova reflection) */}
-                        <div className="absolute top-[30%] left-[30%] w-[20%] h-[20%] bg-white/20 blur-[30px] rounded-full" />
-                    </div>
-                );
-            case 3: // Glacies (Ice) - ABSOLUTE REALISM OVERHAUL
-                return (
-                    <div className="relative w-full h-full rounded-full bg-[#e0f2fe] overflow-hidden">
-                        {/* 1. Deep Subsurface Ice Abyss */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#7dd3fc] via-[#0ea5e9] to-[#1e40af]" />
-
-                        {/* 2. Crystalline Fractures (SVG Noise based scattering) */}
-                        <div className="absolute inset-[-10%] opacity-60 mix-blend-overlay"
-                            style={{ background: '#ffffff', filter: 'url(#surface-noise) contrast(2) brightness(1.5)' }} />
-
-                        {/* 3. Deep Shelf Cracks (Structural fractures) */}
-                        <div className="absolute inset-0 opacity-40 mix-blend-multiply"
-                            style={{
-                                background: 'conic-gradient(from 0deg at 50% 50%, transparent, #001133 1%, transparent 2%, #001133 15%, transparent 16%)',
-                                filter: 'url(#bg-surface-noise) blur(1px)'
-                            }} />
-
-                        {/* 4. Translucent Nitrogen Frost */}
-                        <div className="absolute inset-[-20%] opacity-30 animate-drift-slow"
-                            style={{
-                                background: 'radial-gradient(circle at 30% 30%, white 0%, transparent 60%)',
-                                filter: 'url(#cloud-drift) blur(10px)'
-                            }} />
-
-                        {/* 5. Sharp Specular Highlights (Icy Glint) */}
-                        <div className="absolute top-[20%] left-[20%] w-[30%] h-[30%] bg-white/40 blur-[30px] rounded-full" />
-
-                        {/* 6. Realistic Global Shadow (Simulating Nova lighting) */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-[#000d1a]/80 via-transparent to-transparent" />
-
-                        {/* 7. Limb Scattering (Cyan Glow) */}
-                        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_60px_rgba(0,255,255,0.3)]" />
-                    </div>
-                );
-            case 4: // Fulata (Gas Giant) - ABSOLUTE REALISM OVERHAUL
-                return (
-                    <div className="relative w-full h-full rounded-full bg-[#3d2b1f] overflow-hidden">
-                        {/* 1. Atmospheric Foundation */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-[#5c4033] via-[#3d2b1f] to-[#1a110a]" />
-
-                        {/* 2. Turbulent Cloud Bands (SVG Noise Based) */}
-                        <div className="absolute inset-[-20%] opacity-80"
-                            style={{
-                                background: 'repeating-linear-gradient(0deg, #5c4033 0%, #8b4513 10%, #d2b48c 20%, #5c4033 30%)',
-                                filter: 'url(#cloud-drift) blur(1px)'
-                            }} />
-
-                        {/* 3. The Great Red Spot (Vortex Simulation) */}
-                        <div className="absolute bottom-[25%] right-[25%] w-[25%] h-[15%] opacity-90 mix-blend-overlay rotate-[10deg]"
-                            style={{
-                                background: 'radial-gradient(ellipse at center, #991111 0%, #440000 60%, transparent 100%)',
-                                filter: 'url(#lava-noise) blur(2px)'
-                            }} />
-
-                        {/* 4. Secondary Storm Vortices */}
-                        {[
-                            { t: '15%', l: '20%', s: '12%', color: '#d2b48c' },
-                            { t: '45%', l: '60%', s: '8%', color: '#ffffff' },
-                            { t: '70%', l: '15%', s: '10%', color: '#8b4513' }
-                        ].map((s, i) => (
-                            <div key={i} className="absolute opacity-40 mix-blend-soft-light"
-                                style={{
-                                    top: s.t, left: s.l, width: s.s, height: s.s,
-                                    background: `radial-gradient(circle, ${s.color} 0%, transparent 70%)`,
-                                    filter: 'url(#cloud-drift)'
-                                }} />
-                        ))}
-
-                        {/* 5. High-Altitude Haze / Limb Effects */}
-                        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_60px_rgba(0,0,0,0.8),0_0_20px_rgba(255,255,255,0.1)]" />
-                    </div>
-                );
-            case 5: // Aureus (Golden Rings) - ABSOLUTE REALISM OVERHAUL
-                return (
-                    <div className="relative w-full h-full flex items-center justify-center">
-                        {/* 1. Main Metallic Sphere (Planet Body) */}
-                        <div className="relative w-full h-full rounded-full bg-[#b45309] z-10 overflow-hidden">
-                            {/* Base Gold/Copper Heat */}
+                    <div className="relative w-full h-full flex items-center justify-center overflow-visible">
+                        {/* 1. Metallic Planet Body */}
+                        <div className="relative w-full h-full rounded-full bg-[#b45309] z-10 overflow-hidden shadow-[inset_-20px_-20px_60px_rgba(0,0,0,0.8)]">
                             <div className="absolute inset-0 bg-gradient-to-br from-[#fcd34d] via-[#b45309] to-[#451a03]" />
-
-                            {/* Anisotropic Metallic Grain (SVG Noise) */}
-                            <div className="absolute inset-[-20%] opacity-50 mix-blend-overlay rotate-[15deg]"
-                                style={{ background: '#d1a000', filter: 'url(#bg-surface-noise) contrast(1.5) brightness(1.2)' }} />
-
-                            {/* RING SHADOW (Physically correct onto surface) */}
-                            <div className="absolute top-[48%] left-[-20%] w-[140%] h-[15%] bg-black/80 blur-[8px] rotate-[-12deg]" />
-
-                            {/* Limb Darkness & Specular Glint */}
-                            <div className="absolute inset-0 rounded-full shadow-[inset_0_0_80px_rgba(0,0,0,0.9)]" />
-                            <div className="absolute top-[10%] left-[20%] w-[40%] h-[20%] bg-white/10 blur-[20px] rounded-full" />
+                            <div className="absolute inset-[-20%] opacity-60 mix-blend-overlay rotate-[15deg]"
+                                style={{ background: '#d1a000', filter: 'url(#bg-surface-noise) contrast(1.6)' }} />
+                            {/* Ring Shadow Crossing Sphere */}
+                            <div className="absolute top-[48%] left-[-20%] w-[140%] h-[10%] bg-black/95 blur-[4px] rotate-[-12deg]" />
                         </div>
 
-                        {/* 2. Realistic Ring System (Back Portion) */}
-                        <div className="absolute w-[240%] h-[20%] z-0 pointer-events-none transform -rotate-12 scale-y-[0.4]">
-                            <div className="absolute inset-0 border-[40px] border-[#fbbf24]/20 rounded-[50%] blur-[2px]"
-                                style={{ clipPath: 'polygon(0 0, 100% 0, 100% 45%, 0 45%)' }} />
-                        </div>
-
-                        {/* 3. Realistic Ring System (Front Portion - Multi-Staged Bands) */}
-                        <div className="absolute w-[240%] h-[20%] z-20 pointer-events-none transform -rotate-12 scale-y-[0.4]">
-                            {/* Main B-Ring (Brightest) */}
-                            <div className="absolute inset-0 border-[30px] border-[#fef3c7]/60 rounded-[50%] blur-[0.5px]"
-                                style={{ clipPath: 'polygon(0 55%, 100% 55%, 100% 100%, 0 100%)' }} />
-
-                            {/* Cassini Division (The radial gap) */}
-                            <div className="absolute inset-[-5%] border-[2px] border-black/40 rounded-[50%]"
-                                style={{ clipPath: 'polygon(0 55%, 100% 55%, 100% 100%, 0 100%)' }} />
-
-                            {/* A-Ring (Outer faint) */}
-                            <div className="absolute inset-[-12%] border-[15px] border-[#fbbf24]/30 rounded-[50%] blur-[1px]"
-                                style={{ clipPath: 'polygon(0 55%, 100% 55%, 100% 100%, 0 100%)' }} />
-
-                            {/* C-Ring (Inner very faint/crepe) */}
-                            <div className="absolute inset-[18%] border-[10px] border-[#451a03]/20 rounded-[50%] blur-[3px]"
-                                style={{ clipPath: 'polygon(0 55%, 100% 55%, 100% 100%, 0 100%)' }} />
-
-                            {/* Ring Micro-Debris Noise */}
-                            <div className="absolute inset-[-15%] opacity-10 mix-blend-screen"
-                                style={{ background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'url(#bg-surface-noise)' }} />
+                        {/* 2. Ring System (High Fidelity Straited Bands) */}
+                        <div className="absolute w-[280%] h-[25%] z-20 pointer-events-none transform -rotate-12 scale-y-[0.35] overflow-visible">
+                            {/* Main B-Ring */}
+                            <div className="absolute inset-0 border-[35px] border-[#fef3c7]/70 rounded-[50%] blur-[0.2px]" style={{ clipPath: 'polygon(0 55%, 100% 55%, 100% 100%, 0 100%)' }} />
+                            {/* Cassini Division */}
+                            <div className="absolute inset-[-2%] border-[3px] border-black/60 rounded-[50%]" style={{ clipPath: 'polygon(0 55%, 100% 55%, 100% 100%, 0 100%)' }} />
+                            {/* A-Ring with Encke Gap */}
+                            <div className="absolute inset-[-15%] border-[20px] border-[#fbbf24]/40 rounded-[50%] blur-[1px]" style={{ clipPath: 'polygon(0 55%, 100% 55%, 100% 100%, 0 100%)' }} />
+                            {/* Micro-Debris Grain */}
+                            <div className="absolute inset-[-20%] opacity-20 mix-blend-screen" style={{ background: 'radial-gradient(circle, #fff 0%, transparent 75%)', filter: 'url(#bg-surface-noise)' }} />
                         </div>
                     </div>
                 );
-            case 6: // Nebula - ABSOLUTE REALISM OVERHAUL
+            case 6: // Nebula - ULTRA REALISM UPGRADE (Volumetric)
                 return (
-                    <div className="relative w-full h-full rounded-full bg-transparent overflow-visible">
-                        {/* 1. Volumetric Gas Sheets (Layered SVG Noise) */}
-                        <div className="absolute inset-[-40%] opacity-60 mix-blend-screen"
-                            style={{
-                                background: 'radial-gradient(circle at 40% 40%, #4c1d95 0%, transparent 60%)',
-                                filter: 'url(#cloud-drift) blur(10px)'
-                            }} />
-                        <div className="absolute inset-[-30%] opacity-50 mix-blend-color-dodge"
-                            style={{
-                                background: 'radial-gradient(circle at 60% 70%, #9d174d 0%, transparent 55%)',
-                                filter: 'url(#cloud-drift) blur(15px)'
-                            }} />
-                        <div className="absolute inset-[-20%] opacity-40 mix-blend-screen"
-                            style={{
-                                background: 'radial-gradient(circle at 50% 30%, #075985 0%, transparent 45%)',
-                                filter: 'url(#bg-surface-noise) blur(20px)'
-                            }} />
+                    <div className="relative w-full h-full rounded-full overflow-visible">
+                        {/* 1. Layered Ionized Gas Sheets */}
+                        <div className="absolute inset-[-50%] opacity-70 mix-blend-screen animate-pulse"
+                            style={{ background: 'radial-gradient(circle at 35% 45%, #581c87 0%, transparent 65%)', filter: 'url(#cloud-drift) blur(15px)' }} />
+                        <div className="absolute inset-[-40%] opacity-60 mix-blend-color-dodge"
+                            style={{ background: 'radial-gradient(circle at 65% 65%, #9d174d 0%, transparent 60%)', filter: 'url(#cloud-drift) blur(20px)' }} />
 
-                        {/* 2. Dark Interstellar Dust Lanes (Interfering noise) */}
-                        <div className="absolute inset-[10%] opacity-80 mix-blend-multiply"
-                            style={{
-                                background: '#000000',
-                                filter: 'url(#cloud-drift) contrast(1.5) blur(2px)'
-                            }} />
+                        {/* 2. Dust Pillars & Filaments */}
+                        <div className="absolute inset-[15%] opacity-90 mix-blend-multiply"
+                            style={{ background: '#000', filter: 'url(#cloud-drift) contrast(1.8) blur(3px)' }} />
 
-                        {/* 3. Protostellar Hotspots (Localized stellar birth) */}
-                        {[
-                            { t: '30%', l: '40%', s: '15%', color: '#60a5fa' },
-                            { t: '60%', l: '30%', s: '12%', color: '#f472b6' },
-                            { t: '25%', l: '65%', s: '10%', color: '#ffffff' }
-                        ].map((h, i) => (
-                            <div key={i} className="absolute rounded-full filter blur-[10px] animate-pulse"
-                                style={{ top: h.t, left: h.l, width: h.s, height: h.s, background: h.color, opacity: 0.4 }} />
+                        {/* 3. Stellar Nurseries (Flash hotspots) */}
+                        {[20, 50, 80].map((t, i) => (
+                            <div key={i} className="absolute rounded-full filter blur-[10px]"
+                                style={{ top: `${t}%`, left: `${20 + i * 20}%`, width: '15%', height: '15%', background: '#60a5fa', opacity: 0.3 }} />
                         ))}
-
-                        {/* 4. Global Chromatic Bloom */}
-                        <div className="absolute inset-[-50%] rounded-full bg-blue-500/5 blur-[50px] pointer-events-none" />
                     </div>
                 );
-            case 7: // Void (Black Hole) - ABSOLUTE REALISM OVERHAUL
+            case 7: // Void (Black Hole) - ULTRA REALISM UPGRADE (Relativistic)
                 return (
-                    <div className="relative w-full h-full flex items-center justify-center scale-[1.2]">
-                        {/* 1. Photon Sphere & Gravitational Lensing (Outer distorting glow) */}
-                        <div className="absolute w-[200%] h-[200%] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.05)_0%,transparent_70%)] blur-[40px]" />
+                    <div className="relative w-full h-full flex items-center justify-center scale-[1.3] overflow-visible">
+                        {/* 1. Photon Sphere (Warped light) */}
+                        <div className="absolute w-[220%] h-[220%] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.1)_0%,transparent_75%)] blur-[45px] animate-pulse" />
 
-                        {/* 2. Accretion Disk (Physically asymmetric relativistic beaming) */}
-                        <div className="absolute w-[250%] h-[250%] rotate-x-[75deg] rotate-y-[10deg] animate-spin-slow"
+                        {/* 2. Accretion Disk (Doppler Shift: Blue-shifted approach, Red-shifted recede) */}
+                        <div className="absolute w-[300%] h-[300%] rotate-x-[78deg] rotate-y-[8deg] animate-spin-slow"
                             style={{
-                                background: 'conic-gradient(from -90deg, transparent 0%, #3b82f6 10%, #fff 15%, #a855f7 25%, transparent 40%, #ec4899 70%, #fff 75%, #3b82f6 85%, transparent 100%)',
-                                filter: 'url(#lava-noise) blur(4px)'
+                                background: 'conic-gradient(from -90deg, transparent 0%, #00f 10%, #fff 15%, #a0f 30%, transparent 50%, #f00 75%, transparent 100%)',
+                                filter: 'url(#lava-noise) blur(3px)'
                             }} />
 
-                        {/* 3. Event Horizon (The absolute black core) */}
-                        <div className="relative w-[50%] h-[50%] rounded-full bg-black z-20 shadow-[0_0_40px_rgba(0,0,0,1)]">
-                            {/* Inner Rim Light (Lensing artifacts) */}
-                            <div className="absolute inset-[-2px] rounded-full border border-white/20 blur-[1px]" />
+                        {/* 3. Event Horizon & Rim Lensing */}
+                        <div className="relative w-[48%] h-[48%] rounded-full bg-black z-20 shadow-[0_0_50px_rgba(0,0,0,1)]">
+                            <div className="absolute inset-[-3px] rounded-full border-[1.5px] border-white/30 blur-[1px]" />
                         </div>
-
-                        {/* 4. Polar Jets (Gamma Ray Bursts - Faint linear beams) */}
-                        <div className="absolute w-[2px] h-[500%] bg-gradient-to-b from-transparent via-white/20 to-transparent blur-[3px] z-0 rotate-[-15deg]" />
                     </div>
                 );
-            case 8: // Nova (Active Star / SUN) - ABSOLUTE REALISM OVERHAUL
+            case 8: // Nova (Sun) - ULTRA REALISM UPGRADE (Plasma Arcs)
                 return (
                     <div className="relative w-full h-full rounded-full bg-[#fbd34d] overflow-visible">
-                        {/* 1. Photosphere with Limb Darkening (Critical for spherical feel) */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#fff7ed] via-[#f59e0b] to-[#7f1d1d]" />
-                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,transparent_50%,rgba(127,29,29,0.8)_100%)]" />
+                        {/* 1. Photosphere & Deep Limb Darkening */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#fff7ed] via-[#f59e0b] to-[#451a03]" />
+                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,transparent_35%,rgba(69,26,3,1)_100%)]" />
 
-                        {/* 2. Solar Granulation (Boiling Convection Cells) */}
-                        <div className="absolute inset-[-20%] opacity-95 mix-blend-overlay"
-                            style={{ filter: 'url(#solar-granulation) contrast(1.8) brightness(1.3)' }} />
+                        {/* 2. Fine Solar Granulation Texture */}
+                        <div className="absolute inset-[-10%] opacity-95 mix-blend-overlay"
+                            style={{ filter: 'url(#solar-granulation) contrast(2) brightness(1.3)' }} />
 
-                        {/* 3. Solar Prominences (Plasma Loops breaking silhouette) */}
-                        <div className="absolute inset-[-15%] opacity-60 mix-blend-color-dodge"
-                            style={{
-                                background: 'conic-gradient(from 0deg at 50% 50%, transparent, #ffcc00 1%, transparent 3%, #ff4d00 15%, transparent 18%)',
-                                filter: 'url(#lava-noise) blur(1px)'
-                            }} />
+                        {/* 3. Silhouette-Breaking Solar Prominences */}
+                        <div className="absolute inset-[-25%] opacity-70 mix-blend-color-dodge animate-spin-slower"
+                            style={{ background: 'conic-gradient(from 0deg, transparent, #ffcc00 1%, transparent 3%, #ff4d00 15%, transparent 20%)', filter: 'url(#lava-noise) blur(4px)' }} />
 
-                        {/* 4. Realistic Sunspots (Umbra + Penumbra) */}
+                        {/* 4. Realistic Sunspot Cluster */}
                         {[
-                            { t: '30%', l: '40%', s: '18px' },
-                            { t: '65%', l: '30%', s: '12px' },
-                            { t: '25%', l: '65%', s: '8px' }
+                            { t: '35%', l: '35%', s: '22%' },
+                            { t: '60%', l: '55%', s: '14%' }
                         ].map((s, i) => (
-                            <div key={i} className="absolute flex items-center justify-center" style={{ top: s.t, left: s.l, width: s.s, height: s.s }}>
-                                {/* Penumbra (Lighter, structured rim) */}
-                                <div className="absolute w-[140%] h-[140%] rounded-full bg-[#451a03]/60 blur-[1px] mix-blend-multiply" />
-                                {/* Umbra (Dark central core) */}
-                                <div className="absolute w-full h-full rounded-full bg-black blur-[0.2px]" />
+                            <div key={i} className="absolute flex items-center justify-center translate-x-[-50%] translate-y-[-50%]" style={{ top: s.t, left: s.l, width: s.s, height: s.s }}>
+                                <div className="absolute w-[180%] h-[180%] rounded-full bg-[#451a03]/90 blur-[2px] mix-blend-multiply" />
+                                <div className="absolute w-full h-full rounded-full bg-black blur-[0.5px]" />
                             </div>
                         ))}
-
-                        {/* 5. Chromospheric Edge Bleed & Coronal Flow */}
-                        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_80px_rgba(245,158,11,0.6),0_0_40px_rgba(255,255,255,0.2)]" />
-                        <div className="absolute inset-[-40%] opacity-20 mix-blend-screen"
-                            style={{ background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'url(#cloud-drift) blur(40px)' }} />
                     </div>
                 );
-            case 9: // Singularity - ABSOLUTE REALISM OVERHAUL
+            case 9: // Singularity - ULTRA REALISM UPGRADE (Spacetime Threads)
                 return (
-                    <div className="relative w-full h-full flex items-center justify-center scale-[1.3]">
-                        {/* 1. Spacetime Distortion (High-frequency SVG interference) */}
-                        <div className="absolute inset-[-40%] opacity-40 mix-blend-screen animate-spin-slow"
-                            style={{ filter: 'url(#lava-noise) blur(2px)' }}>
-                            <div className="absolute inset-x-0 top-1/2 h-1 bg-white/40 shadow-[0_0_20px_white]" />
-                            <div className="absolute inset-y-0 left-1/2 w-1 bg-white/40 shadow-[0_0_20px_white]" />
+                    <div className="relative w-full h-full flex items-center justify-center scale-[1.3] overflow-visible">
+                        {/* 1. Glitch/Refraction Halo */}
+                        <div className="absolute inset-[-50%] opacity-40 mix-blend-screen animate-spin-slow" style={{ filter: 'url(#lava-noise) blur(3px)' }}>
+                            <div className="absolute inset-x-0 top-1/2 h-[2px] bg-white/50 shadow-[0_0_30px_white]" />
+                            <div className="absolute inset-y-0 left-1/2 w-[2px] bg-white/50 shadow-[0_0_30px_white]" />
                         </div>
 
-                        {/* 2. The Monolith Core (Perfect Void) */}
-                        <div className="relative w-[45%] h-[45%] rounded-full bg-black z-20 shadow-[0_0_100px_white]">
-                            {/* Crystalline Artifacts (Non-Euclidean noise) */}
-                            <div className="absolute inset-[-10%] opacity-60 mix-blend-color-dodge"
-                                style={{ filter: 'url(#surface-noise) contrast(5) brightness(2)' }} />
-
-                            {/* Inner Radiant Pulsar */}
-                            <div className="absolute inset-[25%] bg-white rounded-full blur-[20px] animate-pulse" />
+                        {/* 2. Core Singularity (Radiant Black) */}
+                        <div className="relative w-[40%] h-[40%] rounded-full bg-black z-20 shadow-[0_0_120px_white]">
+                            <div className="absolute inset-[-15%] opacity-70 mix-blend-color-dodge" style={{ filter: 'url(#surface-noise) contrast(6) brightness(2.5)' }} />
+                            <div className="absolute inset-[20%] bg-white rounded-full blur-[25px] animate-pulse" />
                         </div>
 
-                        {/* 3. Reality Threads (Stretched Light Rays) */}
-                        {[0, 45, 90, 135].map((r, i) => (
-                            <div key={i} className="absolute w-[1px] h-[600%] bg-gradient-to-b from-transparent via-white/50 to-transparent opacity-20"
+                        {/* 3. Reality Threads (Thin spectral lines) */}
+                        {[0, 30, 60, 90, 120, 150].map((r, i) => (
+                            <div key={i} className="absolute w-[0.5px] h-[700%] bg-gradient-to-b from-transparent via-cyan-400/50 to-transparent opacity-30"
                                 style={{ transform: `rotate(${r}deg)` }} />
                         ))}
-
-                        {/* 4. Chromatic Aberration Halo */}
-                        <div className="absolute inset-[-10%] border-4 border-red-500/20 blur-[5px] rounded-full animate-pulse" />
-                        <div className="absolute inset-[-10%] border-4 border-cyan-500/20 blur-[5px] rounded-full animate-pulse delay-75" />
                     </div>
                 );
             default:

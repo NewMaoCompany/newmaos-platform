@@ -346,48 +346,50 @@ export const PrestigePage = () => {
                     </defs>
                 </svg>
 
-                {/* SOLID DISTANT SUN - ABSOLUTE REALISM OVERHAUL */}
-                <div className="absolute top-[-15%] right-[-15%] w-[80vh] h-[80vh] z-0 pointer-events-none">
+                {/* Ultra-Realism Background Sun */}
+                <div className="absolute top-[-25%] right-[-25%] w-[120vh] h-[120vh] z-0 pointer-events-none overflow-visible">
                     {/* 1. Deep Coronal Glow & Rayleigh Scattering (Intense bleed) */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle,#f59e0b_0%,transparent_75%)] opacity-40 animate-pulse" />
-                    <div className="absolute inset-[10%] bg-[radial-gradient(circle,#fff7ed_0%,transparent_70%)] opacity-30" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle,#f59e0b_0%,transparent_75%)] opacity-50 animate-pulse" />
+                    <div className="absolute inset-[10%] bg-[radial-gradient(circle,#fff7ed_0%,transparent_70%)] opacity-40 blur-[100px]" />
 
                     {/* 2. Solar Prominences (Plasma Loops breaking silhouette) */}
-                    <div className="absolute inset-[20%] opacity-60 mix-blend-color-dodge animate-spin-slower"
+                    <div className="absolute inset-[25%] opacity-70 mix-blend-color-dodge animate-spin-slower"
                         style={{
-                            background: 'conic-gradient(from 0deg, transparent, #ffcc00 1%, transparent 3%, #ff4d00 10%, transparent 12%)',
-                            filter: 'url(#bg-surface-noise) blur(10px)'
+                            background: 'conic-gradient(from 0deg, transparent, #ffcc00 1%, transparent 3%, #ff4d00 10%, transparent 12%, #ffcc00 45%, transparent 48%, #ff4d00 80%, transparent 82%)',
+                            filter: 'url(#bg-surface-noise) blur(15px)'
                         }} />
 
                     {/* 3. The Photosphere (Main Radiant Body with Limb Darkening) */}
-                    <div className="absolute inset-[30%] rounded-full bg-[#fcd34d] shadow-[0_0_200px_rgba(245,158,11,0.8)] overflow-visible">
-                        {/* Base Solar Heat with edge falloff */}
+                    <div className="absolute inset-[35%] rounded-full bg-[#fcd34d] shadow-[0_0_300px_rgba(245,158,11,0.9)] overflow-visible">
+                        {/* Base Solar Heat with edge falloff (Limb Darkening) */}
                         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#fff7ed] via-[#f59e0b] to-[#7f1d1d]" />
-                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,transparent_50%,rgba(127,29,29,1)_100%)]" />
+                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,transparent_40%,rgba(69,26,3,1)_100%)]" />
 
-                        {/* Boiling Granulation */}
-                        <div className="absolute inset-[-20%] opacity-95 mix-blend-overlay"
-                            style={{ filter: 'url(#bg-solar-granulation) contrast(1.8) brightness(1.3)' }} />
+                        {/* Boiling Granulation (High detail displacement) */}
+                        <div className="absolute inset-[-10%] opacity-95 mix-blend-overlay"
+                            style={{ filter: 'url(#bg-solar-granulation) contrast(2) brightness(1.2)' }} />
 
-                        {/* Realistic Sunspots (Umbra/Penumbra) */}
+                        {/* Realistic Sunspots (Umbra/Penumbra) with specialized placement */}
                         {[
-                            { t: '35%', l: '35%', s: '1.5vw' },
-                            { t: '60%', l: '55%', s: '1vw' },
-                            { t: '40%', l: '70%', s: '0.6vw' }
+                            { t: '30%', l: '35%', s: '2vw' },
+                            { t: '65%', l: '50%', s: '1.2vw' },
+                            { t: '45%', l: '75%', s: '0.8vw' }
                         ].map((s, i) => (
                             <div key={i} className="absolute flex items-center justify-center" style={{ top: s.t, left: s.l, width: s.s, height: s.s }}>
-                                <div className="absolute w-[160%] h-[160%] rounded-full bg-[#451a03]/80 blur-[2px] mix-blend-multiply" />
-                                <div className="absolute w-full h-full rounded-full bg-black blur-[0.5px]" />
+                                {/* Penumbra (Structured rim) */}
+                                <div className="absolute w-[180%] h-[180%] rounded-full bg-[#451a03]/80 blur-[3px] mix-blend-multiply" />
+                                {/* Umbra (Deep core) */}
+                                <div className="absolute w-full h-full rounded-full bg-[#000] blur-[0.5px]" />
                             </div>
                         ))}
 
-                        {/* High-Contrast Coronal Flow */}
-                        <div className="absolute inset-[-50%] opacity-20 mix-blend-screen"
-                            style={{ background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'url(#bg-surface-noise) blur(40px)' }} />
+                        {/* High-Contrast Coronal Flow Layer */}
+                        <div className="absolute inset-[-60%] opacity-30 mix-blend-screen"
+                            style={{ background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'url(#bg-surface-noise) blur(60px)' }} />
                     </div>
 
-                    {/* 4. Lens Flare Artifacts */}
-                    <div className="absolute inset-[15%] rounded-full bg-white/5 blur-[120px]" />
+                    {/* 4. Large Cinematic Lens Flare Layer */}
+                    <div className="absolute inset-[20%] rounded-full bg-white/10 blur-[180px] mix-blend-screen" />
                 </div>
             </div>
 
