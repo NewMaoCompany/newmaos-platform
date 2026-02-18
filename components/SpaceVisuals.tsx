@@ -155,9 +155,12 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
         switch (planetIndex) {
             case 0: // Celestia (Moon) - HIGH DETAIL OVERHAUL
                 return (
-                    <div className="relative w-full h-full rounded-full bg-slate-200 shadow-[inset_-25px_-25px_60px_rgba(0,0,0,0.9),inset_10px_10px_30px_rgba(255,255,255,1)]">
+                    <div className="relative w-full h-full rounded-full bg-[#1a1a1a] shadow-[inset_-25px_-25px_60px_rgba(0,0,0,0.9),inset_10px_10px_30px_rgba(255,255,255,1)]">
+                        {/* Base Solid Surface */}
+                        <div className="absolute inset-0 rounded-full bg-slate-300" />
+
                         {/* Base Texture - High Contrast Noise */}
-                        <div className="absolute inset-0 opacity-50 mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter contrast-150" />
+                        <div className="absolute inset-0 opacity-70 mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter contrast-150" />
 
                         {/* Gradient Mesh for Spherical Feel */}
                         <div className="absolute inset-0 bg-radial-gradient from-transparent via-slate-400/30 to-slate-950/90" />
@@ -184,12 +187,15 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                 );
             case 1: // Ignis (Volcanic) - HIGH DETAIL
                 return (
-                    <div className="relative w-full h-full rounded-full bg-gradient-to-br from-red-900 via-orange-950 to-black shadow-inner overflow-hidden">
+                    <div className="relative w-full h-full rounded-full bg-black shadow-inner overflow-hidden">
+                        {/* Solid Core */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-red-950 via-orange-950 to-black" />
+
                         {/* Magma Base & Cracks */}
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,_#7f1d1d_0%,_transparent_60%)] opacity-80" />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,_#7f1d1d_0%,_transparent_60%)] opacity-100" />
 
                         {/* Glowing Lava Veins - CSS Complex Gradients */}
-                        <div className="absolute inset-0 opacity-80 mix-blend-screen"
+                        <div className="absolute inset-0 opacity-90 mix-blend-screen"
                             style={{
                                 background: `
                                     radial-gradient(circle at 20% 80%, #ff4500 0%, transparent 20%),

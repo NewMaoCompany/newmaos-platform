@@ -71,7 +71,18 @@ export const PrestigePage = () => {
     }, [level]);
 
     const nextStarCost = costs[stars] || 500 * level;
+
+    // Per-planet progress logic
+    const displayedStars = useMemo(() => {
+        const planetLevelOfIndex = activeIndex + 1;
+        if (planetLevelOfIndex < level) return 3; // Previously completed
+        if (planetLevelOfIndex === level) return stars; // Currently progressing
+        return 0; // Future planet
+    }, [activeIndex, level, stars]);
+
     const canUpgrade = currentStardust >= nextStarCost;
+    const isViewedPlanetCompleted = (activeIndex + 1) < level;
+    const isFuturePlanet = (activeIndex + 1) > level;
 
     const [flyItems, setFlyItems] = useState<{ id: number; type: 'coin' | 'stardust'; start: Rect; end: Rect }[]>([]);
 
@@ -192,8 +203,36 @@ export const PrestigePage = () => {
                 <StarBackground />
                 <ShootingStars />
 
-                {/* DISTANT SUN - Adjusted z-index and position */}
-                <div className="absolute top-[-20%] right-[-20%] w-[80vh] h-[80vh] bg-[radial-gradient(circle,rgba(251,191,36,0.3)_0%,rgba(245,158,11,0.05)_60%,transparent_80%)] rounded-full blur-[80px] pointer-events-none z-0 animate-pulse" />
+                {/* SOLID DISTANT SUN - ULTRA HIGH DETAIL */}
+                <div className="absolute top-[-10%] right-[-10%] w-[60vh] h-[60vh] z-0 pointer-events-none">
+                    {/* The Corona / Rays */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle,#f59e0b_0%,transparent_70%)] opacity-40 animate-pulse" />
+
+                    {/* Rotating Sun Flares */}
+                    <div className="absolute inset-[15%] opacity-30 animate-spin-slower"
+                        style={{
+                            background: 'conic-gradient(from 0deg, transparent 0%, #f59e0b 5%, transparent 10%, #fbbf24 15%, transparent 20%, #f59e0b 25%, transparent 30%, #fb923c 35%, transparent 40%)',
+                            filter: 'blur(15px)'
+                        }}
+                    />
+
+                    {/* The Solid Body */}
+                    <div className="absolute inset-[25%] rounded-full bg-[#FFD700] shadow-[0_0_100px_#f59e0b,inset_-20px_-20px_50px_rgba(0,0,0,0.5)] border-4 border-[#fffbeb]/20 overflow-hidden">
+                        {/* Surface Texture / Granulation */}
+                        <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter contrast-150" />
+
+                        {/* Sunspots */}
+                        <div className="absolute top-[30%] left-[20%] w-8 h-6 bg-black/60 rounded-full blur-[2px] rotate-12" />
+                        <div className="absolute bottom-[40%] right-[25%] w-10 h-8 bg-black/50 rounded-full blur-[3px]" />
+                        <div className="absolute top-[60%] left-[45%] w-4 h-4 bg-black/80 rounded-full blur-[1px]" />
+
+                        {/* Solar Flow */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-orange-600/30 via-transparent to-yellow-400/30 animate-pulse" />
+                    </div>
+
+                    {/* Intense Bloom */}
+                    <div className="absolute inset-[20%] rounded-full bg-yellow-400/20 blur-[60px]" />
+                </div>
             </div>
 
             {/* Header */}
@@ -306,11 +345,12 @@ export const PrestigePage = () => {
                                         )}
                                     </div>
 
-                                    {/* PLANET NAME - Moved much higher to avoid overlap */}
-                                    <div className={`text-center transition-opacity duration-500 ${distance === 0 ? 'opacity-100' : 'opacity-0'} pointer-events-none absolute -top-16 w-full flex justify-center`}>
-                                        <h2 className="text-5xl md:text-7xl font-black uppercase tracking-[0.5em] text-transparent bg-clip-text bg-gradient-to-b from-white/90 via-white/50 to-white/10 drop-shadow-[0_4px_12px_rgba(255,255,255,0.2)] font-mono whitespace-nowrap">
+                                    {/* PLANET NAME - Fully centered and symmetrical */}
+                                    <div className={`text-center transition-all duration-700 ${distance === 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'} pointer-events-none absolute -top-24 w-full flex flex-col items-center justify-center`}>
+                                        <h2 className="text-6xl md:text-8xl font-black uppercase tracking-[0.6em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/70 to-white/10 drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] font-mono leading-none">
                                             {name}
                                         </h2>
+                                        <div className="h-1 w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent mt-4" />
                                     </div>
                                 </div>
                             );
@@ -327,8 +367,9 @@ export const PrestigePage = () => {
                     <div className="flex flex-col items-center w-full max-w-xl px-12">
                         {/* Status Badge - Floating Above */}
                         <div className="flex items-center justify-center w-full mb-16">
-                            <span className="px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-[11px] uppercase tracking-[0.4em] font-black text-white/40 shadow-2xl backdrop-blur-2xl">
-                                Level {level} — {getPlanetName(level)}
+                            <span className={`px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-[11px] uppercase tracking-[0.4em] font-black shadow-2xl backdrop-blur-2xl transition-all duration-500
+                                ${isFuturePlanet ? 'text-white/20' : isViewedPlanetCompleted ? 'text-amber-400 border-amber-500/30' : 'text-white/40'}`}>
+                                {isViewedPlanetCompleted ? 'Planet Mastery Attained' : isFuturePlanet ? 'Coordinates Locked' : `System Status: Level ${level}`}
                             </span>
                         </div>
 
@@ -337,20 +378,20 @@ export const PrestigePage = () => {
                             {/* Filling Effect */}
                             <div
                                 className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#FFCC00] via-amber-400 to-[#FFCC00] rounded-full transition-all duration-1000 shadow-[0_0_30px_rgba(251,191,36,0.5)]"
-                                style={{ width: `${(stars / 3) * 100}%` }}
+                                style={{ width: `${(displayedStars / 3) * 100}%` }}
                             />
 
                             {/* Vertices (4 Dots) */}
                             {[0, 1, 2, 3].map((i) => {
-                                const isReached = i <= stars;
+                                const isReached = i <= displayedStars;
                                 const labels = ["1 Star", "2 Stars", "3 Stars", "Next Level"];
                                 return (
                                     <div key={i} className="relative z-10 flex flex-col items-center">
                                         {/* Dot with glow */}
                                         <div
                                             className={`w-5 h-5 rounded-full transition-all duration-700 border-2 ${isReached
-                                                    ? 'bg-[#FFCC00] border-amber-200 scale-125 shadow-[0_0_20px_rgba(251,191,36,1)]'
-                                                    : 'bg-[#050505] border-white/10 scale-90'
+                                                ? 'bg-[#FFCC00] border-amber-200 scale-125 shadow-[0_0_20px_rgba(251,191,36,1)]'
+                                                : 'bg-[#050505] border-white/10 scale-90'
                                                 }`}
                                         />
 
@@ -382,29 +423,50 @@ export const PrestigePage = () => {
                     </div>
 
                     {/* Controls */}
-                    <div className="w-full grid grid-cols-2 gap-6 md:gap-10 pt-10">
-                        {/* Inject Button */}
+                    <div className="w-full flex flex-col items-center gap-6 pt-10 px-8">
+                        {/* Action Button */}
                         <button
-                            onClick={handleInject}
-                            disabled={!canUpgrade}
-                            className={`col-span-1 h-20 rounded-[32px] font-black text-[13px] tracking-[0.3em] uppercase flex flex-col items-center justify-center gap-1 transition-all duration-400 relative overflow-hidden group shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)]
-                                ${canUpgrade
-                                    ? 'bg-[#FFCC00] hover:bg-[#ffda33] text-black hover:translate-y-[-2px] active:translate-y-[1px]'
-                                    : 'bg-white/5 text-white/5 cursor-not-allowed border border-white/5'}`}
+                            onClick={() => {
+                                if (isViewedPlanetCompleted || isFuturePlanet) {
+                                    const targetIndex = Math.min(9, level - 1);
+                                    const step = 600;
+                                    const finalTranslate = -targetIndex * step;
+                                    setActiveIndex(targetIndex);
+                                    setCurrentTranslate(finalTranslate);
+                                    setPrevTranslate(finalTranslate);
+                                    if (containerRef.current) {
+                                        containerRef.current.style.transition = 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                                    }
+                                } else {
+                                    handleInject();
+                                }
+                            }}
+                            disabled={!canUpgrade && !isViewedPlanetCompleted && !isFuturePlanet}
+                            className={`w-full max-w-sm h-20 rounded-[32px] font-black text-[13px] tracking-[0.3em] uppercase flex flex-col items-center justify-center gap-1 transition-all duration-400 relative overflow-hidden group shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)]
+                                    ${isViewedPlanetCompleted || isFuturePlanet
+                                    ? 'bg-white/10 hover:bg-white/15 text-white/80 border border-white/10'
+                                    : canUpgrade
+                                        ? 'bg-[#FFCC00] hover:bg-[#ffda33] text-black hover:translate-y-[-2px] active:translate-y-[1px]'
+                                        : 'bg-white/5 text-white/5 cursor-not-allowed border border-white/5'}`}
                         >
                             <div className="flex items-center gap-2.5 z-10 transition-transform group-hover:scale-110">
-                                <span className="material-symbols-outlined text-2xl font-black">{stars === 2 ? 'auto_mode' : 'offline_bolt'}</span>
-                                <span className="drop-shadow-sm font-black">{stars === 2 ? 'Evolve Planet' : 'Inject Stardust'}</span>
+                                <span className="material-symbols-outlined text-2xl font-black">
+                                    {isViewedPlanetCompleted ? 'keyboard_double_arrow_right' : isFuturePlanet ? 'lock' : stars === 2 ? 'auto_mode' : 'offline_bolt'}
+                                </span>
+                                <span className="drop-shadow-sm font-black">
+                                    {isViewedPlanetCompleted ? 'Move to Next Planet' : isFuturePlanet ? 'Locked' : stars === 2 ? 'Evolve Planet' : 'Inject Stardust'}
+                                </span>
                             </div>
-                            <span className={`text-[11px] z-10 tracking-widest transition-opacity duration-300 ${canUpgrade ? 'text-black/50 font-black' : 'text-white/5'}`}>
-                                {nextStarCost.toLocaleString()} UNITS
-                            </span>
-                            {/* Particle Effect for active button */}
-                            {canUpgrade && <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />}
+                            {!isViewedPlanetCompleted && !isFuturePlanet && (
+                                <span className={`text-[11px] z-10 tracking-widest transition-opacity duration-300 ${canUpgrade ? 'text-black/50 font-black' : 'text-white/5'}`}>
+                                    {nextStarCost.toLocaleString()} UNITS
+                                </span>
+                            )}
+                            {canUpgrade && !isViewedPlanetCompleted && !isFuturePlanet && <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />}
                         </button>
 
                         {/* Market/Buy Panel */}
-                        <div className="col-span-1 h-16 bg-black/60 backdrop-blur-2xl rounded-2xl border border-white/10 flex items-center justify-between px-1.5 py-1.5 gap-2 shadow-2xl relative">
+                        <div className="w-full max-w-sm h-16 bg-black/60 backdrop-blur-2xl rounded-2xl border border-white/10 flex items-center justify-between px-1.5 py-1.5 gap-2 shadow-2xl relative">
                             {/* Market Rate */}
                             <div className="flex flex-col items-center justify-center pl-3 pr-2 border-r border-white/5 h-full">
                                 <span className="text-[8px] text-white/20 uppercase font-bold tracking-widest text-center">Rate</span>
@@ -432,7 +494,6 @@ export const PrestigePage = () => {
                                 className="h-full px-6 bg-[#FFCC00] hover:bg-[#ffda33] text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:bg-gray-600 disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center relative overflow-hidden"
                             >
                                 {isBuying ? <span className="material-symbols-outlined animate-spin text-sm">refresh</span> : 'Buy'}
-                                {/* Ripple or Shine effect could go here */}
                             </button>
                         </div>
                     </div>
@@ -441,15 +502,32 @@ export const PrestigePage = () => {
 
             <style dangerouslySetInnerHTML={{
                 __html: `
-                input[type=number]::-webkit-inner-spin-button, 
-                input[type=number]::-webkit-outer-spin-button { 
-                    -webkit-appearance: none; 
-                    margin: 0; 
-                }
-                input[type=number] {
-                    -moz-appearance: textfield;
-                }
-            `}} />
+                        input[type=number]::-webkit-inner-spin-button, 
+                        input[type=number]::-webkit-outer-spin-button { 
+                            -webkit-appearance: none; 
+                            margin: 0; 
+                        }
+                        input[type=number] {
+                            -moz-appearance: textfield;
+                        }
+                        @keyframes spin {
+                            from { transform: rotate(0deg); }
+                            to { transform: rotate(360deg); }
+                        }
+                        .animate-spin-slow {
+                            animation: spin 30s linear infinite;
+                        }
+                        .animate-spin-slower {
+                            animation: spin 60s linear infinite;
+                        }
+                        @keyframes pulse-slow {
+                            0%, 100% { opacity: 0.3; }
+                            50% { opacity: 0.6; }
+                        }
+                        .animate-pulse-slow {
+                            animation: pulse-slow 4s ease-in-out infinite;
+                        }
+                    `}} />
         </div>
     );
 };
