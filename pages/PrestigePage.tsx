@@ -61,11 +61,14 @@ export const PrestigePage = () => {
     const stars = userPrestige?.star_level || 0;
     const currentStardust = userPrestige?.current_stardust || 0;
 
-    const costs = useMemo(() => [
-        100 * level, // 0 -> 1 star
-        250 * level, // 1 -> 2 stars
-        500 * level  // 2 -> 3 stars (Planet Up)
-    ], [level]);
+    const costs = useMemo(() => {
+        const base = 100 * Math.pow(5, level - 1);
+        return [
+            base,       // 0 -> 1 star
+            base * 2.5, // 1 -> 2 stars
+            base * 5    // 2 -> 3 stars (Planet Up)
+        ];
+    }, [level]);
 
     const nextStarCost = costs[stars] || 500 * level;
     const canUpgrade = currentStardust >= nextStarCost;
@@ -321,41 +324,47 @@ export const PrestigePage = () => {
                 <div className="pointer-events-auto w-full max-w-xl flex flex-col gap-6 items-center">
 
                     {/* Current Level Info - Redesigned with 4-Vertex Progress Bar */}
-                    <div className="flex flex-col items-center w-full max-w-md px-8">
-                        {/* Planet Name & Level Label */}
-                        <div className="flex items-center justify-between w-full mb-6">
-                            <span className="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] uppercase tracking-widest font-bold text-white/40 shadow-inner">
+                    <div className="flex flex-col items-center w-full max-w-xl px-12 pb-8">
+                        {/* Planet Name & Level Label - Offset to avoid overlap */}
+                        <div className="flex items-center justify-center w-full mb-12">
+                            <span className="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs uppercase tracking-[0.2em] font-black text-white/60 shadow-xl backdrop-blur-md">
                                 {getPlanetName(level)} — LVL {level}
-                            </span>
-                            <span className="text-[10px] uppercase tracking-widest font-bold text-white/30">
-                                {stars === 3 ? 'MAX TIER' : `Tier ${stars + 1}/3`}
                             </span>
                         </div>
 
                         {/* 4-Vertex Progress Bar */}
-                        <div className="relative w-full h-1 bg-white/10 rounded-full flex items-center justify-between">
+                        <div className="relative w-full h-[3px] bg-white/5 rounded-full flex items-center justify-between">
                             {/* Filling Effect */}
                             <div
-                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-300 via-amber-500 to-amber-300 rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(251,191,36,0.5)]"
+                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 rounded-full transition-all duration-1000 shadow-[0_0_20px_rgba(251,191,36,0.6)]"
                                 style={{ width: `${(stars / 3) * 100}%` }}
                             />
 
                             {/* Vertices (4 Dots) */}
                             {[0, 1, 2, 3].map((i) => {
                                 const isReached = i <= stars;
+                                const labels = ["1 Star", "2 Stars", "3 Stars", "Next Level"];
                                 return (
                                     <div key={i} className="relative z-10 flex flex-col items-center">
                                         <div
-                                            className={`w-3 h-3 rounded-full transition-all duration-500 border-2 ${isReached
-                                                ? 'bg-amber-400 border-amber-300 scale-110 shadow-[0_0_12px_rgba(251,191,36,0.8)]'
-                                                : 'bg-[#1a1a1a] border-white/10 scale-90'
+                                            className={`w-3.5 h-3.5 rounded-full transition-all duration-500 border-2 ${isReached
+                                                ? 'bg-amber-400 border-amber-300 scale-110 shadow-[0_0_15px_rgba(251,191,36,0.9)]'
+                                                : 'bg-[#0f0f0f] border-white/10 scale-90'
                                                 }`}
                                         />
-                                        {/* Optional Star Label for each vertex */}
-                                        <div className={`mt-2 transition-opacity duration-500 ${isReached ? 'opacity-100' : 'opacity-20'}`}>
-                                            <span className="material-symbols-outlined text-[10px]" style={{ fontVariationSettings: `'FILL' ${isReached ? 1 : 0}` }}>
-                                                {i === 3 ? 'grade' : 'star'}
+
+                                        {/* Vertex Labels */}
+                                        <div className={`absolute -bottom-10 whitespace-nowrap flex flex-col items-center transition-all duration-500 ${isReached ? 'opacity-100 translate-y-0' : 'opacity-30 translate-y-1'}`}>
+                                            <span className={`text-[10px] font-black uppercase tracking-widest ${i === 3 ? 'text-amber-400' : 'text-white/70'}`}>
+                                                {labels[i]}
                                             </span>
+                                            {i < 3 ? (
+                                                <span className="material-symbols-outlined text-[12px] mt-1" style={{ fontVariationSettings: `'FILL' ${isReached ? 1 : 0}` }}>
+                                                    star
+                                                </span>
+                                            ) : (
+                                                <span className="material-symbols-outlined text-[14px] mt-0.5 text-amber-400">rocket_launch</span>
+                                            )}
                                         </div>
                                     </div>
                                 );
@@ -364,7 +373,7 @@ export const PrestigePage = () => {
                     </div>
 
                     {/* Controls */}
-                    <div className="w-full grid grid-cols-2 gap-4 md:gap-6">
+                    <div className="w-full grid grid-cols-2 gap-4 md:gap-6 pt-8">
                         {/* Inject Button */}
                         <button
                             onClick={handleInject}
@@ -376,9 +385,9 @@ export const PrestigePage = () => {
                         >
                             <div className="flex items-center gap-2 z-10">
                                 <span className="material-symbols-outlined text-xl font-bold">{canUpgrade ? 'bolt' : 'lock'}</span>
-                                <span>Inject</span>
+                                <span>{stars === 2 ? 'Evolve' : 'Inject'}</span>
                             </div>
-                            <span className={`text-[10px] z-10 ${canUpgrade ? 'text-black/70 font-bold' : 'text-white/20'}`}>{nextStarCost} Stardust</span>
+                            <span className={`text-[10px] z-10 ${canUpgrade ? 'text-black/70 font-bold' : 'text-white/20'}`}>{nextStarCost.toLocaleString()} Stardust</span>
                         </button>
 
                         {/* Market/Buy Panel */}
