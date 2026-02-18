@@ -325,47 +325,69 @@ export const PrestigePage = () => {
                 <StarBackground />
                 <ShootingStars />
 
-                {/* SOLID DISTANT SUN - ULTRA HIGH DETAIL */}
-                <div className="absolute top-[-10%] right-[-10%] w-[60vh] h-[60vh] z-0 pointer-events-none">
-                    {/* The Corona / Rays */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle,#f59e0b_0%,transparent_70%)] opacity-40 animate-pulse" />
+                <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden="true">
+                    <defs>
+                        <filter id="bg-surface-noise">
+                            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+                            <feColorMatrix type="saturate" values="0" />
+                            <feComponentTransfer>
+                                <feFuncR type="linear" slope="1.5" intercept="-0.2" />
+                                <feFuncG type="linear" slope="1.5" intercept="-0.2" />
+                                <feFuncB type="linear" slope="1.5" intercept="-0.2" />
+                            </feComponentTransfer>
+                        </filter>
+                        <filter id="bg-solar-granulation">
+                            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="1" />
+                            <feDiffuseLighting lightingColor="#fff" surfaceScale="2.5">
+                                <feDistantLight azimuth="45" elevation="60" />
+                            </feDiffuseLighting>
+                            <feDisplacementMap in="SourceGraphic" scale="5" />
+                        </filter>
+                    </defs>
+                </svg>
 
-                    {/* Rotating Sun Flares */}
-                    <div className="absolute inset-[15%] opacity-30 animate-spin-slower"
+                {/* SOLID DISTANT SUN - ABSOLUTE REALISM OVERHAUL */}
+                <div className="absolute top-[-15%] right-[-15%] w-[80vh] h-[80vh] z-0 pointer-events-none">
+                    {/* 1. Deep Coronal Glow & Rayleigh Scattering (Intense bleed) */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle,#f59e0b_0%,transparent_75%)] opacity-40 animate-pulse" />
+                    <div className="absolute inset-[10%] bg-[radial-gradient(circle,#fff7ed_0%,transparent_70%)] opacity-30" />
+
+                    {/* 2. Solar Prominences (Plasma Loops breaking silhouette) */}
+                    <div className="absolute inset-[20%] opacity-60 mix-blend-color-dodge animate-spin-slower"
                         style={{
-                            background: 'conic-gradient(from 0deg, transparent 0%, #f59e0b 5%, transparent 10%, #fbbf24 15%, transparent 20%, #f59e0b 25%, transparent 30%, #fb923c 35%, transparent 40%)',
-                            filter: 'blur(15px)'
-                        }}
-                    />
-                    );
+                            background: 'conic-gradient(from 0deg, transparent, #ffcc00 1%, transparent 3%, #ff4d00 10%, transparent 12%)',
+                            filter: 'url(#bg-surface-noise) blur(10px)'
+                        }} />
 
-                    {/* The Solid Body - REMOVED RING / INCREASED DETAIL */}
-                    <div className="absolute inset-[25%] rounded-full bg-[#fcd34d] shadow-[0_0_120px_rgba(245,158,11,0.6),inset_-40px_-40px_80px_rgba(0,0,0,0.8),inset_20px_20px_40px_rgba(255,255,255,0.4)] overflow-hidden">
-                        {/* Base Surface with Solar Granulation */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-600" />
+                    {/* 3. The Photosphere (Main Radiant Body with Limb Darkening) */}
+                    <div className="absolute inset-[30%] rounded-full bg-[#fcd34d] shadow-[0_0_200px_rgba(245,158,11,0.8)] overflow-visible">
+                        {/* Base Solar Heat with edge falloff */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#fff7ed] via-[#f59e0b] to-[#7f1d1d]" />
+                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,transparent_50%,rgba(127,29,29,1)_100%)]" />
 
-                        {/* High Detail Noise Overlay (Granulation) */}
-                        <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter contrast-150 scale-150" />
+                        {/* Boiling Granulation */}
+                        <div className="absolute inset-[-20%] opacity-95 mix-blend-overlay"
+                            style={{ filter: 'url(#bg-solar-granulation) contrast(1.8) brightness(1.3)' }} />
 
-                        {/* Conic Swirl (Solar Rotation) */}
-                        <div className="absolute inset-0 opacity-30 animate-spin-slow"
-                            style={{ background: 'conic-gradient(from 0deg, #f59e0b, #fbbf24, #ef4444, #f59e0b)', filter: 'blur(20px)' }} />
+                        {/* Realistic Sunspots (Umbra/Penumbra) */}
+                        {[
+                            { t: '35%', l: '35%', s: '1.5vw' },
+                            { t: '60%', l: '55%', s: '1vw' },
+                            { t: '40%', l: '70%', s: '0.6vw' }
+                        ].map((s, i) => (
+                            <div key={i} className="absolute flex items-center justify-center" style={{ top: s.t, left: s.l, width: s.s, height: s.s }}>
+                                <div className="absolute w-[160%] h-[160%] rounded-full bg-[#451a03]/80 blur-[2px] mix-blend-multiply" />
+                                <div className="absolute w-full h-full rounded-full bg-black blur-[0.5px]" />
+                            </div>
+                        ))}
 
-                        {/* High Detail Sunspots (Realistic Texture) */}
-                        <div className="absolute top-[25%] left-[30%] w-12 h-10 bg-black/80 rounded-full blur-[3px] rotate-45 mix-blend-multiply" />
-                        <div className="absolute top-[28%] left-[33%] w-6 h-5 bg-black/90 rounded-full blur-[1px]" />
-
-                        <div className="absolute bottom-[35%] right-[20%] w-14 h-12 bg-black/60 rounded-full blur-[5px] -rotate-12 mix-blend-multiply" />
-                        <div className="absolute bottom-[38%] right-[23%] w-7 h-6 bg-black/80 rounded-full blur-[2px]" />
-
-                        <div className="absolute top-[55%] left-[50%] w-5 h-5 bg-black/70 rounded-full blur-[2px] opacity-60" />
-
-                        {/* Specular Highlights */}
-                        <div className="absolute top-[10%] left-[10%] w-full h-full bg-radial-gradient from-white/20 to-transparent blur-[40px]" />
+                        {/* High-Contrast Coronal Flow */}
+                        <div className="absolute inset-[-50%] opacity-20 mix-blend-screen"
+                            style={{ background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'url(#bg-surface-noise) blur(40px)' }} />
                     </div>
 
-                    {/* Intense Bloom */}
-                    <div className="absolute inset-[20%] rounded-full bg-yellow-400/10 blur-[80px]" />
+                    {/* 4. Lens Flare Artifacts */}
+                    <div className="absolute inset-[15%] rounded-full bg-white/5 blur-[120px]" />
                 </div>
             </div>
 

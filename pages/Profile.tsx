@@ -261,20 +261,9 @@ export const Profile = () => {
                                         })()
                                     )}
 
-                                    <span
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(profile.id);
-                                            showToast('ID copied to clipboard!', 'success');
-                                        }}
-                                        className="px-4 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500 border border-gray-200 dark:border-white/5 tracking-wider uppercase cursor-pointer hover:opacity-80 active:scale-95 transition-all select-none"
-                                        title="Click to copy ID"
-                                    >
-                                        ID: {profile.id}
-                                    </span>
-
-                                    {/* Prestige Status Widget */}
+                                    {/* Prestige Status Widget - Now above ID */}
                                     {prestige && (
-                                        <div className="mt-4 transform hover:scale-[1.02] transition-transform duration-300">
+                                        <div className="mt-2 transform hover:scale-[1.02] transition-transform duration-300">
                                             <PrestigeWidget
                                                 compact={true}
                                                 prestigeData={prestige}
@@ -282,6 +271,17 @@ export const Profile = () => {
                                             />
                                         </div>
                                     )}
+
+                                    <span
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(profile.id);
+                                            showToast('ID copied to clipboard!', 'success');
+                                        }}
+                                        className="mt-2 px-4 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500 border border-gray-200 dark:border-white/5 tracking-wider uppercase cursor-pointer hover:opacity-80 active:scale-95 transition-all select-none"
+                                        title="Click to copy ID"
+                                    >
+                                        ID: {profile.id}
+                                    </span>
                                 </div>
 
                                 {profile.bio && (
