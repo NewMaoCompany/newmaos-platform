@@ -335,44 +335,46 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                         </div>
                     </div>
                 );
-            case 8: // Nova (Sun) - CORE CINEMATIC OVERHAUL (Phase 5)
+            case 8: // Nova (Sun) - Phase 6 Extreme Realism
                 return (
                     <div className="relative w-full h-full rounded-full bg-white overflow-visible filter"
                         style={{ filter: 'url(#solar-heat-shimmer)' }}>
-                        {/* 1. Photosphere & Extreme Limb Darkening */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-[#f59e0b] to-[#450a0a]" />
-                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_55%,rgba(69,26,3,1)_100%)]" />
+                        {/* 1. Photosphere & Extreme Limb Darkening (Near-black maroon edges) */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-[#f59e0b] to-[#1a0505]" />
+                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4)_0%,transparent_50%,rgba(0,0,0,0.95)_100%)]" />
 
-                        {/* 2. Solar Plasma Convection System */}
+                        {/* 2. Solar Plasma Convection Cells */}
                         <div className="absolute inset-[-5%] opacity-100 mix-blend-screen"
-                            style={{ filter: 'url(#solar-plasma-cells) contrast(1.6) brightness(1.1)' }} />
+                            style={{ filter: 'url(#solar-plasma-cells) contrast(1.7) brightness(1.1)' }} />
 
-                        {/* 3. High-Detail Solar Prominences (Silhouette-breaking Loops) */}
+                        {/* 3. Solar Prominence Arcs */}
                         {[
                             { r: 'rotate-0', top: '10%', left: '40%' },
-                            { r: 'rotate-[45deg]', top: '20%', left: '70%' },
-                            { r: 'rotate-[200deg]', top: '70%', left: '20%' },
+                            { r: 'rotate-[60deg]', top: '25%', left: '75%' },
+                            { r: 'rotate-[200deg]', top: '75%', left: '25%' },
                         ].map((p, i) => (
-                            <div key={i} className={`absolute w-[30%] h-[30%] z-10 ${p.r} opacity-80 mix-blend-screen overflow-visible`} style={{ top: p.top, left: p.left }}>
-                                <div className="w-full h-full border-[6px] border-amber-400/80 rounded-[60%_40%_70%_30%] blur-[4px] animate-pulse" />
-                                <div className="absolute inset-0 border-[2px] border-white/60 rounded-[60%_40%_70%_30%] blur-[1px]" />
+                            <div key={i} className={`absolute w-[35%] h-[35%] z-10 ${p.r} opacity-75 mix-blend-screen overflow-visible`} style={{ top: p.top, left: p.left }}>
+                                <div className="w-full h-full border-[8px] border-amber-500/80 rounded-[55%_45%_65%_35%] blur-[6px] animate-pulse" />
+                                <div className="absolute inset-0 border-[3px] border-white/50 rounded-[55%_45%_65%_35%] blur-[1.5px]" />
                             </div>
                         ))}
 
-                        {/* 4. Realistic Sunspot Hubs */}
+                        {/* 4. SUNSPOT SWARM: Organic Cluster */}
                         {[
-                            { t: '35%', l: '40%', s: '18%' },
-                            { t: '65%', l: '60%', s: '12%' }
+                            { t: '32%', l: '35%', s: '18%' },
+                            { t: '65%', l: '55%', s: '22%' },
+                            { t: '48%', l: '70%', s: '12%' },
+                            { t: '55%', l: '30%', s: '15%' }
                         ].map((s, i) => (
                             <div key={i} className="absolute flex items-center justify-center translate-x-[-50%] translate-y-[-50%]" style={{ top: s.t, left: s.l, width: s.s, height: s.s }}>
-                                <div className="absolute w-[200%] h-[200%] rounded-full bg-[#450a0a]/90 blur-[3px] mix-blend-multiply" />
-                                <div className="absolute w-full h-full rounded-full bg-black blur-[0.5px]" />
+                                <div className="absolute w-[220%] h-[220%] rounded-full bg-[#1a0505]/95 blur-[4px] mix-blend-multiply" />
+                                <div className="absolute w-full h-full rounded-full bg-black blur-[0.4px]" />
                             </div>
                         ))}
 
-                        {/* 5. Radiant Solar Fringe */}
-                        <div className="absolute inset-[-30%] opacity-30 mix-blend-screen animate-spin-slow"
-                            style={{ background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'url(#surface-noise) blur(10px)' }} />
+                        {/* 5. Core Radiant Glow */}
+                        <div className="absolute inset-[-35%] opacity-35 mix-blend-screen animate-spin-slow"
+                            style={{ background: 'radial-gradient(circle, white 0%, transparent 65%)', filter: 'url(#surface-noise) blur(12px)' }} />
                     </div>
                 );
             case 9: // Singularity - ULTRA REALISM UPGRADE (Spacetime Threads)
@@ -432,24 +434,25 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                         <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="4" seed="5" />
                         <feDisplacementMap in="SourceGraphic" scale="20" />
                     </filter>
-                    <filter id="solar-granulation">
+                    {/* Phase 6: Expanded Filter Regions to eliminate square halos */}
+                    <filter id="solar-granulation" x="-100%" y="-100%" width="300%" height="300%">
                         <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="1" />
                         <feDiffuseLighting lightingColor="#fff" surfaceScale="2.5">
                             <feDistantLight azimuth="45" elevation="60" />
                         </feDiffuseLighting>
                         <feDisplacementMap in="SourceGraphic" scale="5" />
                     </filter>
-                    <filter id="solar-plasma-cells">
+                    <filter id="solar-plasma-cells" x="-100%" y="-100%" width="300%" height="300%">
                         <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="5" seed="8" result="noise" />
-                        <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 5 -2" result="cells" />
+                        <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 5 -2.2" result="cells" />
                         <feGaussianBlur in="cells" stdDeviation="1" result="soft-cells" />
                         <feComposite operator="arithmetic" k1="1" k2="0.6" in="SourceGraphic" in2="soft-cells" />
                     </filter>
-                    <filter id="solar-heat-shimmer">
+                    <filter id="solar-heat-shimmer" x="-100%" y="-100%" width="300%" height="300%">
                         <feTurbulence type="turbulence" baseFrequency="0.05 0.1" numOctaves="2" seed="5">
-                            <animate attributeName="seed" from="1" to="100" dur="10s" repeatCount="indefinite" />
+                            <animate attributeName="seed" from="1" to="100" dur="15s" repeatCount="indefinite" />
                         </feTurbulence>
-                        <feDisplacementMap in="SourceGraphic" scale="8" />
+                        <feDisplacementMap in="SourceGraphic" scale="10" />
                     </filter>
                     <filter id="cloud-drift">
                         <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="5" />

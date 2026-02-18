@@ -346,85 +346,86 @@ export const PrestigePage = () => {
                     </defs>
                 </svg>
 
-                {/* ADVANCED SOLAR FILTERS */}
+                {/* ADVANCED SOLAR FILTERS (Phase 6: Extreme Realism) */}
                 <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden="true">
                     <defs>
-                        {/* 1. Boiling Solar Plasma (Convective cells) */}
-                        <filter id="solar-plasma-cells">
+                        {/* 1. Boiling Solar Plasma (Convective cells) - Expanded region to prevent square edges */}
+                        <filter id="solar-plasma-cells" x="-100%" y="-100%" width="300%" height="300%">
                             <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="5" seed="8" result="noise" />
-                            <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 5 -2" result="cells" />
+                            <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 5 -2.2" result="cells" />
                             <feGaussianBlur in="cells" stdDeviation="1" result="soft-cells" />
                             <feComposite operator="arithmetic" k1="1" k2="0.6" in="SourceGraphic" in2="soft-cells" />
                         </filter>
 
-                        {/* 2. Heat Distortion (Spatial Shimmer) */}
-                        <filter id="solar-heat-shimmer">
-                            <feTurbulence type="turbulence" baseFrequency="0.05 0.1" numOctaves="2" seed="5">
-                                <animate attributeName="seed" from="1" to="100" dur="10s" repeatCount="indefinite" />
+                        {/* 2. Heat Distortion (Spatial Shimmer) - Huge region */}
+                        <filter id="solar-heat-shimmer" x="-100%" y="-100%" width="300%" height="300%">
+                            <feTurbulence type="turbulence" baseFrequency="0.04 0.08" numOctaves="2" seed="5">
+                                <animate attributeName="seed" from="1" to="100" dur="15s" repeatCount="indefinite" />
                             </feTurbulence>
-                            <feDisplacementMap in="SourceGraphic" scale="15" />
-                        </filter>
-
-                        {/* 3. Surface Granulation (Displacement) */}
-                        <filter id="bg-solar-granulation-high">
-                            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="3" />
-                            <feColorMatrix type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1.5 -0.5" />
-                            <feDisplacementMap in="SourceGraphic" scale="8" />
+                            <feDisplacementMap in="SourceGraphic" scale="12" />
                         </filter>
                     </defs>
                 </svg>
 
-                {/* CINEMATIC SOLAR SYSTEM (Ultra-High Fidelity) */}
-                <div className="absolute top-[-30%] right-[-30%] w-[130vh] h-[130vh] z-0 pointer-events-none overflow-visible filter"
+                {/* CINEMATIC SOLAR SYSTEM (Phase 6: Ultra-Dark Realism) */}
+                <div className="absolute top-[-35%] right-[-35%] w-[140vh] h-[140vh] z-0 pointer-events-none overflow-visible filter"
                     style={{ filter: 'url(#solar-heat-shimmer)' }}>
 
-                    {/* 1. Outer Scattering & Deep Coronal Bloom */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle,#f59e0b_0%,transparent_75%)] opacity-40 animate-pulse" />
-                    <div className="absolute inset-[5%] bg-[radial-gradient(circle,#ffedd5_0%,transparent_70%)] opacity-30 blur-[120px]" />
+                    {/* 1. Deep Coronal Bloom (Circular Falloff) */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#f59e0b_0%,transparent_80%)] opacity-35 animate-pulse" />
+                    <div className="absolute inset-[10%] bg-[radial-gradient(circle_at_center,#ffedd5_0%,transparent_70%)] opacity-25 blur-[150px]" />
 
                     {/* 2. Solar Prominence Loops (Procedural Plasma Arcs) */}
                     {[
                         { r: 'rotate-0', top: '15%', left: '45%' },
-                        { r: 'rotate-[45deg]', top: '25%', left: '70%' },
-                        { r: 'rotate-[120deg]', top: '65%', left: '75%' },
-                        { r: 'rotate-[200deg]', top: '75%', left: '30%' },
+                        { r: 'rotate-[35deg]', top: '22%', left: '65%' },
+                        { r: 'rotate-[75deg]', top: '40%', left: '78%' },
+                        { r: 'rotate-[120deg]', top: '65%', left: '72%' },
+                        { r: 'rotate-[190deg]', top: '78%', left: '40%' },
+                        { r: 'rotate-[260deg]', top: '55%', left: '20%' },
                     ].map((p, i) => (
-                        <div key={i} className={`absolute w-[25%] h-[25%] z-10 ${p.r} opacity-80 mix-blend-screen overflow-visible`} style={{ top: p.top, left: p.left }}>
-                            <div className="w-full h-full border-[10px] border-amber-400/80 rounded-[60%_40%_70%_30%] blur-[8px] animate-pulse" />
-                            <div className="absolute inset-0 border-[4px] border-white/60 rounded-[60%_40%_70%_30%] blur-[2px]" />
+                        <div key={i} className={`absolute w-[28%] h-[28%] z-10 ${p.r} opacity-70 mix-blend-screen overflow-visible`} style={{ top: p.top, left: p.left }}>
+                            <div className="w-full h-full border-[12px] border-amber-500/80 rounded-[55%_45%_65%_35%] blur-[10px] animate-pulse" />
+                            <div className="absolute inset-0 border-[3px] border-white/50 rounded-[55%_45%_65%_35%] blur-[2px]" />
                         </div>
                     ))}
 
                     {/* 3. THE PHOTOSPHERE (Core Stellar Body) */}
-                    <div className="absolute inset-[35%] rounded-full bg-white shadow-[0_0_400px_rgba(245,158,11,1)] overflow-visible">
-                        {/* Base Heat + Limb Darkening (Critical: Transition to dark red at rim) */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-[#f59e0b] to-[#450a0a]" />
-                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.2)_0%,transparent_60%,rgba(69,26,3,1)_100%)]" />
+                    <div className="absolute inset-[35%] rounded-full bg-white shadow-[0_0_500px_rgba(245,158,11,0.8)] overflow-visible">
+                        {/* EXTREME LIMB DARKENING: Transition to near-black maroon at the rim */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-[#f59e0b] to-[#1a0505]" />
+                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4)_0%,transparent_50%,rgba(0,0,0,0.95)_100%)]" />
 
-                        {/* Plasma Convection Cells (High fidelity surface structure) */}
+                        {/* Plasma Convection Cells (Boiling surface structure) */}
                         <div className="absolute inset-[-5%] opacity-100 mix-blend-screen"
-                            style={{ filter: 'url(#solar-plasma-cells) contrast(1.5) brightness(1.1)' }} />
+                            style={{ filter: 'url(#solar-plasma-cells) contrast(1.7) brightness(1.1)' }} />
 
-                        {/* Randomized Sunspot Hubs */}
+                        {/* SUNSPOT SWARM: Uniform yet organic distribution */}
                         {[
-                            { t: '32%', l: '38%', s: '2.2vw', op: 0.9 },
-                            { t: '62%', l: '54%', s: '1.4vw', op: 0.8 },
-                            { t: '48%', l: '72%', s: '0.9vw', op: 0.7 }
+                            { t: '28%', l: '35%', s: '2.5vw' },
+                            { t: '35%', l: '55%', s: '1.2vw' },
+                            { t: '52%', l: '30%', s: '1.8vw' },
+                            { t: '65%', l: '48%', s: '2.8vw' },
+                            { t: '72%', l: '65%', s: '1.1vw' },
+                            { t: '45%', l: '75%', s: '2.1vw' },
+                            { t: '22%', l: '62%', s: '1.5vw' },
+                            { t: '60%', l: '72%', s: '1.4vw' },
+                            { t: '40%', l: '25%', s: '1.0vw' }
                         ].map((s, i) => (
-                            <div key={i} className="absolute flex items-center justify-center opacity-90" style={{ top: s.t, left: s.l, width: s.s, height: s.s }}>
-                                <div className="absolute w-[200%] h-[200%] rounded-full bg-[#450a0a]/80 blur-[4px] mix-blend-multiply" />
-                                <div className="absolute w-full h-full rounded-full bg-black/95 blur-[0.5px]" />
+                            <div key={i} className="absolute flex items-center justify-center opacity-85" style={{ top: s.t, left: s.l, width: s.s, height: s.s }}>
+                                <div className="absolute w-[220%] h-[220%] rounded-full bg-[#1a0505]/95 blur-[5px] mix-blend-multiply" />
+                                <div className="absolute w-full h-full rounded-full bg-black blur-[0.3px]" />
                             </div>
                         ))}
 
-                        {/* High-Contrast Coronal Flow Layer */}
-                        <div className="absolute inset-[-40%] opacity-40 mix-blend-screen animate-spin-slower"
-                            style={{ background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'url(#bg-surface-noise) blur(30px)' }} />
+                        {/* Coronal Fringe Layer */}
+                        <div className="absolute inset-[-40%] opacity-35 mix-blend-screen animate-spin-slower"
+                            style={{ background: 'radial-gradient(circle, white 0%, transparent 65%)', filter: 'url(#bg-surface-noise) blur(20px)' }} />
                     </div>
 
                     {/* 4. Planetary-Scale Solar Rays (Radially emitting) */}
-                    <div className="absolute inset-[-50%] rotate-45 opacity-20 mix-blend-screen"
-                        style={{ background: 'repeating-conic-gradient(from 0deg, white 0deg 1deg, transparent 2deg 10deg)', filter: 'blur(100px)' }} />
+                    <div className="absolute inset-[-60%] rotate-[15deg] opacity-15 mix-blend-screen"
+                        style={{ background: 'repeating-conic-gradient(from 0deg, white 0deg 0.5deg, transparent 1deg 12deg)', filter: 'blur(120px)' }} />
                 </div>
             </div>
 
@@ -479,9 +480,11 @@ export const PrestigePage = () => {
             </div>
 
             {/* FLYING ITEMS LAYER */}
-            {flyItems.map(item => (
-                <FlyingItem key={item.id} item={item} onComplete={() => setFlyItems(prev => prev.filter(i => i.id !== item.id))} />
-            ))}
+            {
+                flyItems.map(item => (
+                    <FlyingItem key={item.id} item={item} onComplete={() => setFlyItems(prev => prev.filter(i => i.id !== item.id))} />
+                ))
+            }
 
             {/* GALAXY RING SWIPER */}
             <main
