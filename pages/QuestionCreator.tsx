@@ -674,7 +674,8 @@ const QuestionListSidebar = ({
     selectedSubTopicId,
     onSelectQuestion,
     onDeleteQuestion,
-    activeQuestionId
+    activeQuestionId,
+    activeFormData
 }: {
     questions: Question[];
     selectedTopicId: string;
@@ -682,6 +683,7 @@ const QuestionListSidebar = ({
     onSelectQuestion: (q: Question) => void;
     onDeleteQuestion: (qId: string) => void;
     activeQuestionId?: string;
+    activeFormData?: FormState;
 }) => {
     const { user } = useApp();
     const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
@@ -1019,16 +1021,18 @@ const QuestionListSidebar = ({
                                         </div>
                                     </div>
                                     <div className="text-sm font-bold text-gray-800 mb-1 break-words">
-                                        {q.title || <span className="text-gray-400 italic">(No Title)</span>}
+                                        {isActive && activeFormData?.title ? activeFormData.title : (q.title || <span className="text-gray-400 italic">(No Title)</span>)}
                                     </div>
                                     <div className="flex justify-between items-center mt-1">
                                         <div className="text-[10px] text-gray-400 font-mono">
-                                            ID: {q.id ? q.id.slice(0, 5) : 'NEW'}...
+                                            ID: {q.id.slice(0, 8)}...
                                         </div>
-                                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded uppercase ${(q.status || '').toLowerCase() === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                                        <div className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${(isActive && activeFormData?.status === 'published') || q.status === 'published'
+                                            ? 'bg-green-100 text-green-600'
+                                            : 'bg-gray-100 text-gray-500'
                                             }`}>
-                                            {(q.status || 'draft').toUpperCase()}
-                                        </span>
+                                            {(isActive && activeFormData?.status) || q.status || 'draft'}
+                                        </div>
                                     </div>
                                 </div>
                             );
@@ -1107,9 +1111,13 @@ export const QuestionCreator = () => {
     const [optionPreviews, setOptionPreviews] = useState<Record<number, boolean>>({});
     const [optionExplPreviews, setOptionExplPreviews] = useState<Record<number, boolean>>({});
 
-    // Chapter Settings State
     const [sectionSettings, setSectionSettings] = useState<any>(null);
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
+
+    // Dynamic Metadata for dropdowns
+    const [fetchedSkills, setFetchedSkills] = useState<{ label: string, value: string }[]>([]);
+    const [fetchedErrors, setFetchedErrors] = useState<{ label: string, value: string }[]>([]);
+    const [isResetting, setIsResetting] = useState(false);
 
     // Global toast notifications
     const { showToast } = useToast();
@@ -1247,7 +1255,7 @@ export const QuestionCreator = () => {
             const trimmed = displayPrompt.trim();
             if (trimmed.startsWith('{')) {
                 try {
-                    const parsed = JSON.parse(displayPrompt);
+                    const parsed = JSON.parse(trimmed);
                     if (parsed.text || parsed.image) {
                         displayPrompt = parsed.text || '';
                         displayImage = parsed.image || null;
@@ -1256,7 +1264,7 @@ export const QuestionCreator = () => {
             } else if (trimmed.startsWith('[')) {
                 // Handle JSON Array ["text", "image"]
                 try {
-                    const parsed = JSON.parse(displayPrompt);
+                    const parsed = JSON.parse(trimmed);
                     if (Array.isArray(parsed)) {
                         // Assumption: First non-url item is text, first url-like item is image
                         // Or just Item 0 is text, Item 1 is image?
@@ -1309,6 +1317,7 @@ export const QuestionCreator = () => {
         }
         // Direct DB Fetch to ensure Title is loaded (Bypasses potential API issues)
         let freshTitle = q.title;
+        let fetchedTitle = false;
         if (!freshTitle) {
             try {
                 const { data } = await supabase
@@ -1318,6 +1327,7 @@ export const QuestionCreator = () => {
                     .single();
                 if (data?.title) {
                     freshTitle = data.title;
+                    fetchedTitle = true;
                     console.log('Fetched fresh title from DB:', freshTitle);
                 }
             } catch (err) {
@@ -1325,7 +1335,7 @@ export const QuestionCreator = () => {
             }
         }
 
-        setFormData({
+        const updatedData: FormState = {
             ...defaultForm,
             ...q,
             status: 'published', // Force published status as per user request
@@ -1333,9 +1343,10 @@ export const QuestionCreator = () => {
             prompt: displayPrompt, // Use parsed prompt text
             promptImage: displayImage, // Separate image
             correctOptionLabel: derivedLabel,
-            primarySkillId,
-            supportingSkillIds,
-            errorPatternIds,
+            // Correct mapping from Question type
+            primarySkillId: q.primarySkillId || '',
+            supportingSkillIds: q.supportingSkillIds || [],
+            errorPatternIds: q.errorPatternIds || [],
             // Map legacy fields — merge microExplanations into option.explanation
             options: q.options.map((o: any, oIdx: number) => {
                 const label = o.label || String.fromCharCode(65 + oIdx);
@@ -1344,11 +1355,23 @@ export const QuestionCreator = () => {
                     ...o,
                     label,
                     type: o.type || 'text',
-                    value: o.value || o.text || '', // Fix: fallback to o.text if value is missing
-                    explanation: o.explanation || q.microExplanations?.[optId] || q.microExplanations?.[label] || ''
+                    explanation: o.explanation || (q.microExplanations ? q.microExplanations[optId] : '')
                 };
             })
-        });
+        };
+
+        setFormData(updatedData);
+
+        // AUTO-SAVE: If we fetched a missing title or changed status to published, save it back automatically
+        if (fetchedTitle || q.status !== 'published') {
+            const payload = {
+                ...q,
+                title: freshTitle,
+                status: 'published'
+            };
+            // Call updateQuestion from useApp (handled optimism internally)
+            updateQuestion(payload as any);
+        }
         setViewMode('editor');
     };
 
@@ -1357,10 +1380,7 @@ export const QuestionCreator = () => {
         setViewMode('editor');
     };
 
-    // --- Dynamic Skills & Error Tags ---
-    const [fetchedSkills, setFetchedSkills] = useState<{ label: string, value: string }[]>([]);
-    const [fetchedErrors, setFetchedErrors] = useState<{ label: string, value: string }[]>([]);
-    const [isResetting, setIsResetting] = useState(false);
+
 
     useEffect(() => {
         const fetchMetadata = async () => {
@@ -1596,13 +1616,13 @@ export const QuestionCreator = () => {
                 await addQuestion({ ...payload, options: formData.options });
                 showToast('Question saved successfully!');
             }
-            // Stay in editor mode with fresh form for adding more questions
+            // STAY in editor mode with fresh form for adding more questions
             setFormData({ ...defaultForm, topicId: selectedTopicId, subTopicId: selectedSubTopicId });
-            // viewMode stays as 'editor' - don't jump to settings
 
-            // IMMEDIATE UPDATE: Fetch questions so the sidebar list updates instantly
-            await fetchQuestions();
+            // Background refresh to stay in sync with server
+            fetchQuestions();
             fetchSections(); // Refresh counts
+
         } catch (e: any) {
             console.error(e);
             const msg = e.response?.data?.error || e.message || 'Failed to save question.';
@@ -1740,6 +1760,7 @@ export const QuestionCreator = () => {
                     activeQuestionId={formData.id}
                     onSelectQuestion={handleSelectQuestion}
                     onDeleteQuestion={handleDeleteFromList}
+                    activeFormData={formData}
                 />
 
                 {/* 3. Main Content Area */}
