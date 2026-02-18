@@ -29,7 +29,12 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
         let query = supabase
             .from('questions')
             .select(`
-                *,
+                id, title, status, course, topic, topic_id, sub_topic_id, section_id,
+                type, calculator_allowed, difficulty, target_time_seconds,
+                skill_tags, error_tags, primary_skill_id, supporting_skill_ids,
+                prompt, prompt_type, latex, options, correct_option_id, tolerance,
+                explanation, explanation_type, micro_explanations, recommendation_reasons,
+                version, source, source_year, notes, weight_primary, weight_supporting,
                 question_skills(skill_id, role, weight),
                 question_error_patterns(error_tag_id)
             `)

@@ -1019,15 +1019,15 @@ const QuestionListSidebar = ({
                                         </div>
                                     </div>
                                     <div className="text-sm font-bold text-gray-800 mb-1 break-words">
-                                        {q.title}
+                                        {q.title || <span className="text-gray-400 italic">(No Title)</span>}
                                     </div>
                                     <div className="flex justify-between items-center mt-1">
                                         <div className="text-[10px] text-gray-400 font-mono">
                                             ID: {q.id ? q.id.slice(0, 5) : 'NEW'}...
                                         </div>
-                                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded uppercase ${q.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded uppercase ${(q.status || '').toLowerCase() === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
                                             }`}>
-                                            {q.status === 'published' ? 'PUBLISHED' : 'DRAFT'}
+                                            {(q.status || 'draft').toUpperCase()}
                                         </span>
                                     </div>
                                 </div>

@@ -220,7 +220,15 @@ export const questionsApi = {
         if (params?.limit) searchParams.set('limit', String(params.limit));
 
         const queryString = searchParams.toString();
-        return apiRequest<any[]>(`/questions${queryString ? `?${queryString}` : ''}`);
+        const response = await apiRequest<any[]>(`/questions${queryString ? `?${queryString}` : ''}`);
+        if (response && response.length > 0) {
+            console.log('API Questions Debug [0]:', {
+                id: response[0].id,
+                title: response[0].title,
+                status: response[0].status
+            });
+        }
+        return response;
     },
 
     async createQuestion(question: any) {
