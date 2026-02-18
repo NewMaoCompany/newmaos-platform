@@ -185,54 +185,68 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                         <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')] mix-blend-overlay" />
                     </div>
                 );
-            case 1: // Ignis (Volcanic) - HIGH DETAIL
+            case 1: // Ignis (Volcanic) - HIGH DETAIL UPGRADE
                 return (
-                    <div className="relative w-full h-full rounded-full bg-black shadow-inner overflow-hidden">
-                        {/* Solid Core */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-red-950 via-orange-950 to-black" />
+                    <div className="relative w-full h-full rounded-full bg-black shadow-[inset_-25px_-25px_60px_rgba(0,0,0,0.9),inset_10px_10px_20px_rgba(255,69,0,0.4)] overflow-hidden">
+                        {/* Solid Scorched Base */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0505] via-[#2d0a05] to-black" />
 
-                        {/* Magma Base & Cracks */}
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,_#7f1d1d_0%,_transparent_60%)] opacity-100" />
+                        {/* High Detail Magma Noise Surface */}
+                        <div className="absolute inset-0 opacity-60 mix-blend-screen bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter contrast-200 saturate-200" />
 
-                        {/* Glowing Lava Veins - CSS Complex Gradients */}
-                        <div className="absolute inset-0 opacity-90 mix-blend-screen"
-                            style={{
-                                background: `
-                                    radial-gradient(circle at 20% 80%, #ff4500 0%, transparent 20%),
-                                    radial-gradient(circle at 80% 20%, #ff8c00 0%, transparent 25%),
-                                    conic-gradient(from 45deg, transparent 0%, #ff4500 10%, transparent 20%)
-                                `
-                            }}
-                        />
+                        {/* Molten Cracks and Veins (CSS Math) */}
+                        <div className="absolute inset-0 opacity-80 mix-blend-color-dodge"
+                            style={{ background: 'radial-gradient(circle at 40% 40%, rgba(255,69,0,0.6) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(255,140,0,0.4) 0%, transparent 50%)' }} />
 
-                        {/* Identifying Features: Dark Basalt Plates */}
-                        <div className="absolute top-[20%] left-[10%] w-[30%] h-[20%] bg-black/60 rounded-full filter blur-[4px]" />
-                        <div className="absolute bottom-[30%] right-[20%] w-[25%] h-[25%] bg-black/60 rounded-full filter blur-[5px]" />
+                        {/* Basalt Tectonic Plates (Detailed Dark Masses) */}
+                        {[
+                            { t: '15%', l: '10%', s: '40%', r: '45%_55%_65%_35%', b: 'blur(5px)' },
+                            { t: '50%', l: '60%', s: '35%', r: '60%_40%_30%_70%', b: 'blur(8px)' },
+                            { t: '70%', l: '20%', s: '25%', r: '30%_70%_50%_50%', b: 'blur(4px)' }
+                        ].map((p, i) => (
+                            <div key={i} className="absolute bg-[#0a0505]/90"
+                                style={{ top: p.t, left: p.l, width: p.s, height: p.s, borderRadius: p.r, filter: p.b }} />
+                        ))}
 
-                        {/* Ash Clouds / Smoke */}
-                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30 mix-blend-multiply" />
+                        {/* Volcanic Craters with Lava Rim */}
+                        {[
+                            { t: '30%', l: '40%', s: '12%', op: 0.8 }, { t: '65%', l: '70%', s: '8%', op: 0.6 },
+                            { t: '20%', l: '75%', s: '15%', op: 0.7 }, { t: '80%', l: '35%', s: '10%', op: 0.5 }
+                        ].map((c, i) => (
+                            <div key={i} className="absolute rounded-full bg-black shadow-[inset_2px_2px_5px_rgba(0,0,0,1),1px_1px_1px_rgba(255,69,0,0.5)] border border-red-900/30"
+                                style={{ top: c.t, left: c.l, width: c.s, height: c.s, opacity: c.op }} />
+                        ))}
+
+                        {/* Heat Haze / Micro-Detail Overlay */}
+                        <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] mix-blend-multiply" />
                     </div>
                 );
-            case 2: // Terra (Earth-like) - HIGH DETAIL
+            case 2: // Terra (Earth-like) - HIGH DETAIL UPGRADE
                 return (
-                    <div className="relative w-full h-full rounded-full bg-[#1e40af] shadow-[inset_-10px_-10px_30px_rgba(0,0,0,0.8)] overflow-hidden">
-                        {/* Deep Ocean Gradient */}
-                        <div className="absolute inset-0 bg-radial-gradient from-blue-400/20 to-blue-950/80" />
+                    <div className="relative w-full h-full rounded-full bg-[#1e3a8a] shadow-[inset_-25px_-25px_60px_rgba(0,0,0,0.9),inset_10px_10px_30px_rgba(147,197,253,0.3)] overflow-hidden">
+                        {/* Deep Ocean Surface with Micro-Detail */}
+                        <div className="absolute inset-0 bg-radial-gradient from-blue-500/10 to-blue-950/90" />
 
-                        {/* Continents - Green/Brown Landmasses */}
-                        <div className="absolute top-[15%] left-[20%] w-[25%] h-[20%] bg-emerald-700/80 rounded-[40%_60%_30%_70%] filter blur-[3px]" />
-                        <div className="absolute top-[40%] right-[15%] w-[35%] h-[30%] bg-emerald-800/80 rounded-[30%_70%_60%_40%] filter blur-[4px]" />
-                        <div className="absolute bottom-[10%] left-[30%] w-[20%] h-[15%] bg-amber-900/40 rounded-full filter blur-[2px]" />
+                        {/* Landmasses (Layered for Depth) */}
+                        <div className="absolute top-[10%] left-[25%] w-[45%] h-[35%] bg-emerald-900/40 rounded-[45%_55%_65%_35%] filter blur-[8px]" />
+                        <div className="absolute top-[12%] left-[27%] w-[40%] h-[30%] bg-emerald-800/80 rounded-[40%_60%_70%_30%] filter blur-[3px]" />
+                        <div className="absolute bottom-[20%] right-[15%] w-[35%] h-[30%] bg-emerald-800/80 rounded-[30%_70%_60%_40%] filter blur-[4px]" />
 
-                        {/* Dynamic Clouds  */}
-                        <div className="absolute inset-0 opacity-60 mix-blend-screen"
-                            style={{
-                                backgroundImage: 'radial-gradient(circle at 50% 50%, white 0%, transparent 5%), radial-gradient(circle at 20% 30%, white 0%, transparent 8%)',
-                                filter: 'blur(5px)',
-                                transform: 'scale(1.2) rotate(-10deg)'
-                            }}
-                        />
-                        <div className="absolute top-[30%] w-full h-[15%] bg-white/20 blur-[8px] transform -rotate-12 translate-x-4" />
+                        {/* Mountain Ridges and Arid Zones */}
+                        <div className="absolute top-[25%] left-[35%] w-[15%] h-[5%] bg-amber-900/30 rounded-full filter blur-[2px]" />
+                        <div className="absolute bottom-[25%] right-[25%] w-[10%] h-[10%] bg-amber-900/40 rounded-full filter blur-[3px]" />
+
+                        {/* Specular Highlights on Water */}
+                        <div className="absolute top-[15%] left-[15%] w-[30%] h-[20%] bg-white/5 rounded-full filter blur-[10px]" />
+
+                        {/* Dynamic Multi-Layer Clouds */}
+                        <div className="absolute inset-0 opacity-40 mix-blend-screen animate-pulse-slow"
+                            style={{ backgroundImage: 'radial-gradient(circle at 40% 40%, white 0%, transparent 15%), radial-gradient(circle at 70% 30%, white 0%, transparent 20%)', filter: 'blur(12px)' }} />
+                        <div className="absolute top-0 left-0 w-full h-full opacity-30 mix-blend-screen bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter blur-[1px]" />
+
+                        {/* Polar Ice Caps */}
+                        <div className="absolute top-[-5%] left-[25%] w-[50%] h-[15%] bg-white/80 blur-[8px] rounded-full" />
+                        <div className="absolute bottom-[-5%] left-[30%] w-[40%] h-[12%] bg-white/60 blur-[10px] rounded-full" />
                     </div>
                 );
             case 3: // Glacies (Ice) - HIGH DETAIL
@@ -321,34 +335,37 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                         <div className="relative w-full h-full rounded-full bg-black shadow-[0_0_30px_#000] z-20" />
                     </div>
                 );
-            case 8: // Nova (Active Star) - HIGH DETAIL
+            case 8: // Nova (Active Star) - HIGH DETAIL UPGRADE
                 return (
-                    <div className="relative w-full h-full rounded-full bg-[#f59e0b] shadow-[0_0_60px_rgba(245,158,11,0.8)] z-10 overflow-hidden">
-                        {/* Sun Surface - Granulation Texture */}
-                        <div className="absolute inset-0 opacity-80 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter contrast-125" />
+                    <div className="relative w-full h-full rounded-full bg-[#fcd34d] shadow-[0_0_100px_rgba(245,158,11,0.8),inset_-30px_-30px_60px_rgba(0,0,0,0.6)] z-10 overflow-hidden">
+                        {/* Solar Surface Granulation (High Contrast) */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-600" />
+                        <div className="absolute inset-0 opacity-60 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter contrast-200 contrast-150 scale-125" />
 
-                        {/* Dynamic Surface Flow - CSS Conic Gradient */}
-                        <div className="absolute inset-0 opacity-60 animate-spin-slower"
+                        {/* Conic Swirl Flow (Realistic Star Rotation) */}
+                        <div className="absolute inset-0 opacity-50 animate-spin-slow"
                             style={{
-                                background: 'conic-gradient(from 0deg, #f59e0b, #d97706, #b45309, #d97706, #f59e0b)',
-                                filter: 'blur(10px)'
+                                background: 'conic-gradient(from 0deg, #f59e0b, #fbbf24, #ef4444, #f59e0b)',
+                                filter: 'blur(15px)'
                             }}
                         />
 
-                        {/* Sunspots - Realistic Dark Patches */}
-                        <div className="absolute top-[35%] left-[25%] w-[8%] h-[6%] bg-black/70 rounded-full filter blur-[1px] rotate-12" />
-                        <div className="absolute top-[38%] left-[28%] w-[4%] h-[3%] bg-black/80 rounded-full filter blur-[0.5px]" />
-                        <div className="absolute bottom-[25%] right-[30%] w-[12%] h-[8%] bg-black/60 rounded-full filter blur-[2px] -rotate-6" />
+                        {/* High Detail Sunspots (Clustered) */}
+                        {[
+                            { t: '30%', l: '35%', s: '6%', op: 0.9 }, { t: '32%', l: '38%', s: '3%', op: 0.8 },
+                            { t: '55%', l: '65%', s: '10%', op: 0.7 }, { t: '58%', l: '62%', s: '5%', op: 0.6 },
+                            { t: '20%', l: '60%', s: '4%', op: 0.5 }
+                        ].map((s, i) => (
+                            <div key={i} className="absolute rounded-full bg-black/70 blur-[1px] mix-blend-multiply"
+                                style={{ top: s.t, left: s.l, width: s.s, height: s.s, opacity: s.op }} />
+                        ))}
 
-                        {/* Solar Flares / Prominences (Edge Effects) */}
-                        <div className="absolute -top-[5%] left-[20%] w-[20%] h-[10%] bg-orange-500/50 rounded-full filter blur-[8px] animate-pulse" />
-                        <div className="absolute top-[40%] -right-[5%] w-[10%] h-[20%] bg-red-500/50 rounded-full filter blur-[8px] animate-pulse delay-75" />
+                        {/* Solar Flare Prominences (Edge Activity) */}
+                        <div className="absolute -top-[10%] left-[25%] w-[30%] h-[20%] bg-orange-600/40 blur-[15px] animate-pulse" />
+                        <div className="absolute bottom-[10%] -right-[10%] w-[20%] h-[30%] bg-red-600/30 blur-[20px] animate-pulse delay-500" />
 
-                        {/* Corona Glow */}
-                        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_20px_rgba(255,255,0,0.5)]" />
-
-                        {/* Intense Center */}
-                        <div className="absolute inset-[15%] rounded-full bg-radial-gradient from-yellow-100/50 to-transparent blur-[15px]" />
+                        {/* Intense Central Core */}
+                        <div className="absolute inset-0 bg-radial-gradient from-white/30 to-transparent blur-[30px]" />
                     </div>
                 );
             case 9: // Singularity - HIGH DETAIL

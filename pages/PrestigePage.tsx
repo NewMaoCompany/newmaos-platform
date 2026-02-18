@@ -252,22 +252,33 @@ export const PrestigePage = () => {
                         }}
                     />
 
-                    {/* The Solid Body */}
-                    <div className="absolute inset-[25%] rounded-full bg-[#FFD700] shadow-[0_0_100px_#f59e0b,inset_-20px_-20px_50px_rgba(0,0,0,0.5)] border-4 border-[#fffbeb]/20 overflow-hidden">
-                        {/* Surface Texture / Granulation */}
-                        <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter contrast-150" />
+                    {/* The Solid Body - REMOVED RING / INCREASED DETAIL */}
+                    <div className="absolute inset-[25%] rounded-full bg-[#fcd34d] shadow-[0_0_120px_rgba(245,158,11,0.6),inset_-40px_-40px_80px_rgba(0,0,0,0.8),inset_20px_20px_40px_rgba(255,255,255,0.4)] overflow-hidden">
+                        {/* Base Surface with Solar Granulation */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-600" />
 
-                        {/* Sunspots */}
-                        <div className="absolute top-[30%] left-[20%] w-8 h-6 bg-black/60 rounded-full blur-[2px] rotate-12" />
-                        <div className="absolute bottom-[40%] right-[25%] w-10 h-8 bg-black/50 rounded-full blur-[3px]" />
-                        <div className="absolute top-[60%] left-[45%] w-4 h-4 bg-black/80 rounded-full blur-[1px]" />
+                        {/* High Detail Noise Overlay (Granulation) */}
+                        <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] filter contrast-150 scale-150" />
 
-                        {/* Solar Flow */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-orange-600/30 via-transparent to-yellow-400/30 animate-pulse" />
+                        {/* Conic Swirl (Solar Rotation) */}
+                        <div className="absolute inset-0 opacity-30 animate-spin-slow"
+                            style={{ background: 'conic-gradient(from 0deg, #f59e0b, #fbbf24, #ef4444, #f59e0b)', filter: 'blur(20px)' }} />
+
+                        {/* High Detail Sunspots (Realistic Texture) */}
+                        <div className="absolute top-[25%] left-[30%] w-12 h-10 bg-black/80 rounded-full blur-[3px] rotate-45 mix-blend-multiply" />
+                        <div className="absolute top-[28%] left-[33%] w-6 h-5 bg-black/90 rounded-full blur-[1px]" />
+
+                        <div className="absolute bottom-[35%] right-[20%] w-14 h-12 bg-black/60 rounded-full blur-[5px] -rotate-12 mix-blend-multiply" />
+                        <div className="absolute bottom-[38%] right-[23%] w-7 h-6 bg-black/80 rounded-full blur-[2px]" />
+
+                        <div className="absolute top-[55%] left-[50%] w-5 h-5 bg-black/70 rounded-full blur-[2px] opacity-60" />
+
+                        {/* Specular Highlights */}
+                        <div className="absolute top-[10%] left-[10%] w-full h-full bg-radial-gradient from-white/20 to-transparent blur-[40px]" />
                     </div>
 
                     {/* Intense Bloom */}
-                    <div className="absolute inset-[20%] rounded-full bg-yellow-400/20 blur-[60px]" />
+                    <div className="absolute inset-[20%] rounded-full bg-yellow-400/10 blur-[80px]" />
                 </div>
             </div>
 
@@ -396,11 +407,13 @@ export const PrestigePage = () => {
                                         )}
                                     </div>
 
-                                    {/* PLANET NAME - Fully centered and symmetrical */}
+                                    {/* PLANET NAME - Extra Careful Centering */}
                                     <div className={`text-center transition-all duration-700 ${distance === 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'} pointer-events-none absolute -top-24 w-full flex flex-col items-center justify-center`}>
-                                        <h2 className="text-6xl md:text-8xl font-black uppercase tracking-[0.6em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/70 to-white/10 drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] font-mono leading-none">
-                                            {name}
-                                        </h2>
+                                        <div className="relative">
+                                            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/70 to-white/10 drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] font-mono leading-none pr-[0.4em]">
+                                                {name}
+                                            </h2>
+                                        </div>
                                         <div className="h-1 w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent mt-4" />
                                     </div>
                                 </div>
@@ -425,11 +438,11 @@ export const PrestigePage = () => {
                         </div>
 
                         {/* 4-Vertex Progress Bar */}
-                        <div className="relative w-full h-[5px] bg-white/5 rounded-full flex items-center justify-between border border-white/5 px-0.5">
+                        <div className="relative w-full h-[5px] bg-white/5 rounded-full flex items-center justify-between border border-white/5 overflow-hidden">
                             {/* Filling Effect */}
                             <div
-                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#FFCC00] via-amber-400 to-[#FFCC00] rounded-full transition-all duration-1000 shadow-[0_0_30px_rgba(251,191,36,0.5)]"
-                                style={{ width: `${(displayedStars / 3) * 100}%` }}
+                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#FFCC00] via-amber-400 to-[#FFCC00] transition-all duration-1000 shadow-[0_0_30px_rgba(251,191,36,0.5)]"
+                                style={{ width: `${displayedStars > 0 ? ((Math.min(4, displayedStars) - 1) / 3) * 100 : 0}%` }}
                             />
 
                             {/* Vertices (4 Dots) */}
@@ -503,14 +516,14 @@ export const PrestigePage = () => {
                                     ? 'bg-white/10 hover:bg-white/15 text-white/80 border border-white/10'
                                     : canUpgrade
                                         ? 'bg-[#FFCC00] hover:bg-[#ffda33] text-black hover:translate-y-[-2px] active:translate-y-[1px]'
-                                        : 'bg-white/5 text-white/5 cursor-not-allowed border border-white/5'}`}
+                                        : 'bg-white/5 text-white/10 cursor-not-allowed border border-white/5'}`}
                         >
                             <div className="flex items-center gap-2.5 z-10 transition-transform group-hover:scale-110">
                                 <span className="material-symbols-outlined text-2xl font-black">
                                     {isViewedPlanetCompleted ? 'keyboard_double_arrow_right' : isFuturePlanet ? 'lock' : displayedStars >= 4 ? 'auto_mode' : 'offline_bolt'}
                                 </span>
                                 <span className="drop-shadow-sm font-black">
-                                    {isViewedPlanetCompleted ? 'Move to Next Planet' : isFuturePlanet ? 'Locked' : displayedStars >= 4 ? 'Evolve Planet' : 'Inject Stardust'}
+                                    {isViewedPlanetCompleted ? 'Move to Current Planet' : isFuturePlanet ? 'Locked' : displayedStars >= 4 ? 'Evolve Planet' : 'Inject Stardust'}
                                 </span>
                             </div>
                             {!isViewedPlanetCompleted && !isFuturePlanet && (
