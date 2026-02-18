@@ -138,14 +138,17 @@ export const PrestigePage = () => {
                 }
             }
         } else {
-            console.error(result.message);
+            alert(result.message || 'Purchase failed');
         }
 
         setIsBuying(false);
     };
 
     const handleInject = async () => {
-        await injectStardust(nextStarCost);
+        const result = await injectStardust(nextStarCost);
+        if (!result.success) {
+            alert(result.message || 'Injection failed');
+        }
     };
 
     const lastLevelRef = useRef(level);
@@ -471,10 +474,10 @@ export const PrestigePage = () => {
                         >
                             <div className="flex items-center gap-2.5 z-10 transition-transform group-hover:scale-110">
                                 <span className="material-symbols-outlined text-2xl font-black">
-                                    {isViewedPlanetCompleted ? 'keyboard_double_arrow_right' : isFuturePlanet ? 'lock' : stars >= 2 ? 'auto_mode' : 'offline_bolt'}
+                                    {isViewedPlanetCompleted ? 'keyboard_double_arrow_right' : isFuturePlanet ? 'lock' : displayedStars >= 3 ? 'auto_mode' : 'offline_bolt'}
                                 </span>
                                 <span className="drop-shadow-sm font-black">
-                                    {isViewedPlanetCompleted ? 'Move to Next Planet' : isFuturePlanet ? 'Locked' : stars >= 2 ? 'Evolve Planet' : 'Inject Stardust'}
+                                    {isViewedPlanetCompleted ? 'Move to Next Planet' : isFuturePlanet ? 'Locked' : displayedStars >= 3 ? 'Evolve Planet' : 'Inject Stardust'}
                                 </span>
                             </div>
                             {!isViewedPlanetCompleted && !isFuturePlanet && (
