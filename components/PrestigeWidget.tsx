@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../AppContext';
 import { PlanetVisual, getPlanetName } from './SpaceVisuals';
+import { PointsCoin } from './PointsCoin';
 
 export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
     const { userPrestige } = useApp();
@@ -10,13 +11,14 @@ export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
     // Default if null (e.g. loading or new user)
     const level = userPrestige?.planet_level || 1;
     const stars = userPrestige?.star_level || 0;
+    const stardust = userPrestige?.current_stardust || 0;
     const name = useMemo(() => getPlanetName(level), [level]);
 
     if (compact) {
         return (
             <div
                 onClick={() => navigate('/prestige')}
-                className="cursor-pointer group relative flex flex-row items-center gap-3 pl-1.5 pr-4 py-1 rounded-[999px] min-w-[120px] h-[36px] justify-between"
+                className="cursor-pointer group relative flex flex-row items-center gap-2 pl-1.5 pr-3 py-1 rounded-[999px] min-w-[190px] h-[36px]"
                 style={{
                     background: 'rgba(255, 255, 255, 0.75)',
                     backdropFilter: 'blur(12px)',
@@ -34,29 +36,29 @@ export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
                     }}
                 />
 
-                <div className="ml-1 z-10 flex items-center justify-center w-8 h-8 rounded-full overflow-visible relative group-hover:drop-shadow-[0_0_8px_rgba(249,212,6,0.6)] transition-all">
+                <div className="ml-0.5 z-10 flex items-center justify-center w-8 h-8 rounded-full overflow-visible relative group-hover:drop-shadow-[0_0_8px_rgba(249,212,6,0.6)] transition-all">
                     <PlanetVisual level={level} size="sm" showAtmosphere={true} floating={false} />
                 </div>
 
                 {/* Content Container (Z-index to sit above hover layer) */}
-                <div className="flex flex-col flex-grow gap-0.5 justify-center mr-1 z-10">
+                <div className="flex flex-col flex-grow gap-0.5 justify-center z-10 min-w-0">
                     <div className="flex justify-between items-end leading-none">
-                        <span className="text-[10px] font-black text-gray-900 uppercase tracking-wider relative top-[1px]">
+                        <span className="text-[9px] font-black text-gray-900 uppercase tracking-wider relative top-[1px] truncate">
                             {name}
                         </span>
                     </div>
 
                     {/* Progress Bar Container - 3 Segments with Stars on Top */}
-                    <div className="flex gap-1 w-full mt-1 relative">
+                    <div className="flex gap-1 w-[60px] mt-1 relative">
                         {[1, 2, 3].map(s => (
-                            <div key={s} className="h-1.5 flex-1 bg-gray-200/50 rounded-full overflow-visible relative">
+                            <div key={s} className="h-1 flex-1 bg-gray-200/50 rounded-full overflow-visible relative">
                                 <div
                                     className={`h-full w-full rounded-full transition-all duration-500 ${s <= stars ? 'bg-gradient-to-r from-amber-300 to-amber-500' : 'opacity-0'}`}
                                 ></div>
                                 {/* Star Icon - Centered on segment */}
-                                <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none">
+                                <div className="absolute -top-[4px] left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none">
                                     <span
-                                        className={`material-symbols-outlined text-[8px] drop-shadow-sm ${s <= stars ? 'text-amber-500 fill-current' : 'text-gray-300'}`}
+                                        className={`material-symbols-outlined text-[7px] drop-shadow-sm ${s <= stars ? 'text-amber-500 fill-current' : 'text-gray-300'}`}
                                         style={{ fontVariationSettings: "'FILL' 1" }}
                                     >
                                         star
@@ -65,6 +67,17 @@ export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
                             </div>
                         ))}
                     </div>
+                </div>
+
+                {/* Divider */}
+                <div className="h-4 w-px bg-gray-200 dark:bg-gray-700 z-10 mx-1" />
+
+                {/* Stardust Section */}
+                <div className="flex items-center gap-1.5 z-10 pr-1">
+                    <PointsCoin type="stardust" size="sm" className="group-hover:scale-110 transition-transform" />
+                    <span className="text-[11px] font-bold text-gray-700 dark:text-gray-200 tabular-nums">
+                        {stardust.toLocaleString()}
+                    </span>
                 </div>
             </div>
         );
