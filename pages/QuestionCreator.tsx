@@ -1019,7 +1019,7 @@ const QuestionListSidebar = ({
                                         </div>
                                     </div>
                                     <div className="text-sm font-bold text-gray-800 mb-1 break-words">
-                                        {q.title || q.id || <span className="text-gray-400 italic">(Untitled)</span>}
+                                        {q.title || <span className="text-gray-400 italic">(No Title)</span>}
                                     </div>
                                     <div className="flex justify-between items-center mt-1">
                                         <div className="text-[10px] text-gray-400 font-mono">
@@ -1311,7 +1311,8 @@ export const QuestionCreator = () => {
         setFormData({
             ...defaultForm,
             ...q,
-            title: q.title || q.id || '', // Fallback to ID if title is empty (fixes saving issue for old data)
+            status: 'published', // Force published status as per user request
+            title: q.title || '', // Use title variable only (do not fallback to ID)
             prompt: displayPrompt, // Use parsed prompt text
             promptImage: displayImage, // Separate image
             correctOptionLabel: derivedLabel,
