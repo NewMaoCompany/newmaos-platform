@@ -69,23 +69,25 @@ export const PrestigePage = () => {
         return [
             base,       // 0 -> 1 star
             base * 2.5, // 1 -> 2 stars
-            base * 5,   // 2 -> 3 stars (Planet Up)
-            base * 5    // Fallback for star 3 (promotion state)
+            base * 5,   // 2 -> 3 stars
+            base * 10,  // 3 -> 4 stars (Next Level Ready)
+            base * 10   // Fallback
         ];
     }, [level]);
 
-    const nextStarCost = costs[stars] || 500 * level;
+    const nextStarCost = costs[stars] || 1000 * level;
 
     // Per-planet progress logic
     const displayedStars = useMemo(() => {
         const planetLevelOfIndex = activeIndex + 1;
-        if (planetLevelOfIndex < level) return 3; // Previously completed
+        if (planetLevelOfIndex < level) return 4; // Previously completed
         if (planetLevelOfIndex === level) return stars; // Currently progressing
         return 0; // Future planet
     }, [activeIndex, level, stars]);
 
     const canUpgrade = currentStardust >= nextStarCost;
     const isViewedPlanetCompleted = (activeIndex + 1) < level;
+    const isReadyToEvolve = stars >= 4;
     const isFuturePlanet = (activeIndex + 1) > level;
 
     // Refs for Animation Targets
@@ -431,14 +433,14 @@ export const PrestigePage = () => {
                             />
 
                             {/* Vertices (4 Dots) */}
-                            {[0, 1, 2, 3].map((i) => {
+                            {[1, 2, 3, 4].map((i) => {
                                 // Logic: 
-                                // i=0: Initial state (reached if stars >= 0)
-                                // i=1: 1 Star (reached if stars >= 1)
-                                // i=2: 2 Stars (reached if stars >= 2)
-                                // i=3: Next Level (reached if stars >= 3)
+                                // i=1: One Star Achieved
+                                // i=2: Two Stars Achieved
+                                // i=3: Three Stars Achieved
+                                // i=4: Next Level Achieved (Evolution Ready)
                                 const isReached = displayedStars >= i;
-                                const labels = ["Start", "1 Star", "2 Stars", "Next Level"];
+                                const labels = ["One Star", "Two Stars", "Three Stars", "Next Level"];
                                 return (
                                     <div key={i} className="relative z-10 flex flex-col items-center">
                                         {/* Dot with glow */}
@@ -451,17 +453,13 @@ export const PrestigePage = () => {
 
                                         {/* Vertex Labels */}
                                         <div className={`absolute -bottom-14 whitespace-nowrap flex flex-col items-center transition-all duration-700 ${isReached ? 'opacity-100 translate-y-0' : 'opacity-10 translate-y-4'}`}>
-                                            <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${i === 3 ? 'text-amber-400' : 'text-white/70'}`}>
-                                                {labels[i]}
+                                            <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${i === 4 ? 'text-amber-400' : 'text-white/70'}`}>
+                                                {labels[i - 1]}
                                             </span>
                                             <div className="mt-2 flex items-center justify-center">
-                                                {i === 3 ? (
+                                                {i === 4 ? (
                                                     <span className={`material-symbols-outlined text-xl ${isReached ? 'text-amber-400' : 'text-white/5'} transition-colors`}>
                                                         {isReached ? 'check_circle' : 'rocket_launch'}
-                                                    </span>
-                                                ) : i === 0 ? (
-                                                    <span className={`material-symbols-outlined text-[10px] ${isReached ? 'text-amber-500' : 'text-white/5'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
-                                                        trip_origin
                                                     </span>
                                                 ) : (
                                                     <div className="flex gap-0.5">
@@ -509,10 +507,10 @@ export const PrestigePage = () => {
                         >
                             <div className="flex items-center gap-2.5 z-10 transition-transform group-hover:scale-110">
                                 <span className="material-symbols-outlined text-2xl font-black">
-                                    {isViewedPlanetCompleted ? 'keyboard_double_arrow_right' : isFuturePlanet ? 'lock' : displayedStars >= 3 ? 'auto_mode' : 'offline_bolt'}
+                                    {isViewedPlanetCompleted ? 'keyboard_double_arrow_right' : isFuturePlanet ? 'lock' : displayedStars >= 4 ? 'auto_mode' : 'offline_bolt'}
                                 </span>
                                 <span className="drop-shadow-sm font-black">
-                                    {isViewedPlanetCompleted ? 'Move to Next Planet' : isFuturePlanet ? 'Locked' : displayedStars >= 3 ? 'Evolve Planet' : 'Inject Stardust'}
+                                    {isViewedPlanetCompleted ? 'Move to Next Planet' : isFuturePlanet ? 'Locked' : displayedStars >= 4 ? 'Evolve Planet' : 'Inject Stardust'}
                                 </span>
                             </div>
                             {!isViewedPlanetCompleted && !isFuturePlanet && (
@@ -552,6 +550,8 @@ export const PrestigePage = () => {
                                                 if (!isNaN(parsed)) setBuyAmount(parsed);
                                             }
                                         }}
+                                        autoComplete="off"
+                                        spellCheck="false"
                                         className="bg-transparent w-full h-full outline-none font-black text-white text-center text-xl appearance-none m-0 p-0 shadow-none border-none ring-0 no-spin caret-[#FFCC00]"
                                     />
                                 </div>
@@ -591,6 +591,15 @@ export const PrestigePage = () => {
                         }
                         input[type=number] {
                             -moz-appearance: textfield;
+                        }
+                        /* Fix autofill blue bar */
+                        input:-webkit-autofill,
+                        input:-webkit-autofill:hover, 
+                        input:-webkit-autofill:focus,
+                        input:-webkit-autofill:active {
+                            -webkit-box-shadow: 0 0 0 1000px black inset !important;
+                            -webkit-text-fill-color: white !important;
+                            transition: background-color 5000s ease-in-out 0s;
                         }
                         @keyframes spin {
                             from { transform: rotate(0deg); }
