@@ -306,9 +306,9 @@ export const PrestigePage = () => {
                                         )}
                                     </div>
 
-                                    {/* PLANET NAME - Moved Closer */}
-                                    <div className={`text-center mt-6 transition-opacity duration-300 ${distance === 0 ? 'opacity-100' : 'opacity-0'} pointer-events-none`}>
-                                        <h2 className="text-3xl md:text-5xl font-black uppercase tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-200 to-gray-500 drop-shadow-lg font-mono">
+                                    {/* PLANET NAME - Moved much higher to avoid overlap */}
+                                    <div className={`text-center transition-opacity duration-500 ${distance === 0 ? 'opacity-100' : 'opacity-0'} pointer-events-none absolute -top-16 w-full flex justify-center`}>
+                                        <h2 className="text-5xl md:text-7xl font-black uppercase tracking-[0.5em] text-transparent bg-clip-text bg-gradient-to-b from-white/90 via-white/50 to-white/10 drop-shadow-[0_4px_12px_rgba(255,255,255,0.2)] font-mono whitespace-nowrap">
                                             {name}
                                         </h2>
                                     </div>
@@ -320,23 +320,23 @@ export const PrestigePage = () => {
             </main>
 
             {/* Bottom Controls Area - Fixed at bottom */}
-            <div className="absolute bottom-0 w-full z-40 bg-gradient-to-t from-black via-black/90 to-transparent pb-10 pt-20 px-4 flex flex-col items-center pointer-events-none">
-                <div className="pointer-events-auto w-full max-w-xl flex flex-col gap-6 items-center">
+            <div className="absolute bottom-0 w-full z-40 bg-gradient-to-t from-black via-black/80 to-transparent pb-16 pt-40 px-4 flex flex-col items-center pointer-events-none">
+                <div className="pointer-events-auto w-full max-w-xl flex flex-col gap-12 items-center">
 
                     {/* Current Level Info - Redesigned with 4-Vertex Progress Bar */}
-                    <div className="flex flex-col items-center w-full max-w-xl px-12 pb-8">
-                        {/* Planet Name & Level Label - Offset to avoid overlap */}
-                        <div className="flex items-center justify-center w-full mb-12">
-                            <span className="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs uppercase tracking-[0.2em] font-black text-white/60 shadow-xl backdrop-blur-md">
-                                {getPlanetName(level)} — LVL {level}
+                    <div className="flex flex-col items-center w-full max-w-xl px-12">
+                        {/* Status Badge - Floating Above */}
+                        <div className="flex items-center justify-center w-full mb-16">
+                            <span className="px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-[11px] uppercase tracking-[0.4em] font-black text-white/40 shadow-2xl backdrop-blur-2xl">
+                                Level {level} — {getPlanetName(level)}
                             </span>
                         </div>
 
                         {/* 4-Vertex Progress Bar */}
-                        <div className="relative w-full h-[3px] bg-white/5 rounded-full flex items-center justify-between">
+                        <div className="relative w-full h-[5px] bg-white/5 rounded-full flex items-center justify-between border border-white/5 px-0.5">
                             {/* Filling Effect */}
                             <div
-                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 rounded-full transition-all duration-1000 shadow-[0_0_20px_rgba(251,191,36,0.6)]"
+                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#FFCC00] via-amber-400 to-[#FFCC00] rounded-full transition-all duration-1000 shadow-[0_0_30px_rgba(251,191,36,0.5)]"
                                 style={{ width: `${(stars / 3) * 100}%` }}
                             />
 
@@ -346,25 +346,34 @@ export const PrestigePage = () => {
                                 const labels = ["1 Star", "2 Stars", "3 Stars", "Next Level"];
                                 return (
                                     <div key={i} className="relative z-10 flex flex-col items-center">
+                                        {/* Dot with glow */}
                                         <div
-                                            className={`w-3.5 h-3.5 rounded-full transition-all duration-500 border-2 ${isReached
-                                                ? 'bg-amber-400 border-amber-300 scale-110 shadow-[0_0_15px_rgba(251,191,36,0.9)]'
-                                                : 'bg-[#0f0f0f] border-white/10 scale-90'
+                                            className={`w-5 h-5 rounded-full transition-all duration-700 border-2 ${isReached
+                                                    ? 'bg-[#FFCC00] border-amber-200 scale-125 shadow-[0_0_20px_rgba(251,191,36,1)]'
+                                                    : 'bg-[#050505] border-white/10 scale-90'
                                                 }`}
                                         />
 
-                                        {/* Vertex Labels */}
-                                        <div className={`absolute -bottom-10 whitespace-nowrap flex flex-col items-center transition-all duration-500 ${isReached ? 'opacity-100 translate-y-0' : 'opacity-30 translate-y-1'}`}>
-                                            <span className={`text-[10px] font-black uppercase tracking-widest ${i === 3 ? 'text-amber-400' : 'text-white/70'}`}>
+                                        {/* Vertex Labels - Positioned to ensure no overlap */}
+                                        <div className={`absolute -bottom-14 whitespace-nowrap flex flex-col items-center transition-all duration-700 ${isReached ? 'opacity-100 translate-y-0' : 'opacity-10 translate-y-4'}`}>
+                                            <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${i === 3 ? 'text-amber-400' : 'text-white/70'}`}>
                                                 {labels[i]}
                                             </span>
-                                            {i < 3 ? (
-                                                <span className="material-symbols-outlined text-[12px] mt-1" style={{ fontVariationSettings: `'FILL' ${isReached ? 1 : 0}` }}>
-                                                    star
-                                                </span>
-                                            ) : (
-                                                <span className="material-symbols-outlined text-[14px] mt-0.5 text-amber-400">rocket_launch</span>
-                                            )}
+                                            <div className="mt-2 flex items-center justify-center">
+                                                {i === 3 ? (
+                                                    <span className={`material-symbols-outlined text-xl ${isReached ? 'text-amber-400' : 'text-white/5'} transition-colors`}>
+                                                        {isReached ? 'check_circle' : 'rocket_launch'}
+                                                    </span>
+                                                ) : (
+                                                    <div className="flex gap-0.5">
+                                                        {Array.from({ length: i + 1 }).map((_, si) => (
+                                                            <span key={si} className={`material-symbols-outlined text-[10px] ${isReached ? 'text-amber-500' : 'text-white/5'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                                                                star
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 );
@@ -373,21 +382,25 @@ export const PrestigePage = () => {
                     </div>
 
                     {/* Controls */}
-                    <div className="w-full grid grid-cols-2 gap-4 md:gap-6 pt-8">
+                    <div className="w-full grid grid-cols-2 gap-6 md:gap-10 pt-10">
                         {/* Inject Button */}
                         <button
                             onClick={handleInject}
                             disabled={!canUpgrade}
-                            className={`col-span-1 h-16 rounded-2xl font-black text-sm tracking-[0.2em] uppercase flex flex-col items-center justify-center gap-1 transition-all duration-300 relative overflow-hidden group shadow-lg
+                            className={`col-span-1 h-20 rounded-[32px] font-black text-[13px] tracking-[0.3em] uppercase flex flex-col items-center justify-center gap-1 transition-all duration-400 relative overflow-hidden group shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)]
                                 ${canUpgrade
-                                    ? 'bg-[#FFCC00] hover:bg-[#ffda33] text-black hover:scale-[1.02] active:scale-[0.98]'
-                                    : 'bg-white/10 text-white/20 cursor-not-allowed'}`}
+                                    ? 'bg-[#FFCC00] hover:bg-[#ffda33] text-black hover:translate-y-[-2px] active:translate-y-[1px]'
+                                    : 'bg-white/5 text-white/5 cursor-not-allowed border border-white/5'}`}
                         >
-                            <div className="flex items-center gap-2 z-10">
-                                <span className="material-symbols-outlined text-xl font-bold">{canUpgrade ? 'bolt' : 'lock'}</span>
-                                <span>{stars === 2 ? 'Evolve' : 'Inject'}</span>
+                            <div className="flex items-center gap-2.5 z-10 transition-transform group-hover:scale-110">
+                                <span className="material-symbols-outlined text-2xl font-black">{stars === 2 ? 'auto_mode' : 'offline_bolt'}</span>
+                                <span className="drop-shadow-sm font-black">{stars === 2 ? 'Evolve Planet' : 'Inject Stardust'}</span>
                             </div>
-                            <span className={`text-[10px] z-10 ${canUpgrade ? 'text-black/70 font-bold' : 'text-white/20'}`}>{nextStarCost.toLocaleString()} Stardust</span>
+                            <span className={`text-[11px] z-10 tracking-widest transition-opacity duration-300 ${canUpgrade ? 'text-black/50 font-black' : 'text-white/5'}`}>
+                                {nextStarCost.toLocaleString()} UNITS
+                            </span>
+                            {/* Particle Effect for active button */}
+                            {canUpgrade && <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />}
                         </button>
 
                         {/* Market/Buy Panel */}
