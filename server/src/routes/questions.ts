@@ -116,51 +116,42 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
         }
 
         // Transform snake_case to camelCase for frontend
+        // Transform snake_case to camelCase for frontend while preserving ALL original columns
         const transformed = (data || []).map((q: any) => {
             const skills = q.question_skills || [];
             const primary = skills.find((s: any) => s.role === 'primary');
             const supporting = skills.filter((s: any) => s.role === 'supporting').map((s: any) => s.skill_id);
             const errorPatterns = (q.question_error_patterns || []).map((e: any) => e.error_tag_id);
 
+            // Construct result by spreading the original object to ensure no data (like title, status) is lost
             return {
-                id: q.id,
-                title: q.title,
-                course: q.course,
-                topic: q.topic,
-                topicId: q.topic_id,
-                subTopicId: q.sub_topic_id,
-                sectionId: q.section_id,
-                type: q.type,
+                ...q,
+                // Add camelCase aliases that the frontend expects
+                topicId: q.topic_id || q.topic,
+                subTopicId: q.sub_topic_id || q.section_id,
+                sectionId: q.section_id || q.sub_topic_id,
                 calculatorAllowed: q.calculator_allowed,
-                difficulty: q.difficulty,
                 targetTimeSeconds: q.target_time_seconds,
 
                 skillTags: q.skill_tags || [],
                 errorTags: q.error_tags || [],
-                // PREFER Explicit Columns (faster/cleaner), fallback to Join
+
                 primarySkillId: q.primary_skill_id || primary?.skill_id,
                 supportingSkillIds: (q.supporting_skill_ids && q.supporting_skill_ids.length > 0) ? q.supporting_skill_ids : supporting,
                 errorPatternIds: errorPatterns.length > 0 ? errorPatterns : (q.error_tags || []),
 
-                prompt: q.prompt,
-                promptType: q.prompt_type || (q.prompt && (q.prompt.startsWith('http') || q.prompt.startsWith('data:')) ? 'image' : 'text'),
-                latex: q.latex,
-                options: q.options || [],
-                correctOptionId: q.correct_option_id,
-                tolerance: q.tolerance,
-                explanation: q.explanation,
-                explanationType: q.explanation_type || (q.explanation && (q.explanation.startsWith('http') || q.explanation.startsWith('data:')) ? 'image' : 'text'),
+                promptType: q.prompt_type || (q.prompt && (String(q.prompt).startsWith('http') || String(q.prompt).startsWith('data:')) ? 'image' : 'text'),
+                explanationType: q.explanation_type || (q.explanation && (String(q.explanation).startsWith('http') || String(q.explanation).startsWith('data:')) ? 'image' : 'text'),
+
                 microExplanations: q.micro_explanations,
                 recommendationReasons: q.recommendation_reasons,
-
-                // New Metadata
-                status: q.status,
-                version: q.version,
-                source: q.source,
                 sourceYear: q.source_year,
-                notes: q.notes,
                 weightPrimary: q.weight_primary,
-                weightSupporting: q.weight_supporting
+                weightSupporting: q.weight_supporting,
+
+                // Explicitly ensure title and status are mapped if spread didn't work for some reason
+                title: q.title,
+                status: q.status
             };
         });
 
