@@ -66,7 +66,8 @@ export const PrestigePage = () => {
         return [
             base,       // 0 -> 1 star
             base * 2.5, // 1 -> 2 stars
-            base * 5    // 2 -> 3 stars (Planet Up)
+            base * 5,   // 2 -> 3 stars (Planet Up)
+            base * 5    // Fallback for star 3 (promotion state)
         ];
     }, [level]);
 
@@ -383,19 +384,24 @@ export const PrestigePage = () => {
 
                             {/* Vertices (4 Dots) */}
                             {[0, 1, 2, 3].map((i) => {
-                                const isReached = i <= displayedStars;
-                                const labels = ["1 Star", "2 Stars", "3 Stars", "Next Level"];
+                                // Logic: 
+                                // i=0: Initial state (reached if stars >= 0)
+                                // i=1: 1 Star (reached if stars >= 1)
+                                // i=2: 2 Stars (reached if stars >= 2)
+                                // i=3: Next Level (reached if stars >= 3)
+                                const isReached = displayedStars >= i;
+                                const labels = ["Start", "1 Star", "2 Stars", "Next Level"];
                                 return (
                                     <div key={i} className="relative z-10 flex flex-col items-center">
                                         {/* Dot with glow */}
                                         <div
                                             className={`w-5 h-5 rounded-full transition-all duration-700 border-2 ${isReached
-                                                ? 'bg-[#FFCC00] border-amber-200 scale-125 shadow-[0_0_20px_rgba(251,191,36,1)]'
+                                                ? 'bg-[#FFCC00] border-amber-200 scale-110 shadow-[0_0_20px_rgba(251,191,36,0.8)]'
                                                 : 'bg-[#050505] border-white/10 scale-90'
                                                 }`}
                                         />
 
-                                        {/* Vertex Labels - Positioned to ensure no overlap */}
+                                        {/* Vertex Labels */}
                                         <div className={`absolute -bottom-14 whitespace-nowrap flex flex-col items-center transition-all duration-700 ${isReached ? 'opacity-100 translate-y-0' : 'opacity-10 translate-y-4'}`}>
                                             <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${i === 3 ? 'text-amber-400' : 'text-white/70'}`}>
                                                 {labels[i]}
@@ -405,9 +411,13 @@ export const PrestigePage = () => {
                                                     <span className={`material-symbols-outlined text-xl ${isReached ? 'text-amber-400' : 'text-white/5'} transition-colors`}>
                                                         {isReached ? 'check_circle' : 'rocket_launch'}
                                                     </span>
+                                                ) : i === 0 ? (
+                                                    <span className={`material-symbols-outlined text-[10px] ${isReached ? 'text-amber-500' : 'text-white/5'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                                                        trip_origin
+                                                    </span>
                                                 ) : (
                                                     <div className="flex gap-0.5">
-                                                        {Array.from({ length: i + 1 }).map((_, si) => (
+                                                        {Array.from({ length: i }).map((_, si) => (
                                                             <span key={si} className={`material-symbols-outlined text-[10px] ${isReached ? 'text-amber-500' : 'text-white/5'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
                                                                 star
                                                             </span>
