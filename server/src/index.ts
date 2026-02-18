@@ -58,7 +58,11 @@ app.use((req, res, next) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        deploy_tag: 'v1.0.2_mapping_fix'
+    });
 });
 
 // Routes
