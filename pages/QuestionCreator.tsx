@@ -1192,7 +1192,7 @@ export const QuestionCreator = () => {
         setSelectedSubTopicId(subTopicId as any); // Cast for safety if needed
     };
 
-    const handleSelectQuestion = (q: Question) => {
+    const handleSelectQuestion = async (q: Question) => {
         // Derive correct label from ID or fallback to index
         const correctOptIdx = q.options.findIndex(o => o.id === q.correctOptionId);
         const correctOpt = correctOptIdx !== -1 ? q.options[correctOptIdx] : null;
@@ -1307,12 +1307,29 @@ export const QuestionCreator = () => {
                 }
             }
         }
+        // Direct DB Fetch to ensure Title is loaded (Bypasses potential API issues)
+        let freshTitle = q.title;
+        if (!freshTitle) {
+            try {
+                const { data } = await supabase
+                    .from('questions')
+                    .select('title')
+                    .eq('id', q.id)
+                    .single();
+                if (data?.title) {
+                    freshTitle = data.title;
+                    console.log('Fetched fresh title from DB:', freshTitle);
+                }
+            } catch (err) {
+                console.warn('Failed to fetch fresh title', err);
+            }
+        }
 
         setFormData({
             ...defaultForm,
             ...q,
             status: 'published', // Force published status as per user request
-            title: q.title || '', // Use title variable only (do not fallback to ID)
+            title: freshTitle || '', // Use the fresh DB title
             prompt: displayPrompt, // Use parsed prompt text
             promptImage: displayImage, // Separate image
             correctOptionLabel: derivedLabel,
