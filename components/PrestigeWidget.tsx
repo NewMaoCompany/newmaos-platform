@@ -18,7 +18,7 @@ export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
         return (
             <div
                 onClick={() => navigate('/prestige')}
-                className="cursor-pointer group relative flex flex-row items-center gap-2 pl-1.5 pr-3 py-1 rounded-[999px] min-w-[190px] h-[36px]"
+                className="cursor-pointer group relative flex flex-row items-center gap-2 pl-1.5 pr-3 py-1 rounded-[999px] min-w-[210px] h-[36px]"
                 style={{
                     background: 'rgba(255, 255, 255, 0.75)',
                     backdropFilter: 'blur(12px)',
@@ -53,11 +53,11 @@ export const PrestigeWidget = ({ compact = false }: { compact?: boolean }) => {
                         {/* Fill Line */}
                         <div
                             className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-300 to-amber-500 rounded-full transition-all duration-500"
-                            style={{ width: `${(stars / 3) * 100}%` }}
+                            style={{ width: `${stars > 0 ? ((Math.min(4, stars) - 1) / 3) * 100 : 0}%` }}
                         />
 
                         {/* 4 Dots */}
-                        {[0, 1, 2, 3].map(i => (
+                        {[1, 2, 3, 4].map(i => (
                             <div
                                 key={i}
                                 className={`w-1.5 h-1.5 rounded-full transition-all duration-300 z-10 ${i <= stars ? 'bg-amber-500 scale-110' : 'bg-gray-300 scale-90'

@@ -137,65 +137,19 @@ export const PointsPage = () => {
 
     return (
         <div className="h-screen bg-surface-light dark:bg-surface-dark text-text-main dark:text-gray-100 flex flex-col overflow-hidden">
-            {fromPractice ? (
-                /* Custom Header mimicking Practice Session */
-                <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border-light dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 sm:px-6 lg:px-12 pt-6 pb-2 shrink-0 h-[72px]">
-                    <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
-                        <div className="size-8 flex items-center justify-center text-text-main dark:text-white bg-primary rounded-lg shrink-0">
-                            <span className="material-symbols-outlined text-xl font-bold">functions</span>
-                        </div>
-                        <h1 className="text-text-main dark:text-white text-lg font-bold tracking-tight truncate hidden sm:block">NewMaoS</h1>
-                    </div>
-                    <div className="flex items-center gap-4 sm:gap-6 shrink-0">
-                        {/* Static Balance Display (Non-clickable as requested) */}
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-white/50 dark:bg-black/20 rounded-full border border-black/5 dark:border-white/10">
-                            <PointsCoin size="sm" className="text-amber-500" />
-                            <span className="font-bold text-sm">{userPoints.balance.toLocaleString()}</span>
-                        </div>
-
-                        {/* Only Action: Return to Practice */}
-                        <button
-                            onClick={() => {
-                                if (location.state && Object.keys(location.state).length > 0) {
-                                    navigate('/practice/session', { state: location.state });
-                                } else {
-                                    navigate(-1);
-                                }
-                            }}
-                            className="group flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors"
-                        >
-                            <span className="material-symbols-outlined text-lg">logout</span>
-                            <span className="hidden sm:inline">Exit</span>
-                        </button>
-
-                        <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-1 sm:mx-2"></div>
-
-                        {/* Avatar (Static/Useless as requested) */}
-                        <div
-                            className="bg-center bg-no-repeat bg-cover rounded-full size-9 ring-2 ring-transparent transition-all shrink-0 opacity-80"
-                            style={{ backgroundImage: `url(${user.avatarUrl})` }}
-                        ></div>
-                    </div>
-                </header>
-            ) : (
-                <Navbar minimal={false} />
-            )}
-
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-20 scroll-smooth">
+            <div className="flex-1 overflow-y-auto p-6 sm:p-10 pb-20 scroll-smooth">
                 <div className="max-w-2xl mx-auto flex flex-col gap-6 animate-fade-in mt-4">
 
-                    {/* Back Button / Title Header (Only show if NOT from practice, to avoid redundancy) */}
-                    {!fromPractice && (
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => navigate(-1)}
-                                className="w-10 h-10 -ml-2 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                            >
-                                <span className="material-symbols-outlined">arrow_back</span>
-                            </button>
-                            <h1 className="text-2xl font-black tracking-tight">NMS Points Wallet</h1>
-                        </div>
-                    )}
+                    {/* Back Button / Title Header */}
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="w-10 h-10 -ml-2 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                        >
+                            <span className="material-symbols-outlined">arrow_back</span>
+                        </button>
+                        <h1 className="text-2xl font-black tracking-tight">NMS Points Wallet</h1>
+                    </div>
 
                     {/* Points Balance Card */}
                     <div className="p-8 rounded-[2.5rem] border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-amber-500/5 shadow-2xl shadow-primary/10 relative overflow-hidden">

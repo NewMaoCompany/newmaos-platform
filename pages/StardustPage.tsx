@@ -96,9 +96,7 @@ export const StardustPage = () => {
 
     return (
         <div className="h-screen bg-surface-light dark:bg-surface-dark text-text-main dark:text-gray-100 flex flex-col overflow-hidden">
-            <Navbar minimal={false} />
-
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-20 scroll-smooth">
+            <div className="flex-1 overflow-y-auto p-6 sm:p-10 pb-20 scroll-smooth">
                 <div className="max-w-2xl mx-auto flex flex-col gap-6 animate-fade-in mt-4">
 
                     {/* Back Button / Title Header */}

@@ -7,7 +7,7 @@ import { StarBackground, ShootingStars, PlanetVisual, getPlanetName } from '../c
 import { PointsCoin } from '../components/PointsCoin';
 
 // Simple Synth for Sound Effects (reused logic)
-const playSound = (type: 'coin' | 'stardust') => {
+const playSound = (type: 'coin' | 'stardust' | 'celebration') => {
     try {
         const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
         const ctx = new AudioContextClass();
@@ -27,7 +27,7 @@ const playSound = (type: 'coin' | 'stardust') => {
             gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
             osc.start(now);
             osc.stop(now + 0.3);
-        } else {
+        } else if (type === 'stardust') {
             // Magical shimmer
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(400, now);
@@ -36,6 +36,21 @@ const playSound = (type: 'coin' | 'stardust') => {
             gain.gain.linearRampToValueAtTime(0, now + 0.5);
             osc.start(now);
             osc.stop(now + 0.5);
+        } else if (type === 'celebration') {
+            // Arpeggio / Multi-tone celebration
+            [0, 0.05, 0.1, 0.15].forEach((delay, i) => {
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                o.connect(g);
+                g.connect(ctx.destination);
+                o.type = 'sine';
+                o.frequency.setValueAtTime(440 * (i + 1), now + delay);
+                o.frequency.exponentialRampToValueAtTime(880 * (i + 1), now + delay + 0.2);
+                g.gain.setValueAtTime(0.05, now + delay);
+                g.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.4);
+                o.start(now + delay);
+                o.stop(now + delay + 0.4);
+            });
         }
     } catch (e) { console.error(e); }
 };
@@ -61,7 +76,7 @@ export const PrestigePage = () => {
     const stars = userPrestige?.star_level || 0;
     const currentStardust = userPrestige?.current_stardust || 0;
 
-    const [flyItems, setFlyItems] = useState<{ id: number; type: 'coin' | 'stardust'; start: Rect; end: Rect }[]>([]);
+    const [flyItems, setFlyItems] = useState<{ id: number; type: 'coin' | 'stardust' | 'cosmic'; start: Rect; end: Rect }[]>([]);
     const [balanceChanges, setBalanceChanges] = useState<{ id: number; type: 'points' | 'stardust'; amount: number }[]>([]);
 
     const costs = useMemo(() => {
@@ -128,31 +143,26 @@ export const PrestigePage = () => {
             setBalanceChanges(prev => [...prev, { id: labelId, type: 'points', amount: -buyAmount }]);
             setTimeout(() => setBalanceChanges(prev => prev.filter(l => l.id !== labelId)), 2000);
 
-            // 3. Stardust Animation (Buy Button -> Stardust Counter)
+            // 3. Cinematic Stardust Animation (Buy Button -> Stardust Counter)
             if (stardustRef.current) {
                 const stardustEnd = stardustRef.current.getBoundingClientRect();
                 const stardustStart = buyButtonRef.current.getBoundingClientRect();
 
-                // Spawn scaling number of stardust coins
-                const count = Math.min(15, Math.max(5, Math.ceil(buyAmount / 10)));
-                for (let i = 0; i < count; i++) {
-                    setTimeout(() => {
-                        playSound('stardust');
-                        setFlyItems(prev => [...prev, {
-                            id: Date.now() + Math.random(),
-                            type: 'stardust',
-                            start: { top: stardustStart.top, left: stardustStart.left + stardustStart.width / 2, width: 0, height: 0 },
-                            end: { top: stardustEnd.top, left: stardustEnd.left, width: stardustEnd.width, height: stardustEnd.height }
-                        }]);
-                    }, i * 100); // Slower spacing
-                }
+                // Single Large Cosmic Star flight
+                playSound('celebration'); // Use celebration for cinematic effect
+                setFlyItems(prev => [...prev, {
+                    id: Date.now() + 100,
+                    type: 'cosmic',
+                    start: { top: stardustStart.top, left: stardustStart.left + stardustStart.width / 2, width: 0, height: 0 },
+                    end: { top: stardustEnd.top, left: stardustEnd.left + stardustEnd.width / 2, width: stardustEnd.width, height: stardustEnd.height }
+                }]);
 
                 // Show +Stardust label after a delay
                 setTimeout(() => {
                     const stardustLabelId = Date.now() + 1;
                     setBalanceChanges(prev => [...prev, { id: stardustLabelId, type: 'stardust', amount: buyAmount }]);
                     setTimeout(() => setBalanceChanges(prev => prev.filter(l => l.id !== stardustLabelId)), 2000);
-                }, count * 100 + 1000);
+                }, 1500);
             }
         } else {
             alert(result.message || 'Purchase failed');
@@ -381,7 +391,7 @@ export const PrestigePage = () => {
                         onClick={() => navigate('/stardust', { state: { from: 'prestige' } })}
                         className="flex-1 flex items-center justify-center gap-2 px-4 py-3 hover:bg-white/10 transition-colors relative group"
                     >
-                        <span className="material-symbols-outlined text-purple-400 text-lg group-hover:rotate-12 transition-transform" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+                        <PointsCoin type="stardust" size="sm" className="group-hover:rotate-12 transition-transform" />
                         <span className="text-purple-300 font-bold text-sm tabular-nums group-hover:scale-105 transition-transform">{currentStardust.toLocaleString()}</span>
 
                         {/* Floating Change Label */}
@@ -699,16 +709,19 @@ export const PrestigePage = () => {
     );
 };
 
-const FlyingItem = ({ item, onComplete }: { item: { type: 'coin' | 'stardust'; start: Rect; end: Rect }; onComplete: () => void }) => {
+const FlyingItem = ({ item, onComplete }: { item: { type: 'coin' | 'stardust' | 'cosmic'; start: Rect; end: Rect }; onComplete: () => void }) => {
+    const isCosmic = item.type === 'cosmic';
+    const duration = isCosmic ? 1.8 : 1.2;
+
     const [style, setStyle] = useState<React.CSSProperties>({
         top: item.start.top,
         left: item.start.left,
-        opacity: 1,
-        transform: 'scale(1) rotate(0deg)',
+        opacity: isCosmic ? 0 : 1,
+        transform: isCosmic ? 'scale(0.5) rotate(-45deg)' : 'scale(1) rotate(0deg)',
         position: 'fixed',
-        zIndex: 100,
+        zIndex: 1000,
         pointerEvents: 'none',
-        transition: 'all 1.2s cubic-bezier(0.2, 1, 0.3, 1)'
+        transition: `all ${duration}s cubic-bezier(0.34, 1.56, 0.64, 1)`
     });
 
     useEffect(() => {
@@ -717,16 +730,23 @@ const FlyingItem = ({ item, onComplete }: { item: { type: 'coin' | 'stardust'; s
             setStyle({
                 top: item.end.top,
                 left: item.end.left,
-                opacity: 0,
-                transform: 'scale(0.3) rotate(720deg)',
+                opacity: isCosmic ? 1 : 0,
+                transform: isCosmic ? 'scale(1.2) rotate(720deg)' : 'scale(0.3) rotate(720deg)',
                 position: 'fixed',
-                zIndex: 100,
+                zIndex: 1000,
                 pointerEvents: 'none',
-                transition: 'all 1.2s cubic-bezier(0.2, 1, 0.3, 1)'
+                transition: `all ${duration}s ${isCosmic ? 'cubic-bezier(0.16, 1, 0.3, 1)' : 'cubic-bezier(0.2, 1, 0.3, 1)'}`
             });
+
+            // If cosmic, fade out at the very end
+            if (isCosmic) {
+                setTimeout(() => {
+                    setStyle(prev => ({ ...prev, opacity: 0, transform: 'scale(0.5) rotate(1080deg)', transition: 'all 0.4s ease-out' }));
+                }, (duration - 0.4) * 1000);
+            }
         });
 
-        const timer = setTimeout(onComplete, 1200);
+        const timer = setTimeout(onComplete, duration * 1000 + 400);
         return () => clearTimeout(timer);
     }, []);
 
@@ -734,12 +754,23 @@ const FlyingItem = ({ item, onComplete }: { item: { type: 'coin' | 'stardust'; s
         <div style={style}>
             {item.type === 'coin' ? (
                 <PointsCoin size="sm" animate />
-            ) : (
+            ) : item.type === 'stardust' ? (
                 <div className="relative">
                     <span className="material-symbols-outlined text-purple-400 text-2xl drop-shadow-[0_0_15px_rgba(192,132,252,1)]" style={{ fontVariationSettings: "'FILL' 1" }}>
                         auto_awesome
                     </span>
                     <div className="absolute inset-0 bg-purple-500/20 blur-md rounded-full scale-110" />
+                </div>
+            ) : (
+                /* Cinematic Large Cosmic Star */
+                <div className="relative group">
+                    {/* Primary Star */}
+                    <div className="relative z-10 w-12 h-12 bg-gradient-to-br from-purple-300 via-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.8)] rotate-12 animate-pulse">
+                        <span className="material-symbols-outlined text-white text-3xl font-bold" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+                    </div>
+                    {/* Trailing Glow / Aura */}
+                    <div className="absolute inset-[-20px] bg-purple-500/30 blur-2xl rounded-full animate-pulse decoration-clone" />
+                    <div className="absolute inset-[-10px] border-2 border-purple-400/50 rounded-2xl rotate-45 animate-spin duration-[3s]" />
                 </div>
             )}
         </div>
