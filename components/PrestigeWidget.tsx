@@ -4,82 +4,142 @@ import { useApp } from '../AppContext';
 import { PlanetVisual, getPlanetName } from './SpaceVisuals';
 import { PointsCoin } from './PointsCoin';
 
-export const PrestigeWidget = ({ compact = false, prestigeData = null, isReadOnly = false }: { compact?: boolean, prestigeData?: any, isReadOnly?: boolean }) => {
+export const PrestigeWidget = ({
+    compact = false,
+    wide = false,
+    prestigeData = null,
+    isReadOnly = false,
+    showStardust = true,
+    className = ""
+}: {
+    compact?: boolean,
+    wide?: boolean,
+    prestigeData?: any,
+    isReadOnly?: boolean,
+    showStardust?: boolean,
+    className?: string
+}) => {
     const { userPrestige: currentUserPrestige } = useApp();
     const navigate = useNavigate();
 
     // Use passed data or fall back to current user
     const p = prestigeData || currentUserPrestige;
-    const level = p?.planet_level || 1;
-    const stars = p?.star_level || 0;
+    const rawLevel = p?.planet_level || 1;
+    const level = Math.min(5, rawLevel);
+    const stars = rawLevel >= 5 ? Math.min(3, p?.star_level || 0) : (p?.star_level || 0);
     const stardust = p?.current_stardust || 0;
     const name = useMemo(() => getPlanetName(level), [level]);
 
-    if (compact) {
+    const isInteractionAllowed = !isReadOnly;
+
+    if (compact || wide) {
+        const defaultScale = "scale-[0.6] sm:scale-[0.75] md:scale-100";
+        const combinedClasses = className || defaultScale;
+
         return (
             <div
-                onClick={() => !isReadOnly && navigate('/prestige')}
-                className={`group relative flex flex-row items-center gap-2 pl-3 pr-4 py-2 rounded-[999px] min-w-[240px] h-[48px] ${!isReadOnly ? 'cursor-pointer' : 'cursor-default'}`}
+                className={`group relative flex flex-row items-center transition-all duration-300 origin-center ${combinedClasses} ${wide ? 'w-full' : 'max-w-fit'}`}
                 style={{
-                    background: 'rgba(255, 255, 255, 0.85)',
-                    backdropFilter: 'blur(16px)',
-                    WebkitBackdropFilter: 'blur(16px)',
-                    border: '1px solid rgba(249, 212, 6, 0.4)',
-                    boxShadow: '0 4px 20px -5px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(30px)',
+                    WebkitBackdropFilter: 'blur(30px)',
+                    borderRadius: '999px',
+                    border: '1.5px solid rgba(255, 255, 255, 0.8)',
+                    boxShadow: '0 12px 40px -10px rgba(0,0,0,0.08), 0 0 20px rgba(255,255,255,1) inset'
                 }}
             >
-                {/* Hover Effect Layer - Only if not ReadOnly */}
-                {!isReadOnly && (
-                    <div className="absolute inset-0 rounded-[999px] transition-all opacity-0 group-hover:opacity-100 pointer-events-none"
-                        style={{
-                            background: 'rgba(255, 255, 255, 0.98)',
-                            borderColor: 'rgba(249, 212, 6, 0.8)',
-                            boxShadow: '0 12px 30px -5px rgba(249, 212, 6, 0.3)'
-                        }}
-                    />
-                )}
-
-                <div className="shrink-0 z-10 flex items-center justify-center w-10 h-10 rounded-full overflow-visible relative group-hover:scale-110 transition-transform duration-300">
-                    <PlanetVisual level={level} size="sm" showAtmosphere={true} floating={false} />
-                </div>
-
-                {/* Content Container */}
-                <div className="flex flex-col flex-grow gap-1 justify-center z-10 min-w-0">
-                    <div className="flex justify-between items-center leading-none">
-                        <span className="text-[11px] font-black text-gray-900 uppercase tracking-tight truncate max-w-[100px]">
-                            {name}
-                        </span>
+                {/* 1. Prestige Area (Left) */}
+                <div
+                    onClick={() => isInteractionAllowed && navigate('/prestige')}
+                    className={`flex-1 flex flex-row items-center gap-6 sm:gap-8 pl-10 sm:pl-16 ${!showStardust ? 'pr-10 sm:pr-16' : 'pr-4 sm:pr-8'} min-h-[110px] sm:min-h-[130px] rounded-l-[999px] ${!showStardust ? 'rounded-r-[999px]' : ''} ${isInteractionAllowed ? 'cursor-pointer active:scale-[0.99]' : 'cursor-default'} transition-all duration-300 group/left`}
+                >
+                    <div className="relative shrink-0 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full animate-pulse scale-150" />
+                        <div className="relative z-10 scale-[1.3] group-hover/left:scale-[1.35] transition-transform duration-700">
+                            <PlanetVisual level={level} size="md" />
+                        </div>
                     </div>
 
-                    {/* Improved 4-Vertex Progress System */}
-                    <div className="relative w-[75px] h-1.5 bg-gray-200/50 rounded-full flex items-center justify-between px-[1.5px]">
-                        {/* Fill Line */}
+                    <div className="flex flex-col gap-2.5 flex-1 min-w-[120px] max-w-[320px]">
+                        <div className="flex flex-row flex-wrap items-center gap-2 sm:gap-3">
+                            <h3 className="text-2xl font-black text-slate-800 tracking-[0.15em] uppercase whitespace-nowrap drop-shadow-sm select-none">
+                                {name}
+                            </h3>
+                            <div className="flex flex-row items-center bg-slate-800/5 px-2.5 py-1 rounded-full border border-slate-800/10 shadow-sm shrink-0">
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest whitespace-nowrap">
+                                    Lv.{level}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Custom Planet Specific Progress Bar */}
+                        <div className="relative w-full h-[6px] flex items-center group/bar cursor-default isolate overflow-visible mt-2 mb-2">
+                            <div className="absolute left-[7px] right-[7px] top-0 bottom-0 bg-slate-100 rounded-full shadow-inner" />
+                            {(() => {
+                                const activeNodes = level === 5 ? [1, 2, 3] : [1, 2, 3, 4];
+                                const maxIndex = activeNodes.length - 1;
+                                const fillPercentage = stars > 0 ? ((Math.min(activeNodes.length, stars) - 1) / maxIndex) * 100 : 0;
+
+                                return (
+                                    <>
+                                        <div className="absolute left-[7px] right-[7px] top-0 bottom-0">
+                                            <div
+                                                className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-primary/80 via-primary to-primary shadow-[0_0_15px_rgba(255,191,0,0.4)] rounded-full transition-all duration-1000 ease-out z-10"
+                                                style={{ width: `${fillPercentage}%` }}
+                                            >
+                                                <div className="absolute inset-0 bg-white/20 animate-pulse rounded-full" />
+                                            </div>
+                                        </div>
+
+                                        <div className="absolute inset-0 flex justify-between items-center z-20">
+                                            {activeNodes.map((s) => (
+                                                <div
+                                                    key={s}
+                                                    className={`w-3.5 h-3.5 flex items-center justify-center rounded-full border-2 transition-all duration-500 ${stars >= s
+                                                        ? 'bg-primary border-white scale-110 shadow-lg'
+                                                        : 'bg-white border-slate-200 scale-90 opacity-60'
+                                                        } relative shrink-0`}
+                                                >
+                                                    {stars === s && (
+                                                        <div className="absolute inset-0 bg-white animate-ping rounded-full opacity-75 z-10" />
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </>
+                                );
+                            })()}
+                        </div>
+                    </div>
+                </div>
+
+                {showStardust && (
+                    <>
+                        {/* Vertical Divider */}
+                        <div className="h-12 w-[1.5px] bg-slate-200/60 shrink-0" />
+
+                        {/* 2. Stardust Wallet Zone (Right) */}
                         <div
-                            className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-400 via-amber-200 to-amber-500 rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(251,191,36,0.5)]"
-                            style={{ width: `${Math.min(100, Math.max(0, (stars / 4) * 100))}%` }}
-                        />
+                            onClick={() => isInteractionAllowed && navigate('/stardust')}
+                            className={`relative flex flex-row items-center rounded-r-[999px] min-h-[110px] pl-10 pr-8 gap-2 ${isInteractionAllowed ? 'cursor-pointer active:scale-[0.98]' : 'cursor-default'} transition-all duration-300 shrink-0 group/right`}
+                        >
+                            <div className="relative">
+                                <PointsCoin type="stardust" size="sm" className="group-hover/right:rotate-[15deg] transition-transform duration-500 scale-[0.85]" />
+                                <div className="absolute inset-0 bg-purple-400/5 blur-sm rounded-full -z-10 animate-pulse" />
+                            </div>
+                            <span className="text-[15px] font-black text-slate-800 tabular-nums">
+                                {stardust.toLocaleString()}
+                            </span>
 
-                        {/* 4 Dots */}
-                        {[1, 2, 3, 4].map(i => (
-                            <div
-                                key={i}
-                                className={`w-2 h-2 rounded-full transition-all duration-500 z-10 ${i <= stars ? 'bg-amber-500 scale-110 shadow-[0_0_6px_rgba(245,158,11,0.6)]' : 'bg-gray-300 scale-90'
-                                    }`}
-                            />
-                        ))}
-                    </div>
-                </div>
-
-                {/* Divider */}
-                <div className="h-6 w-px bg-gray-300/50 z-10 mx-1" />
-
-                {/* Stardust Section */}
-                <div className="flex items-center gap-2 z-10 pr-1 shrink-0">
-                    <PointsCoin type="stardust" size="sm" className="group-hover:rotate-[15deg] transition-transform" />
-                    <span className="text-[13px] font-black text-slate-800 tabular-nums tracking-tight">
-                        {stardust.toLocaleString()}
-                    </span>
-                </div>
+                            {/* Right Highlight Overlay */}
+                            {isInteractionAllowed && (
+                                <div className="absolute inset-0 rounded-r-[999px] transition-all opacity-0 group-hover/right:opacity-100 pointer-events-none"
+                                    style={{ background: 'rgba(0, 0, 0, 0.01)' }}
+                                />
+                            )}
+                        </div>
+                    </>
+                )}
             </div>
         );
     }

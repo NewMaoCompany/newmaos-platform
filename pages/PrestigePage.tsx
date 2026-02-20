@@ -5,12 +5,25 @@ import { useApp } from '../AppContext';
 
 import { StarBackground, ShootingStars, PlanetVisual, getPlanetName } from '../components/SpaceVisuals';
 import { PointsCoin } from '../components/PointsCoin';
+import { ProGateOverlay } from '../components/ProGateOverlay';
+
+// Shared Audio Context to prevent reaching hardware limit 
+let sharedAudioCtx: AudioContext | null = null;
 
 // Simple Synth for Sound Effects (reused logic)
 const playSound = (type: 'coin' | 'stardust' | 'celebration') => {
     try {
-        const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
-        const ctx = new AudioContextClass();
+        if (!sharedAudioCtx) {
+            const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+            sharedAudioCtx = new AudioContextClass();
+        }
+        const ctx = sharedAudioCtx;
+
+        // Resume if suspended (browser autoplay policy)
+        if (ctx.state === 'suspended') {
+            ctx.resume();
+        }
+
         const now = ctx.currentTime;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -58,7 +71,7 @@ const playSound = (type: 'coin' | 'stardust' | 'celebration') => {
 interface Rect { top: number; left: number; width: number; height: number; }
 
 export const PrestigePage = () => {
-    const { user, userPoints, userPrestige, purchaseStardust, injectStardust } = useApp();
+    const { user, userPoints, userPrestige, purchaseStardust, injectStardust, isPro } = useApp();
     const navigate = useNavigate();
     const [isBuying, setIsBuying] = useState(false);
     const [buyAmount, setBuyAmount] = useState(10); // Coins to spend
@@ -71,9 +84,10 @@ export const PrestigePage = () => {
     const [prevTranslate, setPrevTranslate] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
 
-    // Fallback if null
-    const level = userPrestige?.planet_level || 1;
-    const stars = userPrestige?.star_level || 0;
+    // Clamped Variables for Corrupted State Protection
+    const rawLevel = userPrestige?.planet_level || 1;
+    const level = Math.min(5, rawLevel);
+    const stars = rawLevel >= 5 ? Math.min(3, userPrestige?.star_level || 0) : (userPrestige?.star_level || 0);
     const currentStardust = userPrestige?.current_stardust || 0;
 
     const [flyItems, setFlyItems] = useState<{ id: number; type: 'coin' | 'stardust' | 'cosmic'; start: Rect; end: Rect; burst?: { x: number; y: number; rotate: number } }[]>([]);
@@ -100,7 +114,8 @@ export const PrestigePage = () => {
         return 0; // Future planet
     }, [activeIndex, level, stars]);
 
-    const canUpgrade = currentStardust >= nextStarCost;
+    const isMaxLevel = level >= 5 && stars >= 3;
+    const canUpgrade = currentStardust >= nextStarCost && !isMaxLevel;
     const isViewedPlanetCompleted = (activeIndex + 1) < level;
     const isReadyToEvolve = stars >= 4;
     const isFuturePlanet = (activeIndex + 1) > level;
@@ -114,6 +129,11 @@ export const PrestigePage = () => {
     const handleBuy = async () => {
         if (!buyButtonRef.current || !moneyRef.current) return;
         setIsBuying(true);
+
+        // Show -Points label at the points wallet when coins begin to leave
+        const coinLabelId = Date.now() + Math.random();
+        setBalanceChanges(prev => [...prev, { id: coinLabelId, type: 'points', amount: -buyAmount, location: 'points-wallet' }]);
+        setTimeout(() => setBalanceChanges(prev => prev.filter(l => l.id !== coinLabelId)), 2000);
 
         // 1. Coin Animation (Money -> Buy Button)
         const startRect = moneyRef.current.getBoundingClientRect();
@@ -143,11 +163,6 @@ export const PrestigePage = () => {
         const result = await purchaseStardust(buyAmount);
 
         if (result.success) {
-            // Show -Points label at the BUY BUTTON immediately
-            const labelId = Date.now();
-            setBalanceChanges(prev => [...prev, { id: labelId, type: 'points', amount: -buyAmount, location: 'buy-button' }]);
-            setTimeout(() => setBalanceChanges(prev => prev.filter(l => l.id !== labelId)), 2000);
-
             // 3. Stardust Swarm Animation (Buy Button -> Stardust Counter)
             if (stardustRef.current) {
                 const stardustEnd = stardustRef.current.getBoundingClientRect();
@@ -189,9 +204,9 @@ export const PrestigePage = () => {
     const handleInject = async () => {
         const result = await injectStardust(nextStarCost);
         if (result.success) {
-            // Show -Stardust label at the INJECT BUTTON
+            // Show -Stardust label at the stardust wallet
             const labelId = Date.now();
-            setBalanceChanges(prev => [...prev, { id: labelId, type: 'stardust', amount: -nextStarCost, location: 'inject-button' }]);
+            setBalanceChanges(prev => [...prev, { id: labelId, type: 'stardust', amount: -nextStarCost, location: 'stardust-wallet' }]);
             setTimeout(() => setBalanceChanges(prev => prev.filter(l => l.id !== labelId)), 2000);
         } else {
             alert(result.message || 'Injection failed');
@@ -202,7 +217,7 @@ export const PrestigePage = () => {
 
     // Initialize/Auto-scroll when level changes
     useEffect(() => {
-        const targetIndex = Math.max(0, level - 1);
+        const targetIndex = Math.min(4, Math.max(0, level - 1));
         setActiveIndex(targetIndex);
 
         const step = 600;
@@ -232,7 +247,10 @@ export const PrestigePage = () => {
         if (!isDragging || dragStartX === null) return;
         const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
         const diff = clientX - dragStartX;
-        setCurrentTranslate(prevTranslate + diff * 0.65); // Damping factor to prevent "flying too far"
+        const nextTranslate = prevTranslate + diff * 0.85;
+        // Clamp to valid range [-2400, 0] (5 planets * 600px step)
+        // Allow tiny overscroll resistance? For now, strict clamp to fix "out of boundary" issue.
+        setCurrentTranslate(Math.max(-2400, Math.min(0, nextTranslate)));
     };
 
     const handleTouchEnd = () => {
@@ -243,8 +261,8 @@ export const PrestigePage = () => {
         const step = 600; // Wide spacing
         // Calculate nearest index
         let nextIndex = -Math.round(currentTranslate / step);
-        // Clamp to valid range [0, 9]
-        nextIndex = Math.max(0, Math.min(9, nextIndex));
+        // Clamp to valid range [0, 4]
+        nextIndex = Math.max(0, Math.min(4, nextIndex));
 
         setActiveIndex(nextIndex);
 
@@ -259,28 +277,7 @@ export const PrestigePage = () => {
 
     // Wheel Event Handler for Trackpad
     const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-    const handleWheel = (e: React.WheelEvent) => {
-        // Horizontal scroll preferred, but vertical also works for convenience
-        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-
-        // Update translate
-        setCurrentTranslate(prev => prev - delta * 0.9); // Reduced multiplier from 1.5 to 0.9
-
-        // Debounce snap
-        if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
-        wheelTimeoutRef.current = setTimeout(() => {
-            // Trigger snap logic manually since we can't reuse handleTouchEnd easily without refactoring
-            const step = 600;
-            let nextIndex = -Math.round(currentTranslate / step);
-            // Re-calculate nextIndex based on the *latest* currentTranslate not the closure one? 
-            // Actually closure might be stale. Use ref or functional update if needed, but here we need current value.
-            // Let's rely on the fact that standard state update might be enough or use a ref for currentTranslate if jittery.
-            // For now, let's use a simple approach: call a snap function that uses the state.
-            // But wait, setTimeout closure will have stale state. 
-            // We need a ref to track currentTranslate for the timeout callback.
-        }, 150);
-    };
+    const lastWheelTime = useRef(0); // Cooldown tracker
 
     // Ref for currentTranslate to access in timeout
     const currentTranslateRef = useRef(currentTranslate);
@@ -289,7 +286,7 @@ export const PrestigePage = () => {
     const performSnap = () => {
         const step = 600;
         let nextIndex = -Math.round(currentTranslateRef.current / step);
-        nextIndex = Math.max(0, Math.min(9, nextIndex));
+        nextIndex = Math.max(0, Math.min(4, nextIndex));
         setActiveIndex(nextIndex);
         const finalTranslate = -nextIndex * step;
         setCurrentTranslate(finalTranslate);
@@ -299,134 +296,63 @@ export const PrestigePage = () => {
         }
     };
 
-    // Update the wheel handler to use performSnap
+    // Update the wheel handler to use DISCRETE NAVIGATION
     const handleWheelOptimized = (e: React.WheelEvent) => {
+        const now = Date.now();
+        // Cooldown check (800ms)
+        if (now - lastWheelTime.current < 800) return;
+
         const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        const threshold = 20; // Sensitivity threshold for swipe detection
 
-        // Immediate update
-        setCurrentTranslate(prev => prev - delta * 2);
+        if (Math.abs(delta) > threshold) {
+            // Positive Delta = Scroll Right/Down = Next Index
+            const direction = delta > 0 ? 1 : -1;
 
-        // Clear existing transition
-        if (containerRef.current) containerRef.current.style.transition = 'none';
+            // Calculate next index
+            let nextIndex = activeIndex + direction;
+            // Clamp [0, 4]
+            nextIndex = Math.max(0, Math.min(4, nextIndex));
 
-        // Debounce snap
-        if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
-        wheelTimeoutRef.current = setTimeout(performSnap, 100);
+            if (nextIndex !== activeIndex) {
+                setActiveIndex(nextIndex);
+                const finalTranslate = -nextIndex * 600;
+                setCurrentTranslate(finalTranslate);
+                setPrevTranslate(finalTranslate);
+
+                // Animate
+                if (containerRef.current) {
+                    containerRef.current.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+                }
+
+                // Set cooldown
+                lastWheelTime.current = now;
+            }
+        }
     };
 
     return (
         <div
-            className="fixed inset-0 w-full h-[100dvh] bg-black text-white font-sans flex flex-col overflow-hidden select-none"
+            className="fixed inset-0 w-full h-[100dvh] bg-black text-white font-sans flex flex-col select-none"
             style={{ overscrollBehavior: 'none' }}
             onWheel={handleWheelOptimized}
         >
-            {/* Dynamic Space Background */}
-            <div className="absolute inset-0 z-0 pointer-events-none bg-black">
+            {/* Pro Gate */}
+            {!isPro && <ProGateOverlay featureName="Prestige" />}
+            {/* 
+                PHASE 7 GLOW FIX: 
+                The root container NO LONGER has 'overflow-hidden'. 
+                This ensures the Sun's massive atmospheric glow is never clipped into a square.
+                Background stars/shimmer are moved to a child container.
+            */}
+            <div className="absolute inset-0 z-0 pointer-events-none bg-black overflow-hidden">
                 <StarBackground />
                 <ShootingStars />
+            </div>
 
-                <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden="true">
-                    <defs>
-                        <filter id="bg-surface-noise">
-                            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-                            <feColorMatrix type="saturate" values="0" />
-                            <feComponentTransfer>
-                                <feFuncR type="linear" slope="1.5" intercept="-0.2" />
-                                <feFuncG type="linear" slope="1.5" intercept="-0.2" />
-                                <feFuncB type="linear" slope="1.5" intercept="-0.2" />
-                            </feComponentTransfer>
-                        </filter>
-                        <filter id="bg-solar-granulation">
-                            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="1" />
-                            <feDiffuseLighting lightingColor="#fff" surfaceScale="2.5">
-                                <feDistantLight azimuth="45" elevation="60" />
-                            </feDiffuseLighting>
-                            <feDisplacementMap in="SourceGraphic" scale="5" />
-                        </filter>
-                    </defs>
-                </svg>
+            <div className="relative flex-1 flex flex-col items-center justify-center z-10 overflow-x-hidden">
+                {/* CINEMATIC SOLAR SYSTEM (Sun Removed) */}
 
-                {/* ADVANCED SOLAR FILTERS (Phase 6: Extreme Realism) */}
-                <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden="true">
-                    <defs>
-                        {/* 1. Boiling Solar Plasma (Convective cells) - Expanded region to prevent square edges */}
-                        <filter id="solar-plasma-cells" x="-100%" y="-100%" width="300%" height="300%">
-                            <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="5" seed="8" result="noise" />
-                            <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 5 -2.2" result="cells" />
-                            <feGaussianBlur in="cells" stdDeviation="1" result="soft-cells" />
-                            <feComposite operator="arithmetic" k1="1" k2="0.6" in="SourceGraphic" in2="soft-cells" />
-                        </filter>
-
-                        {/* 2. Heat Distortion (Spatial Shimmer) - Huge region */}
-                        <filter id="solar-heat-shimmer" x="-100%" y="-100%" width="300%" height="300%">
-                            <feTurbulence type="turbulence" baseFrequency="0.04 0.08" numOctaves="2" seed="5">
-                                <animate attributeName="seed" from="1" to="100" dur="15s" repeatCount="indefinite" />
-                            </feTurbulence>
-                            <feDisplacementMap in="SourceGraphic" scale="12" />
-                        </filter>
-                    </defs>
-                </svg>
-
-                {/* CINEMATIC SOLAR SYSTEM (Phase 6: Ultra-Dark Realism) */}
-                <div className="absolute top-[-35%] right-[-35%] w-[140vh] h-[140vh] z-0 pointer-events-none overflow-visible filter"
-                    style={{ filter: 'url(#solar-heat-shimmer)' }}>
-
-                    {/* 1. Deep Coronal Bloom (Circular Falloff) */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#f59e0b_0%,transparent_80%)] opacity-35 animate-pulse" />
-                    <div className="absolute inset-[10%] bg-[radial-gradient(circle_at_center,#ffedd5_0%,transparent_70%)] opacity-25 blur-[150px]" />
-
-                    {/* 2. Solar Prominence Loops (Procedural Plasma Arcs) */}
-                    {[
-                        { r: 'rotate-0', top: '15%', left: '45%' },
-                        { r: 'rotate-[35deg]', top: '22%', left: '65%' },
-                        { r: 'rotate-[75deg]', top: '40%', left: '78%' },
-                        { r: 'rotate-[120deg]', top: '65%', left: '72%' },
-                        { r: 'rotate-[190deg]', top: '78%', left: '40%' },
-                        { r: 'rotate-[260deg]', top: '55%', left: '20%' },
-                    ].map((p, i) => (
-                        <div key={i} className={`absolute w-[28%] h-[28%] z-10 ${p.r} opacity-70 mix-blend-screen overflow-visible`} style={{ top: p.top, left: p.left }}>
-                            <div className="w-full h-full border-[12px] border-amber-500/80 rounded-[55%_45%_65%_35%] blur-[10px] animate-pulse" />
-                            <div className="absolute inset-0 border-[3px] border-white/50 rounded-[55%_45%_65%_35%] blur-[2px]" />
-                        </div>
-                    ))}
-
-                    {/* 3. THE PHOTOSPHERE (Core Stellar Body) */}
-                    <div className="absolute inset-[35%] rounded-full bg-white shadow-[0_0_500px_rgba(245,158,11,0.8)] overflow-visible">
-                        {/* EXTREME LIMB DARKENING: Transition to near-black maroon at the rim */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-[#f59e0b] to-[#1a0505]" />
-                        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4)_0%,transparent_50%,rgba(0,0,0,0.95)_100%)]" />
-
-                        {/* Plasma Convection Cells (Boiling surface structure) */}
-                        <div className="absolute inset-[-5%] opacity-100 mix-blend-screen"
-                            style={{ filter: 'url(#solar-plasma-cells) contrast(1.7) brightness(1.1)' }} />
-
-                        {/* SUNSPOT SWARM: Uniform yet organic distribution */}
-                        {[
-                            { t: '28%', l: '35%', s: '2.5vw' },
-                            { t: '35%', l: '55%', s: '1.2vw' },
-                            { t: '52%', l: '30%', s: '1.8vw' },
-                            { t: '65%', l: '48%', s: '2.8vw' },
-                            { t: '72%', l: '65%', s: '1.1vw' },
-                            { t: '45%', l: '75%', s: '2.1vw' },
-                            { t: '22%', l: '62%', s: '1.5vw' },
-                            { t: '60%', l: '72%', s: '1.4vw' },
-                            { t: '40%', l: '25%', s: '1.0vw' }
-                        ].map((s, i) => (
-                            <div key={i} className="absolute flex items-center justify-center opacity-85" style={{ top: s.t, left: s.l, width: s.s, height: s.s }}>
-                                <div className="absolute w-[220%] h-[220%] rounded-full bg-[#1a0505]/95 blur-[5px] mix-blend-multiply" />
-                                <div className="absolute w-full h-full rounded-full bg-black blur-[0.3px]" />
-                            </div>
-                        ))}
-
-                        {/* Coronal Fringe Layer */}
-                        <div className="absolute inset-[-40%] opacity-35 mix-blend-screen animate-spin-slower"
-                            style={{ background: 'radial-gradient(circle, white 0%, transparent 65%)', filter: 'url(#bg-surface-noise) blur(20px)' }} />
-                    </div>
-
-                    {/* 4. Planetary-Scale Solar Rays (Radially emitting) */}
-                    <div className="absolute inset-[-60%] rotate-[15deg] opacity-15 mix-blend-screen"
-                        style={{ background: 'repeating-conic-gradient(from 0deg, white 0deg 0.5deg, transparent 1deg 12deg)', filter: 'blur(120px)' }} />
-                </div>
             </div>
 
             {/* Header */}
@@ -440,21 +366,21 @@ export const PrestigePage = () => {
                 </button>
             </div>
 
-            <div className="absolute top-6 right-4 z-50 flex items-center gap-3 w-full max-w-[320px] pointer-events-none">
+            <div className="absolute top-6 right-4 z-50 flex items-center gap-3 w-full max-w-[320px] pointer-events-auto">
                 {/* Made container full width within max-width constraints, buttons flex-1 for equal sizing */}
-                <div className="flex items-stretch bg-black/40 rounded-full backdrop-blur-md border border-white/10 shadow-xl overflow-hidden w-full pointer-events-auto">
+                <div className="flex items-stretch bg-black/40 rounded-full backdrop-blur-md border border-white/10 shadow-xl w-full">
                     {/* Money Section - LEFT */}
                     <button
                         ref={moneyRef}
-                        onClick={() => navigate('/points', { replace: true })}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 hover:bg-white/10 transition-colors relative border-r border-white/10 group"
+                        onClick={() => navigate('/points')}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 hover:bg-white/10 transition-colors relative border-r border-white/10 rounded-l-full group"
                     >
                         <PointsCoin size="sm" />
                         <span className="text-amber-400 font-bold text-sm tabular-nums group-hover:scale-105 transition-transform">{userPoints.balance.toLocaleString()}</span>
 
                         {/* Floating Change Label */}
-                        {balanceChanges.filter(c => c.type === 'points' && c.location === 'points-wallet').map(c => (
-                            <div key={c.id} className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-amber-500 font-black text-xs animate-bounce whitespace-nowrap drop-shadow-lg scale-125 z-50">
+                        {balanceChanges.filter(c => c.type === 'points' && c.location === 'points-wallet').map((c, i) => (
+                            <div key={c.id} className="absolute left-1/2 -translate-x-1/2 text-amber-400 font-black text-lg animate-[flyDownFade_1.5s_ease-out_forwards] whitespace-nowrap drop-shadow-[0_0_10px_rgba(251,191,36,0.6)] z-50 pointer-events-none" style={{ bottom: `-${32 + i * 24}px` }}>
                                 {c.amount > 0 ? '+' : ''}{c.amount.toLocaleString()}
                             </div>
                         ))}
@@ -463,15 +389,15 @@ export const PrestigePage = () => {
                     {/* Stardust Section - RIGHT */}
                     <button
                         ref={stardustRef}
-                        onClick={() => navigate('/stardust', { replace: true })}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 hover:bg-white/10 transition-colors relative group"
+                        onClick={() => navigate('/stardust')}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 hover:bg-white/10 transition-colors relative rounded-r-full group"
                     >
                         <PointsCoin type="stardust" size="sm" className="group-hover:rotate-12 transition-transform" />
                         <span className="text-purple-300 font-bold text-sm tabular-nums group-hover:scale-105 transition-transform">{currentStardust.toLocaleString()}</span>
 
                         {/* Floating Change Label */}
-                        {balanceChanges.filter(c => c.type === 'stardust' && c.location === 'stardust-wallet').map(c => (
-                            <div key={c.id} className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-purple-400 font-black text-xs animate-bounce whitespace-nowrap drop-shadow-lg scale-125 z-50">
+                        {balanceChanges.filter(c => c.type === 'stardust' && c.location === 'stardust-wallet').map((c, i) => (
+                            <div key={c.id} className="absolute left-1/2 -translate-x-1/2 text-purple-300 font-black text-lg animate-[flyDownFade_1.5s_ease-out_forwards] whitespace-nowrap drop-shadow-[0_0_10px_rgba(192,132,252,0.6)] z-50 pointer-events-none" style={{ bottom: `-${32 + i * 24}px` }}>
                                 {c.amount > 0 ? '+' : ''}{c.amount.toLocaleString()}
                             </div>
                         ))}
@@ -488,7 +414,7 @@ export const PrestigePage = () => {
 
             {/* GALAXY RING SWIPER */}
             <main
-                className="absolute inset-0 z-10 flex flex-col justify-center items-center overflow-hidden cursor-grab active:cursor-grabbing"
+                className="absolute inset-0 z-10 flex flex-col justify-center items-center overflow-hidden"
                 style={{ touchAction: 'none' }}
                 onMouseDown={handleTouchStart}
                 onMouseMove={handleTouchMove}
@@ -507,7 +433,7 @@ export const PrestigePage = () => {
                         className="absolute flex items-center h-full will-change-transform left-1/2 -ml-[300px] pointer-events-auto"
                         style={{ transform: `translateX(${currentTranslate}px)` }}
                     >
-                        {Array.from({ length: 10 }).map((_, i) => {
+                        {Array.from({ length: 5 }).map((_, i) => {
                             const planetLevel = i + 1;
                             const isUnlocked = planetLevel <= level;
                             const isNext = planetLevel === level + 1;
@@ -518,7 +444,6 @@ export const PrestigePage = () => {
                             // Scale logic
                             const scale = distance === 0 ? 1.2 : Math.max(0.4, 0.8 - (distance * 0.2));
                             const opacity = distance === 0 ? 1 : Math.max(0.3, 0.7 - (distance * 0.15));
-                            const rotateY = (i - activeIndex) * 15;
 
                             return (
                                 <div
@@ -526,7 +451,7 @@ export const PrestigePage = () => {
                                     className="relative flex flex-col items-center justify-center transition-all duration-500 ease-out"
                                     style={{
                                         width: '600px',
-                                        transform: `scale(${scale}) rotateY(${rotateY}deg)`,
+                                        transform: `scale(${scale})`,
                                         opacity: opacity,
                                         zIndex: 10 - distance,
                                         filter: distance > 2 ? 'blur(2px)' : 'none'
@@ -543,8 +468,8 @@ export const PrestigePage = () => {
                                         }
                                     }}>
                                         {/* PLANET VISUAL */}
-                                        <div className={`transition-all duration-700 ${!isUnlocked && distance > 0 ? 'brightness-[0.3] saturation-0' : ''}`}>
-                                            <PlanetVisual level={planetLevel} size="xl" className="drop-shadow-[0_0_50px_rgba(255,255,255,0.05)]" />
+                                        <div className="transition-all duration-700">
+                                            <PlanetVisual level={planetLevel} isUnlocked={isUnlocked} size="xl" className="drop-shadow-[0_0_50px_rgba(255,255,255,0.05)]" />
                                         </div>
 
                                         {!isUnlocked && (
@@ -555,7 +480,7 @@ export const PrestigePage = () => {
                                     </div>
 
                                     {/* PLANET NAME - Visually Centered (Compensating for letter spacing) */}
-                                    <div className={`text-center transition-all duration-700 ${distance === 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'} pointer-events-none absolute -top-24 w-full flex flex-col items-center justify-center pl-[0.2em]`}>
+                                    <div className={`text-center transition-all duration-700 ${distance === 0 ? 'opacity-100 translate-y-[20%] scale-100' : 'opacity-0 translate-y-4 scale-95'} ${!isUnlocked ? 'grayscale brightness-75' : ''} pointer-events-none absolute -top-24 w-full flex flex-col items-center justify-center pl-[0.2em]`}>
                                         <div className="relative">
                                             <h2 className="text-6xl md:text-8xl font-black uppercase tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/70 to-white/10 drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] font-mono leading-none mr-[-0.4em]">
                                                 {name}
@@ -571,7 +496,10 @@ export const PrestigePage = () => {
             </main>
 
             {/* Bottom Controls Area - Fixed at bottom */}
-            <div className="absolute bottom-0 w-full z-40 bg-gradient-to-t from-black via-black/80 to-transparent pb-16 pt-40 px-4 flex flex-col items-center pointer-events-none">
+            <div
+                className="absolute bottom-0 w-full z-40 bg-gradient-to-t from-black via-black/80 to-transparent pb-16 pt-40 px-4 flex flex-col items-center pointer-events-none transition-transform duration-700 ease-in-out"
+                style={{ transform: 'translateX(0)' }}
+            >
                 <div className="pointer-events-auto w-full max-w-xl flex flex-col gap-12 items-center">
 
                     {/* Current Level Info - Redesigned with 4-Vertex Progress Bar */}
@@ -584,113 +512,127 @@ export const PrestigePage = () => {
                             </span>
                         </div>
 
-                        {/* 4-Vertex Progress Bar - VISIBILITY RESTORED */}
-                        <div className="relative w-full h-[5px] flex items-center justify-between">
-                            {/* Track Background */}
-                            <div className="absolute inset-0 bg-white/10 rounded-full" />
+                        {/* Dynamic Progress Bar - 3 Vertices for Fulata, 4 for others */}
+                        {(() => {
+                            const isFulata = (activeIndex + 1) === 5;
+                            const vertices = isFulata ? [1, 2, 3] : [1, 2, 3, 4];
+                            const maxNodes = vertices.length;
+                            const fillPercentage = displayedStars > 0 ? ((Math.min(maxNodes, displayedStars) - 1) / (maxNodes - 1)) * 100 : 0;
 
-                            {/* Filling Effect */}
-                            <div
-                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#FFCC00] via-amber-400 to-[#FFCC00] rounded-full transition-all duration-1000 shadow-[0_0_20px_rgba(251,191,36,0.6)]"
-                                style={{ width: `${displayedStars > 0 ? ((Math.min(4, displayedStars) - 1) / 3) * 100 : 0}%` }}
-                            />
+                            return (
+                                <div className="relative w-full h-[5px] flex items-center isolate overflow-visible mt-3 mb-3">
+                                    {/* Track Background */}
+                                    <div className="absolute left-[10px] right-[10px] top-0 bottom-0 bg-white/10 rounded-full shadow-inner" />
 
-                            {/* Vertices (4 Dots) - Z-Index Boosted */}
-                            {[1, 2, 3, 4].map((i) => {
-                                // Logic: 
-                                // i=1: One Star Achieved
-                                // i=2: Two Stars Achieved
-                                // i=3: Three Stars Achieved
-                                // i=4: Next Level Achieved (Evolution Ready)
-                                const isReached = displayedStars >= i;
-                                const labels = ["One Star", "Two Stars", "Three Stars", "Next Level"];
-                                return (
-                                    <div key={i} className="relative z-20 flex flex-col items-center">
-                                        {/* Dot with glow */}
+                                    {/* Filling Effect */}
+                                    <div className="absolute left-[10px] right-[10px] top-0 bottom-0">
                                         <div
-                                            className={`w-5 h-5 rounded-full transition-all duration-700 border-2 ${isReached
-                                                ? 'bg-[#FFCC00] border-amber-200 scale-110 shadow-[0_0_20px_rgba(251,191,36,0.8)]'
-                                                : 'bg-[#050505] border-white/10 scale-90'
-                                                }`}
+                                            className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-[#FFCC00] via-amber-400 to-[#FFCC00] rounded-full transition-all duration-1000 shadow-[0_0_20px_rgba(251,191,36,0.6)] z-10"
+                                            style={{ width: `${fillPercentage}%` }}
                                         />
-                                        {/* Vertex Labels - RESTORED */}
-                                        <div className={`absolute -bottom-14 whitespace-nowrap flex flex-col items-center transition-all duration-700 ${isReached ? 'opacity-100 translate-y-0' : 'opacity-30 translate-y-4'}`}>
-                                            <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${i === 4 ? 'text-amber-400' : 'text-white/70'}`}>
-                                                {labels[i - 1]}
-                                            </span>
-                                            <div className="mt-2 flex items-center justify-center">
-                                                {i === 4 ? (
-                                                    <span className={`material-symbols-outlined text-xl ${isReached ? 'text-amber-400' : 'text-white/20'} transition-colors`}>
-                                                        {isReached ? 'check_circle' : 'rocket_launch'}
-                                                    </span>
-                                                ) : (
-                                                    <div className="flex gap-0.5">
-                                                        {Array.from({ length: i }).map((_, si) => (
-                                                            <span key={si} className={`material-symbols-outlined text-[10px] ${isReached ? 'text-amber-500' : 'text-white/20'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
-                                                                star
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
                                     </div>
-                                );
-                            })}
-                        </div>
+
+                                    {/* Vertices */}
+                                    <div className="absolute inset-x-0 flex justify-between items-center z-20 pointer-events-none">
+                                        {vertices.map((i) => {
+                                            const isReached = displayedStars >= i;
+                                            const labels = isFulata ? ["One Star", "Two Stars", "Max Mastery"] : ["One Star", "Two Stars", "Three Stars", "Next Level"];
+                                            const isLastNode = i === maxNodes;
+
+                                            return (
+                                                <div key={i} className="relative z-20 flex flex-col items-center shrink-0 w-5 h-5 pointer-events-auto">
+                                                    {/* Dot with glow */}
+                                                    <div
+                                                        className={`absolute inset-0 rounded-full transition-all duration-700 border-2 ${isReached
+                                                            ? 'bg-[#FFCC00] border-amber-200 scale-110 shadow-[0_0_20px_rgba(251,191,36,0.8)]'
+                                                            : 'bg-[#050505] border-white/10 scale-90'
+                                                            }`}
+                                                    />
+                                                    {/* Vertex Labels */}
+                                                    <div className={`absolute -bottom-14 whitespace-nowrap flex flex-col items-center transition-all duration-700 ${isReached ? 'opacity-100 translate-y-0' : 'opacity-30 translate-y-4'}`}>
+                                                        <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${isLastNode ? 'text-amber-400' : 'text-white/70'}`}>
+                                                            {labels[i - 1]}
+                                                        </span>
+                                                        <div className="mt-2 flex items-center justify-center">
+                                                            {isLastNode ? (
+                                                                <span className={`material-symbols-outlined text-xl ${isReached ? 'text-amber-400' : 'text-white/20'} transition-colors`}>
+                                                                    {isReached ? 'check_circle' : (isFulata ? 'stars' : 'rocket_launch')}
+                                                                </span>
+                                                            ) : (
+                                                                <div className="flex gap-0.5">
+                                                                    {Array.from({ length: i }).map((_, si) => (
+                                                                        <span key={si} className={`material-symbols-outlined text-[10px] ${isReached ? 'text-amber-500' : 'text-white/20'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                                                                            star
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            );
+                        })()}
 
                     </div>
 
                     {/* Controls */}
                     <div className="w-full flex flex-col items-center gap-6 pt-10 px-8">
                         {/* Action Button */}
-                        <button
-                            ref={injectButtonRef}
-                            onClick={() => {
-                                if (isViewedPlanetCompleted || isFuturePlanet) {
-                                    const targetIndex = Math.min(9, level - 1);
-                                    const step = 600;
-                                    const finalTranslate = -targetIndex * step;
-                                    setActiveIndex(targetIndex);
-                                    setCurrentTranslate(finalTranslate);
-                                    setPrevTranslate(finalTranslate);
-                                    if (containerRef.current) {
-                                        containerRef.current.style.transition = 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                        {(!isMaxLevel || activeIndex < 4) && (
+                            <button
+                                ref={injectButtonRef}
+                                onClick={() => {
+                                    if (isViewedPlanetCompleted || isFuturePlanet) {
+                                        const targetIndex = Math.min(4, level - 1);
+                                        const step = 600;
+                                        const finalTranslate = -targetIndex * step;
+                                        setActiveIndex(targetIndex);
+                                        setCurrentTranslate(finalTranslate);
+                                        setPrevTranslate(finalTranslate);
+                                        if (containerRef.current) {
+                                            containerRef.current.style.transition = 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                                        }
+                                    } else if (!isMaxLevel) {
+                                        handleInject();
                                     }
-                                } else {
-                                    handleInject();
-                                }
-                            }}
-                            disabled={!canUpgrade && !isViewedPlanetCompleted && !isFuturePlanet}
-                            className={`w-full max-w-sm h-20 rounded-[32px] font-black text-[13px] tracking-[0.3em] uppercase flex flex-col items-center justify-center gap-1 transition-all duration-400 relative overflow-hidden group shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)]
+                                }}
+                                disabled={!canUpgrade && !isViewedPlanetCompleted && !isFuturePlanet}
+                                className={`w-full max-w-sm h-20 rounded-[32px] font-black text-[13px] tracking-[0.3em] uppercase flex flex-col items-center justify-center gap-1 transition-all duration-400 relative overflow-hidden group shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)]
                                     ${isViewedPlanetCompleted || isFuturePlanet
-                                    ? 'bg-white/10 hover:bg-white/15 text-white/80 border border-white/10'
-                                    : canUpgrade
-                                        ? 'bg-[#FFCC00] hover:bg-[#ffda33] text-black hover:translate-y-[-2px] active:translate-y-[1px]'
-                                        : 'bg-white/5 text-white/10 cursor-not-allowed border border-white/5'}`}
-                        >
-                            <div className="flex items-center gap-2.5 z-10 transition-transform group-hover:scale-110">
-                                <span className="material-symbols-outlined text-2xl font-black">
-                                    {isViewedPlanetCompleted ? 'keyboard_double_arrow_right' : isFuturePlanet ? 'lock' : displayedStars >= 4 ? 'auto_mode' : 'offline_bolt'}
-                                </span>
-                                <span className="drop-shadow-sm font-black">
-                                    {isViewedPlanetCompleted ? 'Move to Current Planet' : isFuturePlanet ? 'Locked' : displayedStars >= 4 ? 'Evolve Planet' : 'Inject Stardust'}
-                                </span>
-                            </div>
-                            {!isViewedPlanetCompleted && !isFuturePlanet && (
-                                <span className={`text-[11px] z-10 tracking-widest transition-opacity duration-300 ${canUpgrade ? 'text-black/50 font-black' : 'text-white/5'}`}>
-                                    {nextStarCost.toLocaleString()} UNITS
-                                </span>
-                            )}
-                            {canUpgrade && !isViewedPlanetCompleted && !isFuturePlanet && <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />}
-
-                            {/* Floating Change Label */}
-                            {balanceChanges.filter(c => c.type === 'stardust' && c.location === 'inject-button').map(c => (
-                                <div key={c.id} className="absolute -top-12 left-1/2 -translate-x-1/2 text-purple-400 font-black text-2xl animate-bounce whitespace-nowrap drop-shadow-[0_0_15px_rgba(168,85,247,0.6)] z-50">
-                                    {c.amount > 0 ? '+' : ''}{c.amount.toLocaleString()}
+                                        ? 'bg-white/10 hover:bg-white/15 text-white/80 border border-white/10'
+                                        : isMaxLevel
+                                            ? 'bg-amber-400/20 text-amber-500/50 cursor-not-allowed border-2 border-amber-500/20 shadow-[0_0_30px_rgba(251,191,36,0.1)_inset]'
+                                            : canUpgrade
+                                                ? 'bg-[#FFCC00] hover:bg-[#ffda33] text-black hover:translate-y-[-2px] active:translate-y-[1px]'
+                                                : 'bg-white/5 text-white/10 cursor-not-allowed border border-white/5'}`}
+                            >
+                                <div className="flex items-center gap-2.5 z-10 transition-transform group-hover:scale-110">
+                                    <span className="material-symbols-outlined text-2xl font-black">
+                                        {isViewedPlanetCompleted ? 'keyboard_double_arrow_right' : isFuturePlanet ? 'lock' : isMaxLevel ? 'public' : displayedStars >= 4 ? 'auto_mode' : 'offline_bolt'}
+                                    </span>
+                                    <span className="drop-shadow-sm font-black">
+                                        {isViewedPlanetCompleted ? 'Move to Current Planet' : isFuturePlanet ? 'Locked' : isMaxLevel ? 'Current Planet' : displayedStars >= 4 ? 'Evolve Planet' : 'Inject Stardust'}
+                                    </span>
                                 </div>
-                            ))}
-                        </button>
+                                {!isViewedPlanetCompleted && !isFuturePlanet && !isMaxLevel && (
+                                    <span className={`text-[11px] z-10 tracking-widest transition-opacity duration-300 ${canUpgrade ? 'text-black/50 font-black' : 'text-white/5'}`}>
+                                        {nextStarCost.toLocaleString()} UNITS
+                                    </span>
+                                )}
+                                {canUpgrade && !isViewedPlanetCompleted && !isFuturePlanet && <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />}
+
+                                {/* Floating Change Label */}
+                                {balanceChanges.filter(c => c.type === 'stardust' && c.location === 'inject-button').map(c => (
+                                    <div key={c.id} className="absolute -top-12 left-1/2 -translate-x-1/2 text-purple-400 font-black text-2xl animate-bounce whitespace-nowrap drop-shadow-[0_0_15px_rgba(168,85,247,0.6)] z-50">
+                                        {c.amount > 0 ? '+' : ''}{c.amount.toLocaleString()}
+                                    </div>
+                                ))}
+                            </button>
+                        )}
 
                         {/* Market/Buy Panel */}
                         <div className="w-full flex flex-col items-center gap-3">
@@ -735,13 +677,6 @@ export const PrestigePage = () => {
                                         ${isBuying ? 'bg-white/10 text-white' : 'bg-[#FFCC00] hover:bg-[#ffda33] text-black'}`}
                                 >
                                     {isBuying ? <span className="material-symbols-outlined animate-spin text-sm">refresh</span> : 'Purchase'}
-
-                                    {/* Floating Change Label */}
-                                    {balanceChanges.filter(c => c.type === 'points' && c.location === 'buy-button').map(c => (
-                                        <div key={c.id} className="absolute -top-12 left-1/2 -translate-x-1/2 text-amber-500 font-black text-2xl animate-bounce whitespace-nowrap drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] z-50">
-                                            {c.amount > 0 ? '+' : ''}{c.amount.toLocaleString()}
-                                        </div>
-                                    ))}
                                 </button>
                             </div>
 
@@ -795,6 +730,18 @@ export const PrestigePage = () => {
                         }
                         .animate-pulse-slow {
                             animation: pulse-slow 4s ease-in-out infinite;
+                        }
+                        @keyframes flyUpFade {
+                            0% { transform: translate(-50%, 0px) scale(0.8); opacity: 0; }
+                            20% { transform: translate(-50%, -10px) scale(1.1); opacity: 1; }
+                            80% { transform: translate(-50%, -25px) scale(1); opacity: 1; }
+                            100% { transform: translate(-50%, -35px) scale(0.9); opacity: 0; }
+                        }
+                        @keyframes flyDownFade {
+                            0% { transform: translate(-50%, 0px) scale(0.8); opacity: 0; }
+                            20% { transform: translate(-50%, 10px) scale(1.1); opacity: 1; }
+                            80% { transform: translate(-50%, 25px) scale(1); opacity: 1; }
+                            100% { transform: translate(-50%, 35px) scale(0.9); opacity: 0; }
                         }
                     `}} />
         </div >

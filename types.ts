@@ -36,6 +36,9 @@ export interface User {
   showName?: boolean;
   showEmail?: boolean;
   showBio?: boolean;
+  showPrestige?: boolean;
+  selectedPrestigeLevel?: number; // Added for prestige selection sync
+  createdAt?: string;
 }
 
 export interface Title {

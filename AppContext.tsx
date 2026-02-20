@@ -38,7 +38,7 @@ interface AppContextType {
     redeemProWithPoints: () => Promise<{ success: boolean; reason?: string; newBalance?: number; shortfall?: number }>;
     performDailyCheckin: () => Promise<{ success: boolean; streakDay?: number; basePoints?: number; bonusPoints?: number; totalPoints?: number; isMilestone?: boolean; reason?: string }>;
     recordLoginStreak: () => Promise<{ success: boolean; streak?: number; points?: number; reason?: string }>;
-    getCheckinStatus: () => Promise<{ checkedInToday: boolean; currentStreak: number; monthCheckins: number; monthCalendar: any[] }>;
+    getCheckinStatus: () => Promise<{ checkedInToday: boolean; currentStreak: number; monthCheckins: number; monthCalendar: any[]; repairCost?: number }>;
     fetchUserPoints: () => Promise<void>;
 
     login: (email: string, username?: string, id?: string, subscriptionTier?: 'basic' | 'pro', subscriptionPeriodEnd?: string, hasSeenProIntro?: boolean) => void;
@@ -64,7 +64,8 @@ interface AppContextType {
     // Notification Methods
     markAllNotificationsRead: () => void;
     markNotificationRead: (id: number) => void;
-
+    markLinkAsRead: (linkPrefix: string) => void;
+    acceptFriendRequest: (senderId: string) => Promise<{ success: boolean; message?: string }>;
     // Helper for Dashboard
     getCourseMastery: (course: CourseType) => number;
     getSectionsForTopic: (topicId: string) => any[];
@@ -739,6 +740,54 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         membershipNotifs.forEach(n => markNotificationRead(n.id));
     }, [membershipNotifs, markNotificationRead]);
 
+    const markLinkAsRead = useCallback(async (linkPrefix: string) => {
+        if (!user.id) return;
+
+        // 1. Optimistic local update
+        setNotifications(prev => prev.map(n =>
+            (n.unread && n.link && n.link.startsWith(linkPrefix)) ? { ...n, unread: false } : n
+        ));
+
+        try {
+            // 2. Database update
+            await supabase
+                .from('notifications')
+                .update({ unread: false })
+                .match({ user_id: user.id, unread: true })
+                .like('link', `${linkPrefix}%`);
+        } catch (err) {
+            console.error('Failed to mark link prefix as read:', err);
+        }
+    }, [user.id]);
+
+    const acceptFriendRequest = async (senderId: string): Promise<{ success: boolean; message?: string }> => {
+        if (!user.id) return { success: false, message: 'User not authenticated' };
+        try {
+            const { data, error } = await supabase.rpc('accept_friend_request', {
+                p_sender_id: senderId,
+                p_receiver_id: user.id
+            });
+
+            if (error) {
+                console.error('accept_friend_request RPC error:', error);
+                return { success: false, message: error.message };
+            }
+
+            if (data?.success) {
+                // Refresh friend list
+                fetchFriends();
+                // Remove friend request notification
+                setNotifications(prev => prev.filter(n => !(n.type === 'friend_request' && n.metadata?.sender_id === senderId)));
+                return { success: true };
+            } else {
+                return { success: false, message: data?.message || 'Failed to accept friend request' };
+            }
+        } catch (err: any) {
+            console.error('acceptFriendRequest error:', err);
+            return { success: false, message: err.message };
+        }
+    };
+
     // --- Content Methods ---
     const fetchContent = async () => {
         try {
@@ -817,8 +866,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     return [...data, ...staticOnly];
                 });
                 console.log('✅ Questions loaded from DB:', data.length);
-                if (data.status === 'error') {
-                    console.error('❌ Backend returned error in data payload:', data);
+                if (data.length === 0) {
+                    console.log('ℹ️ Questions loaded from DB: empty');
                 }
             } else {
                 console.log('ℹ️ No questions in DB (empty array returned), using static data');
@@ -1427,7 +1476,13 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
     const getCourseProgress = async (courseScope: string) => {
         if (!user?.id) return null;
-        const { data, error } = await supabase.rpc('get_course_progress_stats', { p_user_id: user.id, p_course_scope: courseScope });
+
+        // Map frontend courseScope ('AB', 'BC') to database course_scope ('ab_only', 'bc_only')
+        let dbScope = courseScope;
+        if (courseScope === 'AB') dbScope = 'ab_only';
+        if (courseScope === 'BC') dbScope = 'bc_only';
+
+        const { data, error } = await supabase.rpc('get_course_progress_stats', { p_user_id: user.id, p_course_scope: dbScope });
         if (error) {
             console.error('getCourseProgress error:', error);
             return null;
@@ -1824,7 +1879,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                             preferences: {
                                 emailNotifications: (profile as any)?.email_notifications ?? true,
                                 soundEffects: (profile as any)?.sound_effects ?? true
-                            }
+                            },
+                            createdAt: session.user.created_at
                         };
                         localStorage.setItem('user_profile_cache', JSON.stringify(updatedUser));
                         return updatedUser;
@@ -1897,12 +1953,16 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         const isSuperAdmin = email === 'newmao6120@gmail.com';
 
         setUser(prev => {
+            // Preserve any existing custom avatar (from cache) — don't overwrite with default
+            const hasCustomAvatar = prev.avatarUrl && !prev.avatarUrl.includes('ui-avatars.com');
+            const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(formattedName || 'Student')}&background=f9d406&color=1c1a0d&bold=true`;
+
             const updatedUser = {
                 ...prev,
                 id: id || prev.id || '',
                 name: formattedName || "Student",
                 email: email,
-                avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(formattedName || 'Student')}&background=f9d406&color=1c1a0d&bold=true`,
+                avatarUrl: hasCustomAvatar ? prev.avatarUrl : (prev.avatarUrl || fallbackAvatar),
                 isCreator: isSuperAdmin || prev.isCreator,
                 subscriptionTier: subscriptionTier,
                 subscriptionPeriodEnd: subscriptionPeriodEnd,
@@ -2223,44 +2283,49 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     }, [user.id, fetchUserPoints]);
 
     const getCheckinStatus = useCallback(async () => {
-        if (!user.id) return { checkedInToday: false, currentStreak: 0, monthCheckins: 0, monthCalendar: [] };
+        if (!user.id) return { checkedInToday: false, currentStreak: 0, monthCheckins: 0, monthCalendar: [], repairCost: 100 };
         try {
-            const localDate = new Date().toLocaleDateString('en-CA');
+            const localToday = new Date().toLocaleDateString('en-CA');
             const { data, error } = await supabase.rpc('get_checkin_status', {
-                p_user_id: user.id,
-                p_client_date: localDate
+                p_user_id: user.id
             });
             if (error) {
                 console.error('getCheckinStatus RPC error:', error);
-                return { checkedInToday: false, currentStreak: 0, monthCheckins: 0, monthCalendar: [] };
+                return { checkedInToday: false, currentStreak: 0, monthCheckins: 0, monthCalendar: [], repairCost: 100 };
             }
-            // Calculate display logic:
-            // If NOT checked in today, we want to show "Yesterday's Streak" instead of 0
-            // so the user sees what they are maintaining.
-            let displayStreak = data?.current_streak || 0;
-            const checkedInToday = data?.checked_in_today || false;
 
-            if (!checkedInToday && data?.month_calendar) {
-                // Find yesterday's record
+            // Client-side timezone-safe check: does today's LOCAL date exist in the calendar?
+            const calendar = data?.month_calendar || [];
+            const todayRecord = calendar.find((d: any) => d.date === localToday);
+            const checkedInToday = !!todayRecord || (data?.checked_in_today || false);
+
+            // Display streak: use today's record if checked in, otherwise yesterday's
+            let displayStreak = 0;
+            if (checkedInToday && todayRecord) {
+                displayStreak = todayRecord.streak_day;
+            } else if (!checkedInToday) {
+                // Find yesterday's record to show what they're maintaining
                 const yesterday = new Date();
                 yesterday.setDate(yesterday.getDate() - 1);
                 const yStr = yesterday.toLocaleDateString('en-CA');
-
-                const yRecord = data.month_calendar.find((d: any) => d.date === yStr);
+                const yRecord = calendar.find((d: any) => d.date === yStr);
                 if (yRecord) {
                     displayStreak = yRecord.streak_day;
                 }
+            } else {
+                displayStreak = data?.current_streak || 0;
             }
 
             return {
                 checkedInToday: checkedInToday,
-                currentStreak: displayStreak, // Use modified display streak
+                currentStreak: displayStreak,
                 monthCheckins: data?.month_checkins || 0,
-                monthCalendar: data?.month_calendar || []
+                monthCalendar: calendar,
+                repairCost: data?.next_repair_cost || 100
             };
         } catch (err) {
             console.error('getCheckinStatus error:', err);
-            return { checkedInToday: false, currentStreak: 0, monthCheckins: 0, monthCalendar: [] };
+            return { checkedInToday: false, currentStreak: 0, monthCheckins: 0, monthCalendar: [], repairCost: 100 };
         }
     }, [user.id]);
 
@@ -2387,6 +2452,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     show_name: newState.showName,
                     show_email: newState.showEmail,
                     show_bio: newState.showBio,
+                    show_prestige: newState.showPrestige,
                     equipped_title_id: newState.equippedTitleId,
                     email_notifications: newState.preferences?.emailNotifications,
                     sound_effects: newState.preferences?.soundEffects
@@ -2397,8 +2463,27 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                         id: prev.id,
                         ...syncData
                     })
-                    .then(({ error }) => {
-                        if (error) console.error('Failed to sync profile to user_profiles:', error);
+                    .then(async ({ error }) => {
+                        if (error) {
+                            console.error('Failed to sync profile to user_profiles:', error);
+                        } else {
+                            // Try to sync selected_prestige_level separately (graceful fallback if column missing)
+                            if (newState.selectedPrestigeLevel !== undefined) {
+                                try {
+                                    const { error: newColError } = await supabase
+                                        .from('user_profiles')
+                                        .update({ selected_prestige_level: newState.selectedPrestigeLevel })
+                                        .eq('id', prev.id);
+
+                                    if (newColError) {
+                                        // Silent warning locally, don't alerts user
+                                        console.warn('Failed to sync selected_prestige_level (migration might be missing)', newColError);
+                                    }
+                                } catch (e) {
+                                    console.warn('Exception sinking selected_prestige_level', e);
+                                }
+                            }
+                        }
                     });
             }
 
@@ -2679,6 +2764,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             verifyAccessCode,
             markAllNotificationsRead,
             markNotificationRead,
+            markLinkAsRead,
+            acceptFriendRequest,
             getCourseMastery,
             getSectionsForTopic,
             fetchSections,

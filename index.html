@@ -81,6 +81,104 @@
     }
   </script>
   <style>
+    /* 
+     * ULTIMATE CURSOR SUPPRESSION 
+     * Target EVERYTHING with extreme specificity and a transparent fallback
+     */
+    html.custom-cursor-active,
+    html.custom-cursor-active body,
+    html.custom-cursor-active #root,
+    html.custom-cursor-active *,
+    html.custom-cursor-active *::before,
+    html.custom-cursor-active *::after {
+      cursor: none !important;
+    }
+
+    /* Restore Native Text Cursor for Inputs */
+    html.custom-cursor-active input[type="text"],
+    html.custom-cursor-active input[type="email"],
+    html.custom-cursor-active input[type="password"],
+    html.custom-cursor-active input[type="number"],
+    html.custom-cursor-active input[type="search"],
+    html.custom-cursor-active textarea,
+    html.custom-cursor-active [contenteditable="true"],
+    html.custom-cursor-active math-field {
+      cursor: text !important;
+    }
+
+    /* 3. The Custom Cursor Element */
+    #custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+      z-index: 2147483647;
+      transform: translate3d(-100px, -100px, 0);
+      /* Hidden initially */
+      transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s, opacity 0.15s;
+      will-change: transform;
+      background-color: transparent;
+    }
+
+    /* Inner Dot */
+    #custom-cursor::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background-color: #1a1a1a;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+
+    /* Outer Ring */
+    #custom-cursor::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 1.5px solid #1a1a1a;
+      border-radius: 50%;
+      transition: all 0.2s;
+      opacity: 1;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Hover State (Interactive) */
+    #custom-cursor.hover::before {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-color: transparent;
+      transform: scale(1.4);
+    }
+
+    /* Active State (Click) */
+    #custom-cursor.active {}
+
+    #custom-cursor.active::after {
+      transform: translate(-50%, -50%) scale(0.6);
+      background-color: #f9d406;
+      box-shadow: 0 0 10px rgba(249, 212, 6, 0.4);
+    }
+
+    #custom-cursor.active::before {
+      transform: scale(0.8);
+      border-color: #f9d406;
+      background-color: rgba(249, 212, 6, 0.1);
+    }
+
+    /* Text Input State (Hide Custom Cursor) */
+    #custom-cursor.text-mode {
+      opacity: 0;
+    }
+
+
     /* Fluid Proportional Scaling */
     /* Standard Font Size Reset */
     html {
@@ -172,6 +270,22 @@
       -moz-user-select: none !important;
       -ms-user-select: none !important;
       user-select: none !important;
+    }
+
+    /* Prevent image dragging globally */
+    img {
+      -webkit-user-drag: none;
+      -khtml-user-drag: none;
+      -moz-user-drag: none;
+      -o-user-drag: none;
+      user-drag: none;
+      pointer-events: none;
+      /* Let clicks pass through to containers if needed, or re-enable on specific interactive images */
+    }
+
+    /* Allow interaction on specific interactive images if needed */
+    img.interactive {
+      pointer-events: auto;
     }
 
     /* Allow selection in input areas */
@@ -367,12 +481,78 @@
   }
 }
 </script>
-  <link rel="stylesheet" href="/index.css">
+  <style>
+    /* 
+     * ULTIMATE CURSOR SUPPRESSION 
+     * Target EVERYTHING including pseudo-elements and all states
+     * Placed at the very end of head to ensure highest precedence
+     */
+    html.custom-cursor-active,
+    html.custom-cursor-active *,
+    html.custom-cursor-active *::before,
+    html.custom-cursor-active *::after {
+      cursor: none !important;
+    }
+  </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100">
   <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
+  <script>
+      (function () {
+        // ULTIMATE ENFORCEMENT LOOP
+        const activate = () => {
+          document.documentElement.classList.add('custom-cursor-active');
+          document.body.classList.add('custom-cursor-active');
+          if (document.body.style.cursor !== 'none') {
+            document.body.style.setProperty('cursor', 'none', 'important');
+          }
+        };
+        setInterval(activate, 100);
+        activate();
+
+        // Reuse existing cursor div if present (HMR safety)
+        let cursor = document.getElementById('custom-cursor');
+        if (!cursor) {
+          cursor = document.createElement('div');
+          cursor.id = 'custom-cursor';
+          document.body.appendChild(cursor);
+        }
+
+        // Start hidden; first mousemove reveals it
+        cursor.style.opacity = '0';
+
+        // --- Movement: first move also reveals the cursor ---
+        const moveCursor = (e) => {
+          cursor.style.transform = `translate3d(${e.clientX - 10}px, ${e.clientY - 10}px, 0)`;
+          if (cursor.style.opacity === '0') cursor.style.opacity = '1';
+        };
+        window.addEventListener('mousemove', moveCursor, { passive: true });
+
+        // --- Interactive State Detection ---
+        document.addEventListener('mouseover', (e) => {
+          const target = e.target;
+          if (target.matches && (target.matches('input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="search"], textarea, [contenteditable], math-field') || target.closest('input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="search"], textarea, [contenteditable], math-field'))) {
+            cursor.classList.add('text-mode');
+            return;
+          } else {
+            cursor.classList.remove('text-mode');
+          }
+          const isInteractive = target.closest && target.closest('a, button, [role="button"], input[type="submit"], input[type="button"], select, summary, [onclick], .cursor-pointer, nav *, header *, footer *');
+          if (isInteractive) { cursor.classList.add('hover'); } else { cursor.classList.remove('hover'); }
+        }, { passive: true });
+
+        // --- Click Effects ---
+        document.addEventListener('mousedown', () => cursor.classList.add('active'));
+        document.addEventListener('mouseup', () => cursor.classList.remove('active'));
+
+        // --- Window exit/enter ---
+        document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+        document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
+
+      })();
+  </script>
 </body>
 
 </html>

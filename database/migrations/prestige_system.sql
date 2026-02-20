@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS public.user_prestige (
     user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     planet_level INT DEFAULT 1 CHECK (planet_level BETWEEN 1 AND 10),
-    star_level INT DEFAULT 0 CHECK (star_level BETWEEN 0 AND 3),
+    star_level INT DEFAULT 0 CHECK (star_level BETWEEN 0 AND 4),
     current_stardust INT DEFAULT 0,
     total_stardust_collected BIGINT DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW(),

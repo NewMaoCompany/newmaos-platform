@@ -6,6 +6,7 @@ import { useApp } from '../AppContext';
 import { supabase } from '../src/services/supabaseClient';
 import { MathRenderer } from '../components/MathRenderer';
 import { useToast } from '../components/Toast';
+import { ProGateOverlay } from '../components/ProGateOverlay';
 import api from '../src/services/api';
 import { EMOJI_CATEGORIES } from '../src/constants/emojiData';
 import { PointsCoin } from '../components/PointsCoin';
@@ -725,15 +726,7 @@ export const Forum = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Protect Pro Route
-    useEffect(() => {
-        if (!user) return; // Wait for load
-        // Ensure we are in forum context (path starts with /forum)
-        if (location.pathname.startsWith('/forum') && !isPro) {
-            showToast('Upgrade to Pro to join the Forum!', 'info');
-            navigate('/dashboard');
-        }
-    }, [isPro, user, location.pathname, navigate, showToast]);
+
 
     // Pending Points State
     const [pendingPoints, setPendingPoints] = useState<{ amount: number; count: number; details: any[] }>({ amount: 0, count: 0, details: [] });
@@ -3013,6 +3006,8 @@ export const Forum = () => {
 
     return (
         <div className="flex flex-col h-full bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans overflow-hidden">
+            {/* Pro Gate */}
+            {!isPro && <ProGateOverlay featureName="Forum" />}
             {renderProfileModal()}
             <CreateChannelModal
                 isOpen={createModalOpen}

@@ -28,6 +28,8 @@ import { useNavigate } from 'react-router-dom';
 import { StreakModal } from './components/StreakModal';
 import { useState, useEffect } from 'react';
 import { CoinCollector } from './components/CoinCollector';
+import { CreatorGiftModal } from './components/CreatorGiftModal';
+import { AchievementPopupManager } from './components/AchievementPopupManager';
 
 const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
   const { isAuthenticated, isAuthLoading } = useApp();
@@ -49,7 +51,7 @@ const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
 
 const PageLayer = ({ active, children, zIndex = 0 }: { active: boolean; children: React.ReactNode; zIndex?: number }) => (
   <div
-    className={`absolute inset-0 ${active ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+    className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${active ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
     style={{ zIndex }}
   >
     {children}
@@ -90,6 +92,9 @@ const AppRoutes = () => {
   const [checkinResult, setCheckinResult] = useState<any>(null);
   const [isStreakRecovery, setIsStreakRecovery] = useState(false);
 
+  // Creator Gift State
+  const [showMegaGiftModal, setShowMegaGiftModal] = useState(false);
+
   // --- Handle Login Streak (Global Trigger — separate from manual check-in) ---
   useEffect(() => {
     const doLoginStreak = async () => {
@@ -128,6 +133,30 @@ const AppRoutes = () => {
 
     doLoginStreak();
   }, [isAuthenticated, user?.id, path, recordLoginStreak]);
+
+  // --- Secret Gift for Creator ---
+  const { awardPoints, triggerCoinAnimation, userPoints } = useApp();
+  useEffect(() => {
+    if (isAuthenticated && user?.email === 'newmao6120@gmail.com' && user?.id) {
+      const hasReceivedGift = localStorage.getItem('creator_mega_gift_received_v4');
+      if (!hasReceivedGift) {
+        // Immediately award 99,999,999 points using a valid ledger type
+        awardPoints(99999999, 'manual_adjustment', 'admin_override', 'Creator Mega Gift', Date.now().toString()).then((res) => {
+          if (res.success) {
+            triggerCoinAnimation(100, window.innerWidth / 2, window.innerHeight / 2, 'earn');
+            localStorage.setItem('creator_mega_gift_received_v4', 'true');
+            // Show custom modal
+            setShowMegaGiftModal(true);
+          } else {
+            console.error('[GIFT ERROR] Failed to award points:', res);
+          }
+        }).catch(err => {
+          console.error('[GIFT ERROR] Exception:', err);
+        });
+      }
+    }
+  }, [isAuthenticated, user?.email, user?.id, awardPoints, triggerCoinAnimation, userPoints.balance]);
+
 
   if (isAuthLoading) {
     return (
@@ -236,6 +265,14 @@ const AppRoutes = () => {
         isRecovery={isStreakRecovery}
         checkinResult={checkinResult}
       />
+
+      {/* Custom Creator Gift Modal */}
+      <CreatorGiftModal
+        isOpen={showMegaGiftModal}
+        onClose={() => setShowMegaGiftModal(false)}
+        amount="99,999,999"
+      />
+
     </div>
   );
 };
@@ -250,6 +287,7 @@ const App = () => {
             <CoinCollector />
             <AppRoutes />
             <ProWelcomeModal />
+            <AchievementPopupManager />
           </Router>
         </AppProvider>
       </ErrorBoundary>

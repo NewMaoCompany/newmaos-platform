@@ -5,6 +5,7 @@ import { PointsCoin } from '../components/PointsCoin';
 import { supabase } from '../src/services/supabaseClient';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '../components/Toast';
+import { ProGateOverlay } from '../components/ProGateOverlay';
 import {
     Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
     LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, AreaChart, Area
@@ -144,18 +145,7 @@ export const Analysis = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Protect Pro Route
-    useEffect(() => {
-        if (!user) return; // Wait for user load
 
-        // CRITICAL: Only check if we are actually ON the analysis page.
-        // Since this component stays mounted in the background (PageLayer),
-        // we must not trigger redirects if we are already elsewhere (e.g. Dashboard).
-        if (location.pathname === '/analysis' && !isPro) {
-            showToast('Upgrade to Pro to access Analysis!', 'info');
-            navigate('/dashboard');
-        }
-    }, [isPro, user, location.pathname, navigate, showToast]);
 
 
     // --- State ---
@@ -386,6 +376,8 @@ export const Analysis = () => {
 
     return (
         <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-x-auto overflow-y-hidden">
+            {/* Pro Gate */}
+            {!isPro && location.pathname === '/analysis' && <ProGateOverlay featureName="Analysis" />}
             {/* Global Style overrides for Charts */}
             <style>{`
                 .recharts-cartesian-grid-horizontal line, .recharts-cartesian-grid-vertical line { stroke-opacity: 0.1; }

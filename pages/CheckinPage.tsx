@@ -7,44 +7,27 @@ import { useToast } from '../components/Toast';
 import { supabase } from '../src/services/supabaseClient';
 import confetti from 'canvas-confetti';
 
+export type DayState = 'checked' | 'missed' | 'future' | 'before_registration' | 'today_missed';
+
 export const CheckinPage = () => {
-    const { user, isAuthenticated, performDailyCheckin, getCheckinStatus, fetchUserPoints, triggerCoinAnimation } = useApp();
+    const { user, isAuthenticated, performDailyCheckin, getCheckinStatus, fetchUserPoints, triggerCoinAnimation, notifications, markNotificationRead, refreshCheckinStatus } = useApp();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const [checkinData, setCheckinData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [performingCheckin, setPerformingCheckin] = useState(false);
     const [isRepairing, setIsRepairing] = useState(false);
-    const [profile, setProfile] = useState<{ last_repair_at: string | null } | null>(null);
-    const [justCheckedIn, setJustCheckedIn] = useState(false);
+
+    const today = new Date();
+    const currentMonth = today.toLocaleString('en-US', { month: 'long' });
+    const currentYear = today.getFullYear();
+    const daysInMonth = new Date(currentYear, today.getMonth() + 1, 0).getDate();
+    const firstDayOfMonth = new Date(currentYear, today.getMonth(), 1).getDay();
+    const calendarDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    const paddingDays = Array.from({ length: firstDayOfMonth }, (_, i) => i);
+
+    const [selectedDay, setSelectedDay] = useState<number>(today.getDate());
     const [checkinReward, setCheckinReward] = useState<{ base: number; bonus: number; total: number; streak: number; isMilestone: boolean } | null>(null);
-
-    const handleRepair = async (e: React.MouseEvent) => {
-        e.stopPropagation();
-        if (isRepairing) return;
-
-        setIsRepairing(true);
-        const btnRect = e.currentTarget.getBoundingClientRect();
-        const targetX = btnRect.left + btnRect.width / 2;
-        const targetY = btnRect.top + btnRect.height / 2;
-
-        try {
-            const { data, error } = await supabase.rpc('use_monthly_repair', { user_uuid: user?.id });
-            if (error) throw error;
-
-            if (data.success) {
-                triggerCoinAnimation(100, targetX, targetY, 'spend');
-                showToast(`Streak repaired! New streak: ${data.new_streak}`, 'success');
-                refreshStatus();
-            } else {
-                showToast(data.reason === 'insufficient_points' ? 'Insufficient points' : data.message, 'error');
-            }
-        } catch (err: any) {
-            showToast(err.message, 'error');
-        } finally {
-            setIsRepairing(false);
-        }
-    };
 
     const refreshStatus = async () => {
         if (!isAuthenticated) return;
@@ -53,16 +36,9 @@ export const CheckinPage = () => {
             setCheckinData({
                 hasCheckedToday: data.checkedInToday,
                 streak: data.currentStreak,
-                history: data.monthCalendar
+                history: data.monthCalendar,
+                repairCost: data.repairCost || 100
             });
-
-            const { data: profData } = await supabase
-                .from('user_profiles')
-                .select('last_repair_at')
-                .eq('id', user?.id)
-                .single();
-            if (profData) setProfile(profData);
-
             await fetchUserPoints();
         } catch (err) {
             console.error('Failed to fetch checkin status:', err);
@@ -75,10 +51,45 @@ export const CheckinPage = () => {
         refreshStatus();
     }, [isAuthenticated]);
 
+    // Auto-clear check-in notifications when entering this page
+    useEffect(() => {
+        notifications
+            .filter(n => n.unread && n.link === '/checkin')
+            .forEach(n => markNotificationRead(n.id));
+    }, [notifications, markNotificationRead]);
+
+    const handleRepair = async (dayToRepair: number) => {
+        if (isRepairing) return;
+        setIsRepairing(true);
+
+        // Compute screen center for coin animation
+        const targetX = window.innerWidth / 4;
+        const targetY = window.innerHeight / 2;
+
+        const targetDateStr = `${currentYear}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(dayToRepair).padStart(2, '0')}`;
+
+        try {
+            const { data, error } = await supabase.rpc('repair_specific_day', { user_uuid: user?.id, target_date: targetDateStr });
+            if (error) throw error;
+
+            if (data.success) {
+                triggerCoinAnimation(data.cost || repairCost, targetX, targetY, 'spend');
+                showToast(`Streak repaired! New streak: ${data.new_current_streak}`, 'success');
+                await refreshStatus();
+            } else {
+                showToast(data.reason === 'insufficient_points' ? 'Insufficient points' : data.message, 'error');
+            }
+        } catch (err: any) {
+            showToast(err.message || 'Failed to repair day', 'error');
+        } finally {
+            setIsRepairing(false);
+        }
+    };
+
     const handleCheckin = async (e?: React.MouseEvent) => {
         if (performingCheckin || checkinData?.hasCheckedToday) return;
 
-        let posX = window.innerWidth / 2;
+        let posX = window.innerWidth / 4;
         let posY = window.innerHeight / 2;
 
         if (e) {
@@ -98,10 +109,8 @@ export const CheckinPage = () => {
                     streak: result.streakDay || 1,
                     isMilestone: result.isMilestone || false
                 });
-                setJustCheckedIn(true);
                 showToast(`Check-in successful! +${result.totalPoints} NMS Points`, 'success');
 
-                // Trigger confetti effect
                 confetti({
                     particleCount: 150,
                     spread: 70,
@@ -110,6 +119,7 @@ export const CheckinPage = () => {
                 });
 
                 await refreshStatus();
+                await refreshCheckinStatus();
             } else if (result.reason === 'already_checked_in') {
                 showToast('You have already checked in today.', 'info');
                 await refreshStatus();
@@ -135,236 +145,280 @@ export const CheckinPage = () => {
         );
     }
 
-    const today = new Date();
-    const currentMonth = today.toLocaleString('en-US', { month: 'long' });
-    const currentYear = today.getFullYear();
-    const daysInMonth = new Date(currentYear, today.getMonth() + 1, 0).getDate();
-    const firstDayOfMonth = new Date(currentYear, today.getMonth(), 1).getDay();
-    const calendarDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-    const paddingDays = Array.from({ length: firstDayOfMonth }, (_, i) => i);
-
     const history = checkinData?.history || [];
-    const isDayChecked = (day: number) => {
+    const getCheckedData = (day: number) => {
         const dateStr = `${currentYear}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         return history.find((h: any) => h.date === dateStr);
     };
 
-    const streak = checkinData?.streak || 0;
-    const multiplier = 1 + streak * 0.1;
-    const baseReward = streak <= 6 ? 10 : streak <= 13 ? 15 : streak <= 20 ? 20 : 25;
-    const todayReward = Math.round(baseReward * multiplier);
+    const getDayState = (day: number): DayState => {
+        const targetDate = new Date(currentYear, today.getMonth(), day);
+        targetDate.setHours(0, 0, 0, 0);
 
-    // Repair eligibility
-    const canRepair = (() => {
-        if (!profile) return false;
-        const now = new Date();
-        if (profile.last_repair_at) {
-            const lastDate = new Date(profile.last_repair_at);
-            if (lastDate.getMonth() === now.getMonth() && lastDate.getFullYear() === now.getFullYear()) return false;
+        const currentToday = new Date();
+        currentToday.setHours(0, 0, 0, 0);
+
+        const createdDate = user?.createdAt ? new Date(user.createdAt) : new Date();
+        createdDate.setHours(0, 0, 0, 0);
+
+        const isChecked = !!getCheckedData(day);
+
+        if (targetDate.getTime() > currentToday.getTime()) return 'future';
+        if (targetDate.getTime() < createdDate.getTime()) return 'before_registration';
+        if (targetDate.getTime() === currentToday.getTime()) {
+            return isChecked ? 'checked' : 'today_missed';
         }
-        return true;
-    })();
+        return isChecked ? 'checked' : 'missed';
+    };
+
+    const selectedState = getDayState(selectedDay);
+    const selectedCheckinData = getCheckedData(selectedDay);
+
+    // For the dynamic top card only (changes with selected day)
+    let activeStreakForCalc = checkinData?.streak || 0;
+    if (selectedState === 'checked' && selectedCheckinData) {
+        activeStreakForCalc = selectedCheckinData.streak_day;
+    } else if (selectedState === 'today_missed') {
+        activeStreakForCalc = (checkinData?.streak || 0) + 1;
+    } else if (selectedState === 'missed') {
+        activeStreakForCalc = 1;
+    }
+
+    // 30-Day Blueprint — matches backend perform_daily_checkin exactly
+    const get30DayReward = (streak: number) => {
+        let base = 10, bonus = 0;
+        if (streak >= 1 && streak <= 6) { base = 10; }
+        else if (streak === 7) { base = 10; bonus = 50; }
+        else if (streak >= 8 && streak <= 13) { base = 15; }
+        else if (streak === 14) { base = 15; bonus = 80; }
+        else if (streak >= 15 && streak <= 20) { base = 20; }
+        else if (streak === 21) { base = 20; bonus = 120; }
+        else if (streak >= 22 && streak <= 29) { base = 25; }
+        else if (streak === 30) { base = 25; bonus = 300; }
+        return { base, bonus, total: base + bonus };
+    };
+
+    // CURRENT REWARDS: Always shows TODAY's values (never changes with selected day)
+    const todayStreak = checkinData?.hasCheckedToday
+        ? (checkinData?.streak || 1)  // Already checked in today — show current streak
+        : (checkinData?.streak || 0) + 1;  // Not yet — show what they WOULD get
+    const todayRewardInfo = get30DayReward(todayStreak);
+    const repairCost = checkinData?.repairCost || 100;
 
     return (
         <div className="h-screen bg-surface-light dark:bg-surface-dark text-text-main dark:text-gray-100 flex flex-col overflow-hidden">
             <Navbar />
 
             <div className="flex-1 w-full overflow-y-auto scroll-bounce">
-                <div className="max-w-4xl mx-auto p-4 sm:p-6 pb-24 flex flex-col gap-6 animate-fade-in mt-4">
+                <div className="max-w-[1440px] mx-auto p-6 sm:p-10 pb-32 flex flex-col gap-10 animate-fade-in mt-8">
 
-                    {/* Header */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6">
                         <button
                             onClick={() => navigate(-1)}
-                            className="w-10 h-10 -ml-2 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                            className="w-14 h-14 -ml-2 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                         >
-                            <span className="material-symbols-outlined">arrow_back</span>
+                            <span className="material-symbols-outlined text-3xl">arrow_back</span>
                         </button>
-                        <h1 className="text-2xl font-black tracking-tight">Daily Check-in</h1>
+                        <h1 className="text-4xl font-black tracking-tight">Daily Check-in</h1>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
-                        {/* Streak Stats Side */}
-                        <div className="lg:col-span-1 flex flex-col gap-5">
-                            {/* Streak Card */}
-                            <div className="p-8 rounded-[2.5rem] bg-gradient-to-br from-primary to-amber-500 shadow-2xl shadow-primary/20 text-black relative overflow-hidden group">
+                        {/* LEFT COLUMN: CONTEXTUAL INFO PANEL */}
+                        <div className="lg:col-span-1 flex flex-col gap-8">
+                            {/* Dynamic Top Card */}
+                            <div className="p-8 rounded-[2.5rem] relative overflow-hidden group shadow-2xl transition-all duration-300
+                                ${selectedState === 'today_missed' ? 'bg-gradient-to-br from-primary to-amber-500 shadow-primary/20 text-black' : ''}
+                                ${selectedState === 'checked' ? 'bg-gradient-to-br from-emerald-400 to-green-500 shadow-emerald-500/20 text-white' : ''}
+                                ${selectedState === 'missed' ? 'bg-gradient-to-br from-red-500 to-rose-600 shadow-red-500/20 text-white' : ''}
+                                ${(selectedState === 'future' || selectedState === 'before_registration') ? 'bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-400' : ''}
+                            "
+                                style={{
+                                    background: selectedState === 'today_missed' ? 'linear-gradient(to bottom right, #f9d406, #f59e0b)' :
+                                        selectedState === 'checked' ? 'linear-gradient(to bottom right, #10b981, #22c55e)' :
+                                            selectedState === 'missed' ? 'linear-gradient(to bottom right, #ef4444, #e11d48)' : undefined
+                                }}
+                            >
                                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
 
                                 <div className="relative z-10 flex flex-col items-center text-center">
-                                    <span className="text-xs font-black uppercase tracking-[0.2em] opacity-70 mb-2">Current Streak</span>
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-7xl font-black tracking-tighter">{streak}</span>
-                                        <span className="text-xl font-bold uppercase italic">Days</span>
-                                    </div>
-                                    <div className="mt-6 w-full p-4 bg-black/10 rounded-2xl border border-black/5 backdrop-blur-sm">
-                                        <div className="flex justify-between items-center mb-1">
-                                            <span className="text-[10px] font-black uppercase tracking-widest">Next Milestone</span>
-                                            <span className="text-[10px] font-black italic">{streak % 7} / 7</span>
-                                        </div>
-                                        <div className="h-2 w-full bg-black/10 rounded-full overflow-hidden">
-                                            <div
-                                                className="h-full bg-black transition-all duration-1000 ease-out"
-                                                style={{ width: `${((streak % 7) / 7) * 100}%` }}
-                                            />
-                                        </div>
-                                    </div>
+                                    <span className={`text-sm font-black uppercase tracking-[0.2em] mb-6 
+                                        ${selectedState === 'today_missed' ? 'opacity-70 text-black' : selectedState === 'checked' || selectedState === 'missed' ? 'opacity-80 text-white' : 'opacity-60'}
+                                    `}>
+                                        {selectedState === 'today_missed' && 'Today'}
+                                        {selectedState === 'checked' && `Day ${selectedDay} Checked In`}
+                                        {selectedState === 'missed' && `Day ${selectedDay} Missed`}
+                                        {selectedState === 'future' && `Day ${selectedDay} is in the future`}
+                                        {selectedState === 'before_registration' && `Day ${selectedDay} is unplayable`}
+                                    </span>
 
-                                    {/* Repair Button */}
-                                    {canRepair && (
-                                        <div className="mt-4 w-full px-2">
+                                    {selectedState === 'today_missed' && (
+                                        <>
+                                            <div className="flex items-baseline gap-2 text-black">
+                                                <span className="text-9xl font-black tracking-tighter">{activeStreakForCalc}</span>
+                                                <span className="text-2xl font-bold uppercase italic">Days</span>
+                                            </div>
                                             <button
-                                                onClick={handleRepair}
-                                                disabled={isRepairing}
-                                                className="w-full py-2 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md text-[10px] font-black uppercase tracking-[0.12em] rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-black/5 hover:scale-[1.02] active:scale-95 group"
+                                                onClick={(e) => handleCheckin(e)}
+                                                disabled={performingCheckin}
+                                                className="mt-8 w-full py-5 rounded-2xl font-black text-lg uppercase tracking-widest transition-all flex items-center justify-center gap-3 bg-black text-white hover:scale-[1.02] active:scale-95 shadow-2xl shadow-black/30"
                                             >
-                                                <span className="material-symbols-outlined text-[16px] group-hover:rotate-12 transition-transform">build</span>
-                                                <span>Repair Streak</span>
-                                                <div className="w-px h-2.5 bg-black/10 mx-0.5" />
-                                                <div className="flex items-center gap-1 opacity-80">
-                                                    <span>100</span>
-                                                    <PointsCoin size="sm" />
-                                                </div>
+                                                {performingCheckin ? 'Checking In...' : 'Check In Now'}
                                             </button>
-                                        </div>
+                                        </>
+                                    )}
+
+                                    {selectedState === 'checked' && (
+                                        <>
+                                            <div className="w-28 h-28 rounded-full bg-white/20 flex items-center justify-center mb-6">
+                                                <span className="material-symbols-outlined text-[56px] text-white">check_circle</span>
+                                            </div>
+                                            <div className="flex items-center gap-3 bg-black/20 px-6 py-3 rounded-2xl mt-4">
+                                                <PointsCoin size="md" />
+                                                <span className="text-3xl font-black text-white">+{selectedCheckinData?.points || 0}</span>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    {selectedState === 'missed' && (
+                                        <>
+                                            <div className="w-28 h-28 rounded-full bg-black/20 flex items-center justify-center mb-8">
+                                                <span className="material-symbols-outlined text-[56px] text-white">build</span>
+                                            </div>
+                                            <span className="text-white/80 text-base font-bold leading-relaxed mb-8 px-4">
+                                                Restore your streak to ensure your multiplier keeps growing. Cost resets at the start of next month.
+                                            </span>
+
+                                            <button
+                                                onClick={() => handleRepair(selectedDay)}
+                                                disabled={isRepairing}
+                                                className="w-full py-5 bg-black hover:scale-[1.02] active:scale-95 text-white font-black text-base uppercase tracking-widest rounded-2xl transition-all shadow-2xl shadow-black/30 flex items-center justify-center gap-3"
+                                            >
+                                                {isRepairing ? 'Repairing...' : 'Repair Streak'}
+                                                <div className="w-px h-4 bg-white/20 mx-2" />
+                                                <span className="text-amber-400 font-black">{repairCost}</span>
+                                                <PointsCoin size="sm" />
+                                            </button>
+                                        </>
+                                    )}
+
+                                    {(selectedState === 'future' || selectedState === 'before_registration') && (
+                                        <>
+                                            <div className="w-28 h-28 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center mb-6">
+                                                <span className="material-symbols-outlined text-[56px] opacity-40">calendar_add_on</span>
+                                            </div>
+                                            <p className="text-sm font-medium opacity-60 mt-4 px-6 leading-relaxed">
+                                                {selectedState === 'future' ? "You can't check in to a day that hasn't happened yet." : "You cannot repair dates before your account was created."}
+                                            </p>
+                                        </>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Check-in Button / Success Card */}
-                            {justCheckedIn && checkinReward ? (
-                                <div className="p-6 rounded-[2rem] bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/10 border-2 border-emerald-200 dark:border-emerald-700/30 shadow-xl shadow-emerald-500/10 animate-fade-in">
-                                    <div className="flex flex-col items-center gap-3">
-                                        <div className="w-16 h-16 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/30 animate-bounce">
-                                            <span className="material-symbols-outlined fill-1 text-white text-3xl">check_circle</span>
-                                        </div>
-                                        <span className="text-lg font-black text-emerald-700 dark:text-emerald-400">Checked In!</span>
-                                        <div className="flex items-center gap-2 bg-white/80 dark:bg-white/10 px-4 py-2 rounded-xl">
-                                            <PointsCoin size="md" />
-                                            <span className="text-2xl font-black text-primary">+{checkinReward.total}</span>
-                                        </div>
-                                        {checkinReward.bonus > 0 && (
-                                            <div className="px-3 py-1 bg-amber-100 dark:bg-amber-900/20 rounded-full">
-                                                <span className="text-xs font-black text-amber-600 dark:text-amber-400">🎉 Milestone Bonus +{checkinReward.bonus}</span>
-                                            </div>
-                                        )}
+                            {/* Rewards Detail Panel — ALWAYS shows TODAY's values */}
+                            <div className="p-10 rounded-[2.5rem] bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 shadow-xl">
+                                <h3 className="text-base font-black uppercase tracking-widest text-gray-400 mb-6">Current Rewards</h3>
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-base font-bold">Streak Day</span>
+                                        <span className="text-lg font-black text-amber-500 font-mono">Day {todayStreak}</span>
                                     </div>
-                                </div>
-                            ) : checkinData?.hasCheckedToday ? (
-                                <div className="w-full py-5 rounded-[2rem] font-black text-lg bg-gray-100 dark:bg-white/5 text-gray-400 flex items-center justify-center gap-3 cursor-default">
-                                    <span className="material-symbols-outlined fill-1">task_alt</span>
-                                    Checked In
-                                </div>
-                            ) : (
-                                <button
-                                    onClick={(e) => handleCheckin(e)}
-                                    disabled={performingCheckin}
-                                    className="w-full py-5 rounded-[2rem] font-black text-lg transition-all shadow-xl flex items-center justify-center gap-3 bg-primary text-black hover:scale-[1.02] active:scale-95 shadow-primary/30 group"
-                                >
-                                    {performingCheckin ? (
-                                        <span className="w-6 h-6 border-3 border-black border-t-transparent rounded-full animate-spin"></span>
-                                    ) : (
-                                        <>
-                                            <PointsCoin size="sm" animate />
-                                            <span>Check In Now</span>
-                                            <span className="text-sm font-bold opacity-60 ml-1">+{todayReward}</span>
-                                        </>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-base font-bold">Base Reward</span>
+                                        <span className="text-lg font-black text-primary flex items-center gap-2">
+                                            <PointsCoin size="md" /> {todayRewardInfo.base}
+                                        </span>
+                                    </div>
+                                    {todayRewardInfo.bonus > 0 && (
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-base font-bold">Milestone Bonus</span>
+                                            <span className="text-lg font-black text-emerald-500 flex items-center gap-2">
+                                                <PointsCoin size="md" /> +{todayRewardInfo.bonus}
+                                            </span>
+                                        </div>
                                     )}
-                                </button>
-                            )}
-
-                            {/* Rewards Panel */}
-                            <div className="p-6 rounded-[2rem] bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">Rewards</h3>
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-bold">Base Reward</span>
-                                        <span className="text-sm font-black text-primary flex items-center gap-1">
-                                            <PointsCoin size="sm" /> {baseReward}
+                                    <div className="pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+                                        <span className="text-base font-bold">Today's Total</span>
+                                        <span className="text-2xl font-black text-emerald-500 flex items-center gap-2">
+                                            <PointsCoin size="md" /> {todayRewardInfo.total}
                                         </span>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-bold">Streak Multiplier</span>
-                                        <span className="text-sm font-black text-amber-500">x{multiplier.toFixed(1)}</span>
-                                    </div>
-                                    <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                                        <span className="text-sm font-bold">Today's Reward</span>
-                                        <span className="text-sm font-black text-emerald-500 flex items-center gap-1">
-                                            <PointsCoin size="sm" /> {todayReward}
-                                        </span>
-                                    </div>
-                                    <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                                        <span className="text-xs font-bold text-gray-400 italic">Next bonus in {7 - (streak % 7)} days</span>
-                                        <span className="material-symbols-outlined text-primary">stars</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Calendar Side */}
-                        <div className="lg:col-span-2 flex flex-col gap-6">
-                            <div className="p-8 rounded-[2.5rem] bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 shadow-sm min-h-[500px] flex flex-col">
-                                <div className="flex items-center justify-between mb-8">
+                        {/* RIGHT COLUMN: CALENDAR */}
+                        <div className="lg:col-span-2 flex flex-col gap-10">
+                            <div className="p-12 rounded-[3.5rem] bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 shadow-2xl min-h-[700px] flex flex-col">
+                                <div className="flex items-center justify-between mb-12">
                                     <div>
-                                        <h2 className="text-2xl font-black tracking-tight">{currentMonth}</h2>
-                                        <p className="text-sm font-bold text-gray-400">{currentYear}</p>
+                                        <h2 className="text-4xl font-black tracking-tighter">{currentMonth}</h2>
+                                        <p className="text-lg font-bold text-gray-400 mt-1">{currentYear}</p>
                                     </div>
-                                    <div className="flex gap-2">
-                                        <div className="px-3 py-1.5 rounded-xl bg-gray-50 dark:bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-2 border border-gray-100 dark:border-white/5">
-                                            <div className="w-2 h-2 rounded-full bg-primary shadow-glow shadow-primary/50" />
+                                    <div className="flex gap-4">
+                                        <div className="px-5 py-2.5 rounded-2xl bg-gray-50 dark:bg-white/5 text-xs font-black uppercase tracking-widest text-gray-400 flex items-center gap-3 border border-gray-100 dark:border-white/5">
+                                            <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_15px_rgba(249,212,6,0.5)]" />
                                             Checked
+                                        </div>
+                                        <div className="px-5 py-2.5 rounded-2xl bg-gray-50 dark:bg-white/5 text-xs font-black uppercase tracking-widest text-gray-400 flex items-center gap-3 border border-gray-100 dark:border-white/5">
+                                            <div className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]" />
+                                            Missed
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-7 gap-2 mb-2">
+                                <div className="grid grid-cols-7 gap-4 mb-4">
                                     {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                                        <div key={day} className="text-center text-[10px] font-black uppercase tracking-widest text-gray-400 py-2">
+                                        <div key={day} className="text-center text-xs font-black uppercase tracking-widest text-gray-400 py-3">
                                             {day}
                                         </div>
                                     ))}
                                 </div>
 
-                                <div className="grid grid-cols-7 gap-2 flex-1">
+                                <div className="grid grid-cols-7 gap-4 flex-1">
                                     {paddingDays.map(i => (
                                         <div key={`pad-${i}`} className="aspect-square" />
                                     ))}
                                     {calendarDays.map(day => {
-                                        const checkin = isDayChecked(day);
-                                        const checked = !!checkin;
-                                        const isToday = day === today.getDate();
-                                        const points = checkin?.points || 0;
+                                        const state = getDayState(day);
+                                        const isSelected = selectedDay === day;
+
+                                        // Colors mapping correctly handling the visual states request
+                                        let bgClass = 'bg-gray-50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/5 opacity-40';
+                                        let textClass = 'text-gray-400';
+                                        let extraClasses = 'cursor-pointer hover:opacity-100';
+
+                                        if (state === 'checked') {
+                                            bgClass = 'bg-primary text-black shadow-xl shadow-primary/20';
+                                            textClass = 'text-black';
+                                        } else if (state === 'missed') {
+                                            bgClass = 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30';
+                                            textClass = 'text-red-500';
+                                        } else if (state === 'today_missed') {
+                                            bgClass = 'bg-gray-50 dark:bg-white/5 border-2 border-primary/50 shadow-lg shadow-primary/10';
+                                            textClass = 'text-primary';
+                                        } else if (state === 'future' || state === 'before_registration') {
+                                            extraClasses = 'cursor-default opacity-30';
+                                        }
+
                                         return (
                                             <div
                                                 key={day}
-                                                className={`aspect-square rounded-2xl flex flex-col items-center justify-center relative transition-all duration-500 group ${checked
-                                                    ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-[0.98]'
-                                                    : isToday
-                                                        ? 'bg-gray-100 dark:bg-white/10 ring-2 ring-primary/30'
-                                                        : day < today.getDate()
-                                                            ? 'bg-gray-50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/5 opacity-30'
-                                                            : 'bg-gray-50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/5 opacity-40'
-                                                    }`}
+                                                onClick={() => setSelectedDay(day)}
+                                                className={`aspect-square rounded-[2rem] flex flex-col items-center justify-center relative transition-all duration-300 group ${bgClass} ${extraClasses} ${isSelected ? 'ring-8 ring-black/5 dark:ring-white/5 scale-110 z-10' : 'hover:scale-105'}`}
                                             >
-                                                <span className={`text-sm font-black ${checked ? 'text-black' : isToday ? 'text-primary' : ''}`}>
+                                                <span className={`text-xl font-black ${textClass}`}>
                                                     {day}
                                                 </span>
-                                                {checked && points > 0 && (
-                                                    <span className="text-[8px] font-black opacity-70 absolute bottom-1.5">+{points}</span>
+                                                {state === 'checked' && (
+                                                    <span className="material-symbols-outlined text-lg font-black absolute top-2 right-2 opacity-80">check</span>
                                                 )}
-                                                {checked && (
-                                                    <span className="material-symbols-outlined text-[10px] font-black absolute top-1.5 right-1.5">check</span>
+                                                {state === 'missed' && (
+                                                    <span className="material-symbols-outlined text-base font-black absolute top-2 right-2 text-red-500 opacity-60">close</span>
                                                 )}
                                             </div>
                                         );
                                     })}
-                                </div>
-
-                                <div className="mt-8 p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 flex items-start gap-3">
-                                    <span className="material-symbols-outlined text-amber-500 fill-1">info</span>
-                                    <p className="text-[11px] font-medium text-amber-800 dark:text-amber-400 leading-relaxed">
-                                        Check in every day to increase your multiplier. Missing a day will reset your streak! Completing 7-day milestones awards extra bonus NMS Points.
-                                    </p>
                                 </div>
                             </div>
                         </div>

@@ -8,11 +8,12 @@ import { notificationsApi } from '../src/services/api';
 import { AchievementUnlockModal } from './AchievementUnlockModal';
 import { PointsBalanceBadge, PointsCoin } from './PointsCoin';
 import { PrestigeWidget } from './PrestigeWidget';
+import { AvatarAura } from './AvatarAura';
 
 export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   const {
     user, logout, isAuthenticated, isPro, notifications,
-    markAllNotificationsRead, markNotificationRead,
+    markAllNotificationsRead, markNotificationRead, markLinkAsRead,
     newlyUnlockedTitle, setNewlyUnlockedTitle,
     showPaywall, setShowPaywall, unreadCounts, clearUnread,
     userPoints, pointsBalanceRef, fetchUserPoints, getCheckinStatus, awardPoints,
@@ -27,10 +28,6 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
 
   const [processingNotifId, setProcessingNotifId] = useState<number | null>(null);
   const [acceptedNotifIds, setAcceptedNotifIds] = useState<Set<number>>(new Set());
-  const needsCheckin = checkinStatus === 'not_checked_in';
-
-  // Check for unread [Membership] notifications
-  const membershipNotifs = notifications.filter(n => n.unread && n.text?.includes('[Membership]'));
 
   const playSuccessSound = () => {
     if (user.preferences && user.preferences.soundEffects === false) return;
@@ -59,7 +56,6 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
       console.error('Failed to play success sound:', err);
     }
   };
-  const needsProUpgrade = !isPro && userPoints.balance >= 199 && membershipNotifs.length > 0;
 
 
 
@@ -225,8 +221,9 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   };
 
 
-  const analysisUnreadCount = visibleNotifications.filter(n => n.unread && n.text?.startsWith('[Analysis -')).length;
-  const settingsHasUnread = visibleNotifications.some(n => n.unread && n.text?.includes('[Membership]'));
+  const dashboardHasUnread = visibleNotifications.some(n => n.unread && (n.link === '/checkin' || n.link === '/dashboard' || n.text?.includes('Daily Check-in')));
+  const analysisUnreadCount = visibleNotifications.filter(n => n.unread && n.link === '/analysis').length;
+  const settingsHasUnread = visibleNotifications.some(n => n.unread && n.link?.includes('/settings'));
 
   // No more pseudo notifications — all notifications come from the database
   const allDisplayed = visibleNotifications;
@@ -365,10 +362,11 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
             <div className="pointer-events-auto flex items-center gap-1">
               <Link
                 to="/dashboard"
+                onClick={() => markLinkAsRead('/checkin')}
                 className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
               >
                 <span>Dashboard</span>
-                {needsCheckin && (
+                {dashboardHasUnread && (
                   <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark">
                     1
                   </span>
@@ -378,7 +376,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
                 Practice
               </Link>
               {isAuthenticated && isPro ? (
-                <Link to="/analysis" className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+                <Link to="/analysis" onClick={() => markLinkAsRead('/analysis')} className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
                   <span>Analysis</span>
                   {analysisUnreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
@@ -428,6 +426,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
               {isAuthenticated ? (
                 <Link
                   to="/settings"
+                  onClick={() => markLinkAsRead('/settings')}
                   className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
                 >
                   <span>Settings</span>
@@ -456,12 +455,6 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
         {/* Right Actions - Always Visible */}
         <div className="flex items-center gap-4 shrink-0">
 
-          {/* Prestige Widget - Desktop Only to save space */}
-          {!minimal && isAuthenticated && (
-            <div className="hidden md:block shrink-0">
-              <PrestigeWidget compact />
-            </div>
-          )}
 
           {/* Mobile Menu Button - DISABLED FOR DESKTOP ONLY MODE */}
           {/* <button
@@ -488,9 +481,10 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
               <div className="relative" ref={profileRef}>
                 <div
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-white dark:ring-gray-700 shadow-sm cursor-pointer hover:ring-primary transition-all"
-                  style={{ backgroundImage: `url(${user.avatarUrl})`, backgroundSize: 'cover' }}
+                  className="relative w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-white dark:ring-gray-700 shadow-sm cursor-pointer hover:ring-primary transition-all group"
                 >
+                  <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: `url(${user.avatarUrl})` }} />
+                  {userPrestige?.planet_level && <AvatarAura level={userPrestige.planet_level} />}
                 </div>
 
                 {/* Profile Dropdown */}

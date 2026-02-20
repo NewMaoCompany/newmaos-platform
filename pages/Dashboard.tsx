@@ -5,6 +5,7 @@ import { Navbar } from '../components/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
 import { CourseType } from '../types';
 import { WelcomeGiftModal } from '../components/WelcomeGiftModal';
+import { PrestigeWidget } from '../components/PrestigeWidget';
 
 const RadialProgress = ({ percentage }: { percentage: number }) => {
   const radius = 30;
@@ -378,13 +379,19 @@ export const Dashboard = () => {
       <Navbar />
 
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-8 sm:gap-12 w-full overflow-y-auto">
-        <header className="flex flex-col gap-2">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-text-main dark:text-white">
-            Hello, {user.name ? user.name.split(' ')[0] : 'Student'}
-          </h2>
-          <p className="text-xl text-text-secondary dark:text-gray-400 font-medium">
-            Ready to conquer <span className="font-bold text-text-main dark:text-white">{courses[user.currentCourse].title}</span>
-          </p>
+
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-text-main dark:text-white">
+              Hello, {user.name ? user.name.split(' ')[0] : 'Student'}
+            </h2>
+            <p className="text-xl text-text-secondary dark:text-gray-400 font-medium">
+              Ready to conquer <span className="font-bold text-text-main dark:text-white">{courses[user.currentCourse].title}</span>
+            </p>
+          </div>
+          <div className="w-full md:max-w-md lg:max-w-xl">
+            <PrestigeWidget wide />
+          </div>
         </header>
 
         <section className="flex flex-col gap-8">

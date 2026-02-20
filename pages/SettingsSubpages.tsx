@@ -10,6 +10,8 @@ import { PointsCoin } from '../components/PointsCoin';
 
 
 import { getUniqueTitleStyle } from '../src/utils/titleStyles';
+import { PlanetVisual } from '../components/SpaceVisuals';
+import { PrestigeWidget } from '../components/PrestigeWidget';
 
 const SubpageLayout = ({ title, children, maxWidth = "max-w-4xl" }: { title: string, children: React.ReactNode, maxWidth?: string }) => {
   const navigate = useNavigate();
@@ -64,7 +66,7 @@ const GRADIENTS = [
 // Removed old local TITLE_STYLES logic in favor of src/utils/titleStyles.ts
 
 export const ProfileSettings = () => {
-  const { user, updateUser, isPro, setShowPaywall, availableTitles } = useApp();
+  const { user, updateUser, isPro, setShowPaywall, availableTitles, userPrestige } = useApp();
   const { showToast } = useToast();
 
   // State from User Context & DB (Initialize with User Context Defaults where possible)
@@ -83,10 +85,11 @@ export const ProfileSettings = () => {
   const [showName, setShowName] = useState(user.showName ?? true);
   const [showEmail, setShowEmail] = useState(user.showEmail ?? false);
   const [showBio, setShowBio] = useState(user.showBio ?? true);
+  const [showPrestige, setShowPrestige] = useState(user.showPrestige ?? true);
 
   // UI States
   const [isSaving, setIsSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState<'seniority' | 'streak' | 'mastery' | 'social' | 'influence'>('seniority');
+  const [activeTab, setActiveTab] = useState<'seniority' | 'streak' | 'mastery' | 'social' | 'influence' | 'questions' | 'posts'>('seniority');
   const [isLoadingDetails, setIsLoadingDetails] = useState(true); // Renamed, used only for specific UI hints if needed
 
   // File Upload State
@@ -98,6 +101,38 @@ export const ProfileSettings = () => {
   const [pendingEmail, setPendingEmail] = useState('');
   const [verifyCode, setVerifyCode] = useState(['', '', '', '', '', '']);
   const [isVerifying, setIsVerifying] = useState(false);
+
+  // Prestige Preview State
+  // Initialize from saved selection OR current actual level
+  const [displayPlanetLevel, setDisplayPlanetLevel] = useState<number>(
+    user.selectedPrestigeLevel || Math.min(5, userPrestige?.planet_level || 1)
+  );
+
+  // Helper to generate preview data for past/current levels
+  const getPreviewData = (targetLevel: number) => {
+    if (!userPrestige) return null;
+
+    // If viewing current level, show actual progress
+    if (targetLevel === userPrestige.planet_level) {
+      return userPrestige;
+    }
+
+    // If viewing past level, show as "Maxed Out" (3 stars + sufficient stardust visual if needed)
+    // We mock the object structure to satisfy PrestigeWidget
+    return {
+      ...userPrestige,
+      planet_level: targetLevel,
+      star_level: 4, // 4 triggers the full bar in PrestigeWidget
+      current_stardust: 0 // Optional, maybe show max for that level if we knew it, or just hide stardust
+    };
+  };
+
+  // Sync display level when user data loads (only if not already set by user pref)
+  useEffect(() => {
+    if (!user.selectedPrestigeLevel && userPrestige?.planet_level) {
+      setDisplayPlanetLevel(Math.min(5, userPrestige.planet_level));
+    }
+  }, [userPrestige?.planet_level, user.selectedPrestigeLevel]);
 
   // 1. Fetch Extended Profile Data on Mount (Non-blocking)
   useEffect(() => {
@@ -112,6 +147,7 @@ export const ProfileSettings = () => {
         if (user.showName !== undefined) setShowName(user.showName);
         if (user.showEmail !== undefined) setShowEmail(user.showEmail);
         if (user.showBio !== undefined) setShowBio(user.showBio);
+        if (user.showPrestige !== undefined) setShowPrestige(user.showPrestige);
         if (user.equippedTitleId) setSelectedTitleId(user.equippedTitleId);
 
         // Fetch Unlocked Titles
@@ -188,6 +224,8 @@ export const ProfileSettings = () => {
         showName,
         showEmail,
         showBio,
+        showPrestige,
+        selectedPrestigeLevel: displayPlanetLevel, // Save the selected preview level
         equippedTitleId: selectedTitleId,
         equippedTitle: selectedTitle || null
       };
@@ -328,19 +366,24 @@ export const ProfileSettings = () => {
                   <button
                     key={g.name}
                     onClick={() => setAvatarColor(g.value)}
-                    className={`w-14 h-14 rounded-full border-2 border-gray-100 dark:border-gray-700 transition-transform hover:scale-110 shadow-sm ${avatarColor === g.value ? 'ring-2 ring-offset-2 ring-primary scale-110 border-transparent' : ''}`}
-                    style={{ background: g.value }}
+                    className={`w-14 h-14 rounded-full transition-transform hover:scale-110 shadow-sm relative ${avatarColor === g.value ? 'scale-110' : ''}`}
                     title={g.name}
-                  />
+                  >
+                    <div className="absolute inset-0" style={{ background: g.value, clipPath: 'circle(50% at 50% 50%)' }}></div>
+                    <div className="absolute inset-0 rounded-full pointer-events-none" style={{ border: avatarColor === g.value ? '4px solid white' : '2px solid transparent' }}></div>
+                    {avatarColor === g.value && <div className="absolute inset-[-4px] rounded-full border-2 border-primary pointer-events-none"></div>}
+                  </button>
                 ))}
 
                 {/* Custom Color Picker */}
                 <div className="relative group">
                   <div
-                    className={`w-14 h-14 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 shadow-sm ${!GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? 'ring-2 ring-offset-2 ring-primary border-transparent' : 'border-gray-200 dark:border-gray-700'}`}
-                    style={{ background: !GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? avatarColor : 'transparent' }}
+                    className={`w-14 h-14 rounded-full transition-all duration-300 hover:scale-110 shadow-sm relative flex items-center justify-center cursor-pointer ${!GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? 'scale-110' : ''}`}
                   >
-                    <span className={`material-symbols-outlined text-2xl transition-colors ${!GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? 'text-white drop-shadow-md' : 'text-gray-400'}`}>
+                    <div className="absolute inset-0" style={{ background: !GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? avatarColor : 'transparent', clipPath: 'circle(50% at 50% 50%)' }}></div>
+                    <div className="absolute inset-0 rounded-full pointer-events-none" style={{ border: !GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? '4px solid white' : '2px solid rgba(156, 163, 175, 0.5)' }}></div>
+                    {!GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') && <div className="absolute inset-[-4px] rounded-full border-2 border-primary pointer-events-none"></div>}
+                    <span className={`material-symbols-outlined text-2xl transition-colors relative z-10 ${!GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? 'text-white drop-shadow-md' : 'text-gray-400'}`}>
                       palette
                     </span>
                   </div>
@@ -477,7 +520,7 @@ export const ProfileSettings = () => {
 
             {/* Category Tabs */}
             <div className="flex gap-2 p-1.5 bg-gray-100/50 dark:bg-white/5 rounded-2xl mb-4 overflow-x-auto no-scrollbar">
-              {(['seniority', 'streak', 'mastery', 'social', 'influence'] as const).map(tab => (
+              {(['seniority', 'streak', 'mastery', 'social', 'influence', 'questions', 'posts'] as const).map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -582,6 +625,56 @@ export const ProfileSettings = () => {
             </div>
           </div>
 
+          <div className="w-full h-px bg-gray-100 dark:bg-gray-800"></div>
+
+          {/* 5. Prestige Display */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-black flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">public</span>
+                Prestige Profile Display
+              </h2>
+              <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-2xl border border-gray-100 dark:border-white/5">
+                <span className={`text-[10px] font-black uppercase tracking-tighter ${showPrestige ? 'text-primary' : 'text-gray-400'}`}>
+                  {showPrestige ? 'Public' : 'Hidden'}
+                </span>
+                <Toggle c={showPrestige} onChange={setShowPrestige} />
+              </div>
+            </div>
+
+            {/* Planet Selector for Preview */}
+            <div className="flex gap-4 overflow-x-auto no-scrollbar py-2 px-1">
+              {Array.from({ length: Math.min(5, userPrestige?.planet_level || 1) }, (_, i) => i + 1).map((level) => (
+                <button
+                  key={level}
+                  onClick={() => setDisplayPlanetLevel(level)}
+                  className={`relative group flex flex-col items-center gap-2 transition-all p-2 rounded-2xl border-2 ${displayPlanetLevel === level
+                    ? 'bg-primary/10 border-primary scale-105'
+                    : 'bg-white dark:bg-white/5 border-transparent hover:bg-gray-50 dark:hover:bg-white/10'
+                    }`}
+                >
+                  <div className={`relative w-12 h-12 rounded-full overflow-hidden ${displayPlanetLevel === level ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-black' : 'opacity-70 group-hover:opacity-100'}`}>
+                    <PlanetVisual level={level} size="sm" className="w-full h-full" showAtmosphere={false} floating={false} />
+                  </div>
+                  {displayPlanetLevel === level && (
+                    <div className="absolute -bottom-1 w-1.5 h-1.5 bg-primary rounded-full" />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/40 dark:bg-black/20 rounded-3xl border border-gray-100 dark:border-white/5 p-5 flex flex-col items-center gap-4 relative overflow-hidden group">
+              <div className="relative z-10 w-full flex justify-center pb-2 pt-2">
+                <PrestigeWidget
+                  wide={true}
+                  isReadOnly={true}
+                  showStardust={false}
+                  prestigeData={getPreviewData(displayPlanetLevel)}
+                />
+              </div>
+            </div>
+          </div>
+
           {!isPro && (
             <div className="mt-4 p-4 bg-primary/10 border border-primary/20 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -670,8 +763,21 @@ export const ProfileSettings = () => {
                       })()
                     )}
 
+                    {/* Prestige Status Widget - Now centered below title */}
+                    {showPrestige && userPrestige && (
+                      <div className="mt-2 transform hover:scale-[1.02] transition-transform duration-300 relative z-20 w-full flex justify-center overflow-visible">
+                        <PrestigeWidget
+                          compact={true}
+                          prestigeData={getPreviewData(displayPlanetLevel)}
+                          isReadOnly={true}
+                          showStardust={false}
+                          className="scale-[0.55] sm:scale-[0.65] md:scale-[0.75] lg:scale-[0.8]"
+                        />
+                      </div>
+                    )}
+
                     {showEmail && (
-                      <p className="text-sm text-gray-500 font-medium">{email}</p>
+                      <p className="text-sm text-gray-500 font-medium px-4 truncate w-full">{email}</p>
                     )}
 
                     {/* ID Hidden as per request */}

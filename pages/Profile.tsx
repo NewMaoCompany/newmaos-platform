@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../AppContext';
 import { useToast } from '../components/Toast';
 import { supabase } from '../src/services/supabaseClient';
@@ -7,6 +7,7 @@ import { Navbar } from '../components/Navbar';
 import { PointsCoin } from '../components/PointsCoin';
 import { PrestigeWidget } from '../components/PrestigeWidget';
 import { getUniqueTitleStyle } from '../src/utils/titleStyles';
+import { AvatarAura } from '../components/AvatarAura';
 
 export const Profile = () => {
     const { userId } = useParams<{ userId: string }>();
@@ -25,6 +26,8 @@ export const Profile = () => {
         last_login_at?: string;
         equipped_title_id?: string;
         equipped_title?: any;
+        show_prestige?: boolean;
+        selected_prestige_level?: number;
     } | null>(null);
 
     const [stats, setStats] = useState({ posts: 0, friends: 0, channels: 0 });
@@ -36,15 +39,35 @@ export const Profile = () => {
         if (!userId) return;
 
         try {
-            // 1. Fetch Profile Basics
-            const { data: profileData, error: profileError } = await supabase
+            // 1. Fetch Profile Basics - MINIMAL SAFE SET
+            // ONLY select columns that are guaranteed to exist in the oldest schema version
+            const { data: minimalData, error: minimalError } = await supabase
                 .from('user_profiles')
-                .select('id, name, avatar_url, avatar_color, bio, streak_days, last_login_at, equipped_title_id, equipped_title:titles(*)')
+                .select('id, name, avatar_url')
                 .eq('id', userId)
                 .single();
 
-            if (profileError) throw profileError;
-            setProfile(profileData);
+            if (minimalError) throw minimalError;
+
+            // 1b. Try to fetch ALL optional/newer columns (graceful fallback)
+            let fullProfile = { ...minimalData };
+
+            try {
+                // Attempt to fetch Everything else
+                const { data: extraData } = await supabase
+                    .from('user_profiles')
+                    .select('bio, avatar_color, streak_days, last_login_at, equipped_title_id, show_prestige, selected_prestige_level, equipped_title:titles(*)')
+                    .eq('id', userId)
+                    .maybeSingle();
+
+                if (extraData) {
+                    fullProfile = { ...fullProfile, ...extraData };
+                }
+            } catch (e) {
+                console.warn('Secondary profile data failed to load', e);
+            }
+
+            setProfile(fullProfile);
 
             // 2. Fetch Stats (using new RPC)
             const { data: statsData, error: statsError } = await supabase.rpc('get_user_stats', { target_user_id: userId });
@@ -94,6 +117,24 @@ export const Profile = () => {
             if (prestigeData) {
                 setPrestige(prestigeData);
             }
+            // 3b. [CRITICAL] Override with LOCAL Context data if viewing OWN PROFILE (Instant Update)
+            if (currentUser && currentUser.id === userId) {
+                setProfile(prev => {
+                    if (!prev) return null;
+                    return {
+                        ...prev,
+                        // Prioritize local state over DB fetch for instant feedback
+                        // This ensures "Dynamic" feel even if DB sync is slow or fails
+                        avatar_color: currentUser.avatarColor || prev.avatar_color,
+                        bio: currentUser.bio || prev.bio,
+                        show_prestige: currentUser.showPrestige !== undefined ? currentUser.showPrestige : prev.show_prestige,
+                        selected_prestige_level: currentUser.selectedPrestigeLevel !== undefined ? currentUser.selectedPrestigeLevel : prev.selected_prestige_level,
+                        equipped_title_id: currentUser.equippedTitleId || prev.equipped_title_id,
+                        // Ensure avatar URL is consistent if changed
+                        avatar_url: currentUser.avatarUrl || prev.avatar_url,
+                    };
+                });
+            }
         } catch (err) {
             console.error('Error fetching profile:', err);
             showToast('Failed to load profile', 'error');
@@ -102,9 +143,11 @@ export const Profile = () => {
         }
     };
 
+    const location = useLocation(); // Add this hook
+
     useEffect(() => {
         fetchProfileData();
-    }, [userId, currentUser?.id]);
+    }, [userId, currentUser?.id, location.key]); // Refetch when location key changes (navigation)
 
     const handleStartDM = async () => {
         if (!currentUser) return showToast("Login required", "error");
@@ -206,11 +249,11 @@ export const Profile = () => {
                         Back
                     </button>
 
-                    {/* Profile Card */}
-                    <div className="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-[2.5rem] p-0 shadow-xl relative overflow-hidden group">
+                    {/* Profile Card - Matched to Settings Live Preview */}
+                    <div className="bg-white dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-2xl border border-white dark:border-white/5 relative overflow-hidden ring-1 ring-black/5 group">
                         {/* Background Decoration */}
                         <div
-                            className="absolute top-0 left-0 w-full h-40 pointer-events-none transition-all duration-500 ease-in-out"
+                            className="absolute top-0 left-0 w-full h-32 pointer-events-none transition-all duration-500 ease-in-out"
                             style={{
                                 background: profile.avatar_color || 'linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)',
                                 maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
@@ -218,125 +261,130 @@ export const Profile = () => {
                             }}
                         ></div>
 
-                        <div className="relative pt-20 px-8 pb-8 flex flex-col items-center text-center gap-6">
+                        <div className="relative pt-16 flex flex-col items-center text-center gap-4">
                             {/* Avatar */}
-                            <div className="shrink-0 relative z-10">
+                            <div className="relative">
                                 <div
-                                    className="w-36 h-36 rounded-full flex items-center justify-center text-5xl font-black text-white border-[6px] border-white dark:border-surface-dark shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-500 group-hover:scale-105"
+                                    className="relative w-28 h-28 rounded-full flex items-center justify-center text-4xl font-black text-white border-[6px] border-white dark:border-surface-dark shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-500 group-hover:scale-105"
                                     style={{ background: profile.avatar_url ? 'white' : (profile.avatar_color || 'linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)') }}
                                 >
                                     {profile.avatar_url ? (
-                                        <img src={profile.avatar_url} alt={profile.name} className="w-full h-full object-cover" />
+                                        <img src={profile.avatar_url} alt={profile.name} className="absolute inset-0 w-full h-full object-cover z-0" />
                                     ) : (
-                                        <span style={{ textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
+                                        <span className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] relative z-0">
                                             {profile.name?.charAt(0).toUpperCase()}
                                         </span>
                                     )}
+                                    {prestige?.planet_level && <AvatarAura level={profile.selected_prestige_level || prestige.planet_level} />}
                                 </div>
-                                <div className="absolute bottom-3 right-3 w-7 h-7 bg-green-500 border-[4px] border-white dark:border-surface-dark rounded-full shadow-sm"></div>
+                                <div className="absolute bottom-2 right-2 w-7 h-7 bg-green-500 border-[4px] border-white dark:border-surface-dark rounded-full shadow-lg z-20"></div>
                             </div>
 
                             {/* Info Section */}
-                            <div className="flex-1 flex flex-col items-center w-full max-w-2xl">
-                                <div className="flex flex-col items-center gap-2 mb-2 w-full">
-                                    <h1 className="text-4xl font-black text-text-main dark:text-white tracking-tight break-words max-w-full px-4">
-                                        {profile.name}
-                                    </h1>
+                            <div className="flex flex-col items-center z-10 w-full overflow-visible gap-1">
+                                <h1 className="text-3xl font-black text-text-main dark:text-white tracking-tight break-words max-w-full px-4">
+                                    {profile.name}
+                                </h1>
 
-                                    {profile.equipped_title && (
-                                        (() => {
-                                            const style = getUniqueTitleStyle(profile.equipped_title.category, profile.equipped_title.threshold);
-                                            return (
-                                                <div
-                                                    className={`flex items-center gap-1.5 bg-gradient-to-br ${style.bg} px-4 py-2 rounded-full border ${style.border} shadow-lg ${style.glow} hover:scale-105 transition-all duration-300 relative overflow-hidden ${style.extraClasses || ''}`}
-                                                >
-                                                    <span className={`material-symbols-outlined ${style.text} text-[18px]`}>
+                                {profile.equipped_title && (
+                                    (() => {
+                                        const style = getUniqueTitleStyle(profile.equipped_title.category, profile.equipped_title.threshold);
+                                        return (
+                                            <div
+                                                className={`flex items-center gap-1.5 bg-gradient-to-br ${style.bg} px-3 py-1.5 rounded-full border ${style.border} shadow-lg ${style.glow} group/title hover:scale-105 transition-all duration-300 overflow-hidden relative ${style.extraClasses || ''}`}
+                                            >
+                                                <div className={`flex items-center relative z-10 justify-center`}>
+                                                    <span
+                                                        className={`material-symbols-outlined relative z-10 transition-all duration-300 ${style.text}`}
+                                                        style={{ fontSize: '16px' }}
+                                                    >
                                                         {style.icon}
                                                     </span>
-                                                    <span className={`text-xs font-black ${style.text} uppercase tracking-widest relative z-10`}>
-                                                        {profile.equipped_title.name}
-                                                    </span>
                                                 </div>
-                                            );
-                                        })()
-                                    )}
+                                                <span className={`text-[10px] font-black ${style.text} uppercase tracking-wider relative z-10 drop-shadow-sm`}>
+                                                    {profile.equipped_title.name}
+                                                </span>
+                                            </div>
+                                        );
+                                    })()
+                                )}
 
-                                    {/* Prestige Status Widget - Now above ID */}
-                                    {prestige && (
-                                        <div className="mt-2 transform hover:scale-[1.02] transition-transform duration-300">
-                                            <PrestigeWidget
-                                                compact={true}
-                                                prestigeData={prestige}
-                                                isReadOnly={true}
-                                            />
-                                        </div>
-                                    )}
+                                {/* Prestige Status Widget */}
+                                {prestige && profile.show_prestige !== false && (
+                                    <div className="mt-2 transform hover:scale-[1.02] transition-transform duration-300 relative z-20 w-full flex justify-center overflow-visible">
+                                        <PrestigeWidget
+                                            compact={true}
+                                            // Use selected level if set, otherwise fallback to current actual level
+                                            prestigeData={(profile.selected_prestige_level && profile.selected_prestige_level !== prestige.planet_level)
+                                                ? { ...prestige, planet_level: profile.selected_prestige_level, star_level: 4, current_stardust: 0 }
+                                                : prestige
+                                            }
+                                            isReadOnly={true}
+                                            showStardust={false}
+                                            className="scale-[0.55] sm:scale-[0.65] md:scale-[0.75] lg:scale-[0.8]"
+                                        />
+                                    </div>
+                                )}
 
-                                    <span
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(profile.id);
-                                            showToast('ID copied to clipboard!', 'success');
-                                        }}
-                                        className="mt-2 px-4 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500 border border-gray-200 dark:border-white/5 tracking-wider uppercase cursor-pointer hover:opacity-80 active:scale-95 transition-all select-none"
-                                        title="Click to copy ID"
-                                    >
-                                        ID: {profile.id}
-                                    </span>
-                                </div>
+                                {/* Email (Owner Only or if available) */}
+                                {isOwner && currentUser?.email && (
+                                    <p className="text-sm text-gray-500 font-medium px-4 truncate w-full">{currentUser.email}</p>
+                                )}
 
+                                {/* Bio (Moved below widget) */}
                                 {profile.bio && (
-                                    <p className="text-gray-600 dark:text-gray-300 font-medium italic mb-8 max-w-lg leading-relaxed text-lg px-4">
+                                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-3 font-medium italic px-4 leading-relaxed">
                                         "{profile.bio}"
                                     </p>
                                 )}
+                            </div>
 
-                                {/* Stats Grid */}
-                                <div className="grid grid-cols-3 gap-4 sm:gap-12 mb-10 w-full sm:w-auto">
-                                    <div className="flex flex-col items-center p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-default min-w-[100px]">
-                                        <span className="text-3xl font-black text-text-main dark:text-white">{stats.posts}</span>
-                                        <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase mt-1">Posts</span>
-                                    </div>
-                                    <div className="flex flex-col items-center p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-default min-w-[100px]">
-                                        <span className="text-3xl font-black text-text-main dark:text-white">{stats.friends}</span>
-                                        <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase mt-1">Friends</span>
-                                    </div>
-                                    <div className="flex flex-col items-center p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-default min-w-[100px]">
-                                        <span className="text-3xl font-black text-text-main dark:text-white">{stats.channels}</span>
-                                        <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase mt-1">Influence</span>
-                                    </div>
+                            {/* Stats Grid */}
+                            <div className="grid grid-cols-3 gap-2 mt-4 mb-2 w-full max-w-md">
+                                <div className="flex flex-col items-center p-2 rounded-xl">
+                                    <span className="text-xl font-black text-text-main dark:text-white">{stats.posts}</span>
+                                    <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Posts</span>
                                 </div>
+                                <div className="flex flex-col items-center p-2 rounded-xl">
+                                    <span className="text-xl font-black text-text-main dark:text-white">{stats.friends}</span>
+                                    <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Friends</span>
+                                </div>
+                                <div className="flex flex-col items-center p-2 rounded-xl">
+                                    <span className="text-xl font-black text-text-main dark:text-white">{stats.channels}</span>
+                                    <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Channel Follower</span>
+                                </div>
+                            </div>
 
-                                {/* Actions */}
-                                <div className="flex flex-wrap gap-4 justify-center w-full">
-                                    {!isOwner && (
-                                        <>
-                                            {friendStatus === 'none' && (
-                                                <button onClick={handleAddFriend} className="px-8 py-3.5 rounded-2xl bg-primary text-[#1c1a0d] font-bold shadow-lg shadow-primary/20 hover:brightness-105 active:scale-95 transition-all flex items-center justify-center gap-3 min-w-[200px]">
-                                                    <span className="material-symbols-outlined text-xl">person_add</span>
-                                                    Add Friend
-                                                </button>
-                                            )}
-                                            {friendStatus === 'pending_sent' && (
-                                                <button disabled className="px-8 py-3.5 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-400 font-bold cursor-not-allowed flex items-center justify-center gap-3 border border-gray-200 dark:border-gray-700 min-w-[200px]">
-                                                    <span className="material-symbols-outlined text-xl">hourglass_empty</span>
-                                                    Request Sent
-                                                </button>
-                                            )}
-                                            {friendStatus === 'friends' && (
-                                                <button onClick={handleStartDM} className="px-8 py-3.5 rounded-2xl bg-black dark:bg-white text-white dark:text-black font-bold shadow-lg hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 min-w-[200px]">
-                                                    <span className="material-symbols-outlined text-xl">chat</span>
-                                                    Message
-                                                </button>
-                                            )}
-                                        </>
-                                    )}
-                                    {isOwner && (
-                                        <button onClick={() => navigate('/settings/profile', { state: { from: `profile/${userId}` } })} className="px-8 py-3.5 rounded-2xl bg-gray-100 dark:bg-gray-800 text-text-main dark:text-white font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-3 border border-gray-200 dark:border-gray-700 min-w-[200px]">
-                                            <span className="material-symbols-outlined text-xl">edit</span>
-                                            Edit Profile
-                                        </button>
-                                    )}
-                                </div>
+                            {/* Actions */}
+                            <div className="flex flex-wrap gap-3 justify-center w-full mt-4">
+                                {!isOwner && (
+                                    <>
+                                        {friendStatus === 'none' && (
+                                            <button onClick={handleAddFriend} className="px-6 py-3 rounded-xl bg-primary text-[#1c1a0d] font-bold shadow-lg shadow-primary/20 hover:brightness-105 active:scale-95 transition-all flex items-center justify-center gap-2 text-sm">
+                                                <span className="material-symbols-outlined text-lg">person_add</span>
+                                                Add Friend
+                                            </button>
+                                        )}
+                                        {friendStatus === 'pending_sent' && (
+                                            <button disabled className="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-400 font-bold cursor-not-allowed flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-700 text-sm">
+                                                <span className="material-symbols-outlined text-lg">hourglass_empty</span>
+                                                Request Sent
+                                            </button>
+                                        )}
+                                        {friendStatus === 'friends' && (
+                                            <button onClick={handleStartDM} className="px-6 py-3 rounded-xl bg-black dark:bg-white text-white dark:text-black font-bold shadow-lg hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 text-sm">
+                                                <span className="material-symbols-outlined text-lg">chat</span>
+                                                Message
+                                            </button>
+                                        )}
+                                    </>
+                                )}
+                                {isOwner && (
+                                    <button onClick={() => navigate('/settings/profile', { state: { from: `profile/${userId}` } })} className="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-text-main dark:text-white font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-700 text-sm">
+                                        <span className="material-symbols-outlined text-lg">edit</span>
+                                        Edit Profile
+                                    </button>
+                                )}
                             </div>
                         </div>
 
