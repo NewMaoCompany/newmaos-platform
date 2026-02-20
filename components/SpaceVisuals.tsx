@@ -19,7 +19,8 @@ export const StarBackground: React.FC = () => {
                         radial-gradient(1.5px 1.5px at 40px 280px, #fff, rgba(0,0,0,0))
                     `,
                     backgroundSize: '300px 300px',
-                    animation: 'space-drift 200s linear infinite'
+                    animation: 'space-drift 200s linear infinite',
+                    transform: 'translateZ(0)'
                 }}
             />
             {/* Layer 2: Mid-sized diverse stars - BRIGHTER & DENSER */}
@@ -33,7 +34,8 @@ export const StarBackground: React.FC = () => {
                         radial-gradient(2px 2px at 380px 100px, #c084fc, rgba(0,0,0,0))
                     `,
                     backgroundSize: '450px 450px',
-                    animation: 'space-drift 120s linear infinite reverse'
+                    animation: 'space-drift 120s linear infinite reverse',
+                    transform: 'translateZ(0)'
                 }}
             />
             {/* Layer 3: Large stars / Distant Clusters */}
@@ -144,16 +146,26 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
     floating = true,
     isUnlocked = true
 }) => {
+    // Safari performance: disable expensive atmosphere effects (mix-blend + blur + spin = GPU killer)
+    const isSafari = useMemo(() => {
+        if (typeof navigator === 'undefined') return false;
+        const ua = navigator.userAgent;
+        return /^((?!chrome|android).)*safari/i.test(ua);
+    }, []);
+
     const sizeMap = {
         sm: 'w-8 h-8 aspect-square flex-shrink-0',
         md: 'w-12 h-12 aspect-square flex-shrink-0',
         lg: 'w-32 h-32 md:w-48 md:h-48 aspect-square flex-shrink-0',
-        xl: 'w-64 h-64 sm:w-80 sm:h-80 md:w-[520px] md:h-[520px] aspect-square flex-shrink-0', // HARDCODED 520px (approx 384 * 1.35)
+        xl: 'w-64 h-64 sm:w-80 sm:h-80 md:w-[520px] md:h-[520px] aspect-square flex-shrink-0',
         '2xl': 'w-[520px] h-[520px] aspect-square flex-shrink-0',
         widget: 'w-24 h-24 sm:w-28 sm:h-28 aspect-square flex-shrink-0'
     };
 
     const planetIndex = (level - 1) % 5;
+
+    // On Safari, disable atmosphere to prevent GPU meltdown
+    const effectiveShowAtmosphere = showAtmosphere && !isSafari;
 
     const renderPlanetContent = () => {
         switch (planetIndex) {
@@ -161,7 +173,7 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                 return (
                     <div className="relative w-full h-full aspect-square rounded-full bg-transparent overflow-visible group flex-shrink-0" style={{ transform: 'translateX(-1.5%)' }}>
                         {/* Celestia Majestic Aura */}
-                        {isUnlocked && (
+                        {effectiveShowAtmosphere && isUnlocked && (
                             <div className="absolute inset-[-30%] pointer-events-none -z-10 mix-blend-screen transition-opacity duration-1000" style={{ transform: 'translate(1.5%, 0.7%)' }}>
                                 {/* Inner soft glow */}
                                 <div className="absolute inset-[10%] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4)_0%,transparent_70%)] blur-lg" />
@@ -191,7 +203,7 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                 return (
                     <div className="relative w-full h-full aspect-square rounded-full bg-transparent overflow-visible group flex-shrink-0">
                         {/* Ignis Majestic Aura */}
-                        {isUnlocked && (
+                        {effectiveShowAtmosphere && isUnlocked && (
                             <div className="absolute inset-[-40%] pointer-events-none -z-10 mix-blend-screen transition-opacity duration-1000" style={{ transform: 'translateY(0.5%)' }}>
                                 {/* Core heat */}
                                 <div className="absolute inset-[10%] bg-[radial-gradient(circle_at_center,rgba(249,115,22,0.5)_0%,transparent_70%)] blur-xl" />
@@ -222,7 +234,7 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                 return (
                     <div className="relative w-full h-full aspect-square rounded-full bg-transparent overflow-visible group flex-shrink-0">
                         {/* Terra Majestic Aura */}
-                        {isUnlocked && (
+                        {effectiveShowAtmosphere && isUnlocked && (
                             <div className="absolute inset-[-35%] pointer-events-none -z-10 mix-blend-screen transition-opacity duration-1000" style={{ transform: 'translate(-1%, 0.915%)' }}>
                                 {/* Atmosphere bleed */}
                                 <div className="absolute inset-[10%] bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.4)_0%,transparent_70%)] blur-xl" />
@@ -252,7 +264,7 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                 return (
                     <div className="relative w-full h-full aspect-square rounded-full bg-transparent overflow-visible group flex-shrink-0" style={{ transform: 'scale(1.05)' }}>
                         {/* Glacies Majestic Aura */}
-                        {isUnlocked && (
+                        {effectiveShowAtmosphere && isUnlocked && (
                             <div className="absolute inset-[-30%] pointer-events-none -z-10 mix-blend-screen transition-opacity duration-1000" style={{ transform: 'translate(-0.11%, -1.7%)' }}>
                                 {/* Frost core */}
                                 <div className="absolute inset-[5%] bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.4)_0%,transparent_70%)] blur-lg" />
@@ -286,7 +298,7 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
                 return (
                     <div className="relative w-full h-full aspect-square rounded-full bg-transparent overflow-visible group flex-shrink-0" style={{ transform: 'scale(1.2)' }}>
                         {/* Fulata Majestic Aura */}
-                        {isUnlocked && (
+                        {effectiveShowAtmosphere && isUnlocked && (
                             <div className="absolute inset-[-45%] pointer-events-none -z-10 mix-blend-screen transition-opacity duration-1000" style={{ transform: 'translate(0.2%, -2.1%)' }}>
                                 {/* Deep dimension core */}
                                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.4)_0%,transparent_70%)] blur-xl" />

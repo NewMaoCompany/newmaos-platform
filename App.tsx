@@ -1,35 +1,54 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AppProvider, useApp } from './AppContext';
 import { ToastProvider } from './components/Toast';
 import { ErrorBoundary } from './components/ErrorBoundary';
+
+// === DIRECT IMPORTS: Always-mounted PageLayer pages + critical auth pages ===
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { PracticeHub } from './pages/PracticeHub';
-import { Practice } from './pages/Practice';
 import { Analysis } from './pages/Analysis';
 import { Forum } from './pages/Forum';
 import { Settings } from './pages/Settings';
-import { ProfileSettings, SecuritySettings, SubscriptionSettings } from './pages/SettingsSubpages';
-import { Privacy, Terms, Support, Signup } from './pages/StaticPages';
+import { Signup } from './pages/StaticPages';
 import { ResetPassword } from './pages/ResetPassword';
 import { VerifyEmail } from './pages/VerifyEmail';
-import { TopicDetail } from './pages/TopicDetail';
-import { QuestionCreator } from './pages/QuestionCreator';
-import { Insights } from './pages/Insights';
-import { Profile } from './pages/Profile';
-import { PointsPage } from './pages/PointsPage';
-import { CheckinPage } from './pages/CheckinPage';
-import { DebugQA } from './pages/DebugQA';
-import { PrestigePage } from './pages/PrestigePage';
-import { StardustPage } from './pages/StardustPage';
-import { ProWelcomeModal } from './components/ProWelcomeModal';
+
+// === LAZY IMPORTS: Sub-route pages loaded on demand ===
+const Practice = React.lazy(() => import('./pages/Practice').then(m => ({ default: m.Practice })));
+const TopicDetail = React.lazy(() => import('./pages/TopicDetail').then(m => ({ default: m.TopicDetail })));
+const Insights = React.lazy(() => import('./pages/Insights').then(m => ({ default: m.Insights })));
+const Profile = React.lazy(() => import('./pages/Profile').then(m => ({ default: m.Profile })));
+const PointsPage = React.lazy(() => import('./pages/PointsPage').then(m => ({ default: m.PointsPage })));
+const CheckinPage = React.lazy(() => import('./pages/CheckinPage').then(m => ({ default: m.CheckinPage })));
+const PrestigePage = React.lazy(() => import('./pages/PrestigePage').then(m => ({ default: m.PrestigePage })));
+const StardustPage = React.lazy(() => import('./pages/StardustPage').then(m => ({ default: m.StardustPage })));
+const QuestionCreator = React.lazy(() => import('./pages/QuestionCreator').then(m => ({ default: m.QuestionCreator })));
+const DebugQA = React.lazy(() => import('./pages/DebugQA').then(m => ({ default: m.DebugQA })));
+const ProfileSettings = React.lazy(() => import('./pages/SettingsSubpages').then(m => ({ default: m.ProfileSettings })));
+const SecuritySettings = React.lazy(() => import('./pages/SettingsSubpages').then(m => ({ default: m.SecuritySettings })));
+const SubscriptionSettings = React.lazy(() => import('./pages/SettingsSubpages').then(m => ({ default: m.SubscriptionSettings })));
+const Privacy = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.Privacy })));
+const Terms = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.Terms })));
+const Support = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.Support })));
+
 import { useNavigate } from 'react-router-dom';
-import { StreakModal } from './components/StreakModal';
 import { useState, useEffect } from 'react';
 import { CoinCollector } from './components/CoinCollector';
+
+// Small components — keep direct
+import { ProWelcomeModal } from './components/ProWelcomeModal';
+import { StreakModal } from './components/StreakModal';
 import { CreatorGiftModal } from './components/CreatorGiftModal';
 import { AchievementPopupManager } from './components/AchievementPopupManager';
+
+// Loading fallback for lazy routes
+const LazyFallback = () => (
+  <div className="flex items-center justify-center min-h-screen bg-surface-light dark:bg-surface-dark">
+    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
   const { isAuthenticated, isAuthLoading } = useApp();
@@ -214,47 +233,49 @@ const AppRoutes = () => {
 
       {/* Sub-Routes & Non-Main Pages Layer (Always visible if NOT on a main page layer) */}
       <div className={`absolute inset-0 z-[60] overflow-y-auto transition-opacity duration-300 ${isOnMainPage ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}>
-        <Routes>
-          {/* Auth Pages (Always visible if not on main page) */}
-          {!isAuthenticated && (
-            <>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/verify-email" element={<VerifyEmail />} />
-            </>
-          )}
+        <Suspense fallback={<LazyFallback />}>
+          <Routes>
+            {/* Auth Pages (Always visible if not on main page) */}
+            {!isAuthenticated && (
+              <>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
+              </>
+            )}
 
-          {/* Sub-pages and Details (Overlay on main layers) */}
-          <Route path="/practice/unit/:unitId" element={<TopicDetail />} />
-          <Route path="/practice/session" element={<Practice />} />
-          <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
-          <Route path="/prestige" element={<ProtectedRoute><PrestigePage /></ProtectedRoute>} />
-          <Route path="/stardust" element={<ProtectedRoute><StardustPage /></ProtectedRoute>} />
-          <Route path="/profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/points" element={<ProtectedRoute><PointsPage /></ProtectedRoute>} />
-          <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
+            {/* Sub-pages and Details (Overlay on main layers) */}
+            <Route path="/practice/unit/:unitId" element={<TopicDetail />} />
+            <Route path="/practice/session" element={<Practice />} />
+            <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
+            <Route path="/prestige" element={<ProtectedRoute><PrestigePage /></ProtectedRoute>} />
+            <Route path="/stardust" element={<ProtectedRoute><StardustPage /></ProtectedRoute>} />
+            <Route path="/profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/points" element={<ProtectedRoute><PointsPage /></ProtectedRoute>} />
+            <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
 
-          {/* Settings Subpages */}
-          <Route path="/settings/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
-          <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
-          <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionSettings /></ProtectedRoute>} />
-          <Route path="/settings/creator" element={<ProtectedRoute><QuestionCreator /></ProtectedRoute>} />
-          <Route path="/debug-qa" element={<ProtectedRoute><DebugQA /></ProtectedRoute>} />
+            {/* Settings Subpages */}
+            <Route path="/settings/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+            <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
+            <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionSettings /></ProtectedRoute>} />
+            <Route path="/settings/creator" element={<ProtectedRoute><QuestionCreator /></ProtectedRoute>} />
+            <Route path="/debug-qa" element={<ProtectedRoute><DebugQA /></ProtectedRoute>} />
 
-          {/* Static Pages */}
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/support" element={<Support />} />
+            {/* Static Pages */}
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/support" element={<Support />} />
 
-          {/* Catch-all to make the URL reflect the state, though the layers handle visibility */}
-          <Route path="/dashboard" element={<div />} />
-          <Route path="/practice" element={<div />} />
-          <Route path="/analysis" element={<div />} />
-          <Route path="/forum" element={<div />} />
-          <Route path="/settings" element={<div />} />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+            {/* Catch-all to make the URL reflect the state, though the layers handle visibility */}
+            <Route path="/dashboard" element={<div />} />
+            <Route path="/practice" element={<div />} />
+            <Route path="/analysis" element={<div />} />
+            <Route path="/forum" element={<div />} />
+            <Route path="/settings" element={<div />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </Suspense>
       </div>
 
       {/* Global Daily Streak Modal */}
