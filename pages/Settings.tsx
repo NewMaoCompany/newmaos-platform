@@ -11,9 +11,13 @@ export const Settings = () => {
     } = useApp();
     const navigate = useNavigate();
 
-    const membershipNotifs = notifications.filter(n => n.unread && n.text?.startsWith('[Membership]'));
-    const hasMembershipAlert = membershipNotifs.length > 0;
-    const needsProUpgrade = !isPro && userPoints.balance >= 199 && hasMembershipAlert;
+    // Unified notification-driven red dot for Subscription
+    const settingsNotifs = notifications.filter(n => n.unread && (n.link?.includes('/settings') || n.text?.startsWith('[Membership]')));
+    const hasSettingsAlert = settingsNotifs.length > 0;
+
+    const clearAllSettingsNotifs = () => {
+        settingsNotifs.forEach(n => markNotificationRead(n.id));
+    };
 
     // Local state for toggles
     const [preferences, setPreferences] = useState(user.preferences);
@@ -115,13 +119,16 @@ export const Settings = () => {
                                 <span className="material-symbols-outlined text-gray-400 text-lg">chevron_right</span>
                             </div>
                             <div
-                                onClick={() => navigate('/settings/subscription')}
+                                onClick={() => {
+                                    clearAllSettingsNotifs();
+                                    navigate('/settings/subscription');
+                                }}
                                 className="flex items-center justify-between p-4 px-6 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer group/row"
                             >
                                 <div className="flex items-center gap-3 relative">
                                     <span className="material-symbols-outlined text-gray-400">credit_card</span>
                                     <span className="text-sm font-medium">Subscription</span>
-                                    {(hasMembershipAlert || needsProUpgrade) && (
+                                    {hasSettingsAlert && (
                                         <span className="absolute -top-1 -left-1 w-2 h-2 bg-red-500 rounded-full shadow-sm animate-pulse"></span>
                                     )}
                                 </div>

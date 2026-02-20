@@ -299,14 +299,12 @@ export const Analysis = () => {
         fetchStudyTimeHistory(range);
     };
 
-    // --- Notification Tracking ---
-    const accuracyNotif = notifications.find(n => n.unread && n.text?.startsWith('[Analysis - Accuracy]'));
-    const solvedNotif = notifications.find(n => n.unread && n.text?.startsWith('[Analysis - Solved]'));
-    const timeNotif = notifications.find(n => n.unread && n.text?.startsWith('[Analysis - Time]'));
-    const streakNotif = notifications.find(n => n.unread && n.text?.startsWith('[Analysis - Streak]'));
+    // --- Notification Tracking (unified: all cards share one notification) ---
+    const analysisNotifs = notifications.filter(n => n.unread && n.link === '/analysis');
+    const hasAnalysisNotif = analysisNotifs.length > 0;
 
-    const clearMetricNotif = (notif: any) => {
-        if (notif) markNotificationRead(notif.id);
+    const clearAllAnalysisNotifs = () => {
+        analysisNotifs.forEach(n => markNotificationRead(n.id));
     };
 
     // --- Metrics & Trends ---
@@ -398,10 +396,10 @@ export const Analysis = () => {
 
                     {/* Accuracy Rate Chart */}
                     <div
-                        onClick={() => clearMetricNotif(accuracyNotif)}
+                        onClick={() => clearAllAnalysisNotifs()}
                         className="lg:col-span-2 bg-white dark:bg-surface-dark rounded-3xl border border-gray-100 dark:border-gray-800 p-8 flex flex-col shadow-sm relative group/chart cursor-pointer transition-all hover:border-primary/30"
                     >
-                        {accuracyNotif && (
+                        {hasAnalysisNotif && (
                             <span className="absolute top-6 left-6 w-2.5 h-2.5 bg-red-500 rounded-full shadow-lg shadow-red-500/50 animate-pulse z-30"></span>
                         )}
 
@@ -491,10 +489,10 @@ export const Analysis = () => {
 
                     {/* Unit Mastery Radar */}
                     <div
-                        onClick={() => clearMetricNotif(solvedNotif)}
+                        onClick={() => clearAllAnalysisNotifs()}
                         className="bg-white dark:bg-surface-dark rounded-3xl border border-gray-100 dark:border-gray-800 p-8 flex flex-col shadow-sm relative group/chart cursor-pointer transition-all hover:border-primary/30"
                     >
-                        {solvedNotif && (
+                        {hasAnalysisNotif && (
                             <span className="absolute top-6 left-6 w-2.5 h-2.5 bg-red-500 rounded-full shadow-lg shadow-red-500/50 animate-pulse z-30"></span>
                         )}
                         <div className="flex justify-between items-center mb-6">
@@ -524,10 +522,10 @@ export const Analysis = () => {
 
                     {/* Study Time Chart */}
                     <div
-                        onClick={() => clearMetricNotif(timeNotif)}
+                        onClick={() => clearAllAnalysisNotifs()}
                         className="lg:col-span-2 bg-white dark:bg-surface-dark rounded-3xl border border-gray-100 dark:border-gray-800 p-8 flex flex-col shadow-sm relative group/chart cursor-pointer transition-all hover:border-primary/30"
                     >
-                        {timeNotif && (
+                        {hasAnalysisNotif && (
                             <span className="absolute top-6 left-6 w-2.5 h-2.5 bg-red-500 rounded-full shadow-lg shadow-red-500/50 animate-pulse z-30"></span>
                         )}
 
@@ -616,10 +614,12 @@ export const Analysis = () => {
 
                     {/* Points History Chart */}
                     <div
-                        onClick={() => clearMetricNotif(streakNotif)} // Re-using streak notification logic for now, or create new one
+                        onClick={() => clearAllAnalysisNotifs()}
                         className="bg-white dark:bg-surface-dark rounded-3xl border border-gray-100 dark:border-gray-800 p-8 flex flex-col shadow-sm relative group/chart cursor-pointer transition-all hover:border-primary/30"
                     >
-                        {/* We can re-purpose the streak notification or add a new one. For now keeping logic simple. */}
+                        {hasAnalysisNotif && (
+                            <span className="absolute top-6 left-6 w-2.5 h-2.5 bg-red-500 rounded-full shadow-lg shadow-red-500/50 animate-pulse z-30"></span>
+                        )}
 
                         <div className="flex justify-between items-start mb-6">
                             <div>

@@ -221,9 +221,9 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   };
 
 
-  const dashboardHasUnread = visibleNotifications.some(n => n.unread && (n.link === '/checkin' || n.link === '/dashboard' || n.text?.includes('Daily Check-in')));
+  const dashboardUnreadCount = visibleNotifications.filter(n => n.unread && (n.link === '/checkin' || n.link === '/dashboard' || n.text?.includes('Daily Check-in'))).length;
   const analysisUnreadCount = visibleNotifications.filter(n => n.unread && n.link === '/analysis').length;
-  const settingsHasUnread = visibleNotifications.some(n => n.unread && n.link?.includes('/settings'));
+  const settingsUnreadCount = visibleNotifications.filter(n => n.unread && (n.link?.includes('/settings') || n.text?.startsWith('[Membership]'))).length;
 
   // No more pseudo notifications — all notifications come from the database
   const allDisplayed = visibleNotifications;
@@ -366,9 +366,9 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
                 className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
               >
                 <span>Dashboard</span>
-                {dashboardHasUnread && (
+                {dashboardUnreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark">
-                    1
+                    {dashboardUnreadCount > 9 ? '9+' : dashboardUnreadCount}
                   </span>
                 )}
               </Link>
@@ -430,9 +430,9 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
                   className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
                 >
                   <span>Settings</span>
-                  {settingsHasUnread && (
+                  {settingsUnreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
-                      1
+                      {settingsUnreadCount > 9 ? '9+' : settingsUnreadCount}
                     </span>
                   )}
                 </Link>

@@ -41,7 +41,7 @@ interface AppContextType {
     getCheckinStatus: () => Promise<{ checkedInToday: boolean; currentStreak: number; monthCheckins: number; monthCalendar: any[]; repairCost?: number }>;
     fetchUserPoints: () => Promise<void>;
 
-    login: (email: string, username?: string, id?: string, subscriptionTier?: 'basic' | 'pro', subscriptionPeriodEnd?: string, hasSeenProIntro?: boolean) => void;
+    login: (email: string, username?: string, id?: string, subscriptionTier?: 'basic' | 'pro', subscriptionPeriodEnd?: string, hasSeenProIntro?: boolean, avatarUrl?: string) => void;
     logout: () => Promise<void>;
     toggleCourse: (course: CourseType) => void;
     startCourse: (course: CourseType) => void;
@@ -1717,6 +1717,110 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
     }, [user.id, isAuthenticated]);
 
+    // Midnight timer: regenerate system notifications at local midnight
+    useEffect(() => {
+        if (!user.id || !isAuthenticated) return;
+
+        const scheduleMidnight = () => {
+            const now = new Date();
+            const midnight = new Date(now);
+            midnight.setHours(24, 0, 0, 0); // Next midnight local
+            const msUntilMidnight = midnight.getTime() - now.getTime();
+
+            console.log(`[Midnight Timer] Next notification refresh in ${Math.round(msUntilMidnight / 60000)} minutes`);
+
+            return setTimeout(async () => {
+                console.log('[Midnight Timer] Midnight reached — refreshing notifications & check-in status');
+                try {
+                    await supabase.rpc('generate_system_notifications', { p_user_id: user.id });
+
+                    // Pro upgrade reminder: if user has 199+ points and is NOT Pro
+                    if (!isPro && userPoints.balance >= 199) {
+                        const todayStr = new Date().toLocaleDateString('en-CA');
+                        const { data: existing } = await supabase
+                            .from('notifications')
+                            .select('id')
+                            .eq('user_id', user.id)
+                            .eq('link', '/settings/subscription')
+                            .gte('created_at', todayStr + 'T00:00:00')
+                            .limit(1);
+
+                        if (!existing || existing.length === 0) {
+                            await supabase.from('notifications').insert({
+                                user_id: user.id,
+                                text: '⭐ You have enough NMS Points to unlock Pro! Upgrade now for advanced features.',
+                                link: '/settings/subscription',
+                                type: 'system',
+                                unread: true,
+                            });
+                        }
+                    }
+
+                    await fetchNotifications();
+                    await refreshCheckinStatus();
+                } catch (e) {
+                    console.error('[Midnight Timer] Error:', e);
+                }
+                // Re-schedule for next midnight
+                midnightTimer = scheduleMidnight();
+            }, msUntilMidnight);
+        };
+
+        let midnightTimer = scheduleMidnight();
+        return () => clearTimeout(midnightTimer);
+    }, [user.id, isAuthenticated]);
+
+    // 9 PM timer: create daily Analysis reminder notification
+    useEffect(() => {
+        if (!user.id || !isAuthenticated) return;
+
+        const schedule9PM = () => {
+            const now = new Date();
+            const target = new Date(now);
+            target.setHours(21, 0, 0, 0); // 9 PM local
+            if (now >= target) {
+                // Already past 9 PM today, schedule for tomorrow
+                target.setDate(target.getDate() + 1);
+            }
+            const msUntil9PM = target.getTime() - now.getTime();
+
+            console.log(`[9PM Timer] Next analysis notification in ${Math.round(msUntil9PM / 60000)} minutes`);
+
+            return setTimeout(async () => {
+                console.log('[9PM Timer] 9 PM reached — creating analysis notification');
+                try {
+                    const todayStr = new Date().toLocaleDateString('en-CA');
+                    // Check if today's analysis notification already exists
+                    const { data: existing } = await supabase
+                        .from('notifications')
+                        .select('id')
+                        .eq('user_id', user.id)
+                        .eq('link', '/analysis')
+                        .gte('created_at', todayStr + 'T00:00:00')
+                        .limit(1);
+
+                    if (!existing || existing.length === 0) {
+                        await supabase.from('notifications').insert({
+                            user_id: user.id,
+                            text: '📊 Your daily analysis report is ready. Review your progress now!',
+                            link: '/analysis',
+                            type: 'system',
+                            unread: true,
+                        });
+                    }
+                    await fetchNotifications();
+                } catch (e) {
+                    console.error('[9PM Timer] Error:', e);
+                }
+                // Re-schedule for next day
+                nineTimer = schedule9PM();
+            }, msUntil9PM);
+        };
+
+        let nineTimer = schedule9PM();
+        return () => clearTimeout(nineTimer);
+    }, [user.id, isAuthenticated]);
+
     const getSectionStatus = (sectionId: string): 'not_started' | 'in_progress' | 'completed' => {
         // Direct Lookup
         if (sectionProgressMap[sectionId]) return sectionProgressMap[sectionId].status;
@@ -1924,8 +2028,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 localStorage.removeItem('global_unread_counts');
                 sessionStorage.removeItem('streak_checked_today');
             } else if (event === 'SIGNED_IN' && session) {
-                // Trigger a restore if not already handled
-                if (!isAuthenticated) restoreSession();
+                // Always restore full profile from DB (avatar, titles, etc.)
+                restoreSession();
             }
         });
 
@@ -1943,7 +2047,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         id?: string,
         subscriptionTier: 'basic' | 'pro' = 'basic',
         subscriptionPeriodEnd?: string,
-        hasSeenProIntro: boolean = false
+        hasSeenProIntro: boolean = false,
+        avatarUrl?: string
     ) => {
         setIsAuthenticated(true);
         // Use username if provided, otherwise derive from email
@@ -1953,16 +2058,17 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         const isSuperAdmin = email === 'newmao6120@gmail.com';
 
         setUser(prev => {
-            // Preserve any existing custom avatar (from cache) — don't overwrite with default
-            const hasCustomAvatar = prev.avatarUrl && !prev.avatarUrl.includes('ui-avatars.com');
             const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(formattedName || 'Student')}&background=f9d406&color=1c1a0d&bold=true`;
+            // Priority: explicit avatarUrl param > existing custom avatar > fallback
+            const hasCustomAvatar = prev.avatarUrl && !prev.avatarUrl.includes('ui-avatars.com');
+            const finalAvatar = avatarUrl || (hasCustomAvatar ? prev.avatarUrl : fallbackAvatar);
 
             const updatedUser = {
                 ...prev,
                 id: id || prev.id || '',
                 name: formattedName || "Student",
                 email: email,
-                avatarUrl: hasCustomAvatar ? prev.avatarUrl : (prev.avatarUrl || fallbackAvatar),
+                avatarUrl: finalAvatar,
                 isCreator: isSuperAdmin || prev.isCreator,
                 subscriptionTier: subscriptionTier,
                 subscriptionPeriodEnd: subscriptionPeriodEnd,
@@ -2299,12 +2405,15 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             const todayRecord = calendar.find((d: any) => d.date === localToday);
             const checkedInToday = !!todayRecord || (data?.checked_in_today || false);
 
-            // Display streak: use today's record if checked in, otherwise yesterday's
-            let displayStreak = 0;
-            if (checkedInToday && todayRecord) {
-                displayStreak = todayRecord.streak_day;
-            } else if (!checkedInToday) {
-                // Find yesterday's record to show what they're maintaining
+            // Display streak: prefer server's dynamically-calculated current_streak
+            // Only fall back to calendar data when server returns 0 due to UTC timezone mismatch
+            let displayStreak = data?.current_streak || 0;
+            if (displayStreak === 0 && checkedInToday && todayRecord) {
+                // Server returned 0 (UTC thinks it's next day), use calendar record
+                displayStreak = todayRecord.streak_day || 0;
+            }
+            if (displayStreak === 0 && !checkedInToday) {
+                // Not checked in yet today — show yesterday's streak
                 const yesterday = new Date();
                 yesterday.setDate(yesterday.getDate() - 1);
                 const yStr = yesterday.toLocaleDateString('en-CA');
@@ -2312,8 +2421,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 if (yRecord) {
                     displayStreak = yRecord.streak_day;
                 }
-            } else {
-                displayStreak = data?.current_streak || 0;
             }
 
             return {

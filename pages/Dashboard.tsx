@@ -120,13 +120,14 @@ const CourseCard = ({
 };
 
 export const Dashboard = () => {
-  const { user, courses, toggleCourse, startCourse, lineData, isAuthenticated, isAuthLoading, hasDismissedLoginPrompt, dismissLoginPrompt, getCourseMastery, performDailyCheckin, getCheckinStatus, checkinStatus } = useApp();
+  const { user, courses, toggleCourse, startCourse, lineData, isAuthenticated, isAuthLoading, hasDismissedLoginPrompt, dismissLoginPrompt, getCourseMastery, performDailyCheckin, getCheckinStatus, checkinStatus, notifications, markNotificationRead } = useApp();
   const navigate = useNavigate();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [todayIndex, setTodayIndex] = useState(0);
   const [showWelcomeGift, setShowWelcomeGift] = useState(false);
 
-  const needsCheckin = checkinStatus === 'not_checked_in';
+  // Red dot driven by unread check-in notification (unified source of truth)
+  const needsCheckin = notifications.some(n => n.unread && n.link === '/checkin');
 
   // Trigger login modal ONLY after auth loading completes and user is NOT authenticated
   useEffect(() => {
@@ -398,6 +399,8 @@ export const Dashboard = () => {
           {/* Prominent Daily Check-in Button */}
           <div
             onClick={() => {
+              // Mark all check-in notifications as read (clears all red dots)
+              notifications.filter(n => n.unread && n.link === '/checkin').forEach(n => markNotificationRead(n.id));
               navigate('/checkin');
             }}
             className="w-full bg-white dark:bg-surface-dark rounded-[28px] p-5 sm:p-6 border border-white dark:border-white/5 shadow-sm hover:shadow-md transition-[box-shadow,transform] cursor-pointer flex items-center justify-between group animate-fade-in relative"

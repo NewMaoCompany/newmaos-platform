@@ -93,8 +93,9 @@ export const Login = () => {
             const subTier = response.profile?.subscription_tier || 'basic';
             const subEnd = response.profile?.subscription_period_end;
             const hasSeenProIntro = response.profile?.has_seen_pro_intro || false;
+            const avatarUrl = response.profile?.avatar_url;
 
-            login(email, username, response.session?.user?.id, subTier, subEnd, hasSeenProIntro);
+            login(email, username, response.session?.user?.id, subTier, subEnd, hasSeenProIntro, avatarUrl);
             navigate('/dashboard');
         } catch (err: any) {
             const errorMessage = err.message || '';
