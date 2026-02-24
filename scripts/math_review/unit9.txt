@@ -1,0 +1,926 @@
+UNIT 9 MATHEMATICAL REVIEW (65 questions)
+============================================================
+
+--- 9.0-UT-Q1 [2/2] [BC] ---
+PROMPT: For the parametric curve $x=t^2+1$ and $y=\ln(t)$ with $t>0$, what is $\dfrac{dy}{dx}$ when $t=1$?
+CORRECT: B = "$\dfrac{1}{2}$"
+  A : $2$
+  B ✓: $\dfrac{1}{2}$
+  C : $1$
+  D : $\dfrac{1}{2t}$
+EXPLANATION: Compute $\frac{dy}{dt}=\frac{1}{t}$ and $\frac{dx}{dt}=2t$. Then $$\frac{dy}{dx}=\frac{\frac{dy}{dt}}{\frac{dx}{dt}}=\frac{\frac{1}{t}}{2t}=\frac{1}{2t^2}.$$ At $t=1$, $\dfrac{dy}{dx}=\dfrac{1}{2}$.
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.0-UT-Q2 [4/4] [BC] ---
+PROMPT: A curve is given by $x=\sin t$ and $y=\cos t$. What is $\dfrac{d^2y}{dx^2}$ at $t=\dfrac{\pi}{4}$?
+CORRECT: A = "$-2\sqrt{2}$"
+  A ✓: $-2\sqrt{2}$
+  B : $-2$
+  C : $-\sqrt{2}$
+  D : $2\sqrt{2}$
+EXPLANATION: First, $$\frac{dy}{dx}=\frac{\frac{dy}{dt}}{\frac{dx}{dt}}=\frac{-\sin t}{\cos t}=-\tan t.$$ Then $$\frac{d^2y}{dx^2}=\frac{\frac{d}{dt}(\frac{dy}{dx})}{\frac{dx}{dt}}=\frac{-\sec^2 t}{\cos t}=-\sec^3 t.$$ At $t=\pi/4$, $\sec(\pi/4)=\sqrt2$, so $\dfrac{d^2y}{dx^2}=-2\sqrt2$.
+MICRO:
+  A: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.0-UT-Q3 [3/3] [BC] ---
+PROMPT: Find the arc length of the parametric curve $x=3t$ and $y=4t$ for $0\le t\le 2$.
+CORRECT: A = "$10$"
+  A ✓: $10$
+  B : $14$
+  C : $\dfrac{25}{2}$
+  D : $5$
+EXPLANATION: Arc length is $$L=\int_0^2\sqrt{\left(\frac{dx}{dt}\right)^2+\left(\frac{dy}{dt}\right)^2}\,dt =\int_0^2\sqrt{3^2+4^2}\,dt=\int_0^2 5\,dt=10.$$
+MICRO:
+  A: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.0-UT-Q4 [4/3] [BC] ---
+PROMPT: A curve is given by $x=\cos t$ and $y=\sin t$ for $0\le t\le \pi$. What is its arc length?
+CORRECT: C = "$\pi$"
+  A : $2$
+  B : $\pi^2$
+  C ✓: $\pi$
+  D : $1$
+EXPLANATION: Compute $\frac{dx}{dt}=-\sin t$ and $\frac{dy}{dt}=\cos t$. Then the speed is $$\sqrt{(-\sin t)^2+(\cos t)^2}=\sqrt{\sin^2 t+\cos^2 t}=1,$$ so $$L=\int_0^\pi 1\,dt=\pi.$$
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.0-UT-Q5 [2/2] [BC] ---
+PROMPT: Let $\vec r(t)=\langle t^3-2t,\ e^{t}\rangle$. What is $\vec r\,'(t)$?
+CORRECT: B = "$\langle 3t^2-2,\ e^{t}\rangle$"
+  A : $\langle 3t^2-2t,\ te^{t}\rangle$
+  B ✓: $\langle 3t^2-2,\ e^{t}\rangle$
+  C : $\langle 3t^2,\ e^{t}\rangle$
+  D : $\langle 3t^2-2,\ e^{t-1}\rangle$
+EXPLANATION: Differentiate component-wise: $$\frac{d}{dt}(t^3-2t)=3t^2-2,\quad \frac{d}{dt}(e^t)=e^t.$$ So $\vec r\,'(t)=\langle 3t^2-2,\ e^t\rangle$.
+MICRO:
+  A: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  B: Correct. This follows the coordinate system rules for parametric, polar, or vector calculus.
+  C: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  D: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+
+--- 9.0-UT-Q6 [3/3] [BC] ---
+PROMPT: A particle has velocity $\vec v(t)=\langle 2t,\ \cos t\rangle$ and position $\vec r(0)=\langle 1,\ -2\rangle$. What is $\vec r(t)$?
+CORRECT: C = "$\langle t^2+1,\ \sin t-2\rangle$"
+  A : $\langle t^2+1,\ -\sin t-2\rangle$
+  B : $\langle t^2,\ \sin t\rangle$
+  C ✓: $\langle t^2+1,\ \sin t-2\rangle$
+  D : $\langle 2t^2+1,\ \sin t-2\rangle$
+EXPLANATION: Since $\vec r\,'(t)=\vec v(t)$, integrate: $$x(t)=\int 2t\,dt=t^2+C_1,\quad y(t)=\int \cos t\,dt=\sin t+C_2.$$ Use $\vec r(0)=\langle 1,-2\rangle$ to get $C_1=1$ and $C_2=-2$, so $$\vec r(t)=\langle t^2+1,\ \sin t-2\rangle.$$
+MICRO:
+  A: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  B: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  C: Correct. This follows the coordinate system rules for parametric, polar, or vector calculus.
+  D: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+
+--- 9.0-UT-Q7 [4/4] [BC] ---
+PROMPT: A particle’s position is $\vec r(t)=\langle t^2-1,\ 2t^3\rangle$. For what $t>0$ is the speed equal to $10$?
+CORRECT: C = "$t=\sqrt{\dfrac{-1+\sqrt{901}}{18}}$"
+  A : $t=\sqrt{2}$
+  B : $t=\dfrac{5}{3}$
+  C ✓: $t=\sqrt{\dfrac{-1+\sqrt{901}}{18}}$
+  D : $t=1$
+EXPLANATION: Velocity is $\vec v(t)=\vec r\,'(t)=\langle 2t,6t^2\rangle$, so speed is $$|\vec v|=\sqrt{(2t)^2+(6t^2)^2}=\sqrt{4t^2+36t^4}.$$ Set $\sqrt{4t^2+36t^4}=10$: $$4t^2+36t^4=100\;\Rightarrow\;9t^4+t^2-25=0.$$ Let $u=t^2$. Then $9u^2+u-25=0$, so $$u=\frac{-1+\sqrt{901}}{18}\quad(\text{positive root}).$$ Thus $t=\sqrt{\dfrac{-1+\sqrt{901}}{18}}$ for $t>0$.
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.0-UT-Q8 [3/3] [BC] ---
+PROMPT: Refer to the figure (image). A particle has position $\vec r(t)=\langle t,\ t^2\rangle$ for $0\le t\le 2$. What is the slope $\dfrac{dy}{dx}$ of the path at $t=1$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$2$"
+  A : $0$
+  B ✓: $2$
+  C : $\dfrac{1}{2}$
+  D : $1$
+EXPLANATION: Here $x=t$ and $y=t^2$. Then $\frac{dx}{dt}=1$ and $\frac{dy}{dt}=2t$, so $$\frac{dy}{dx}=\frac{\frac{dy}{dt}}{\frac{dx}{dt}}=2t.$$ At $t=1$, the slope is $2$.
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.0-UT-Q9 [2/2] [BC] ---
+PROMPT: For the polar curve $r=3\sin\theta$, what is $\dfrac{dr}{d\theta}$ at $\theta=\dfrac{\pi}{3}$?
+CORRECT: D = "$\dfrac{3}{2}$"
+  A : $\dfrac{1}{2}$
+  B : $\dfrac{3\sqrt{3}}{2}$
+  C : $-\dfrac{3}{2}$
+  D ✓: $\dfrac{3}{2}$
+EXPLANATION: Differentiate: $\frac{dr}{d\theta}=3\cos\theta$. Evaluate at $\theta=\frac{\pi}{3}$: $$\frac{dr}{d\theta}=3\cos\left(\frac{\pi}{3}\right)=3\cdot\frac12=\frac32.$$
+MICRO:
+  A: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  B: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  C: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  D: Correct. This follows the coordinate system rules for parametric, polar, or vector calculus.
+
+--- 9.0-UT-Q10 [5/5] [BC] ---
+PROMPT: For $r(\theta)=2\theta$, use the polar slope formula $$\dfrac{dy}{dx}=\dfrac{r''(\theta)\sin\theta+r(\theta)\cos\theta}{r''(\theta)\cos\theta-r(\theta)\sin\theta}.$$ What is $\dfrac{dy}{dx}$ at $\theta=\dfrac{\pi}{2}$?
+CORRECT: A = "$-\dfrac{2}{\pi}$"
+  A ✓: $-\dfrac{2}{\pi}$
+  B : $0$
+  C : Undefined
+  D : $\dfrac{\pi}{2}$
+EXPLANATION: Here $r(\theta)=2\theta$ so $r''(\theta)=2$. At $\theta=\frac{\pi}{2}$, $r=\pi$, $\sin\theta=1$, $\cos\theta=0$. Substitute: $$\frac{dy}{dx}=\frac{2\cdot1+\pi\cdot0}{2\cdot0-\pi\cdot1}=\frac{2}{-\pi}=-\frac{2}{\pi}.$$
+MICRO:
+  A: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.0-UT-Q11 [4/4] [BC] ---
+PROMPT: Find the area enclosed by one loop of the polar curve $r=2\sin\theta$.
+CORRECT: C = "$\pi$"
+  A : $\dfrac{\pi}{2}$
+  B : $2\pi$
+  C ✓: $\pi$
+  D : $4\pi$
+EXPLANATION: One loop occurs where $r\ge 0$, i.e. $0\le\theta\le\pi$. Area is $$A=\frac12\int_0^\pi r^2\,d\theta=\frac12\int_0^\pi 4\sin^2\theta\,d\theta =2\int_0^\pi \sin^2\theta\,d\theta=2\cdot\frac{\pi}{2}=\pi.$$
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.0-UT-Q12 [4/4] [BC] ---
+PROMPT: Refer to the polar graph (image) of $r=2+2\cos\theta$. What is the area enclosed by the curve?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$6\pi$"
+  A ✓: $6\pi$
+  B : $8\pi$
+  C : $2\pi$
+  D : $4\pi$
+EXPLANATION: Use $$A=\frac12\int_0^{2\pi} r^2\,d\theta=\frac12\int_0^{2\pi}(2+2\cos\theta)^2\,d\theta.$$ Expand: $(2+2\cos\theta)^2=4(1+2\cos\theta+\cos^2\theta)$, so $$A=2\int_0^{2\pi}(1+2\cos\theta+\cos^2\theta)\,d\theta.$$ Over $[0,2\pi]$, $\int_0^{2\pi}\cos\theta\,d\theta=0$ and $\int_0^{2\pi}\cos^2\theta\,d\theta=\pi$, hence $$A=2(2\pi+0+\pi)=6\pi.$$
+MICRO:
+  A: Correct. This follows the coordinate system rules for parametric, polar, or vector calculus.
+  B: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  C: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  D: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+
+--- 9.0-UT-Q13 [4/4] [BC] ---
+PROMPT: Find the area of the region inside $r=2\cos\theta$ and outside $r=\cos\theta$.
+CORRECT: C = "$\dfrac{3\pi}{4}$"
+  A : $\dfrac{\pi}{4}$
+  B : $\dfrac{\pi}{2}$
+  C ✓: $\dfrac{3\pi}{4}$
+  D : $\pi$
+EXPLANATION: Where $\cos\theta\ge 0$ (i.e., $\frac{-\pi}{2}\le\theta\le\frac{\pi}{2}$), the outer curve is $r=2\cos\theta$ and the inner curve is $r=\cos\theta$. Area between curves: $$A=\frac12\int_{\frac{-\pi}{2}}^{\frac{\pi}{2}}\left[(2\cos\theta)^2-(\cos\theta)^2\right]d\theta =\frac12\int_{\frac{-\pi}{2}}^{\frac{\pi}{2}}3\cos^2\theta\,d\theta.$$ Since $\int_{-\pi/2}^{\pi/2}\cos^2\theta\,d\theta=\frac{\pi}{2}$, $$A=\frac12\cdot 3\cdot\frac{\pi}{2}=\frac{3\pi}{4}.$$
+MICRO:
+  A: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  B: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  C: Correct. This follows the coordinate system rules for parametric, polar, or vector calculus.
+  D: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+
+--- 9.0-UT-Q14 [3/3] [BC] ---
+PROMPT: A curve is given by $x=t^2$ and $y=t^3$. What is $\dfrac{d^2y}{dx^2}$ when $t=2$?
+CORRECT: B = "$\dfrac{3}{8}$"
+  A : $\dfrac{3}{4}$
+  B ✓: $\dfrac{3}{8}$
+  C : $3$
+  D : $\dfrac{3}{16}$
+EXPLANATION: Compute $$\frac{dy}{dx}=\frac{\frac{dy}{dt}}{\frac{dx}{dt}}=\frac{3t^2}{2t}=\frac{3}{2}t.$$ Then $$\frac{d^2y}{dx^2}=\frac{\frac{d}{dt}(\frac{dy}{dx})}{\frac{dx}{dt}}=\frac{\frac{3}{2}}{2t}=\frac{3}{4t}.$$ At $t=2$, $\dfrac{d^2y}{dx^2}=\dfrac{3}{8}$.
+MICRO:
+  A: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  B: Correct. This follows the coordinate system rules for parametric, polar, or vector calculus.
+  C: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  D: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+
+--- 9.0-UT-Q15 [2/3] [BC] ---
+PROMPT: If $\vec r\,'(t)=\langle 4,\ 3t^2\rangle$ and $\vec r(1)=\langle 2,\ 5\rangle$, what is $\vec r(0)$?
+CORRECT: D = "$\langle -2,\ 4\rangle$"
+  A : $\langle -2,\ 2\rangle$
+  B : $\langle 2,\ 4\rangle$
+  C : $\langle 6,\ 6\rangle$
+  D ✓: $\langle -2,\ 4\rangle$
+EXPLANATION: Use displacement: $$\vec r(1)-\vec r(0)=\int_0^1 \vec r\,'(t)\,dt=\int_0^1\langle 4,3t^2\rangle dt=\langle 4,t^3\rangle\big|_0^1=\langle 4,1\rangle.$$ Thus $$\vec r(0)=\vec r(1)-\langle 4,1\rangle=\langle 2,5\rangle-\langle 4,1\rangle=\langle -2,4\rangle.$$
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+
+--- 9.0-UT-Q16 [5/5] [BC] ---
+PROMPT: Refer to the figure (image). Let $C_1$ be $r=2\cos\theta$ and $C_2$ be $r=1$. What is the area of the region inside both curves?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$\dfrac{\pi}{3}+\dfrac{\sqrt{3}}{2}$"
+  A : $\dfrac{\pi}{2}$
+  B : $\dfrac{\pi}{3}+\dfrac{\sqrt{3}}{4}$
+  C : $\dfrac{2\pi}{3}$
+  D ✓: $\dfrac{\pi}{3}+\dfrac{\sqrt{3}}{2}$
+EXPLANATION: Intersect when $2\cos\theta=1$, so $\theta=\pm\frac{\pi}{3}$. Inside both curves means $0\le r\le \min(1,2\cos\theta)$ for $\frac{-\pi}{2}\le\theta\le\frac{\pi}{2}$.\nThus $$A=\frac12\left(\int_{\frac{-\pi}{3}}^{\frac{\pi}{3}}1^2\,d\theta+2\int_{\frac{\pi}{3}}^{\frac{\pi}{2}}(2\cos\theta)^2\,d\theta\right) =\frac{\pi}{3}+4\int_{\frac{\pi}{3}}^{\frac{\pi}{2}}\cos^2\theta\,d\theta.$$ Compute $$\int_{\frac{\pi}{3}}^{\frac{\pi}{2}}\cos^2\theta\,d\theta=\left[\frac{\theta}{2}+\frac{\sin(2\theta)}{4}\right]_{\frac{\pi}{3}}^{\frac{\pi}{2}}=\frac{\pi}{12}+\frac{\sqrt3}{8}.$$ So $$A=\frac{\pi}{3}+4\left(\frac{\pi}{12}+\frac{\sqrt3}{8}\right)=\frac{\pi}{3}+\frac{\sqrt3}{2}.$$
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+
+--- 9.0-UT-Q17 [3/3] [BC] ---
+PROMPT: The curve $x=t^2-4t$ and $y=t-1$ has a vertical tangent when $\dfrac{dx}{dt}=0$ and $\dfrac{dy}{dt}\ne 0$. For what value of $t$ does this occur?
+CORRECT: D = "$t=2$"
+  A : No such $t$
+  B : $t=4$
+  C : $t=0$
+  D ✓: $t=2$
+EXPLANATION: Compute $\frac{dx}{dt}=2t-4$. Setting $\frac{dx}{dt}=0$ gives $2t-4=0\Rightarrow t=2$. Since $\frac{dy}{dt}=1\ne 0$, the tangent is vertical at $t=2$.
+MICRO:
+  A: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  B: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  C: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  D: Correct. This follows the coordinate system rules for parametric, polar, or vector calculus.
+
+--- 9.0-UT-Q18 [4/4] [BC] ---
+PROMPT: Let $\vec r(t)=\langle \cos t,\ \sin t\rangle$. What is the magnitude of acceleration $|\vec r\,''(t)|$ for any $t$?
+CORRECT: D = "$1$"
+  A : $0$
+  B : $2$
+  C : $\sqrt{2}$
+  D ✓: $1$
+EXPLANATION: Differentiate twice: $$\vec r\,'(t)=\langle -\sin t,\ \cos t\rangle,\quad \vec r\,''(t)=\langle -\cos t,\ -\sin t\rangle.$$ Thus $$|\vec r\,''(t)|=\sqrt{(-\cos t)^2+(-\sin t)^2}=\sqrt{\cos^2 t+\sin^2 t}=1.$$
+MICRO:
+  A: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  B: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  C: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  D: Correct. This follows the coordinate system rules for parametric, polar, or vector calculus.
+
+--- 9.0-UT-Q19 [3/4] [BC] ---
+PROMPT: What is the area enclosed by one petal of the rose $r=2\cos(2\theta)$?
+CORRECT: A = "$\dfrac{\pi}{4}$"
+  A ✓: $\dfrac{\pi}{4}$
+  B : $\dfrac{\pi}{2}$
+  C : $\pi$
+  D : $\dfrac{\pi}{8}$
+EXPLANATION: One petal occurs where $r\ge 0$, i.e. $\cos(2\theta)\ge 0$, so $\frac{-\pi}{4}\le\theta\le\frac{\pi}{4}$.\nThen $$A=\frac12\int_{\frac{-\pi}{4}}^{\frac{\pi}{4}}(2\cos(2\theta))^2\,d\theta =2\int_{\frac{-\pi}{4}}^{\frac{\pi}{4}}\cos^2(2\theta)\,d\theta.$$ Using even symmetry and $\cos^2(2\theta)=\frac{1+\cos(4\theta)}{2}$ gives $A=\frac{\pi}{4}$.
+MICRO:
+  A: Correct. This follows the coordinate system rules for parametric, polar, or vector calculus.
+  B: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  C: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  D: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+
+--- 9.0-UT-Q20 [5/5] [BC] ---
+PROMPT: Find the arc length of $x=t^2$ and $y=\dfrac{2}{3}t^3$ from $t=0$ to $t=1$.
+CORRECT: B = "$\dfrac{2}{3}(2\sqrt{2}-1)$"
+  A : $\dfrac{5}{3}$
+  B ✓: $\dfrac{2}{3}(2\sqrt{2}-1)$
+  C : $\sqrt{5}$
+  D : $\dfrac{2}{3}(2\sqrt{2}+1)$
+EXPLANATION: Compute derivatives: $\frac{dx}{dt}=2t$ and $\frac{dy}{dt}=2t^2$. Then speed is $$\sqrt{(2t)^2+(2t^2)^2}=\sqrt{4t^2+4t^4}=2t\sqrt{1+t^2}\quad(0\le t\le 1).$$ So $$L=\int_0^1 2t\sqrt{1+t^2}\,dt.$$ Let $u=1+t^2$, $du=2t\,dt$: $$L=\int_1^2 \sqrt{u}\,du=\left[\frac{2}{3}u^{\frac{3}{2}}\right]_1^2=\frac{2}{3}(2^{\frac{3}{2}}-1)=\frac{2}{3}(2\sqrt{2}-1).$$
+MICRO:
+  A: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  B: Correct. This follows the coordinate system rules for parametric, polar, or vector calculus.
+  C: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+  D: Incorrect. Re-examine the specific derivative or integral setup required for this non-rectangular system.
+
+--- 9.1-P1 [2/2] [BC] ---
+PROMPT: Let $x(t)=t^2-1$ and $y(t)=3t-2$. What is $\dfrac{dy}{dx}$ at $t=2$?
+CORRECT: C = "$\dfrac{3}{4}$"
+  A : $\dfrac{3}{2}$
+  B : $\dfrac{4}{3}$
+  C ✓: $\dfrac{3}{4}$
+  D : $6$
+EXPLANATION: Compute $\dfrac{dy}{dx}=\dfrac{\frac{dy}{dt}}{\frac{dx}{dt}}$. Here $\frac{dy}{dt}=3$ and $\frac{dx}{dt}=2t$. At $t=2$, $\frac{dx}{dt}=4$, so $\dfrac{dy}{dx}=\dfrac{3}{4}$.
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.1-P2 [3/3] [BC] ---
+PROMPT: A curve is given parametrically by $x(t)=t^2+1$ and $y(t)=t^3-2t$. What is the equation of the tangent line when $t=1$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$y=\dfrac{1}{2}x-\dfrac{1}{2}$"
+  A : $y=-\dfrac{1}{2}x+\dfrac{1}{2}$
+  B ✓: $y=\dfrac{1}{2}x-\dfrac{1}{2}$
+  C : $y=2x-5$
+  D : $y=\dfrac{1}{2}x+\dfrac{1}{2}$
+EXPLANATION: Compute $\frac{dx}{dt}=2t$ and $\frac{dy}{dt}=3t^2-2$. At $t=1$, $m=\dfrac{\frac{dy}{dt}}{\frac{dx}{dt}}=\dfrac{1}{2}$. Also $(x(1),y(1))=(2,-1)$. Thus $y+1=\dfrac{1}{2}(x-2)$, so $y=\dfrac{1}{2}x-\dfrac{1}{2}$.
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.1-P3 [4/4] [BC] ---
+PROMPT: The curve is given by $x(t)=\sin t$ and $y(t)=\cos(2t)$ for $0\le t\le 2\pi$. At how many parameter values does the curve have a horizontal tangent?
+CORRECT: A = "3"
+  A ✓: 3
+  B : 2
+  C : 4
+  D : 1
+EXPLANATION: Compute $\frac{dx}{dt}=\cos t$ and $\frac{dy}{dt}=-2\sin(2t)$. Horizontal tangents require $\frac{dy}{dt}=0$ and $\frac{dx}{dt\ne} 0$. Solve $\sin(2t)=0\Rightarrow t=\dfrac{k\pi}{2}$. In $[0,2\pi]$: $t=0,\dfrac{\pi}{2},\pi,\dfrac{3\pi}{2},2\pi$. Exclude $t=\dfrac{\pi}{2},\dfrac{3\pi}{2}$ since $\cos t=0$. Remaining: $t=0,\pi,2\pi$ (3 values).
+MICRO:
+  A: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.1-P4 [1/2] [BC] ---
+PROMPT: For $x(t)=e^t$ and $y(t)=e^{2t}$, what is $\dfrac{dy}{dx}$ in terms of $t$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$2e^t$"
+  A ✓: $2e^t$
+  B : $2e^{2t}$
+  C : $e^t$
+  D : $\dfrac{1}{2}e^t$
+EXPLANATION: Use $\dfrac{dy}{dx}=\dfrac{\frac{dy}{dt}}{\frac{dx}{dt}}$. Here $\frac{dx}{dt}=e^t$ and $\frac{dy}{dt}=2e^{2t}$, so $\dfrac{dy}{dx}=\dfrac{2e^{2t}}{e^t}=2e^t$.
+MICRO:
+  A: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.1-P5 [3/2] [BC] ---
+PROMPT: A curve is given by $x(t)=t-1$ and $y(t)=(t-1)^2+3$ for all real $t$. Which equation describes the same curve in $xy$-form?
+CORRECT: D = "$y=x^2+3$"
+  A : $y=(x-1)^2+3$
+  B : $y=(x+1)^2+3$
+  C : $y=\sqrt{x}+3$
+  D ✓: $y=x^2+3$
+EXPLANATION: From $x=t-1$, we get $t-1=x$. Substitute into $y=(t-1)^2+3$ to obtain $y=x^2+3$.
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+
+--- 9.2-P1 [2/2] [BC] ---
+PROMPT: Let $x(t)=t^2$ and $y(t)=t^3$. What is $\dfrac{d^2y}{dx^2}$ at $t=1$?
+CORRECT: D = "$\dfrac{3}{4}$"
+  A : $\dfrac{3}{2}$
+  B : $\dfrac{3}{2}t$
+  C : $\dfrac{1}{4}$
+  D ✓: $\dfrac{3}{4}$
+EXPLANATION: First compute $\frac{dy}{dx}=\frac{\frac{dy}{dt}}{\frac{dx}{dt}}=\frac{3t^2}{2t}=(\frac{3}{2})t$ (for $t\ne 0$). Then $$\frac{d^2y}{dx^2}=\frac{\frac{d}{dt}(\frac{dy}{dx})}{\frac{dx}{dt}}=\frac{\frac{3}{2}}{2t}=\frac{3}{4t}.$$ At $t=1$, this is $\dfrac{3}{4}$.
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+
+--- 9.2-P2 [4/4] [BC] ---
+PROMPT: A curve is given by $x(t)=t$ and $y(t)=\sin t$ for $0<t<\pi$. For which values of $t$ is the curve concave down?
+CORRECT: C = "All $0<t<\pi$"
+  A : $0<t<\dfrac{\pi}{2}$
+  B : $\dfrac{\pi}{2}<t<\pi$
+  C ✓: All $0<t<\pi$
+  D : None of $0<t<\pi$
+EXPLANATION: Because $x=t$, we have $\frac{dx}{dt}=1$ and $\frac{dy}{dt}=\cos t$, so $\frac{dy}{dx}=\cos t$. Then $$\frac{d^2y}{dx^2}=\frac{\frac{d}{dt}(\cos t)}{1}=-\sin t.$$ For $0<t<\pi$, $\sin t>0$, so $-\sin t<0$, hence concave down on the entire interval.
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.2-P3 [5/5] [BC] ---
+PROMPT: Let $x(t)=t^2+1$ and $y(t)=\dfrac{1}{t}$ for $t\ne 0$. What is $\dfrac{d^2y}{dx^2}$ in terms of $t$?
+CORRECT: B = "$\dfrac{3}{4t^5}$"
+  A : $\dfrac{1}{4t^5}$
+  B ✓: $\dfrac{3}{4t^5}$
+  C : $-\dfrac{3}{4t^5}$
+  D : $\dfrac{3}{2t^4}$
+EXPLANATION: Compute $\frac{dx}{dt}=2t$ and $\frac{dy}{dt}=\frac{-1}{t^2}$. Then $$\frac{dy}{dx}=\frac{\frac{-1}{t^2}}{2t}=-\frac{1}{2t^3}.$$ Differentiate with respect to $t$: $$\frac{d}{dt}\left(\frac{dy}{dx}\right)=\frac{3}{2t^4}.$$ Finally $$\frac{d^2y}{dx^2}=\frac{\frac{d}{dt}(\frac{dy}{dx})}{\frac{dx}{dt}}=\frac{\frac{3}{2t^4}}{2t}=\frac{3}{4t^5}.$$
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.2-P4 [3/3] [BC] ---
+PROMPT: A curve is given by $x(t)=t^3$ and $y(t)=t^2-4t$. At the parameter value where the tangent line is horizontal and $t\ne 0$, what is $\dfrac{d^2y}{dx^2}$?
+CORRECT: B = "$\dfrac{1}{72}$"
+  A : $-\dfrac{1}{3}$
+  B ✓: $\dfrac{1}{72}$
+  C : $0$
+  D : $\dfrac{1}{6}$
+EXPLANATION: Horizontal tangent requires $\frac{dy}{dt}=0$ and $\frac{dx}{dt\ne} 0$. Here $\frac{dy}{dt}=2t-4=0\Rightarrow t=2$ (and $\frac{dx}{dt}=3t^2=12\ne 0$). Next $$\frac{dy}{dx}=\frac{2t-4}{3t^2}=\frac{2}{3}(t-2)t^{-2}.$$ Differentiate: $$\frac{d}{dt}\left(\frac{dy}{dx}\right)=\frac{2}{3}\left(t^{-2}-2(t-2)t^{-3}\right).$$ At $t=2$, this is $\dfrac{1}{6}$. Finally $$\frac{d^2y}{dx^2}=\frac{\frac{d}{dt}(\frac{dy}{dx})}{\frac{dx}{dt}}=\frac{\frac{1}{6}}{12}=\frac{1}{72}.$$
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.2-P5 [1/1] [BC] ---
+PROMPT: A curve is given by $x(t)=t$ and $y(t)=t^2$. What is $\dfrac{d^2y}{dx^2}$?
+CORRECT: A = "$2$"
+  A ✓: $2$
+  B : $2t$
+  C : $1$
+  D : $0$
+EXPLANATION: Because $x=t$, rewrite $y=t^2$ as $y=x^2$. Then $\frac{d^2y}{dx^2}=2$.
+MICRO:
+  A: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.3-P1 [1/2] [BC] ---
+PROMPT: Let $x=3t$ and $y=4t$ for $0\le t\le 2$. What is the arc length of the curve on this interval?
+CORRECT: C = "$10$"
+  A : $\sqrt{10}$
+  B : $5$
+  C ✓: $10$
+  D : $20$
+EXPLANATION: Arc length is $\int_a^b \sqrt{\left(\frac{dx}{dt}\right)^2+\left(\frac{dy}{dt}\right)^2}\,dt$. Here $\frac{dx}{dt}=3$, $\frac{dy}{dt}=4$, so integrand $=5$ and $s=\int_0^2 5\,dt=10$.
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.3-P2 [3/3] [BC] ---
+PROMPT: A curve is given by $x=t^2-1$ and $y=2t$ for $0\le t\le 2$. The graph of this parametric curve is provided.  ![9.3-P2](9.3-P2.png)  Which integral gives the arc length of the curve on $[0,2]$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\displaystyle \int_0^2 \sqrt{(2t)^2+(2)^2}\,dt$"
+  A ✓: $\displaystyle \int_0^2 \sqrt{(2t)^2+(2)^2}\,dt$
+  B : $\displaystyle \int_0^2 \left((2t)^2+(2)^2\right)\,dt$
+  C : $\displaystyle \int_{-1}^{3} \sqrt{1+\left(\frac{dy}{dx}\right)^2}\,dx$
+  D : $\displaystyle \int_0^2 \sqrt{(t^2-1)^2+(2t)^2}\,dt$
+EXPLANATION: Use $s=\int_0^2 \sqrt{(\frac{dx}{dt})^2+(\frac{dy}{dt})^2}\,dt$. Here $\frac{dx}{dt}=2t$ and $\frac{dy}{dt}=2$, so $s=\int_0^2 \sqrt{4t^2+4}\,dt$.
+MICRO:
+  A: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.3-P3 [4/4] [BC] ---
+PROMPT: Let $x=t^2$ and $y=t^3$ for $0\le t\le 1$. What is the arc length of the curve on this interval?
+CORRECT: C = "$\displaystyle \frac{1}{27}\left(13\sqrt{13}-8\right)$"
+  A : $\displaystyle \int_0^1 \sqrt{4+9t^2}\,dt$
+  B : $\displaystyle \frac{1}{18}\left(13\sqrt{13}-8\right)$
+  C ✓: $\displaystyle \frac{1}{27}\left(13\sqrt{13}-8\right)$
+  D : $\displaystyle \frac{5}{27}$
+EXPLANATION: $x'=2t$, $y'=3t^2$. Then $\frac{ds}{dt}=\sqrt{4t^2+9t^4}=t\sqrt{4+9t^2}$ (for $t\ge0$). With $u=4+9t^2$, $du=18t\,dt$, $$s=\int_0^1 t\sqrt{4+9t^2}\,dt=\frac{1}{27}\left(13\sqrt{13}-8\right).$$
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.3-P4 [2/2] [BC] ---
+PROMPT: A parametric curve is given by $x=f(t)$ and $y=g(t)$. Which expression equals the speed $\dfrac{ds}{dt}$?
+CORRECT: D = "$\sqrt{(f'(t))^2+(g'(t))^2}$"
+  A : $\sqrt{(f(t))^2+(g(t))^2}$
+  B : $\dfrac{g'(t)}{f'(t)}$
+  C : $(f'(t))^2+(g'(t))^2$
+  D ✓: $\sqrt{(f'(t))^2+(g'(t))^2}$
+EXPLANATION: Velocity is $\langle f'(t),g'(t)\rangle$ and speed is its magnitude: $\frac{ds}{dt}=\sqrt{(f'(t))^2+(g'(t))^2}$.
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+
+--- 9.3-P5 [2/2] [BC] ---
+PROMPT: Let $x=2\cos t$ and $y=2\sin t$ for $0\le t\le \frac{\pi}{2}$. What is the arc length on this interval?
+CORRECT: B = "$\pi$"
+  A : $2$
+  B ✓: $\pi$
+  C : $\frac{\pi}{2}$
+  D : $4\pi$
+EXPLANATION: $x'=-2\sin t$, $y'=2\cos t$ so speed $=\sqrt{4(\sin^2 t+\cos^2 t)}=2$. Thus $s=\int_0^{\frac{\pi}{2}}2\,dt=\pi$.
+MICRO:
+  A: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  B: Correct. Apply the parametric chain rule: $dy/dx$ = ($dy/dt$) / ($dx/dt$) or $d^2y/dx^2$ = [d/dt($dy/dx$)] / ($dx/dt$).
+  C: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+  D: Incorrect. Verify your derivatives with respect to $t$ and ensure you are using the correct parametric derivative formulas.
+
+--- 9.4-P1 [1/1] [BC] ---
+PROMPT: Let $\mathbf{r}(t)=\langle t^2, e^t, \sin t\rangle$. What is $\mathbf{r}'(0)$?
+CORRECT: B = "$\langle 0,1,1\rangle$"
+  A : $\langle 0,1,0\rangle$
+  B ✓: $\langle 0,1,1\rangle$
+  C : $\langle 2,e,0\rangle$
+  D : $\langle t^2,e^t,\sin t\rangle$
+EXPLANATION: Differentiate componentwise: $\mathbf{r}'(t)=\langle 2t,e^t,\cos t\rangle$, so $\mathbf{r}'(0)=\langle 0,1,1\rangle$.
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.4-P2 [3/3] [BC] ---
+PROMPT: A plane curve is given by $\mathbf{r}(t)=\langle t, t^2\rangle$. Which is a parametric equation of the tangent line at $t=2$?
+CORRECT: A = "$\langle 2,4\rangle+s\langle 1,4\rangle$"
+  A ✓: $\langle 2,4\rangle+s\langle 1,4\rangle$
+  B : $\langle 2,4\rangle+s\langle 2,4\rangle$
+  C : $\langle 2,4\rangle+s\langle 1,2\rangle$
+  D : $\langle 2,4\rangle+s\langle 4,1\rangle$
+EXPLANATION: Point is $\mathbf{r}(2)=\langle 2,4\rangle$. Direction is $\mathbf{r}'(2)$ where $\mathbf{r}'(t)=\langle 1,2t\rangle$, so $\mathbf{r}'(2)=\langle 1,4\rangle$.
+MICRO:
+  A: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.4-P3 [4/4] [BC] ---
+PROMPT: A particle has position $\mathbf{r}(t)=\langle t^2, t\rangle$. For $t>0$, when is the speed increasing?
+CORRECT: D = "For all $t>0$"
+  A : Never; the speed is constant
+  B : For $0<t<1$ only
+  C : For $t>1$ only
+  D ✓: For all $t>0$
+EXPLANATION: $\mathbf{v}=\langle 2t,1\rangle$, $\mathbf{a}=\langle 2,0\rangle$, so $\mathbf{v}\cdot\mathbf{a}=4t>0$ for all $t>0$, hence speed is increasing for all $t>0$.
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+
+--- 9.4-P4 [3/3] [BC] ---
+PROMPT: The plane curve is $\mathbf{r}(t)=\langle \cos t, \tfrac12\sin(2t)\rangle$. A tangent direction at $t=\frac{\pi}{3}$ is shown.  ![9.4-P4](9.4-P4.png)  What is $\left.\dfrac{dy}{dx}\right|_{t=\frac{\pi}{3}}$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$\dfrac{\sqrt{3}}{3}$"
+  A : $-\sqrt{3}$
+  B : $\sqrt{3}$
+  C ✓: $\dfrac{\sqrt{3}}{3}$
+  D : $-\dfrac{\sqrt{3}}{3}$
+EXPLANATION: $\frac{dx}{dt}=-\sin t$ and $\frac{dy}{dt}=\cos(2t)$, so $\frac{dy}{dx}=\frac{\cos(2t)}{-\sin t}$. At $t=\frac{\pi}{3}$, this is $\frac{\frac{-1}{2}}{-\sqrt{3}/2}=\frac{\sqrt{3}}{3}$.
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.4-P5 [2/2] [BC] ---
+PROMPT: For $t>0$, let $\mathbf{r}(t)=\langle 3t,4t\rangle$. What is the unit tangent vector $\mathbf{T}(t)$?
+CORRECT: D = "$\left\langle \frac{3}{5},\frac{4}{5}\right\rangle$"
+  A : $\langle 3,4\rangle$
+  B : $\left\langle \frac{3t}{5},\frac{4t}{5}\right\rangle$
+  C : $\left\langle \frac{3}{25},\frac{4}{25}\right\rangle$
+  D ✓: $\left\langle \frac{3}{5},\frac{4}{5}\right\rangle$
+EXPLANATION: $\mathbf{v}=\mathbf{r}'=\langle 3,4\rangle$ has magnitude $5$, so $\mathbf{T}=\frac{1}{5}\langle 3,4\rangle=\left\langle \frac{3}{5},\frac{4}{5}\right\rangle$.
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+
+--- 9.5-P1 [2/2] [BC] ---
+PROMPT: Let $\vec r\,'(t)=\langle 3t^2-4,\; 2\sin t\rangle$ for $0\le t\le 2$. Compute $\int_{0}^{2}\vec r\,'(t)\,dt$.
+CORRECT: A = "$\langle 0,\;2-2\cos 2\rangle$"
+  A ✓: $\langle 0,\;2-2\cos 2\rangle$
+  B : $\langle 0,\;2\sin 2\rangle$
+  C : $\langle 8,\;2-2\cos 2\rangle$
+  D : $\langle 0,\;-2+2\cos 2\rangle$
+EXPLANATION: Integrate componentwise: $$\int_0^2\langle 3t^2-4,\;2\sin t\rangle dt =\left\langle [t^3-4t]_0^2,\;[-2\cos t]_0^2\right\rangle =\langle 0,\;2-2\cos 2\rangle.$$
+MICRO:
+  A: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.5-P2 [3/3] [BC] ---
+PROMPT: A particle has velocity $\vec v(t)=\langle 2t-1,\;t^2\rangle$ for $t\ge 0$. If $\vec r(0)=\langle 3,-2\rangle$, what is $\vec r(t)$?
+CORRECT: D = "$\langle t^2-t+3,\;\tfrac13 t^3-2\rangle$"
+  A : $\langle 2t-1+3,\;t^2-2\rangle$
+  B : $\langle t^2-t,\;\tfrac13 t^3\rangle$
+  C : $\langle t^2+t+3,\;\tfrac13 t^3-2\rangle$
+  D ✓: $\langle t^2-t+3,\;\tfrac13 t^3-2\rangle$
+EXPLANATION: Integrate componentwise: $$\vec r(t)=\left\langle \int(2t-1)dt,\;\int t^2dt\right\rangle =\langle t^2-t+C_1,\;\tfrac13 t^3+C_2\rangle.$$ Use $\vec r(0)=\langle 3,-2\rangle$ to get $C_1=3$ and $C_2=-2$.
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+
+--- 9.5-P3 [2/2] [BC] ---
+PROMPT: A particle's velocity is $\vec v(t)=\langle 4,\;-3\rangle$ for $0\le t\le 5$. What is the displacement vector on $[0,5]$?
+CORRECT: B = "$\langle 20,\;-15\rangle$"
+  A : $\langle 4,\;-3\rangle$
+  B ✓: $\langle 20,\;-15\rangle$
+  C : $\langle 5,\;5\rangle$
+  D : $25$
+EXPLANATION: Displacement is the integral of velocity: $$\int_0^5\langle 4,-3\rangle dt=\langle 4t,-3t\rangle\Big|_0^5=\langle 20,-15\rangle.$$
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.5-P4 [4/4] [BC] ---
+PROMPT: Let $\vec r(t)=\langle t^2,\;e^t\rangle$ on $[0,1]$. What is the average value vector of $\vec r(t)$ on this interval?
+CORRECT: A = "$\langle \tfrac13,\;e-1\rangle$"
+  A ✓: $\langle \tfrac13,\;e-1\rangle$
+  B : $\langle \tfrac12,\;\tfrac{e}{2}\rangle$
+  C : $\langle 1,\;e\rangle$
+  D : $(e-1)+\tfrac13$
+EXPLANATION: Average value is $$\vec r_{avg}=\frac{1}{1-0}\int_0^1\langle t^2,e^t\rangle dt =\left\langle \int_0^1 t^2dt,\;\int_0^1 e^t dt\right\rangle =\langle \tfrac13,\;e-1\rangle.$$
+MICRO:
+  A: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.5-P5 [5/5] [BC] ---
+PROMPT: Evaluate $\int_0^{\pi}\big(\langle 1,2\rangle\cos t+\langle 3,-1\rangle\sin t\big)\,dt$.
+CORRECT: C = "$\langle 6,\;-2\rangle$"
+  A : $\langle 0,0\rangle$
+  B : $\langle 6,\;2\rangle$
+  C ✓: $\langle 6,\;-2\rangle$
+  D : $\langle 4,\;1\rangle$
+EXPLANATION: Use linearity: $$\int_0^{\pi}\big(\langle 1,2\rangle\cos t+\langle 3,-1\rangle\sin t\big)dt =\langle 1,2\rangle\int_0^{\pi}\cos t\,dt+\langle 3,-1\rangle\int_0^{\pi}\sin t\,dt.$$ Since $\int_0^{\pi}\cos t\,dt=0$ and $\int_0^{\pi}\sin t\,dt=2$, the integral equals $2\langle 3,-1\rangle=\langle 6,-2\rangle$.
+MICRO:
+  A: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  B: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+  C: Correct. For vector-valued functions, differentiate or integrate each component $x(t)$ and $y(t)$ independently.
+  D: Incorrect. Remember to treat horizontal and vertical components separately when applying calculus to vectors.
+
+--- 9.6-P1 [2/2] [BC] ---
+PROMPT: A particle's position is $\vec r(t)=\langle t^2-2t,\;3\cos t\rangle$. What is its speed at time $t$?
+CORRECT: A = "$\sqrt{(2t-2)^2+(3\sin t)^2}$"
+  A ✓: $\sqrt{(2t-2)^2+(3\sin t)^2}$
+  B : $\langle 2t-2,\;-3\sin t\rangle$
+  C : $\sqrt{(2t-2)^2+(3\cos t)^2}$
+  D : $\sqrt{(t^2-2t)^2+(3\cos t)^2}$
+EXPLANATION: Differentiate to get velocity: $$\vec v(t)=\vec r\,'(t)=\langle 2t-2,\;-3\sin t\rangle.$$ Speed is magnitude: $$\|\vec v(t)\|=\sqrt{(2t-2)^2+(3\sin t)^2}.$$
+MICRO:
+  A: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.6-P2 [3/3] [BC] ---
+PROMPT: A particle has velocity $\vec v(t)=\langle t-3,\;6-2t\rangle$. At what time $t$ does the particle come to rest?
+CORRECT: D = "$t=3$"
+  A : $t=2$
+  B : $t=0$
+  C : The particle never comes to rest.
+  D ✓: $t=3$
+EXPLANATION: The particle is at rest when $\vec v(t)=\langle 0,0\rangle$. Solve $$t-3=0\quad\text{and}\quad 6-2t=0,$$ which both yield $t=3$.
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+
+--- 9.6-P3 [4/4] [BC] ---
+PROMPT: A particle moves on a line with velocity $v(t)=t-2$ for $0\le t\le 5$. What is the total distance traveled?
+CORRECT: C = "$\tfrac{13}{2}$"
+  A : $\tfrac{5}{2}$
+  B : $\tfrac{9}{2}$
+  C ✓: $\tfrac{13}{2}$
+  D : $9$
+EXPLANATION: Total distance is $$\int_0^5|t-2|dt=\int_0^2(2-t)dt+\int_2^5(t-2)dt =\left[2t-\tfrac12 t^2\right]_0^2+\left[\tfrac12 t^2-2t\right]_2^5 =2+\tfrac{9}{2}=\tfrac{13}{2}.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.6-P4 [3/3] [BC] ---
+PROMPT: A particle has position $\vec r(t)=\langle \sin t,\;\cos t\rangle$. Which of the following is the acceleration vector $\vec a(t)$?
+CORRECT: B = "$\langle -\sin t,\;-\cos t\rangle$"
+  A : $\langle \cos t,\;-\sin t\rangle$
+  B ✓: $\langle -\sin t,\;-\cos t\rangle$
+  C : $\langle -\cos t,\;\sin t\rangle$
+  D : $\langle \sin t,\;\cos t\rangle$
+EXPLANATION: Differentiate twice: $$\vec v(t)=\vec r\,'(t)=\langle \cos t,\;-\sin t\rangle,\qquad \vec a(t)=\vec v\,'(t)=\langle -\sin t,\;-\cos t\rangle.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.6-P5 [5/5] [BC] ---
+PROMPT: A particle has velocity $\vec v(t)=\langle t,\;1-t\rangle$ for $0\le t\le 2$ and position $\vec r(0)=\langle -1,4\rangle$. What is $\vec r(2)$?
+CORRECT: B = "$\langle 1,\;4\rangle$"
+  A : $\langle 1,\;2\rangle$
+  B ✓: $\langle 1,\;4\rangle$
+  C : $\langle 3,\;4\rangle$
+  D : $\langle -1,\;4\rangle$
+EXPLANATION: Compute displacement: $$\int_0^2\langle t,1-t\rangle dt=\left\langle \tfrac12 t^2,\;t-\tfrac12 t^2\right\rangle_0^2=\langle 2,0\rangle.$$ Then $$\vec r(2)=\vec r(0)+\text{displacement}=\langle -1,4\rangle+\langle 2,0\rangle=\langle 1,4\rangle.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.7-P1 [3/3] [BC] ---
+PROMPT: Let $r(\theta)=2\cos\theta$. At $\theta=\frac{\pi}{3}$, what is $\frac{dy}{dx}$ for the polar curve?
+CORRECT: C = "$\dfrac{1}{\sqrt{3}}$"
+  A : $-\sqrt{3}$
+  B : $-\dfrac{1}{\sqrt{3}}$
+  C ✓: $\dfrac{1}{\sqrt{3}}$
+  D : $\sqrt{3}$
+EXPLANATION: Use $x=r\cos\theta$ and $y=r\sin\theta$. With $r=2\cos\theta$ and $r'=-2\sin\theta$, $$\frac{dx}{d\theta}=r'\cos\theta-r\sin\theta=-4\sin\theta\cos\theta,$$ $$\frac{dy}{d\theta}=r'\sin\theta+r\cos\theta=2(\cos^2\theta-\sin^2\theta).$$ At $\theta=\pi/3$, $\frac{dy}{d\theta}=-1$ and $\frac{dx}{d\theta}=-\sqrt{3}$, so $$\frac{dy}{dx}=\frac{-1}{-\sqrt{3}}=\frac{1}{\sqrt{3}}.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.7-P2 [4/4] [BC] ---
+PROMPT: For the polar curve $r(\theta)=1+2\sin\theta$, which value of $\theta$ gives a horizontal tangent line (in $0\le \theta<2\pi$)?
+CORRECT: D = "$\theta=\frac{\pi}{2}$"
+  A : $\theta=0$
+  B : $\theta=\frac{3\pi}{2}$
+  C : $\theta=\pi$
+  D ✓: $\theta=\frac{\pi}{2}$
+EXPLANATION: A horizontal tangent occurs when $\frac{dy}{d\theta}=0$ and $\frac{dx}{d\theta}\ne 0$.  With $x=r\cos\theta$, $y=r\sin\theta$, $r=1+2\sin\theta$, $r'=2\cos\theta$: $$\frac{dy}{d\theta}=r'\sin\theta+r\cos\theta=\cos\theta(1+4\sin\theta).$$ At $\theta=\pi/2$, $\cos\theta=0$, so $\frac{dy}{d\theta}=0$. Also $$\frac{dx}{d\theta}=r'\cos\theta-r\sin\theta=2\cos^2\theta-(1+2\sin\theta)\sin\theta,$$ so at $\theta=\pi/2$ it equals $-3\ne 0$.
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+
+--- 9.7-P3 [2/2] [BC] ---
+PROMPT: The point has polar coordinates $(r,\theta)=(-3,\tfrac{\pi}{4})$. Which of the following is an equivalent polar representation with $r>0$ and $0\le \theta<2\pi$?
+CORRECT: A = "$(3,\tfrac{5\pi}{4})$"
+  A ✓: $(3,\tfrac{5\pi}{4})$
+  B : $(3,\tfrac{\pi}{4})$
+  C : $(3,\tfrac{7\pi}{4})$
+  D : $(3,\tfrac{3\pi}{4})$
+EXPLANATION: In polar coordinates, $(r,\theta)$ and $(-r,\theta+\pi)$ represent the same point. Therefore $$(-3,\frac{\pi}{4})\equiv(3,\frac{\pi}{4}+\pi)=(3,5\frac{\pi}{4}).$$
+MICRO:
+  A: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.7-P4 [3/3] [BC] ---
+PROMPT: Let $r(\theta)=\theta^2$. Which expression equals $\dfrac{dy}{dx}$ in terms of $\theta$ for the polar curve?
+CORRECT: C = "$\dfrac{2\theta\sin\theta+\theta^2\cos\theta}{2\theta\cos\theta-\theta^2\sin\theta}$"
+  A : $\dfrac{2\theta\sin\theta+\theta^2\cos\theta}{2\theta\cos\theta+\theta^2\sin\theta}$
+  B : $\dfrac{2\theta\cos\theta-\theta^2\sin\theta}{2\theta\sin\theta+\theta^2\cos\theta}$
+  C ✓: $\dfrac{2\theta\sin\theta+\theta^2\cos\theta}{2\theta\cos\theta-\theta^2\sin\theta}$
+  D : $\dfrac{2\theta\sin\theta-\theta^2\cos\theta}{2\theta\cos\theta-\theta^2\sin\theta}$
+EXPLANATION: With $x=r\cos\theta$ and $y=r\sin\theta$, and $r=\theta^2$, $r'=2\theta$: $$\frac{dx}{d\theta}=2\theta\cos\theta-\theta^2\sin\theta,$$ $$\frac{dy}{d\theta}=2\theta\sin\theta+\theta^2\cos\theta.$$  Therefore $$\frac{dy}{dx}=\frac{2\theta\sin\theta+\theta^2\cos\theta}{2\theta\cos\theta-\theta^2\sin\theta}.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.7-P5 [2/2] [BC] ---
+PROMPT: The image shows a polar graph. Which equation matches the graph?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$r=1+\cos\theta$"
+  A : $r=1+\sin\theta$
+  B ✓: $r=1+\cos\theta$
+  C : $r=1-\cos\theta$
+  D : $r=2\cos\theta$
+EXPLANATION: The graph is symmetric about the polar axis and has a cusp at the origin, characteristic of a cardioid of the form $r=1+\cos\theta$.
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.8-P1 [2/3] [BC] ---
+PROMPT: Find the area enclosed by the polar curve $r=2\sin\theta$.
+CORRECT: A = "$\pi$"
+  A ✓: $\pi$
+  B : $2\pi$
+  C : $\frac{\pi}{2}$
+  D : $4$
+EXPLANATION: Use polar area: $$A=\frac12\int_{0}^{\pi}4\sin^2\theta\,d\theta=2\int_0^{\pi}\sin^2\theta\,d\theta=2\cdot\frac{\pi}{2}=\pi.$$
+MICRO:
+  A: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.8-P2 [4/4] [BC] ---
+PROMPT: Find the area of one petal of the rose $r=2\cos(3\theta)$.
+CORRECT: D = "$\frac{\pi}{6}$"
+  A : $\frac{2\pi}{3}$
+  B : $\frac{\pi}{3}$
+  C : $\frac{\pi}{12}$
+  D ✓: $\frac{\pi}{6}$
+EXPLANATION: One petal around $\theta=0$ is traced when $\cos(3\theta)\ge 0$ between consecutive zeros: $\theta\in[\frac{-\pi}{6},\frac{\pi}{6}]$.  $$A=\frac12\int_{\frac{-\pi}{6}}^{\frac{\pi}{6}}(2\cos(3\theta))^2\,d\theta=2\int_{\frac{-\pi}{6}}^{\frac{\pi}{6}}\cos^2(3\theta)\,d\theta.$$  Using $\cos^2u=\frac{1+\cos(2u)}{2}$ gives $A=\frac{\pi}{6}$.
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+
+--- 9.8-P3 [3/2] [BC] ---
+PROMPT: Which integral gives the area enclosed by the cardioid $r=1+\cos\theta$?
+CORRECT: D = "$\displaystyle \frac12\int_{0}^{2\pi}(1+\cos\theta)^2\,d\theta$"
+  A : $\displaystyle \int_{0}^{2\pi}(1+\cos\theta)\,d\theta$
+  B : $\displaystyle \int_{0}^{2\pi}(1+\cos\theta)^2\,d\theta$
+  C : $\displaystyle \frac12\int_{0}^{\pi}(1+\cos\theta)^2\,d\theta$
+  D ✓: $\displaystyle \frac12\int_{0}^{2\pi}(1+\cos\theta)^2\,d\theta$
+EXPLANATION: Polar area is $$A=\frac12\int_a^b r^2\,d\theta.$$  The curve $r=1+\cos\theta$ is traced once on $[0,2\pi]$, so $$A=\frac12\int_0^{2\pi}(1+\cos\theta)^2\,d\theta.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+
+--- 9.8-P4 [5/4] [BC] ---
+PROMPT: Let $R$ be the region inside $r=2\cos\theta$ and outside $r=1$. What is the area of $R$?
+CORRECT: C = "$\frac{\pi}{3}-\frac{\sqrt{3}}{4}$"
+  A : $\frac{2\pi}{3}-\frac{\sqrt{3}}{2}$
+  B : $\frac{\pi}{3}+\frac{\sqrt{3}}{4}$
+  C ✓: $\frac{\pi}{3}-\frac{\sqrt{3}}{4}$
+  D : $\frac{\sqrt{3}}{4}$
+EXPLANATION: Intersections satisfy $2\cos\theta=1$, so $\theta=\pm\frac{\pi}{3}$.  $$A=\frac12\int_{\frac{-\pi}{3}}^{\frac{\pi}{3}}\left((2\cos\theta)^2-1\right)d\theta=\frac12\int_{\frac{-\pi}{3}}^{\frac{\pi}{3}}(4\cos^2\theta-1)d\theta.$$  Using $\cos^2\theta=\frac{1+\cos2\theta}{2}$ yields $$A=\frac{\pi}{3}-\frac{\sqrt{3}}{4}.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.8-P5 [3/2] [BC] ---
+PROMPT: The shaded region in the image is inside $r=2\cos\theta$ and outside $r=1$. Which integral represents the shaded area?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$\displaystyle \frac12\int_{\frac{-\pi}{3}}^{\frac{\pi}{3}}\left((2\cos\theta)^2-1\right)d\theta$"
+  A : $\displaystyle \frac12\int_{0}^{\frac{\pi}{3}}\left(1-(2\cos\theta)^2\right)d\theta$
+  B ✓: $\displaystyle \frac12\int_{\frac{-\pi}{3}}^{\frac{\pi}{3}}\left((2\cos\theta)^2-1\right)d\theta$
+  C : $\displaystyle \frac12\int_{\frac{-\pi}{3}}^{\frac{\pi}{3}}\left((2\cos\theta)-1\right)d\theta$
+  D : $\displaystyle \int_{\frac{-\pi}{3}}^{\frac{\pi}{3}}\left((2\cos\theta)^2-1\right)d\theta$
+EXPLANATION: For polar area between curves, $$A=\frac12\int_a^b\left(r_{out}^2-r_{in}^2\right)d\theta.$$  Here $r_{out}=2\cos\theta$ and $r_{in}=1$, with intersections at $\theta=\pm\pi/3$. Thus the correct setup is $$\frac12\int_{\frac{-\pi}{3}}^{\frac{\pi}{3}}\left((2\cos\theta)^2-1\right)d\theta.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.9-P1 [3/3] [BC] ---
+PROMPT: Find the area of the region that lies inside $r=2+\cos\theta$ and outside $r=2$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$4+\dfrac{\pi}{4}$"
+  A : $4+\dfrac{\pi}{2}$
+  B : $\dfrac{\pi}{4}$
+  C : $2+\dfrac{\pi}{4}$
+  D ✓: $4+\dfrac{\pi}{4}$
+EXPLANATION: Intersection occurs when $2+\cos\theta=2\Rightarrow \cos\theta=0$, so $\theta\in[-\frac{\pi}{2},\frac{\pi}{2}]$ bounds the region where $2+\cos\theta\ge 2$. Area is $$A=\frac12\int_{\frac{-\pi}{2}}^{\frac{\pi}{2}}\Big((2+\cos\theta)^2-2^2\Big)\,d\theta =\frac12\int_{\frac{-\pi}{2}}^{\frac{\pi}{2}}\big(4\cos\theta+\cos^2\theta\big)\,d\theta =\frac12\Big(8+\frac{\pi}{2}\Big)=4+\frac{\pi}{4}.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+
+--- 9.9-P2 [5/5] [BC] ---
+PROMPT: Find the area of the region that lies inside $r=3\sin\theta$ and outside $r=1$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\dfrac{7}{4}\big(\pi-2\arcsin(\tfrac{1}{3})\big)+\sqrt{2}$"
+  A ✓: $\dfrac{7}{4}\big(\pi-2\arcsin(\tfrac{1}{3})\big)+\sqrt{2}$
+  B : $\dfrac{7}{4}\big(\pi-2\arcsin(\tfrac{1}{3})\big)-\sqrt{2}$
+  C : $\dfrac{7\pi}{4}+\sqrt{2}$
+  D : $\dfrac{1}{2}\big(\pi-2\arcsin(\tfrac{1}{3})\big)$
+EXPLANATION: Intersections satisfy $3\sin\theta=1\Rightarrow \sin\theta=\tfrac{1}{3}$. Let $\alpha=\arcsin(\tfrac{1}{3})$, so the region occurs for $\theta\in[\alpha,\pi-\alpha]$. Area: $$A=\frac12\int_{\alpha}^{\pi-\alpha}\big((3\sin\theta)^2-1^2\big)\,d\theta =\frac12\int_{\alpha}^{\pi-\alpha}(9\sin^2\theta-1)\,d\theta.$$ Since $9\sin^2\theta-1=\frac{7}{2}-\frac{9}{2}\cos 2\theta$, the integral equals $$\frac12\left[\frac{7}{2}(\pi-2\alpha)+\frac{9}{2}\sin 2\alpha\right]=\frac{7}{4}(\pi-2\alpha)+\frac{9}{4}\sin 2\alpha.$$ With $\sin\alpha=\tfrac13$ and $\cos\alpha=\tfrac{2\sqrt2}{3}$, we get $\sin 2\alpha=2\sin\alpha\cos\alpha=\tfrac{4\sqrt2}{9}$, so $\frac{9}{4}\sin 2\alpha=\sqrt2$. Thus $$A=\frac{7}{4}\Big(\pi-2\arcsin\big(\tfrac13\big)\Big)+\sqrt2.$$
+MICRO:
+  A: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.9-P3 [2/2] [BC] ---
+PROMPT: Which integral gives the area of the region inside $r=1+\sin\theta$ and outside $r=1$, for $0\le \theta\le \pi$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\dfrac12\int_{0}^{\pi}\left((1+\sin\theta)^2-1^2\right)\,d\theta$"
+  A ✓: $\dfrac12\int_{0}^{\pi}\left((1+\sin\theta)^2-1^2\right)\,d\theta$
+  B : $\int_{0}^{\pi}\left((1+\sin\theta)-1\right)\,d\theta$
+  C : $\dfrac12\int_{0}^{\pi}\left((1+\sin\theta)-1\right)\,d\theta$
+  D : $\dfrac12\int_{0}^{\pi}\left(1^2-(1+\sin\theta)^2\right)\,d\theta$
+EXPLANATION: For area between polar curves on $[a,b]$, use $$A=\frac12\int_a^b\big(R(\theta)^2-r(\theta)^2\big)\,d\theta,$$ where $R$ is the outer radius. Here $R(\theta)=1+\sin\theta$ and $r(\theta)=1$ on $0\le\theta\le\pi$.
+MICRO:
+  A: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.9-P4 [4/4] [BC] ---
+PROMPT: Find the area of the region that lies inside $r=4\cos\theta$ and outside $r=2$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$\dfrac{4\pi}{3}+2\sqrt{3}$"
+  A : $\dfrac{8\pi}{3}+4\sqrt{3}$
+  B ✓: $\dfrac{4\pi}{3}+2\sqrt{3}$
+  C : $\dfrac{4\pi}{3}-2\sqrt{3}$
+  D : $\dfrac{2\pi}{3}+2\sqrt{3}$
+EXPLANATION: Intersect when $4\cos\theta=2\Rightarrow \cos\theta=\tfrac12$, so $\theta=\pm\tfrac{\pi}{3}$. Area: $$A=\frac12\int_{\frac{-\pi}{3}}^{\frac{\pi}{3}}\left((4\cos\theta)^2-2^2\right)d\theta =\frac12\int_{\frac{-\pi}{3}}^{\frac{\pi}{3}}(16\cos^2\theta-4)\,d\theta.$$ Use $\cos^2\theta=\frac{1+\cos 2\theta}{2}$: $$16\cos^2\theta-4=8(1+\cos2\theta)-4=4+8\cos2\theta.$$ Thus $$A=\frac12\left[4\cdot\frac{2\pi}{3}+4\big(\sin2\theta\big)\Big|_{\frac{-\pi}{3}}^{\frac{\pi}{3}}\right] =\frac12\left(\frac{8\pi}{3}+4\sqrt3\right)=\frac{4\pi}{3}+2\sqrt3.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  C: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+
+--- 9.9-P5 [1/1] [BC] ---
+PROMPT: If a region is bounded between the outer polar curve $r=R(\theta)$ and the inner polar curve $r=r(\theta)$ for $\alpha\le\theta\le\beta$, which formula gives its area?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$\displaystyle\frac12\int_{\alpha}^{\beta}\big(R(\theta)^2-r(\theta)^2\big)\,d\theta$"
+  A : $\displaystyle\int_{\alpha}^{\beta}\big(R(\theta)-r(\theta)\big)\,d\theta$
+  B : $\displaystyle\frac12\int_{\alpha}^{\beta}\big(r(\theta)^2-R(\theta)^2\big)\,d\theta$
+  C ✓: $\displaystyle\frac12\int_{\alpha}^{\beta}\big(R(\theta)^2-r(\theta)^2\big)\,d\theta$
+  D : $\displaystyle\int_{\alpha}^{\beta}R(\theta)^2\,d\theta$
+EXPLANATION: Polar area uses $A=\frac12\int r^2\,d\theta$. For the region between two curves, subtract the inner area from the outer area on the same $\theta$-interval: $$A=\frac12\int_{\alpha}^{\beta}\big(R(\theta)^2-r(\theta)^2\big)\,d\theta.$$
+MICRO:
+  A: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  B: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.
+  C: Correct. Use the polar area formula: integral of 1/2 * $r(theta)$^2 $d(theta)$ or conversion $x = r$ co$s(theta)$, $y = r$ si$n(theta)$.
+  D: Incorrect. Check your polar area formula (1/2 * $r^2$) or your conversion between polar and rectangular coordinates.

@@ -1,0 +1,310 @@
+[
+  {
+    "title": "1.0-UT-Q3",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"As $x\\to 2^-$, $f(x)\\to -\\infty$ and as $x\\to 2^+$\")"
+    ]
+  },
+  {
+    "title": "1.3-P1",
+    "correctId": "C",
+    "problems": [
+      "Micro_expl for correct answer C doesn't start with \"Correct\" (starts with: \"Approaching $x=2$ from the left follows the left l\")"
+    ]
+  },
+  {
+    "title": "1.3-P2",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"Left-hand and right-hand limits are different ($3$\")"
+    ]
+  },
+  {
+    "title": "1.3-P3",
+    "correctId": "C",
+    "problems": [
+      "Micro_expl for correct answer C doesn't start with \"Correct\" (starts with: \"As $x\\to 0^+$, the graph increases without bound, \")"
+    ]
+  },
+  {
+    "title": "1.3-P4",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"Near $x=-1$, the graph lies on the horizontal line\")"
+    ]
+  },
+  {
+    "title": "1.3-P5",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"As $x\\to 0^+$ along the curve, $y\\to 0$.\")"
+    ]
+  },
+  {
+    "title": "1.4-P1",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"Both sides approach $6$.\")"
+    ]
+  },
+  {
+    "title": "1.4-P2",
+    "correctId": "C",
+    "problems": [
+      "Micro_expl for correct answer C doesn't start with \"Correct\" (starts with: \"One-sided limits differ.\")"
+    ]
+  },
+  {
+    "title": "1.4-P3",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"Unbounded growth both sides.\")"
+    ]
+  },
+  {
+    "title": "1.4-P4",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"Both sides approach $4$.\")"
+    ]
+  },
+  {
+    "title": "1.4-P5",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"Oscillation prevents a limit.\")"
+    ]
+  },
+  {
+    "title": "1.5-P1",
+    "correctId": "C",
+    "problems": [
+      "Micro_expl for correct answer C doesn't start with \"Correct\" (starts with: \"Use continuity of polynomials and substitute $x=3$\")"
+    ]
+  },
+  {
+    "title": "1.5-P2",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"This uses the correct limits from the graph: $f\\to\")"
+    ]
+  },
+  {
+    "title": "1.5-P3",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"Compute $(5)^2$ and divide by $4$.\")"
+    ]
+  },
+  {
+    "title": "1.5-P4",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"Nonzero over $0$ implies unbounded behavior.\")"
+    ]
+  },
+  {
+    "title": "1.5-P5",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"Denominator nonzero, so substitute directly.\")"
+    ]
+  },
+  {
+    "title": "1.6-P1",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"Cancel the common factor then substitute.\")"
+    ]
+  },
+  {
+    "title": "1.6-P2",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"Rationalize to remove the radical in the numerator\")"
+    ]
+  },
+  {
+    "title": "1.6-P3",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"Conjugate cancels $(x-3)$ cleanly.\")"
+    ]
+  },
+  {
+    "title": "1.6-P4",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"Cancel then substitute.\")"
+    ]
+  },
+  {
+    "title": "1.7-P1",
+    "correctId": "C",
+    "problems": [
+      "Micro_expl for correct answer C doesn't start with \"Correct\" (starts with: \"Both sides approach the open circle on the line at\")"
+    ]
+  },
+  {
+    "title": "1.7-P2",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"Classic factor-cancel-substitute.\")"
+    ]
+  },
+  {
+    "title": "1.7-P3",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"Mismatch of one-sided limits.\")"
+    ]
+  },
+  {
+    "title": "1.7-P5",
+    "correctId": "C",
+    "problems": [
+      "Micro_expl for correct answer C doesn't start with \"Correct\" (starts with: \"Unequal one-sided limits.\")"
+    ]
+  },
+  {
+    "title": "1.8-P2",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"Because $-1\\le \\sin(1/x)\\le 1$, multiplying by $x$\")"
+    ]
+  },
+  {
+    "title": "1.8-P3",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"The function oscillates between $-1$ and $1$ witho\")"
+    ]
+  },
+  {
+    "title": "1.8-P4",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"Bounds shrink to $0$.\")"
+    ]
+  },
+  {
+    "title": "1.9-P1",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"From the left, $f(x)$ approaches $3$. From the rig\")"
+    ]
+  },
+  {
+    "title": "1.9-P2",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"Compare with $f(3)$ to avoid confusing value with \")"
+    ]
+  },
+  {
+    "title": "1.9-P4",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"The values $3.9601$ and $4.0401$ cluster around $4\")"
+    ]
+  },
+  {
+    "title": "1.9-P5",
+    "correctId": "C",
+    "problems": [
+      "Micro_expl for correct answer C doesn't start with \"Correct\" (starts with: \"Conclude DNE if they differ.\")"
+    ]
+  },
+  {
+    "title": "1.10-P1",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"The left-hand limit and right-hand limit are finit\")"
+    ]
+  },
+  {
+    "title": "1.10-P2",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"Cancel $(x-3)$ for $x\\ne 3$ to get the simplified \")"
+    ]
+  },
+  {
+    "title": "1.10-P3",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"The left branch goes downward without bound and th\")"
+    ]
+  },
+  {
+    "title": "1.10-P4",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"Check whether the one-sided limits match.\")"
+    ]
+  },
+  {
+    "title": "1.10-P5",
+    "correctId": "C",
+    "problems": [
+      "Micro_expl for correct answer C doesn't start with \"Correct\" (starts with: \"Mismatch implies discontinuity; since the limit ex\")"
+    ]
+  },
+  {
+    "title": "1.11-P1",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"Existence of $f(1)$ alone is insufficient.\")"
+    ]
+  },
+  {
+    "title": "1.11-P3",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"Removable discontinuities can be fixed by redefini\")"
+    ]
+  },
+  {
+    "title": "1.11-P4",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"Boundary points still require matching at the swit\")"
+    ]
+  },
+  {
+    "title": "1.11-P5",
+    "correctId": "C",
+    "problems": [
+      "Micro_expl for correct answer C doesn't start with \"Correct\" (starts with: \"Check $a+b$ at $x=1$.\")"
+    ]
+  },
+  {
+    "title": "1.12-P1",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"Continuous on its full domain $x\\le 4$.\")"
+    ]
+  },
+  {
+    "title": "1.12-P2",
+    "correctId": "D",
+    "problems": [
+      "Micro_expl for correct answer D doesn't start with \"Correct\" (starts with: \"Setting $2k+2=2$ gives $k=0$.\")"
+    ]
+  },
+  {
+    "title": "1.12-P4",
+    "correctId": "B",
+    "problems": [
+      "Micro_expl for correct answer B doesn't start with \"Correct\" (starts with: \"Domain restriction breaks this.\")"
+    ]
+  },
+  {
+    "title": "1.12-P5",
+    "correctId": "A",
+    "problems": [
+      "Micro_expl for correct answer A doesn't start with \"Correct\" (starts with: \"-4 is outside the endpoint range.\")"
+    ]
+  }
+]

@@ -188,6 +188,17 @@ export interface Recommendation {
   currentMastery: number;
   targetMastery: number;
   mode: SessionMode;
+  hasData: boolean; // true only when recommendation is based on real user progress data
+  // Enterprise scoring metadata
+  weightedScore?: number; // Final composite score (0-1)
+  confidenceLevel?: 'low' | 'medium' | 'high'; // Based on data volume
+  scoringFactors?: {
+    masteryGap: number;      // 0-1: room to improve
+    recencyDecay: number;    // 0-1: time since last practice
+    coverageGap: number;     // 0-1: sections not yet attempted
+    sequentialBonus: number; // 0-1: curriculum order bonus
+    weakBoost: number;       // 0-1: started-but-weak priority
+  };
 }
 
 export interface AppNotification {
@@ -325,7 +336,7 @@ export interface UserSectionProgress {
   correct_questions: number;
   total_questions: number;
   last_accessed_at: string;
-  entity_type?: 'course' | 'unit' | 'section';
+  entity_type: 'section' | 'course' | 'unit' | 'algorithmic';
 }
 
 export interface UserPrestige {

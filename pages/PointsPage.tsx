@@ -72,16 +72,17 @@ const EarningCard = ({
 
             {/* Expandable details panel */}
             <div
-                className="overflow-hidden transition-all duration-300 ease-in-out"
-                style={{ maxHeight: expanded ? '400px' : '0px' }}
+                className={`grid transition-all duration-300 ease-in-out ${expanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
             >
-                <div className="px-6 pb-5 pt-1 space-y-2">
-                    {details.map((detail, i) => (
-                        <div key={i} className="flex items-start gap-2 text-xs text-gray-500 dark:text-gray-400">
-                            <span className="text-primary mt-0.5 shrink-0">•</span>
-                            <span className="leading-relaxed">{detail}</span>
-                        </div>
-                    ))}
+                <div className="overflow-hidden">
+                    <div className="px-6 pb-5 pt-1 space-y-2">
+                        {details.map((detail, i) => (
+                            <div key={i} className="flex items-start gap-2 text-xs text-gray-500 dark:text-gray-400">
+                                <span className="text-primary mt-0.5 shrink-0">•</span>
+                                <span className="leading-relaxed">{detail}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

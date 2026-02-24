@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import { User, CourseType, Activity, TopicMastery, Title, CourseState, Recommendation, SessionMode, Question, AppNotification, UnitContent, SubTopic, UserInsights, SubmitAttemptParams, SubmitAttemptResult, ReviewQueueItem, SubTopicProgress, UserSectionProgress, UserPrestige } from './types';
-import { INITIAL_USER, INITIAL_ACTIVITIES, INITIAL_RADAR_DATA, INITIAL_LINE_DATA, INITIAL_COURSES, PRACTICE_QUESTIONS, INITIAL_NOTIFICATIONS, COURSE_CONTENT_DATA } from './constants';
+import { INITIAL_USER, INITIAL_ACTIVITIES, INITIAL_RADAR_DATA, INITIAL_LINE_DATA, INITIAL_COURSES, PRACTICE_QUESTIONS, INITIAL_NOTIFICATIONS, COURSE_CONTENT_DATA, COURSE_TOPICS } from './constants';
 import { supabase } from './src/services/supabaseClient';
 import { notificationsApi, contentApi, questionsApi, sectionsApi } from './src/services/api';
 
@@ -51,6 +51,7 @@ interface AppContextType {
     markProIntroSeen: () => Promise<void>;
     completePractice: (results: { correct: number; total: number; topic: string }) => void;
     setSessionMode: (mode: SessionMode) => void;
+    setRecommendationTopic: (topicId: string) => void;
     dismissLoginPrompt: () => void;
 
     // Creator Area Methods
@@ -83,8 +84,8 @@ interface AppContextType {
 
     // Session Persistence Methods
     // Session Persistence Methods
-    saveSectionProgress: (sectionId: string, data: any, stats?: { completed: number; total: number; score: number }, entityType?: 'course' | 'unit' | 'section', skipStatusUpdate?: boolean) => Promise<boolean>;
-    completeSectionSession: (sectionId: string, score: number, totalQuestions: number, correctQuestions: number, data: any, entityType?: 'course' | 'unit' | 'section', skipStatusUpdate?: boolean) => Promise<boolean>;
+    saveSectionProgress: (sectionId: string, data: any, stats?: { completed: number; total: number; score: number }, entityType?: 'course' | 'unit' | 'section' | 'algorithmic', skipStatusUpdate?: boolean) => Promise<boolean>;
+    completeSectionSession: (sectionId: string, score: number, totalQuestions: number, correctQuestions: number, data: any, entityType?: 'course' | 'unit' | 'section' | 'algorithmic', skipStatusUpdate?: boolean) => Promise<boolean>;
     getUnitProgress: (unitId: string) => Promise<any>;
     getCourseProgress: (courseScope: string) => Promise<any>;
     getSectionProgress: (sectionId: string) => Promise<UserSectionProgress | null>;
@@ -133,6 +134,18 @@ const generateUUID = () => {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
+};
+
+// Mode-dependent weight profiles for the enterprise scoring engine
+export const getModeWeights = (mode: SessionMode) => {
+    switch (mode) {
+        case 'Review':
+            return { masteryGap: 0.15, recencyDecay: 0.35, coverageGap: 0.10, sequentialBonus: 0.05, weakBoost: 0.35 };
+        case 'Random':
+            return { masteryGap: 0.20, recencyDecay: 0.15, coverageGap: 0.25, sequentialBonus: 0.15, weakBoost: 0.25 };
+        default: // Adaptive
+            return { masteryGap: 0.30, recencyDecay: 0.20, coverageGap: 0.15, sequentialBonus: 0.15, weakBoost: 0.20 };
+    }
 };
 
 export const AppProvider = ({ children }: React.PropsWithChildren) => {
@@ -321,7 +334,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         reason: 'Start your AP Calculus journey with the fundamentals.',
         currentMastery: 0,
         targetMastery: 80,
-        mode: 'Adaptive'
+        mode: 'Adaptive',
+        hasData: false
     });
 
     // Fetch all sections from database and merge into topicContent for Practice display
@@ -559,7 +573,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
     // Fetch Recent Activities (Global)
     const fetchRecentActivities = async () => {
-        if (!user || !user.id) return;
+        if (!isAuthenticated || !user?.id) return;
 
         try {
             const { data, error } = await supabase.rpc('get_recent_activities', { p_limit: 10 });
@@ -795,12 +809,11 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             // 1. Try to get content from DB
             let data = await contentApi.getTopics();
 
-            // 2. If empty, auto-seed
+            // 2. If empty, auto-seed (DISABLED to prevent 400 Bad Request loops)
             if (!data || Object.keys(data).length === 0) {
-                console.warn('⚠️ No content found. Seeding database...');
-                await contentApi.seedContent();
-                // Re-fetch after seeding
-                data = await contentApi.getTopics();
+                console.warn('⚠️ No content found returning from DB. Falling back to static data.');
+                // await contentApi.seedContent();
+                // data = await contentApi.getTopics();
             }
 
             if (data && Object.keys(data).length > 0) {
@@ -1185,6 +1198,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     };
 
     const getUserInsights = async (): Promise<UserInsights | null> => {
+        if (!isAuthenticated || !user?.id) return null;
         try {
             const { data, error } = await supabase.rpc('get_user_insights');
 
@@ -1348,7 +1362,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         sectionId: string,
         data: any,
         stats: { completed: number; total: number; score: number } = { completed: 0, total: 0, score: 0 },
-        entityType: 'course' | 'unit' | 'section' = 'section',
+        entityType: 'course' | 'unit' | 'section' | 'algorithmic' = 'section',
         skipStatusUpdate: boolean = false
     ): Promise<boolean> => {
         if (!isAuthenticated || !user?.id) {
@@ -1404,7 +1418,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
     };
 
-    const completeSectionSession = async (sectionId: string, score: number, totalQuestions: number, correctQuestions: number, data: any, entityType: 'course' | 'unit' | 'section' = 'section', skipStatusUpdate: boolean = false): Promise<boolean> => {
+    const completeSectionSession = async (sectionId: string, score: number, totalQuestions: number, correctQuestions: number, data: any, entityType: 'course' | 'unit' | 'section' | 'algorithmic' = 'section', skipStatusUpdate: boolean = false): Promise<boolean> => {
         if (!isAuthenticated || !user?.id) {
             console.warn('⚠️ Cannot complete session: User not authenticated');
             return false;
@@ -2004,9 +2018,18 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                             });
                     }
                     console.log('✅ Session restored for:', email);
+                } else {
+                    // Critical Fix: Clear any stale local auth state if backend session is gone
+                    setIsAuthenticated(false);
+                    setUser(INITIAL_USER);
+                    setIsCreatorAuthenticated(false);
+                    localStorage.removeItem('user_profile_cache');
                 }
             } catch (error) {
-                console.log('No existing session found');
+                console.log('No existing session found or restoration failed', error);
+                setIsAuthenticated(false);
+                setUser(INITIAL_USER);
+                localStorage.removeItem('user_profile_cache');
             } finally {
                 clearTimeout(safetyTimeout);
                 setIsAuthLoading(false); // Stop loading regardless of result
@@ -2036,10 +2059,225 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         return () => subscription.unsubscribe();
     }, []);
 
-    // Effect: Update recommendation when course changes
+    // =====================================================
+    // ENTERPRISE UNIT RECOMMENDATION ENGINE v2.0
+    // Multi-factor scoring with weighted composite formula
+    // Factors: MasteryGap, RecencyDecay, CoverageGap, SequentialBonus, WeakBoost
+    // =====================================================
     useEffect(() => {
-        // ... (existing recommendation logic)
-    }, [user.currentCourse, user.problemsSolved]);
+        if (!user?.id) return;
+
+        const topics = COURSE_TOPICS[user.currentCourse];
+        if (!topics || topics.length === 0) return;
+
+        // ── Phase 1: Build per-unit feature vectors ──────────────────
+        const unitFeatures = topics.map((topic, index) => {
+            const unitLabel = topic.subject.split(':')[0].trim();
+            const radar = radarData.find(r => r.subject === unitLabel);
+            const mastery = radar?.A ?? 0;
+            const topicName = topic.id.includes('_')
+                ? topic.id.split('_').slice(1).join('_')
+                : topic.id;
+
+            // ─ Factor 1: MasteryGap ─
+            // Sigmoid-compressed gap: emphasizes mid-range gaps (30-70%) over extremes
+            // Raw gap: (100 - mastery) / 100
+            // Compressed: 2 / (1 + exp(-5 * (rawGap - 0.5))) - 1, then clipped [0,1]
+            const rawGap = (100 - mastery) / 100;
+            const compressedGap = 2 / (1 + Math.exp(-5 * (rawGap - 0.5))) - 1;
+            const masteryGap = Math.max(0, Math.min(1, (rawGap + compressedGap) / 2));
+
+            // ─ Factor 2: RecencyDecay ─
+            // How long since user last practiced THIS unit?
+            // Sources: sectionProgressMap entries matching this topic
+            // Bug6 fix: robust multi-format topic matching
+            const matchingProgress = Object.values(sectionProgressMap || {}).filter(
+                (p: any) => {
+                    const st = (p.data?.sessionTopic || '').toLowerCase();
+                    const sid = (p.section_id || '').toLowerCase();
+                    const tn = topicName.toLowerCase();
+                    const tid = topic.id.toLowerCase();
+                    // Match by sessionTopic, section_id, or topic_id substring
+                    return st === tn || st === tid || st.includes(tn) || tn.includes(st)
+                        || sid.includes(tn) || sid.includes(tid);
+                }
+            );
+            const lastAccessedMs = matchingProgress.length > 0
+                ? Math.max(...matchingProgress.map((s: any) =>
+                    new Date(s.last_accessed_at || 0).getTime()))
+                : 0;
+            const daysSinceLast = lastAccessedMs > 0
+                ? (Date.now() - lastAccessedMs) / (1000 * 60 * 60 * 24)
+                : -1; // -1 = never practiced
+            // Exponential decay: decayScore(d) = 1 - exp(-d / τ), τ = 7 days
+            // Peaks at 1.0 when very stale, 0 when just practiced
+            const tau = 7;
+            const recencyDecay = daysSinceLast < 0
+                ? 0.3 // never practiced — moderate, let other factors drive
+                : Math.min(1, 1 - Math.exp(-daysSinceLast / tau));
+
+            // ─ Factor 3: CoverageGap ─
+            // How many sections/subTopics in this unit has the user NOT attempted?
+            const unitContent = topicContent[topic.id]
+                || Object.values(topicContent).find(u => u.id === topic.id || u.id.includes(topicName));
+            const totalSubTopics = unitContent?.subTopics?.length || 1;
+            const completedSections = matchingProgress.filter(
+                (s: any) => s.status === 'completed' || s.correct_questions > 0
+            ).length;
+            const coverageGap = Math.max(0, 1 - completedSections / totalSubTopics);
+
+            // ─ Factor 4: SequentialBonus ─
+            // Curriculum-order bonus: earlier units get priority IF the user hasn't started them
+            // AND the previous unit(s) have high mastery (prerequisites met)
+            let sequentialBonus = 0;
+            if (mastery === 0 && index > 0) {
+                // Bug5 fix: lowered threshold from 40% to 1% — any attempt at prev unit triggers
+                const prevUnitLabel = topics[index - 1].subject.split(':')[0].trim();
+                const prevRadar = radarData.find(r => r.subject === prevUnitLabel);
+                const prevMastery = prevRadar?.A ?? 0;
+                if (prevMastery >= 1) {
+                    // Previous unit attempted → this is the natural next step
+                    sequentialBonus = 0.6 * (1 - index / topics.length);
+                }
+            } else if (mastery === 0 && index === 0) {
+                // First unit, never started — strong sequential signal
+                sequentialBonus = 0.8;
+            }
+
+            // ─ Factor 5: Started-But-Weak Boost ─
+            // Units the user has already invested time in but are below 50% get a boost
+            // Rational: reinforce before expanding
+            const hasStarted = mastery > 0 || matchingProgress.length > 0;
+            const weakBoost = hasStarted && mastery < 50 ? 0.3 * (1 - mastery / 50) : 0;
+
+            // ── Phase 2: Composite Score ─────────────────────────────
+            // Mode-dependent weights (Bug1 fix: different modes emphasize different factors)
+            const W = getModeWeights(recommendation.mode);
+
+            // ─ Penalty: Strict Prerequisite Blocker ─
+            // If the user hasn't meaningfully started the previous unit, strongly penalize jumping ahead.
+            let preReqPenalty = 1.0;
+            if (index > 0) {
+                const prevUnitLabel = topics[index - 1].subject.split(':')[0].trim();
+                const prevMastery = radarData.find(r => r.subject === prevUnitLabel)?.A ?? 0;
+                if (prevMastery < 40) {
+                    preReqPenalty = 0.1; // 90% penalty if previous unit is not solidly started
+                }
+            }
+
+            const rawWeightedScore =
+                W.masteryGap * masteryGap
+                + W.recencyDecay * recencyDecay
+                + W.coverageGap * coverageGap
+                + W.sequentialBonus * sequentialBonus
+                + W.weakBoost * weakBoost;
+
+            const weightedScore = rawWeightedScore * preReqPenalty;
+
+            return {
+                topic, topicName, unitLabel, mastery, hasStarted,
+                // Individual factors
+                masteryGap, recencyDecay, coverageGap, sequentialBonus, weakBoost,
+                // Composite
+                weightedScore,
+                daysSinceLast,
+                completedSections, totalSubTopics,
+                matchingProgressCount: matchingProgress.length,
+                hasPenalty: preReqPenalty < 1.0,
+            };
+        });
+
+        // ── Phase 3: Data sufficiency check ──────────────────────────
+        const totalSessions = unitFeatures.reduce((s, u) => s + u.matchingProgressCount, 0);
+        const hasAnyProgress = unitFeatures.some(u => u.mastery > 0 || u.hasStarted);
+
+        if (!hasAnyProgress) {
+            setRecommendation(prev => ({
+                ...prev,
+                topic: 'Limits',
+                reason: '',
+                currentMastery: 0,
+                targetMastery: 80,
+                mode: 'Adaptive',
+                hasData: false,
+                weightedScore: 0,
+                confidenceLevel: 'low',
+                scoringFactors: undefined,
+            }));
+            return;
+        }
+
+        // Confidence level based on amount of data
+        const unitsWithData = unitFeatures.filter(u => u.mastery > 0).length;
+        const confidenceLevel: 'low' | 'medium' | 'high' =
+            totalSessions >= 10 && unitsWithData >= 3 ? 'high'
+                : totalSessions >= 3 || unitsWithData >= 2 ? 'medium'
+                    : 'low';
+
+        // ── Phase 4: Rank and select ─────────────────────────────────
+        const sorted = [...unitFeatures].sort((a, b) => b.weightedScore - a.weightedScore);
+        const best = sorted[0];
+
+        // ── Phase 5: Mode selection (based on mastery level) ─────────
+        let mode: SessionMode;
+        if (best.mastery >= 70) mode = 'Review';
+        else mode = 'Adaptive';
+
+        // ── Phase 6: Explainable reason generation ──────────────────
+        // Identify the dominant factor(s) that drove this recommendation
+        const factors = [
+            { name: 'mastery gap', val: best.masteryGap, w: 0.30 },
+            { name: 'recency', val: best.recencyDecay, w: 0.20 },
+            { name: 'coverage', val: best.coverageGap, w: 0.15 },
+            { name: 'sequence', val: best.sequentialBonus, w: 0.15 },
+            { name: 'reinforcement', val: best.weakBoost, w: 0.20 },
+        ].filter(f => f.val > 0.05).sort((a, b) => b.val * b.w - a.val * a.w);
+
+        let reason: string;
+        const topFactor = factors[0]?.name || 'mastery gap';
+        const score = Math.round(best.weightedScore * 100);
+
+        if (best.hasPenalty) {
+            reason = `${best.unitLabel} is locked behind prerequisites. Please complete earlier units first. [Score: ${score}]`;
+        } else if (!best.hasStarted) {
+            if (best.sequentialBonus > 0.3) {
+                reason = `${best.unitLabel} is your next logical step — prerequisite units look solid. [Score: ${score}]`;
+            } else {
+                reason = `${best.unitLabel} hasn't been started. Expanding coverage will strengthen your foundation. [Score: ${score}]`;
+            }
+        } else if (best.mastery >= 70) {
+            const days = best.daysSinceLast > 0 ? `${Math.round(best.daysSinceLast)}d ago` : 'recently';
+            reason = `${best.unitLabel} at ${best.mastery}% — revisit to maintain mastery (last practiced ${days}). [Score: ${score}]`;
+        } else if (topFactor === 'recency' && best.daysSinceLast > 3) {
+            reason = `${best.unitLabel} needs review — ${Math.round(best.daysSinceLast)}d since last practice, risk of decay. [Score: ${score}]`;
+        } else if (topFactor === 'reinforcement') {
+            reason = `${best.unitLabel} at ${best.mastery}% — reinforce before expanding to new units. [Score: ${score}]`;
+        } else if (topFactor === 'coverage') {
+            reason = `${best.unitLabel} — only ${best.completedSections}/${best.totalSubTopics} sections covered. Fill gaps. [Score: ${score}]`;
+        } else {
+            reason = `${best.unitLabel} at ${best.mastery}% — highest improvement potential across all factors. [Score: ${score}]`;
+        }
+
+        // ── Phase 7: Commit recommendation ──────────────────────────
+        setRecommendation(prev => ({
+            ...prev,
+            topic: best.topicName,
+            reason,
+            currentMastery: best.mastery,
+            targetMastery: 80,
+            mode,
+            hasData: true,
+            weightedScore: Math.round(best.weightedScore * 1000) / 1000,
+            confidenceLevel,
+            scoringFactors: {
+                masteryGap: Math.round(best.masteryGap * 1000) / 1000,
+                recencyDecay: Math.round(best.recencyDecay * 1000) / 1000,
+                coverageGap: Math.round(best.coverageGap * 1000) / 1000,
+                sequentialBonus: Math.round(best.sequentialBonus * 1000) / 1000,
+                weakBoost: Math.round(best.weakBoost * 1000) / 1000,
+            },
+        }));
+    }, [user.currentCourse, radarData, sectionProgressMap, topicContent]);
 
     const login = (
         email: string,
@@ -2599,8 +2837,148 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         });
     };
 
+    // Bug1 fix: setSessionMode recalculates weightedScore with mode-dependent weights
     const setSessionMode = (mode: SessionMode) => {
-        setRecommendation(prev => ({ ...prev, mode }));
+        setRecommendation(prev => {
+            if (!prev.scoringFactors) return { ...prev, mode };
+            const W = getModeWeights(mode);
+            const f = prev.scoringFactors;
+            const weightedScore = W.masteryGap * f.masteryGap
+                + W.recencyDecay * f.recencyDecay
+                + W.coverageGap * f.coverageGap
+                + W.sequentialBonus * f.sequentialBonus
+                + W.weakBoost * f.weakBoost;
+            const scoreDisplay = Math.round(weightedScore * 100);
+            const reason = prev.reason.replace(/\[Score: \d+\]/, `[Score: ${scoreDisplay}]`);
+            return { ...prev, mode, weightedScore: Math.round(weightedScore * 1000) / 1000, reason };
+        });
+    };
+
+    // Allow user to manually switch the recommended unit topic
+    // Recomputes all 5 enterprise scoring factors for the selected unit
+    const setRecommendationTopic = (topicId: string) => {
+        const topics = COURSE_TOPICS[user.currentCourse];
+        const selectedTopic = topics.find(t => t.id === topicId);
+        if (!selectedTopic) return;
+
+        const index = topics.indexOf(selectedTopic);
+        const topicName = topicId.includes('_')
+            ? topicId.split('_').slice(1).join('_')
+            : topicId;
+        const unitLabel = selectedTopic.subject.split(':')[0].trim();
+        const radar = radarData.find(r => r.subject === unitLabel);
+        const mastery = radar?.A ?? 0;
+
+        // ── Recompute all 5 factors for the selected unit ──
+
+        // Factor 1: MasteryGap (sigmoid-compressed)
+        const rawGap = (100 - mastery) / 100;
+        const compressedGap = 2 / (1 + Math.exp(-5 * (rawGap - 0.5))) - 1;
+        const masteryGap = Math.max(0, Math.min(1, (rawGap + compressedGap) / 2));
+
+        // Factor 2: RecencyDecay (exponential) — Bug6 fix: robust matching
+        const matchingProgress = Object.values(sectionProgressMap || {}).filter(
+            (p: any) => {
+                const st = (p.data?.sessionTopic || '').toLowerCase();
+                const sid = (p.section_id || '').toLowerCase();
+                const tn = topicName.toLowerCase();
+                const tid = topicId.toLowerCase();
+                return st === tn || st === tid || st.includes(tn) || tn.includes(st)
+                    || sid.includes(tn) || sid.includes(tid);
+            }
+        );
+        const lastAccessedMs = matchingProgress.length > 0
+            ? Math.max(...matchingProgress.map((s: any) => new Date(s.last_accessed_at || 0).getTime()))
+            : 0;
+        const daysSinceLast = lastAccessedMs > 0
+            ? (Date.now() - lastAccessedMs) / (1000 * 60 * 60 * 24) : -1;
+        const tau = 7;
+        const recencyDecay = daysSinceLast < 0
+            ? 0.3 : Math.min(1, 1 - Math.exp(-daysSinceLast / tau));
+
+        // Factor 3: CoverageGap
+        const unitContent = topicContent[topicId]
+            || Object.values(topicContent).find(u => u.id === topicId || u.id.includes(topicName));
+        const totalSubTopics = unitContent?.subTopics?.length || 1;
+        const completedSections = matchingProgress.filter(
+            (s: any) => s.status === 'completed' || s.correct_questions > 0
+        ).length;
+        const coverageGap = Math.max(0, 1 - completedSections / totalSubTopics);
+
+        // Factor 4: SequentialBonus
+        let sequentialBonus = 0;
+        if (mastery === 0 && index > 0) {
+            const prevLabel = topics[index - 1].subject.split(':')[0].trim();
+            const prevMastery = radarData.find(r => r.subject === prevLabel)?.A ?? 0;
+            if (prevMastery >= 1) sequentialBonus = 0.6 * (1 - index / topics.length);
+        } else if (mastery === 0 && index === 0) {
+            sequentialBonus = 0.8;
+        }
+
+        // Factor 5: WeakBoost
+        const hasStarted = mastery > 0 || matchingProgress.length > 0;
+        const weakBoost = hasStarted && mastery < 50 ? 0.3 * (1 - mastery / 50) : 0;
+
+        // ─ Penalty: Strict Prerequisite Blocker ─
+        let preReqPenalty = 1.0;
+        if (index > 0) {
+            const prevLabel = topics[index - 1].subject.split(':')[0].trim();
+            const prevMastery = radarData.find(r => r.subject === prevLabel)?.A ?? 0;
+            if (prevMastery < 40) {
+                preReqPenalty = 0.1;
+            }
+        }
+
+        // Composite score — use mode-dependent weights
+        const currentMode = recommendation.mode; // Bug2 fix: preserve user's mode
+        const W = getModeWeights(currentMode);
+        const rawWeightedScore =
+            W.masteryGap * masteryGap + W.recencyDecay * recencyDecay + W.coverageGap * coverageGap
+            + W.sequentialBonus * sequentialBonus + W.weakBoost * weakBoost;
+        const weightedScore = rawWeightedScore * preReqPenalty;
+
+        // Confidence assessment
+        const totalSessions = Object.values(sectionProgressMap || {}).length;
+        const unitsWithData = radarData.filter(r => r.A > 0).length;
+        const confidenceLevel: 'low' | 'medium' | 'high' =
+            totalSessions >= 10 && unitsWithData >= 3 ? 'high'
+                : totalSessions >= 3 || unitsWithData >= 2 ? 'medium' : 'low';
+
+        // Reason generation
+        const scoreDisplay = Math.round(weightedScore * 100);
+        let reason: string;
+        if (preReqPenalty < 1.0) {
+            reason = `${unitLabel} is locked behind prerequisites. Please complete earlier units first. [Score: ${scoreDisplay}]`;
+        } else if (!hasStarted) {
+            reason = sequentialBonus > 0.3
+                ? `${unitLabel} is your next logical step — prerequisite units look solid. [Score: ${scoreDisplay}]`
+                : `${unitLabel} hasn't been started. Expanding coverage will strengthen your foundation. [Score: ${scoreDisplay}]`;
+        } else if (mastery >= 70) {
+            const days = daysSinceLast > 0 ? `${Math.round(daysSinceLast)}d ago` : 'recently';
+            reason = `${unitLabel} at ${mastery}% — revisit to maintain mastery (last practiced ${days}). [Score: ${scoreDisplay}]`;
+        } else {
+            reason = `${unitLabel} at ${mastery}% — highest improvement potential across all factors. [Score: ${scoreDisplay}]`;
+        }
+
+        // Bug2 fix: preserve user's manually selected mode instead of overriding
+        setRecommendation(prev => ({
+            ...prev,
+            topic: topicName,
+            reason,
+            currentMastery: mastery,
+            targetMastery: 80,
+            mode: prev.mode, // KEEP user's selected mode
+            hasData: true,
+            weightedScore: Math.round(weightedScore * 1000) / 1000,
+            confidenceLevel,
+            scoringFactors: {
+                masteryGap: Math.round(masteryGap * 1000) / 1000,
+                recencyDecay: Math.round(recencyDecay * 1000) / 1000,
+                coverageGap: Math.round(coverageGap * 1000) / 1000,
+                sequentialBonus: Math.round(sequentialBonus * 1000) / 1000,
+                weakBoost: Math.round(weakBoost * 1000) / 1000,
+            },
+        }));
     };
 
     const dismissLoginPrompt = () => {
@@ -2861,6 +3239,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             updateUser,
             completePractice,
             setSessionMode,
+            setRecommendationTopic,
             dismissLoginPrompt,
             availableTitles,
             addQuestion,

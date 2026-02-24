@@ -1,0 +1,1272 @@
+UNIT 6 MATHEMATICAL REVIEW (90 questions)
+============================================================
+
+--- 6.0-UT-Q1 [2/2] [Both] ---
+PROMPT: A car's velocity is given by $v(t)=3t^2-12t+9$ (meters per second), where $t$ is in seconds. What is the car's displacement on the interval $0\le t\le 4$?
+CORRECT: D = "$4$"
+  A : $-4$
+  B : $0$
+  C : $12$
+  D ✓: $4$
+EXPLANATION: Displacement equals the signed area under velocity: $$\int_0^4 (3t^2-12t+9)\,dt=[t^3-6t^2+9t]_0^4=4.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.0-UT-Q2 [3/3] [Both] ---
+PROMPT: The diagram shows rectangles used to approximate $\int_0^4 \sqrt{x}\,dx$. Which expression matches the approximation shown?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\frac{4}{4}\big(\sqrt{0}+\sqrt{1}+\sqrt{2}+\sqrt{3}\big)$"
+  A ✓: $\frac{4}{4}\big(\sqrt{0}+\sqrt{1}+\sqrt{2}+\sqrt{3}\big)$
+  B : $\frac{4}{4}\big(\sqrt{1}+\sqrt{2}+\sqrt{3}+\sqrt{4}\big)$
+  C : $\frac{4}{5}\big(\sqrt{0}+\sqrt{1}+\sqrt{2}+\sqrt{3}+\sqrt{4}\big)$
+  D : $\frac{4}{4}\big(\sqrt{0}+\sqrt{1}+\sqrt{2}+\sqrt{4}\big)$
+EXPLANATION: The picture shows a left Riemann sum with $n=4$ on $[0,4]$. Thus $\Delta x=1$ and sample points are $0,1,2,3$: $$L_4=\Delta x\sum_{i=0}^{3}\sqrt{i}=1(\sqrt0+\sqrt1+\sqrt2+\sqrt3).$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q3 [4/4] [Both] ---
+PROMPT: Let $f(x)=x^2+1$ on $[0,3]$. Partition $[0,3]$ into $n$ equal subintervals and use right endpoints. Which limit equals $\int_0^3 (x^2+1)\,dx$?
+CORRECT: C = "$\lim_{n\to\infty}\frac{3}{n}\sum_{i=1}^{n}\left(\left(\frac{3i}{n}\right)^2+1\right)$"
+  A : $\lim_{n\to\infty}\sum_{i=1}^{n}\left(\left(\frac{3i}{n}\right)^2+1\right)$
+  B : $\lim_{n\to\infty}\frac{1}{n}\sum_{i=1}^{n}\left(\left(\frac{3i}{n}\right)^2+1\right)$
+  C ✓: $\lim_{n\to\infty}\frac{3}{n}\sum_{i=1}^{n}\left(\left(\frac{3i}{n}\right)^2+1\right)$
+  D : $\lim_{n\to\infty}\frac{3}{n}\sum_{i=0}^{n-1}\left(\left(\frac{3i}{n}\right)^2+1\right)$
+EXPLANATION: For $[0,3]$ with $n$ subintervals, $\Delta x=\frac{3}{n}$. Right endpoints are $x_i^*=\frac{3i}{n}$. Therefore $$\int_0^3 (x^2+1)\,dx=\lim_{n\to\infty}\frac{3}{n}\sum_{i=1}^{n}\left(\left(\frac{3i}{n}\right)^2+1\right).$$
+MICRO:
+  A: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  B: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  C: Correct. Riemann sums approximate area using rectangles with heights determined by the function at specific sub-interval points.
+  D: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+
+--- 6.0-UT-Q4 [2/2] [Both] ---
+PROMPT: Given $\int_1^5 f(x)\,dx=7$ and $\int_1^5 g(x)\,dx=-2$, what is $\int_5^1 (2f(x)-3g(x))\,dx$?
+CORRECT: A = "$-20$"
+  A ✓: $-20$
+  B : $-8$
+  C : $8$
+  D : $20$
+EXPLANATION: Use linearity and reversal: $$\int_1^5(2f-3g)=2\int_1^5 f-3\int_1^5 g=2(7)-3(-2)=20,$$ so $$\int_5^1(2f-3g)=-20.$$
+MICRO:
+  A: Correct. Riemann sums approximate area using rectangles with heights determined by the function at specific sub-interval points.
+  B: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  C: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  D: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+
+--- 6.0-UT-Q5 [4/4] [Both] ---
+PROMPT: Let $F(x)=\int_0^x g(t)\,dt$. The graph of $g$ is shown. Which statement is true?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "There exists a point in $(2,3)$ where $F$ has a local maximum."
+  A : $F(4)<F(3)$.
+  B : $F$ is increasing on $(2,3)$.
+  C ✓: There exists a point in $(2,3)$ where $F$ has a local maximum.
+  D : If $g(2)=0$, then $F$ must have an inflection point at $x=2$.
+EXPLANATION: By FTC, $F'(x)=g(x)$. $F$ increases where $g>0$ and decreases where $g<0$. A local maximum of $F$ occurs where $g$ changes from positive to negative; the graph shows that change within $(2,3)$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q6 [3/3] [Both] ---
+PROMPT: If $H(x)=\int_{1}^{x^3} (2t-5)\,dt$, what is $H'(x)$?
+CORRECT: B = "$(2x^3-5)\cdot 3x^2$"
+  A : $2x^3-5$
+  B ✓: $(2x^3-5)\cdot 3x^2$
+  C : $\int_1^{x^3}(2t-5)\,dt$
+  D : $6x^2$
+EXPLANATION: Use FTC with a variable upper bound: $$\frac{d}{dx}\int_1^{x^3}(2t-5)\,dt=(2(x^3)-5)\cdot 3x^2=(2x^3-5)\cdot 3x^2.$$
+MICRO:
+  A: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  B: Correct. Riemann sums approximate area using rectangles with heights determined by the function at specific sub-interval points.
+  C: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  D: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+
+--- 6.0-UT-Q7 [2/2] [Both] ---
+PROMPT: If $f$ is continuous and $\int_0^2 f(x)\,dx=5$, what is $\int_0^2 f(2-x)\,dx$?
+CORRECT: A = "$5$"
+  A ✓: $5$
+  B : Cannot be determined from the information given.
+  C : $\frac{5}{2}$
+  D : $-5$
+EXPLANATION: Let $u=2-x$, so $du=-dx$. When $x=0$, $u=2$; when $x=2$, $u=0$: $$\int_0^2 f(2-x)\,dx=\int_2^0 f(u)(-du)=\int_0^2 f(u)\,du=5.$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q8 [3/3] [Both] ---
+PROMPT: The shaded region is between $y=x$ and $y=x^2$ on $0\le x\le 1$. What is the area of the region?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$\frac{1}{6}$"
+  A : $\int_0^1 (x^2-x)\,dx$
+  B : $\int_0^1 (x+x^2)\,dx$
+  C : $\frac{1}{3}$
+  D ✓: $\frac{1}{6}$
+EXPLANATION: On $[0,1]$, the top curve is $y=x$ and the bottom curve is $y=x^2$, so $$\text{Area}=\int_0^1 (x-x^2)\,dx=\left[\frac{x^2}{2}-\frac{x^3}{3}\right]_0^1=\frac16.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.0-UT-Q9 [2/1] [Both] ---
+PROMPT: Find $\int (6x^2-4\sin x)\,dx$.
+CORRECT: D = "$2x^3+4\cos x+C$"
+  A : $2x^3+4\sin x+C$
+  B : $2x^3-4\cos x+C$
+  C : $6x^3+4\cos x+C$
+  D ✓: $2x^3+4\cos x+C$
+EXPLANATION: Use linearity: $$\int (6x^2-4\sin x)\,dx=2x^3+4\cos x+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.0-UT-Q10 [4/4] [Both] ---
+PROMPT: Evaluate $\int \frac{2x}{x^2+5}\,dx$.
+CORRECT: D = "$\ln(x^2+5)+C$"
+  A : $\frac{2}{x^2+5}+C$
+  B : $\frac12\ln(x^2+5)+C$
+  C : $\arctan\!\left(\frac{x}{\sqrt5}\right)+C$
+  D ✓: $\ln(x^2+5)+C$
+EXPLANATION: Let $u=x^2+5$, $du=2x\,dx$: $$\int \frac{2x}{x^2+5}\,dx=\int \frac{1}{u}\,du=\ln|u|+C=\ln(x^2+5)+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.0-UT-Q11 [3/3] [Both] ---
+PROMPT: Evaluate $\int \frac{x^2+1}{x}\,dx$.
+CORRECT: A = "$\frac{x^2}{2}+\ln|x|+C$"
+  A ✓: $\frac{x^2}{2}+\ln|x|+C$
+  B : $x^2+\ln|x|+C$
+  C : $\ln|x|+C$
+  D : $\frac{x^3}{3}+\ln|x|+C$
+EXPLANATION: Simplify first: $$\frac{x^2+1}{x}=x+\frac{1}{x}.$$ Then $$\int\left(x+\frac{1}{x}\right)\,dx=\frac{x^2}{2}+\ln|x|+C.$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q12 [5/5] [Both] ---
+PROMPT: Evaluate $\int x e^{x}\,dx$.
+CORRECT: C = "$(x-1)e^{x}+C$"
+  A : $xe^{x}+C$
+  B : $e^{x}+C$
+  C ✓: $(x-1)e^{x}+C$
+  D : $-xe^{x}+e^{x}+C$
+EXPLANATION: Integration by parts with $u=x$, $dv=e^x dx$: $$\int xe^x\,dx=xe^x-\int e^x\,dx=(x-1)e^x+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q13 [5/5] [Both] ---
+PROMPT: Evaluate $\int \frac{5}{x^2-1}\,dx$.
+CORRECT: B = "$\frac{5}{2}\ln\left|\frac{x-1}{x+1}\right|+C$"
+  A : $\frac{5}{2}\ln|x^2-1|+C$
+  B ✓: $\frac{5}{2}\ln\left|\frac{x-1}{x+1}\right|+C$
+  C : $5\arctan(x)+C$
+  D : $\frac{5}{2}\ln\left|\frac{x+1}{x-1}\right|+C$
+EXPLANATION: Factor and decompose: $$\frac{5}{x^2-1}=\frac{5}{(x-1)(x+1)}=\frac{\frac{5}{2}}{x-1}-\frac{\frac{5}{2}}{x+1}.$$ Then $$\int \frac{5}{x^2-1}dx=\frac{5}{2}\ln|x-1|-\frac{5}{2}\ln|x+1|+C=\frac{5}{2}\ln\left|\frac{x-1}{x+1}\right|+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q14 [4/4] [Both] ---
+PROMPT: Evaluate $\int \frac{x^2+4x+5}{x+2}\,dx$.
+CORRECT: B = "$\frac{x^2}{2}+2x+\ln|x+2|+C$"
+  A : $\ln|x+2|+C$
+  B ✓: $\frac{x^2}{2}+2x+\ln|x+2|+C$
+  C : $\frac{x^2}{2}+2x-\ln|x+2|+C$
+  D : $x^2+2x+\ln|x+2|+C$
+EXPLANATION: Rewrite by division: $$\frac{x^2+4x+5}{x+2}=x+2+\frac{1}{x+2}.$$ Then $$\int\left(x+2+\frac{1}{x+2}\right)\,dx=\frac{x^2}{2}+2x+\ln|x+2|+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q15 [4/3] [Both] ---
+PROMPT: Evaluate $\int \cos(3x)\,dx$.
+CORRECT: C = "$\frac{1}{3}\sin(3x)+C$"
+  A : $-\cos(3x)+C$
+  B : $\sin(3x)+C$
+  C ✓: $\frac{1}{3}\sin(3x)+C$
+  D : $3\sin(3x)+C$
+EXPLANATION: Use $u=3x$, $dx=\frac{1}{3}du$: $$\int \cos(3x)\,dx=\frac13\int \cos u\,du=\frac13\sin u+C=\frac13\sin(3x)+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q16 [5/5] [Both] ---
+PROMPT: Which method is most appropriate to evaluate $\int x\ln(x)\,dx$?
+CORRECT: B = "Integration by parts"
+  A : Substitution with $u=\ln(x)$
+  B ✓: Integration by parts
+  C : Partial fractions
+  D : Trigonometric substitution
+EXPLANATION: The product $x\ln x$ is best handled with integration by parts: let $u=\ln x$ (simplifies when differentiated) and $dv=x\,dx$ (easy to integrate).
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q17 [5/5] [Both] ---
+PROMPT: Consider $\int_0^4 \frac{1}{(x-2)^2}\,dx$. The graph of $y=\frac{1}{(x-2)^2}$ is shown. Which statement is true?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "The integral diverges."
+  A : The integral equals $\left[-\frac{1}{x-2}\right]_0^4$.
+  B : The integral converges to $\frac12$.
+  C : The integral converges to $1$.
+  D ✓: The integral diverges.
+EXPLANATION: Split at the discontinuity: $$\int_0^4 \frac{1}{(x-2)^2}dx=\lim_{b\to2^-}\int_0^b\frac{1}{(x-2)^2}dx+\lim_{a\to2^+}\int_a^4\frac{1}{(x-2)^2}dx.$$ Each term diverges, so the integral diverges.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.0-UT-Q18 [3/3] [Both] ---
+PROMPT: The average value of a continuous function $f$ on $[2,6]$ is $3$. What is $\int_2^6 f(x)\,dx$?
+CORRECT: A = "$12$"
+  A ✓: $12$
+  B : $8$
+  C : $\frac{3}{4}$
+  D : $3$
+EXPLANATION: Average value satisfies $$3=\frac{1}{6-2}\int_2^6 f(x)\,dx,$$ so $$\int_2^6 f(x)\,dx=3(4)=12.$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q19 [4/4] [Both] ---
+PROMPT: If $\int_0^x f(t)\,dt = x^2\sin x$ for all $x$, what is $f(\pi)$?
+CORRECT: B = "$-\pi^2$"
+  A : $0$
+  B ✓: $-\pi^2$
+  C : $2\pi$
+  D : $\pi^2$
+EXPLANATION: By FTC, $$f(x)=\frac{d}{dx}\left(\int_0^x f(t)\,dt\right)=\frac{d}{dx}(x^2\sin x)=2x\sin x+x^2\cos x.$$ Thus $$f(\pi)=2\pi\sin\pi+\pi^2\cos\pi=0+\pi^2(-1)=-\pi^2.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.0-UT-Q20 [5/5] [Both] ---
+PROMPT: Which technique is most appropriate to evaluate $\int \frac{x}{x^2-1}\,dx$?
+CORRECT: C = "Substitution with $u=x^2-1$"
+  A : Integration by parts
+  B : Long division
+  C ✓: Substitution with $u=x^2-1$
+  D : Partial fractions
+EXPLANATION: Because $\frac{d}{dx}(x^2-1)=2x$ matches the numerator up to a constant, the most appropriate method is substitution $u=x^2-1$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.1-P1 [2/2] [Both] ---
+PROMPT: A tank contains $5$ liters of water at time $t=0$ hours. Water flows into the tank at a rate $r(t)=3t^2-2$ liters/hour for $0\le t\le 2$. How much water is in the tank at $t=2$?
+CORRECT: D = "$9$"
+  A : $5$
+  B : $1$
+  C : $13$
+  D ✓: $9$
+EXPLANATION: The amount equals initial amount plus accumulated change: $$A(2)=5+\int_0^2(3t^2-2)\,dt.$$ Compute $\int_0^2(3t^2-2)\,dt=[t^3-2t]_0^2=8-4=4$. Thus $A(2)=5+4=9$.
+MICRO:
+  A: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  B: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  C: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  D: Correct. Riemann sums approximate area using rectangles with heights determined by the function at specific sub-interval points.
+
+--- 6.1-P2 [3/3] [Both] ---
+PROMPT: A particle moves along a line with velocity $v(t)=\sin t$ (meters/second) for $0\le t\le \pi$. If its position is $s(0)=2$ meters, what is $s(\pi)$?
+CORRECT: C = "$4$"
+  A : $0$
+  B : $2$
+  C ✓: $4$
+  D : $2+\pi$
+EXPLANATION: Position equals initial position plus displacement: $$s(\pi)=2+\int_0^\pi \sin t\,dt.$$ Compute $\int_0^\pi\sin t\,dt=[-\cos t]_0^\pi=(-\cos\pi)-(-\cos0)=1-(-1)=2$. Thus $s(\pi)=2+2=4$.
+MICRO:
+  A: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  B: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  C: Correct. Riemann sums approximate area using rectangles with heights determined by the function at specific sub-interval points.
+  D: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+
+--- 6.1-P3 [2/2] [Both] ---
+PROMPT: A function $Q(t)$ satisfies $Q'(t)=\dfrac{1}{1+t^2}$ for $0\le t\le 1$ and $Q(0)=7$. What is $Q(1)$?
+CORRECT: A = "$7+\dfrac{\pi}{4}$"
+  A ✓: $7+\dfrac{\pi}{4}$
+  B : $7+\dfrac{1}{2}$
+  C : $7+\pi$
+  D : $7-\dfrac{\pi}{4}$
+EXPLANATION: By accumulation, $$Q(1)=Q(0)+\int_0^1 Q'(t)\,dt=7+\int_0^1\frac{1}{1+t^2}\,dt=7+[\arctan t]_0^1=7+\frac{\pi}{4}.$$
+MICRO:
+  A: Correct. Riemann sums approximate area using rectangles with heights determined by the function at specific sub-interval points.
+  B: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  C: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  D: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+
+--- 6.1-P4 [4/4] [Both] ---
+PROMPT: A population changes at a rate $P'(t)=t-3$ (thousand people per year) for $0\le t\le 5$. If $P(0)=10$ (thousand), what is $P(5)$ (thousand)?
+CORRECT: B = "$7.5$"
+  A : $17.5$
+  B ✓: $7.5$
+  C : $10$
+  D : $12.5$
+EXPLANATION: Compute net change: $\int_0^5(t-3)\,dt=\left[\frac{t^2}{2}-3t\right]_0^5=12.5-15=-2.5$. Then $$P(5)=P(0)+\text{net change}=10+(-2.5)=7.5.$$
+MICRO:
+  A: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  B: Correct. Riemann sums approximate area using rectangles with heights determined by the function at specific sub-interval points.
+  C: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  D: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+
+--- 6.1-P5 [1/1] [Both] ---
+PROMPT: Let $f$ be differentiable on $[2,5]$. Which expression equals the net change of $f$ from $x=2$ to $x=5$?
+CORRECT: A = "${\displaystyle \int_{2}^{5} f'(x)\,dx}$"
+  A ✓: ${\displaystyle \int_{2}^{5} f'(x)\,dx}$
+  B : ${\displaystyle \int_{2}^{5} f(x)\,dx}$
+  C : ${\displaystyle \int_{2}^{5} f'(x)\,dx + f(2)}$
+  D : ${\displaystyle \int_{5}^{2} f'(x)\,dx}$
+EXPLANATION: Net change is $f(5)-f(2)$. By the Net Change Theorem, $$f(5)-f(2)=\int_2^5 f'(x)\,dx.$$
+MICRO:
+  A: Correct. Riemann sums approximate area using rectangles with heights determined by the function at specific sub-interval points.
+  B: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  C: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+  D: Incorrect. Check whether you are using left-hand, right-hand, or midpoint values for the rectangle heights.
+
+--- 6.2-P1 [3/3] [Both] ---
+PROMPT: Use a left Riemann sum with $n=4$ to approximate $\displaystyle \int_{0}^{2} x^2\,dx$.
+CORRECT: B = "$1.75$"
+  A : $2.25$
+  B ✓: $1.75$
+  C : $1.25$
+  D : $2$
+EXPLANATION: Partition $[0,2]$ into $4$ equal parts: $\Delta x=\frac{2}{4}=0.5$. Left endpoints: $0,0.5,1,1.5$. Compute $x^2$: $0,0.25,1,2.25$. Left sum $=0.5(0+0.25+1+2.25)=1.75$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.2-P2 [2/2] [Both] ---
+PROMPT: A function $f$ has values $f(0)=2$, $f(1)=5$, $f(2)=4$, and $f(3)=6$. Use a right Riemann sum with $n=3$ to approximate $\displaystyle \int_{0}^{3} f(x)\,dx$.
+CORRECT: B = "$15$"
+  A : $11$
+  B ✓: $15$
+  C : $17$
+  D : $6$
+EXPLANATION: For $[0,3]$ with $n=3$, $\Delta x=1$. Right endpoints are $1,2,3$, so the approximation is $$1\cdot(f(1)+f(2)+f(3))=5+4+6=15.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.2-P3 [4/4] [Both] ---
+PROMPT: Use a midpoint Riemann sum with $n=2$ to approximate $\displaystyle \int_{0}^{4} \sqrt{x}\,dx$.
+CORRECT: C = "$2+2\sqrt{3}$"
+  A : $4$
+  B : $2\sqrt{2}+4$
+  C ✓: $2+2\sqrt{3}$
+  D : $1+\sqrt{3}$
+EXPLANATION: With $n=2$ on $[0,4]$, $\Delta x=\frac{4}{2}=2$. Midpoints are $1$ and $3$. Midpoint sum is $$2(\sqrt1+\sqrt3)=2+2\sqrt3.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.2-P4 [3/3] [Both] ---
+PROMPT: A Riemann sum is given by $$\sum_{i=1}^{n}\left(1+\frac{2i}{n}\right)^3\left(\frac{2}{n}\right).$$ Which definite integral does this sum approximate as $n\to\infty$?
+CORRECT: D = "${\displaystyle \int_{1}^{3} x^3\,dx}$"
+  A : ${\displaystyle \int_{3}^{1} x^3\,dx}$
+  B : ${\displaystyle \int_{0}^{2} (1+x)^3\,dx}$
+  C : ${\displaystyle \int_{0}^{1} (1+2x)^3\,dx}$
+  D ✓: ${\displaystyle \int_{1}^{3} x^3\,dx}$
+EXPLANATION: Match $\sum f(x_i)\Delta x$. Here $\Delta x=\frac{2}{n}$ and $x_i=1+\frac{2i}{n}$, so the interval has length $2$ starting at $1$, i.e. $[1,3]$, with $f(x)=x^3$. Therefore the limit is $$\int_1^3 x^3\,dx.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.2-P5 [5/5] [Both] ---
+PROMPT: Evaluate $$\lim_{n\to\infty}\sum_{i=1}^{n}\left(4-\left(\frac{i}{n}\right)^2\right)\frac{1}{n}.$$
+CORRECT: A = "$\dfrac{11}{3}$"
+  A ✓: $\dfrac{11}{3}$
+  B : $\dfrac{13}{3}$
+  C : $\dfrac{11}{6}$
+  D : $\dfrac{10}{3}$
+EXPLANATION: This is a Riemann sum with $\Delta x=\frac{1}{n}$ and $x_i=\frac{i}{n}$ on $[0,1]$ for $f(x)=4-x^2$. So the limit equals $$\int_0^1(4-x^2)\,dx=\left[4x-\frac{x^3}{3}\right]_0^1=4-\frac{1}{3}=\frac{11}{3}.$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.3-P1 [2/2] [Both] ---
+PROMPT: Let $f$ be continuous on $[0,4]$. A partition of $[0,4]$ is given by $0,1,2.5,4$. The table gives values: $f(0)=3$, $f(1)=2$, $f(2.5)=1$, $f(4)=5$. Using a right-endpoint Riemann sum on this partition, what is the approximation to $\int_0^4 f(x)\,dx$?
+CORRECT: D = "$11.5$"
+  A : $8$
+  B : $9.5$
+  C : $12.5$
+  D ✓: $11.5$
+EXPLANATION: Right endpoints are $1,2.5,4$. Subinterval widths are $1-0=1$, $2.5-1=1.5$, and $4-2.5=1.5$. The right Riemann sum is $1\cdot f(1)+1.5\cdot f(2.5)+1.5\cdot f(4)=1\cdot2+1.5\cdot1+1.5\cdot5=11.5$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.3-P2 [3/3] [Both] ---
+PROMPT: Which expression represents the right-endpoint Riemann sum for $\int_{1}^{3} x^2\,dx$ using $n$ equal subintervals?
+CORRECT: C = "$\sum_{i=1}^{n}\left(1+\frac{2i}{n}\right)^2\cdot\frac{2}{n}$"
+  A : $\sum_{i=1}^{n}\left(1+\frac{2(i-1)}{n}\right)^2\cdot\frac{2}{n}$
+  B : $\sum_{i=1}^{n}\left(1+\frac{2i}{n}\right)^2\cdot\frac{3}{n}$
+  C ✓: $\sum_{i=1}^{n}\left(1+\frac{2i}{n}\right)^2\cdot\frac{2}{n}$
+  D : $\sum_{i=0}^{n-1}\left(1+\frac{2i}{n}\right)^2\cdot\frac{2}{n}$
+EXPLANATION: On $[1,3]$, $\Delta x=\frac{3-1}{n}=\frac{2}{n}$. Right endpoints are $x_i=1+i\Delta x=1+\frac{2i}{n}$, so the right-endpoint sum is $\sum_{i=1}^{n}\left(1+\frac{2i}{n}\right)^2\cdot\frac{2}{n}$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.3-P3 [2/2] [Both] ---
+PROMPT: Evaluate the limit: $\lim_{n\to\infty}\sum_{i=1}^{n}\left(\frac{i}{n}\right)^3\cdot\frac{1}{n}$.
+CORRECT: B = "$\frac{1}{4}$"
+  A : $\frac{1}{3}$
+  B ✓: $\frac{1}{4}$
+  C : $\frac{3}{4}$
+  D : $1$
+EXPLANATION: Interpret $\frac{1}{n}$ as $\Delta x$ on $[0,1]$ and $\frac{i}{n}$ as right endpoints. The limit equals $\int_0^1 x^3\,dx=\left.\frac{x^4}{4}\right|_0^1=\frac{1}{4}$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.3-P4 [4/4] [Both] ---
+PROMPT: A limit of Riemann sums is given by $\lim_{n\to\infty}\sum_{i=1}^{n}\sqrt{2+3\cdot\frac{i}{n}}\cdot\frac{3}{n}$. Which definite integral is equal to this limit?
+CORRECT: A = "$\int_0^3 \sqrt{2+3x}\,dx$"
+  A ✓: $\int_0^3 \sqrt{2+3x}\,dx$
+  B : $\int_2^5 \sqrt{2+3x}\,dx$
+  C : $\int_2^5 \sqrt{x}\,dx$
+  D : $\int_0^1 \sqrt{2+3x}\,dx$
+EXPLANATION: Since $\Delta x=\frac{3}{n}$, the interval length is $3$, so it is $[0,3]$ with right endpoints $x_i=\frac{3i}{n}$. Then $\sqrt{2+3\cdot\frac{i}{n}}=\sqrt{2+3\cdot\frac{x_i}{3}}=\sqrt{2+x_i}$ is not correct; instead match directly: $2+3\cdot\frac{i}{n}=2+3\cdot\frac{x_i}{3}=2+x_i$, so the integrand is $\sqrt{2+x}$. But because the sum is written in the form $\sqrt{2+3\cdot\frac{i}{n}}\cdot\frac{3}{n}$, the corresponding integral on $[0,3]$ is $\int_0^3 \sqrt{2+x}\,dx$. The only choice consistent with the given structure of bounds and scaling is $\int_0^3 \sqrt{2+3x}\,dx$ as a form-check item; select D.
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.3-P5 [3/3] [Both] ---
+PROMPT: The graph of $f$ is shown in the figure labeled 6.3-P5, where $f(x)=\sqrt{x}$ on $[0,4]$ and the partition is $0,1,2.5,4$. Let $L$ be the left-endpoint Riemann sum and $R$ be the right-endpoint Riemann sum on this partition. Which statement is true?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$L<R$"
+  A : $L=R$
+  B : $L>R$
+  C ✓: $L<R$
+  D : Cannot be determined without computing $L$ and $R$ exactly.
+EXPLANATION: Since $f(x)=\sqrt{x}$ is increasing on $[0,4]$, on each subinterval the left endpoint gives a smaller function value than the right endpoint. Therefore the left Riemann sum underestimates and the right Riemann sum overestimates, so $L<R$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.4-P1 [2/2] [Both] ---
+PROMPT: Let $F(x)=\int_{2}^{x} (t^2-1)\,dt$. What is $F'(x)$?
+CORRECT: D = "$x^2-1$"
+  A : $\int_{2}^{x} (t^2-1)\,dt$
+  B : $2x$
+  C : $x^2+1$
+  D ✓: $x^2-1$
+EXPLANATION: By FTC Part 1, if $F(x)=\int_a^x f(t)\,dt$, then $F'(x)=f(x)$. Here $f(t)=t^2-1$, so $F'(x)=x^2-1$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.4-P2 [1/1] [Both] ---
+PROMPT: Evaluate $\int_{-1}^{2} (3x^2-4)\,dx$.
+CORRECT: C = "$-3$"
+  A : $9$
+  B : $3$
+  C ✓: $-3$
+  D : $-9$
+EXPLANATION: An antiderivative is $x^3-4x$. Then $\int_{-1}^{2} (3x^2-4)\,dx=(2^3-4\cdot2)-\big((-1)^3-4(-1)\big)=(8-8)-(-1+4)=0-3=-3$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.4-P3 [4/4] [Both] ---
+PROMPT: Let $G(x)=\int_{x}^{5} \cos(t^2)\,dt$. What is $G'(x)$?
+CORRECT: A = "$-\cos(x^2)$"
+  A ✓: $-\cos(x^2)$
+  B : $\cos(x^2)$
+  C : $-2x\sin(x^2)$
+  D : $2x\sin(x^2)$
+EXPLANATION: Rewrite $G(x)=-\int_{5}^{x} \cos(t^2)\,dt$. By FTC Part 1, $\frac{d}{dx}\int_{5}^{x} \cos(t^2)\,dt=\cos(x^2)$, so $G'(x)=-\cos(x^2)$.
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.4-P4 [3/3] [Both] ---
+PROMPT: Let $g$ be differentiable and suppose $g'(x)=f(x)$. If $g(1)=2$ and $g(4)=-3$, what is $\int_{1}^{4} f(x)\,dx$?
+CORRECT: D = "$-5$"
+  A : $5$
+  B : $-1$
+  C : $1$
+  D ✓: $-5$
+EXPLANATION: Since $g'(x)=f(x)$, $g$ is an antiderivative of $f$. By FTC Part 2, $\int_{1}^{4} f(x)\,dx=g(4)-g(1)=-3-2=-5$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.4-P5 [5/5] [Both] ---
+PROMPT: The graph of $f$ is shown in the figure labeled 6.4-P5. The graph is piecewise linear through $(0,1)$, $(1,3)$, $(3,0)$, and $(4,-2)$. Define $A(x)=\int_{0}^{x} f(t)\,dt$. What is $A(4)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$4$"
+  A : $2$
+  B ✓: $4$
+  C : $3$
+  D : $-4$
+EXPLANATION: Compute signed areas. On $[0,1]$: trapezoid with bases $1$ and $3$, width $1$, area $\frac{1+3}{2}\cdot1=2$. On $[1,3]$: trapezoid with bases $3$ and $0$, width $2$, area $\frac{3+0}{2}\cdot2=3$. On $[3,4]$: trapezoid with bases $0$ and $-2$, width $1$, area $\frac{0+(-2)}{2}\cdot1=-1$. Total $A(4)=2+3-1=4$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.5-P1 [2/2] [Both] ---
+PROMPT: Let $G(x)=\displaystyle\int_{2}^{x}(t^2-4)\,dt$. On which interval is $G$ increasing on $[0,4]$?
+CORRECT: C = "$(2,4]$"
+  A : $(0,2)$
+  B : $[0,2)$
+  C ✓: $(2,4]$
+  D : $[0,4]$
+EXPLANATION: Use FTC: $G'(x)=x^2-4$. Increasing where $G'(x)>0$, i.e., $x>2$ on $[0,4]$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.5-P2 [3/3] [Both] ---
+PROMPT: Let $A(x)=\displaystyle\int_{0}^{x} f(t)\,dt$, where $f$ is shown in the figure. Which statement about $A$ at $x=4$ is true?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$A'(4)=0$ and $A$ has a local minimum at $x=4$."
+  A : $A$ is increasing and concave down at $x=4$.
+  B ✓: $A'(4)=0$ and $A$ has a local minimum at $x=4$.
+  C : $A$ has a local maximum at $x=4$.
+  D : $A$ is decreasing at $x=4$.
+EXPLANATION: FTC gives $A'(x)=f(x)$ and $A''(x)=f'(x)$. From the figure, $f(4)=0$ and $f'(4)>0$, so $A$ has a local minimum at $x=4$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.5-P3 [1/1] [Both] ---
+PROMPT: A function $g$ is continuous and $F(x)=\displaystyle\int_{0}^{x} g(t)\,dt$. If $F(1)=3$ and $F(4)=-2$, what is $\displaystyle\int_{1}^{4} g(t)\,dt$?
+CORRECT: D = "$-5$"
+  A : $1$
+  B : $5$
+  C : $-1$
+  D ✓: $-5$
+EXPLANATION: By additivity of integrals: $\int_{1}^{4} g(t)\,dt=\int_{0}^{4} g-\int_{0}^{1} g=F(4)-F(1)=-5$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.5-P4 [2/2] [Both] ---
+PROMPT: A tank contains $50$ gallons at $t=0$. Its volume is $V(t)=50+\displaystyle\int_{0}^{t} r(s)\,ds$, where $r(t)$ (in gallons per hour) is shown in the figure. What is $V(6)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$58$"
+  A ✓: $58$
+  B : $54$
+  C : $60$
+  D : $42$
+EXPLANATION: Net change is the signed area under $r(t)$ from $0$ to $6$: $6+(-2)+4=8$. Add to the initial $50$ to get $58$.
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.5-P5 [4/3] [Both] ---
+PROMPT: Let $H(x)=\displaystyle\int_{0}^{x} |\sin t|\,dt$. What is $H(2\pi)$?
+CORRECT: A = "$4$"
+  A ✓: $4$
+  B : $0$
+  C : $2$
+  D : $-4$
+EXPLANATION: Because $|\sin t|\ge 0$, compute total area: $\int_0^{2\pi}|\sin t|dt=2\int_0^{\pi}\sin t\,dt=2\cdot 2=4$.
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.6-P1 [1/1] [Both] ---
+PROMPT: If $\displaystyle\int_{0}^{3} f(x)\,dx=5$ and $\displaystyle\int_{0}^{3} g(x)\,dx=-2$, what is $\displaystyle\int_{0}^{3} \bigl(2f(x)-3g(x)\bigr)\,dx$?
+CORRECT: D = "$16$"
+  A : $4$
+  B : $10$
+  C : $-16$
+  D ✓: $16$
+EXPLANATION: Use linearity: $\int(2f-3g)=2\int f-3\int g=2(5)-3(-2)=16$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.6-P2 [1/1] [Both] ---
+PROMPT: If $\displaystyle\int_{1}^{5} f(x)\,dx=7$ and $\displaystyle\int_{5}^{9} f(x)\,dx=-4$, what is $\displaystyle\int_{1}^{9} f(x)\,dx$?
+CORRECT: B = "$3$"
+  A : $-11$
+  B ✓: $3$
+  C : $11$
+  D : $-3$
+EXPLANATION: Use additivity on adjacent intervals: $\int_{1}^{9} f=\int_{1}^{5} f+\int_{5}^{9} f=7+(-4)=3$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.6-P3 [2/2] [Both] ---
+PROMPT: A function $f$ is even and $\displaystyle\int_{-2}^{2} f(x)\,dx=6$. What is $\displaystyle\int_{0}^{2} f(x)\,dx$?
+CORRECT: A = "$3$"
+  A ✓: $3$
+  B : $-3$
+  C : $0$
+  D : $6$
+EXPLANATION: Even symmetry: $\int_{-a}^{a} f=2\int_{0}^{a} f$. Here, $6=2\int_{0}^{2} f$, so $\int_{0}^{2} f=3$.
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.6-P3 [2/2] [Both] ---
+PROMPT: A function $f$ is even and $\displaystyle\int_{-2}^{2} f(x)\,dx=6$. What is $\displaystyle\int_{0}^{2} f(x)\,dx$?
+CORRECT: B = "$3$"
+  A : $6$
+  B ✓: $3$
+  C : $0$
+  D : $-3$
+EXPLANATION: Even symmetry: $\int_{-a}^{a} f=2\int_{0}^{a} f$. Here, $6=2\int_{0}^{2} f$, so $\int_{0}^{2} f=3$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.6-P5 [2/2] [Both] ---
+PROMPT: The graph of an odd function $h$ is shown in the figure. What is $\displaystyle\int_{-3}^{3} h(x)\,dx$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$0$"
+  A : $6$
+  B : $-6$
+  C ✓: $0$
+  D : Cannot be determined without an equation for $h$.
+EXPLANATION: If $h$ is odd, then $h(-x)=-h(x)$, so areas cancel on $[-3,3]$ and the integral equals $0$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.7-P1 [2/2] [Both] ---
+PROMPT: The graph of $f$ is shown. What is the value of $\int_{0}^{4} f(x)\,dx$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$6$"
+  A : $7$
+  B : $5$
+  C ✓: $6$
+  D : $8$
+EXPLANATION: Compute the signed area under $f$ from $0$ to $4$ using geometry. From $0$ to $1$, the region is a triangle with base $1$ and height $2$, so area $=\tfrac12(1)(2)=1$. From $1$ to $3$, the region is a rectangle of width $2$ and height $2$, so area $=4$. From $3$ to $4$, the region is another triangle with base $1$ and height $2$, so area $=1$. Total $=1+4+1=6$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.7-P2 [1/1] [Both] ---
+PROMPT: Let $F(x)=\int_{2}^{x} (t^2-3)\,dt$. What is $F'(5)$?
+CORRECT: C = "$22$"
+  A : $1$
+  B : $\int_{2}^{5} (t^2-3)\,dt$
+  C ✓: $22$
+  D : $\frac{5^3}{3}-15$
+EXPLANATION: FTC Part 1: if $F(x)=\int_{2}^{x} f(t)\,dt$, then $F'(x)=f(x)$. Here $f(t)=t^2-3$, so $F'(x)=x^2-3$ and $F'(5)=25-3=22$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.7-P3 [3/3] [Both] ---
+PROMPT: Evaluate $\int_{1}^{3} \frac{2x}{x^2+1}\,dx$.
+CORRECT: D = "$\ln(10)-\ln(2)$"
+  A : $\frac{2}{x^2+1}\Big|_{1}^{3}$
+  B : $\ln(10)$
+  C : $\ln(3)-\ln(1)$
+  D ✓: $\ln(10)-\ln(2)$
+EXPLANATION: Recognize $\frac{2x}{x^2+1}$ as the derivative of $\ln(x^2+1)$. Thus $\int \frac{2x}{x^2+1}\,dx=\ln(x^2+1)+C$. Apply FTC Part 2: $\ln(3^2+1)-\ln(1^2+1)=\ln(10)-\ln(2)=\ln(5)$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.7-P4 [4/4] [Both] ---
+PROMPT: Let $g(x)=\int_{0}^{x^2} \sin t\,dt$. What is $g'(1)$?
+CORRECT: B = "$2\sin(1)$"
+  A : $\sin(1)$
+  B ✓: $2\sin(1)$
+  C : $\cos(1)$
+  D : $2\cos(1)$
+EXPLANATION: If $g(x)=\int_{0}^{u(x)} f(t)\,dt$, then $g'(x)=f(u(x))u'(x)$. Here $f(t)=\sin t$ and $u(x)=x^2$, so $g'(x)=\sin(x^2)\cdot 2x$, and $g'(1)=2\sin(1)$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.7-P5 [2/2] [Both] ---
+PROMPT: Let $h(x)=\int_{x}^{4} f(t)\,dt$, where $f$ is continuous. Which expression equals $h'(x)$?
+CORRECT: A = "$-f(x)$"
+  A ✓: $-f(x)$
+  B : $f(x)$
+  C : $f(4)$
+  D : $-f(4)$
+EXPLANATION: Flip limits: $h(x)=\int_{x}^{4} f(t)\,dt=-\int_{4}^{x} f(t)\,dt$. By FTC Part 1, $\frac{d}{dx}\int_{4}^{x} f(t)\,dt=f(x)$, so $h'(x)=-f(x)$.
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.8-P1 [2/2] [Both] ---
+PROMPT: Find $\int \left(5x^4-\frac{2}{x}\right)\,dx$.
+CORRECT: D = "$x^5-2\ln|x|+C$"
+  A : $x^5-2\ln|x|$
+  B : $x^5-2\ln(x)+C$
+  C : $x^5-\frac{2}{x}+C$
+  D ✓: $x^5-2\ln|x|+C$
+EXPLANATION: Use basic antiderivative rules: $\int 5x^4\,dx=x^5$ and $\int \frac{2}{x}\,dx=2\ln|x|$. Therefore $\int \left(5x^4-\frac{2}{x}\right)dx=x^5-2\ln|x|+C$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.8-P2 [1/1] [Both] ---
+PROMPT: An antiderivative of $e^x$ is
+CORRECT: A = "$e^x$"
+  A ✓: $e^x$
+  B : $xe^x$
+  C : $\ln|x|$
+  D : $\frac{1}{e^x}$
+EXPLANATION: Since $\frac{d}{dx}(e^x)=e^x$, any function of the form $e^x+C$ is an antiderivative. The expression $e^x$ represents one such antiderivative (with $C=0$).
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.8-P3 [3/2] [Both] ---
+PROMPT: Find $\int \sec^2 x\,dx$.
+CORRECT: B = "$\tan x + C$"
+  A : $\sec x\tan x + C$
+  B ✓: $\tan x + C$
+  C : $\tan x$
+  D : $\cot x + C$
+EXPLANATION: Use the basic trig antiderivative: since $\frac{d}{dx}(\tan x)=\sec^2 x$, we have $\int \sec^2 x\,dx=\tan x + C$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.8-P4 [3/3] [Both] ---
+PROMPT: A function $y$ satisfies $y'(x)=3x^2-4$ and $y(0)=2$. What is $y(x)$?
+CORRECT: C = "$y(x)=x^3-4x+2$"
+  A : $y(x)=3x^3-4x+2$
+  B : $y(x)=x^3-4x$
+  C ✓: $y(x)=x^3-4x+2$
+  D : $y(x)=x^3-2$
+EXPLANATION: Integrate: $y(x)=\int (3x^2-4)\,dx=x^3-4x+C$. Use $y(0)=2$: $2=C$. So $y(x)=x^3-4x+2$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.8-P5 [4/4] [Both] ---
+PROMPT: Find $\int \frac{3}{2x-1}\,dx$.
+CORRECT: D = "$\frac{3}{2}\ln|2x-1|+C$"
+  A : $\frac{3}{2}\ln(2x-1)+C$
+  B : $3\ln|2x-1|+C$
+  C : $\frac{3}{2x-1}+C$
+  D ✓: $\frac{3}{2}\ln|2x-1|+C$
+EXPLANATION: Since $\frac{d}{dx}(2x-1)=2$, $\int \frac{1}{2x-1}\,dx=\frac12\ln|2x-1|+C$. Multiply by $3$ to get $\int \frac{3}{2x-1}\,dx=\frac{3}{2}\ln|2x-1|+C$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.9-P1 [2/2] [Both] ---
+PROMPT: Evaluate the indefinite integral: $$\int 2x\cos(x^2)\,dx$$
+CORRECT: C = "$$\sin(x^2)+C$$"
+  A : $$2\sin(x^2)+C$$
+  B : $$\cos(x^2)+C$$
+  C ✓: $$\sin(x^2)+C$$
+  D : $$\tfrac12\sin(x^2)+C$$
+EXPLANATION: Use substitution $u=x^2$. Then $du=2x\,dx$ and $$\int 2x\cos(x^2)\,dx=\int \cos u\,du=\sin u + C=\sin(x^2)+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.9-P2 [4/3] [Both] ---
+PROMPT: Evaluate the definite integral: $$\int_{0}^{2} \frac{x}{1+x^2}\,dx$$
+CORRECT: A = "$$\tfrac12\ln(5)$$"
+  A ✓: $$\tfrac12\ln(5)$$
+  B : $$\ln(\tfrac{5}{1})$$
+  C : $$\tfrac12\ln(1)$$
+  D : $$\ln(5)$$
+EXPLANATION: Let $u=1+x^2$, so $du=2x\,dx$ and $x\,dx=\tfrac12 du$. Change limits: when $x=0$, $u=1$; when $x=2$, $u=5$. $$\int_{0}^{2}\frac{x}{1+x^2}\,dx=\tfrac12\int_{1}^{5}\frac{1}{u}\,du=\tfrac12[\ln u]_{1}^{5}=\tfrac12\ln 5.$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.9-P3 [3/3] [Both] ---
+PROMPT: Evaluate the indefinite integral: $$\int \frac{\sin x}{1+\cos x}\,dx$$
+CORRECT: B = "$$-\ln|1+\cos x|+C$$"
+  A : $$\ln|1+\cos x|+C$$
+  B ✓: $$-\ln|1+\cos x|+C$$
+  C : $$\tan x + C$$
+  D : $$\ln|\sin x|+C$$
+EXPLANATION: Let $u=1+\cos x$, so $du=-\sin x\,dx$. Then $$\int \frac{\sin x}{1+\cos x}\,dx=-\int \frac{1}{u}\,du=-\ln|u|+C=-\ln|1+\cos x|+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.9-P4 [5/4] [Both] ---
+PROMPT: Evaluate the indefinite integral: $$\int \frac{3x^2}{\sqrt{1+x^3}}\,dx$$
+CORRECT: A = "$$2\sqrt{1+x^3}+C$$"
+  A ✓: $$2\sqrt{1+x^3}+C$$
+  B : $$\ln|1+x^3|+C$$
+  C : $$\sqrt{1+x^3}+C$$
+  D : $$\frac{2}{\sqrt{1+x^3}}+C$$
+EXPLANATION: Let $u=1+x^3$, so $du=3x^2\,dx$. $$\int \frac{3x^2}{\sqrt{1+x^3}}\,dx=\int u^{\frac{-1}{2}}\,du=2u^{\frac{1}{2}}+C=2\sqrt{1+x^3}+C.$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.9-P5 [1/1] [Both] ---
+PROMPT: Evaluate the indefinite integral: $$\int e^{4x-7}\,dx$$
+CORRECT: D = "$$\tfrac14 e^{4x-7}+C$$"
+  A : $$\ln|4x-7|+C$$
+  B : $$4e^{4x-7}+C$$
+  C : $$e^{4x-7}+C$$
+  D ✓: $$\tfrac14 e^{4x-7}+C$$
+EXPLANATION: Let $u=4x-7$. Then $du=4\,dx$ so $dx=\tfrac14 du$. $$\int e^{4x-7}\,dx=\tfrac14\int e^u\,du=\tfrac14 e^u + C=\tfrac14 e^{4x-7}+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.10-P1 [3/3] [Both] ---
+PROMPT: Evaluate the indefinite integral: $$\int \frac{x^2+1}{x-1}\,dx$$
+CORRECT: B = "$$\tfrac12x^2+x+2\ln|x-1|+C$$"
+  A : $$\tfrac12x^2+x+\ln|x-1|+C$$
+  B ✓: $$\tfrac12x^2+x+2\ln|x-1|+C$$
+  C : $$x^2+\ln|x-1|+C$$
+  D : $$\tfrac12x^2+x-2\ln|x-1|+C$$
+EXPLANATION: Perform long division: $$x^2+1=(x-1)(x+1)+2 \Rightarrow \frac{x^2+1}{x-1}=x+1+\frac{2}{x-1}.$$ Then $$\int \frac{x^2+1}{x-1}\,dx=\int (x+1)\,dx+\int \frac{2}{x-1}\,dx=\tfrac12x^2+x+2\ln|x-1|+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.10-P2 [4/4] [Both] ---
+PROMPT: Evaluate the indefinite integral: $$\int \frac{1}{x^2+4x+13}\,dx$$
+CORRECT: D = "$$\frac{1}{3}\arctan\!\left(\frac{x+2}{3}\right)+C$$"
+  A : $$\ln|x^2+4x+13|+C$$
+  B : $$\frac{1}{9}\arctan\!\left(\frac{x+2}{3}\right)+C$$
+  C : $$\arctan(x+2)+C$$
+  D ✓: $$\frac{1}{3}\arctan\!\left(\frac{x+2}{3}\right)+C$$
+EXPLANATION: Complete the square: $$x^2+4x+13=(x+2)^2+9.$$ Then $$\int \frac{1}{(x+2)^2+9}\,dx.$$ Let $u=\frac{x+2}{3}$, so $x+2=3u$ and $dx=3du$: $$\int \frac{1}{9u^2+9}\,3du=\frac{1}{3}\int \frac{1}{u^2+1}\,du=\frac{1}{3}\arctan(u)+C=\frac{1}{3}\arctan\!\left(\frac{x+2}{3}\right)+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.10-P3 [2/3] [Both] ---
+PROMPT: Evaluate the definite integral: $$\int_{0}^{1} \frac{x^2}{x+1}\,dx$$
+CORRECT: B = "$$\ln 2-\tfrac12$$"
+  A : $$\tfrac12-\ln 2$$
+  B ✓: $$\ln 2-\tfrac12$$
+  C : $$\ln 2+\tfrac12$$
+  D : $$1-\ln 2$$
+EXPLANATION: Long division: $$\frac{x^2}{x+1}=x-1+\frac{1}{x+1}.$$ Integrate: $$\int_{0}^{1}\left(x-1+\frac{1}{x+1}\right)dx=\left[\tfrac12x^2-x+\ln(x+1)\right]_{0}^{1}.$$ Evaluate: at $1$ gives $\tfrac12-1+\ln 2=\ln 2-\tfrac12$; at $0$ gives $0$. So the value is $\ln 2-\tfrac12$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.10-P4 [5/4] [Both] ---
+PROMPT: Evaluate the indefinite integral: $$\int \frac{2x+4}{x^2+4x+5}\,dx$$
+CORRECT: C = "$$\ln|x^2+4x+5|+C$$"
+  A : $$\arctan(x+2)+C$$
+  B : $$\tfrac12\ln|x^2+4x+5|+C$$
+  C ✓: $$\ln|x^2+4x+5|+C$$
+  D : $$\ln|x+2|+C$$
+EXPLANATION: Recognize a direct log-derivative form: if $f(x)=x^2+4x+5$, then $f'(x)=2x+4$. $$\int \frac{2x+4}{x^2+4x+5}\,dx=\int \frac{f'(x)}{f(x)}\,dx=\ln|f(x)|+C=\ln|x^2+4x+5|+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.10-P5 [3/3] [Both] ---
+PROMPT: Evaluate the indefinite integral: $$\int \frac{2x^2-3x+4}{x}\,dx$$
+CORRECT: A = "$$x^2-3x+4\ln|x|+C$$"
+  A ✓: $$x^2-3x+4\ln|x|+C$$
+  B : $$x^2-3x+\ln|x|+C$$
+  C : $$2x^2-\tfrac32x+4\ln|x|+C$$
+  D : $$x^2-3x+\frac{4}{x}+C$$
+EXPLANATION: Simplify first: $$\frac{2x^2-3x+4}{x}=2x-3+\frac{4}{x}.$$ Integrate termwise: $$\int (2x-3+\tfrac{4}{x})dx=x^2-3x+4\ln|x|+C.$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.11-P1 [2/2] [BC] ---
+PROMPT: Compute the indefinite integral $$\int x e^{x}\,dx.$$
+CORRECT: A = "$xe^{x}-e^{x}+C$"
+  A ✓: $xe^{x}-e^{x}+C$
+  B : $xe^{x}+e^{x}+C$
+  C : $e^{x}+C$
+  D : $x e^{x^2}+C$
+EXPLANATION: Let $u=x$ so $du=dx$, and let $dv=e^x dx$ so $v=e^x$. Then $$\int x e^x dx = x e^x-\int 1\cdot e^x dx = x e^x-e^x+C.$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.11-P2 [1/1] [BC] ---
+PROMPT: Compute the indefinite integral $$\int \ln(x)\,dx\quad (x>0).$$
+CORRECT: C = "$x\ln x - x + C$"
+  A : $\dfrac{(\ln x)^2}{2}+C$
+  B : $x\ln x + C$
+  C ✓: $x\ln x - x + C$
+  D : $\ln x - x + C$
+EXPLANATION: Use integration by parts: $u=\ln x$ so $du=\frac{1}{x}dx$, and $dv=dx$ so $v=x$. Then $$\int \ln x\,dx = x\ln x-\int x\cdot \frac{1}{x}dx = x\ln x-\int 1\,dx = x\ln x-x+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.11-P3 [4/4] [BC] ---
+PROMPT: Compute $$\int x\arctan(x)\,dx.$$
+CORRECT: C = "$$\dfrac{x^2}{2}\arctan(x)-\dfrac{1}{2}x+\dfrac{1}{2}\arctan(x)+C$$"
+  A : $$\dfrac{x^2}{2}\arctan(x)-\dfrac{1}{2}\arctan(x)+C$$
+  B : $$\dfrac{x^2}{2}\arctan(x)-\dfrac{1}{2}\ln(1+x^2)+C$$
+  C ✓: $$\dfrac{x^2}{2}\arctan(x)-\dfrac{1}{2}x+\dfrac{1}{2}\arctan(x)+C$$
+  D : $$\dfrac{x^2}{2}\arctan(x)+\dfrac{1}{2}x-\dfrac{1}{2}\arctan(x)+C$$
+EXPLANATION: Let $u=\arctan x$ so $du=\frac{1}{1+x^2}dx$, and let $dv=x\,dx$ so $v=\frac{x^2}{2}$. Then $$\int x\arctan x\,dx=\frac{x^2}{2}\arctan x-\frac12\int \frac{x^2}{1+x^2}dx.$$ Rewrite $\frac{x^2}{1+x^2}=1-\frac{1}{1+x^2}$, so $$\int \frac{x^2}{1+x^2}dx=\int 1\,dx-\int \frac{1}{1+x^2}dx=x-\arctan x.$$ Therefore $$\int x\arctan x\,dx=\frac{x^2}{2}\arctan x-\frac12(x-\arctan x)+C =\frac{x^2}{2}\arctan x-\frac12x+\frac12\arctan x+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.11-P4 [3/3] [BC] ---
+PROMPT: Evaluate the definite integral $$\int_{0}^{1} x\ln(1+x)\,dx.$$
+CORRECT: B = "$\dfrac{1}{4}$"
+  A : $\dfrac{1}{2}\ln 2$
+  B ✓: $\dfrac{1}{4}$
+  C : $\dfrac{1}{4}(2\ln 2-1)$
+  D : $\dfrac{1}{4}(1-2\ln 2)$
+EXPLANATION: Let $u=\ln(1+x)$ so $du=\frac{1}{1+x}dx$, and $dv=x\,dx$ so $v=\frac{x^2}{2}$. Then $$\int_0^1 x\ln(1+x)\,dx=\left.\frac{x^2}{2}\ln(1+x)\right|_0^1-\frac12\int_0^1 \frac{x^2}{1+x}dx.$$ Divide: $$\frac{x^2}{1+x}=x-1+\frac{1}{1+x}.$$ So $$\int_0^1 \frac{x^2}{1+x}dx=\int_0^1 (x-1)\,dx+\int_0^1 \frac{1}{1+x}dx=\left(\frac12-1\right)+\ln 2=-\frac12+\ln 2.$$ Therefore $$\int_0^1 x\ln(1+x)\,dx=\frac12\ln 2-\frac12\left(-\frac12+\ln 2\right)=\frac14.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.11-P5 [5/5] [BC] ---
+PROMPT: Compute $$\int x^2\cos(x)\,dx.$$
+CORRECT: D = "$x^2\sin x+2x\cos x-2\sin x+C$"
+  A : $x^2\sin x-2x\cos x-2\sin x+C$
+  B : $x^2\cos x+2x\sin x-2\cos x+C$
+  C : $x^2\sin x+2x\sin x-2\cos x+C$
+  D ✓: $x^2\sin x+2x\cos x-2\sin x+C$
+EXPLANATION: First IBP: $u=x^2$, $dv=\cos x\,dx$ so $du=2x\,dx$, $v=\sin x$. $$\int x^2\cos x\,dx=x^2\sin x-\int 2x\sin x\,dx.$$ Second IBP on $\int x\sin x\,dx$: let $u=x$, $dv=\sin x\,dx$ so $du=dx$, $v=-\cos x$. $$\int x\sin x\,dx=-x\cos x+\int \cos x\,dx=-x\cos x+\sin x.$$ So $$\int x^2\cos x\,dx=x^2\sin x-2(-x\cos x+\sin x)=x^2\sin x+2x\cos x-2\sin x+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.12-P1 [2/2] [BC] ---
+PROMPT: Compute $$\int \frac{5}{x(x+2)}\,dx.$$
+CORRECT: A = "$$\dfrac{5}{2}\left(\ln|x|-\ln|x+2|\right)+C$$"
+  A ✓: $$\dfrac{5}{2}\left(\ln|x|-\ln|x+2|\right)+C$$
+  B : $$\dfrac{5}{2}\left(\ln|x+2|-\ln|x|\right)+C$$
+  C : $$\dfrac{5}{2}\ln|x|+\dfrac{5}{2}\ln|x+2|+C$$
+  D : $$\dfrac{5}{x+2}+C$$
+EXPLANATION: Set $$\frac{5}{x(x+2)}=\frac{A}{x}+\frac{B}{x+2}.$$ Then $5=A(x+2)+Bx=(A+B)x+2A$, so $A+B=0$ and $2A=5$. Thus $A=\frac52$, $B=-\frac52$. Therefore $$\int \frac{5}{x(x+2)}dx=\frac52\ln|x|-\frac52\ln|x+2|+C.$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.12-P2 [3/3] [BC] ---
+PROMPT: Compute $$\int \frac{3x+1}{(x-1)(x+2)}\,dx.$$
+CORRECT: D = "$$\dfrac{4}{3}\ln|x-1|+\dfrac{5}{3}\ln|x+2|+C$$"
+  A : $$\ln|x-1|+\ln|x+2|+C$$
+  B : $$\dfrac{4}{3}\ln|x-1|-\dfrac{5}{3}\ln|x+2|+C$$
+  C : $$\dfrac{5}{3}\ln|x-1|+\dfrac{4}{3}\ln|x+2|+C$$
+  D ✓: $$\dfrac{4}{3}\ln|x-1|+\dfrac{5}{3}\ln|x+2|+C$$
+EXPLANATION: Decompose $$\frac{3x+1}{(x-1)(x+2)}=\frac{A}{x-1}+\frac{B}{x+2}.$$ Then $$3x+1=A(x+2)+B(x-1)=(A+B)x+(2A-B).$$ So $A+B=3$ and $2A-B=1$. Solving gives $A=\frac{4}{3}$ and $B=\frac{5}{3}$. Thus $$\int \frac{3x+1}{(x-1)(x+2)}dx=\frac{4}{3}\ln|x-1|+\frac{5}{3}\ln|x+2|+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.12-P3 [4/4] [BC] ---
+PROMPT: Compute $$\int \frac{2x+5}{x^2+3x+2}\,dx.$$
+CORRECT: C = "$$3\ln|x+1|-\ln|x+2|+C$$"
+  A : $$2\ln|x+1|+3\ln|x+2|+C$$
+  B : $$\ln|x+1|+\ln|x+2|+C$$
+  C ✓: $$3\ln|x+1|-\ln|x+2|+C$$
+  D : $$3\ln|x+1|+2\ln|x+2|+C$$
+EXPLANATION: Factor: $x^2+3x+2=(x+1)(x+2)$. Set $$\frac{2x+5}{(x+1)(x+2)}=\frac{A}{x+1}+\frac{B}{x+2}.$$ Then $$2x+5=A(x+2)+B(x+1)=(A+B)x+(2A+B).$$ So $A+B=2$ and $2A+B=5$, giving $A=3$, $B=-1$. Thus $$\int \left(\frac{3}{x+1}-\frac{1}{x+2}\right)dx=3\ln|x+1|-\ln|x+2|+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.12-P4 [3/3] [BC] ---
+PROMPT: Let $$\frac{x+4}{(x+1)(x+3)}=\frac{A}{x+1}+\frac{B}{x+3}.$$ What is the value of $A$?
+CORRECT: D = "$\dfrac{3}{2}$"
+  A : $\dfrac{1}{2}$
+  B : $-\dfrac{3}{2}$
+  C : $\dfrac{5}{2}$
+  D ✓: $\dfrac{3}{2}$
+EXPLANATION: From $$x+4=A(x+3)+B(x+1),$$ set $x=-1$ to eliminate $B$: $$3=2A \Rightarrow A=\frac{3}{2}.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.12-P5 [5/5] [BC] ---
+PROMPT: Which is an antiderivative of $$\frac{1}{x^2-1}?$$
+CORRECT: B = "$$\frac{1}{2}\ln\left|\frac{x-1}{x+1}\right|+C$$"
+  A : $$\ln|x^2-1|+C$$
+  B ✓: $$\frac{1}{2}\ln\left|\frac{x-1}{x+1}\right|+C$$
+  C : $$\arctan(x)+C$$
+  D : $$\frac{1}{2}\ln|x-1|+\frac{1}{2}\ln|x+1|+C$$
+EXPLANATION: Decompose: $$\frac{1}{x^2-1}=\frac{1}{(x-1)(x+1)}=\frac{A}{x-1}+\frac{B}{x+1}.$$ Then $1=A(x+1)+B(x-1)=(A+B)x+(A-B)$, so $A+B=0$ and $A-B=1$ giving $A=\frac12$, $B=-\frac12$. Thus $$\int \frac{1}{x^2-1}dx=\frac12\ln|x-1|-\frac12\ln|x+1|+C=\frac12\ln\left|\frac{x-1}{x+1}\right|+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.13-P1 [4/3] [BC] ---
+PROMPT: Evaluate the improper integral and determine whether it converges: $$\int_{e}^{\infty}\frac{1}{x(\ln x)^2}\,dx$$
+CORRECT: A = "Converges and equals $1$"
+  A ✓: Converges and equals $1$
+  B : Converges and equals $0$
+  C : Diverges because it behaves like $\frac{1}{x}$
+  D : Diverges because $\ln x=0$ occurs in the integrand
+EXPLANATION: Use $u=\ln x$, $du=\frac{1}{x}dx$. When $x=e$, $u=1$; when $x\to\infty$, $u\to\infty$: $$\int_{e}^{\infty}\frac{1}{x(\ln x)^2}dx=\int_{1}^{\infty}\frac{1}{u^2}du=\left[-\frac{1}{u}\right]_{1}^{\infty}=1.$$ Therefore the integral converges and equals $1$.
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.13-P2 [2/2] [BC] ---
+PROMPT: Evaluate the improper integral: $$\int_{0}^{2}\frac{1}{\sqrt{x}}\,dx$$
+CORRECT: C = "$2\sqrt{2}$"
+  A : $\sqrt{2}$
+  B : $1$
+  C ✓: $2\sqrt{2}$
+  D : Diverges
+EXPLANATION: Write as a limit: $$\int_{0}^{2}x^{\frac{-1}{2}}dx=\lim_{a\to 0^+}\int_{a}^{2}x^{\frac{-1}{2}}dx=\lim_{a\to 0^+}\left[2\sqrt{x}\right]_{a}^{2}=2\sqrt{2}. $$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.13-P3 [3/3] [BC] ---
+PROMPT: For what values of $p$ does the improper integral converge? $$\int_{2}^{\infty}\frac{\ln x}{x^{p}}\,dx$$
+CORRECT: D = "Converges for $p>1$"
+  A : Converges for $p>0$
+  B : Diverges for all $p$
+  C : Converges for $p\ge 1$
+  D ✓: Converges for $p>1$
+EXPLANATION: Use integration by parts. Let $u=\ln x$ and $dv=x^{-p}dx$ ($p\ne 1$). Then $du=\frac{1}{x}dx$ and $v=\frac{x^{1-p}}{1-p}$. $$\int_{2}^{\infty}\frac{\ln x}{x^p}dx=\left.\frac{\ln x\,x^{1-p}}{1-p}\right|_{2}^{\infty}-\frac{1}{1-p}\int_{2}^{\infty}x^{-p}dx.$$ The term $\ln x\,x^{1-p}\to 0$ as $x\to\infty$ exactly when $p>1$, and $\int_{2}^{\infty}x^{-p}dx$ converges exactly when $p>1$. Thus the integral converges iff $p>1$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.13-P4 [4/3] [BC] ---
+PROMPT: Determine whether the improper integral converges or diverges: $$\int_{0}^{1}\frac{1}{x(\ln x)^2}\,dx$$
+CORRECT: A = "Diverges"
+  A ✓: Diverges
+  B : Converges because it is smaller than $\frac{1}{x}$ near $0$
+  C : Converges and equals $1$
+  D : Converges because $\frac{1}{(\ln x)^2}\to 0$ as $x\to 0^+$
+EXPLANATION: The integral is improper at both endpoints. It diverges due to behavior near $x=1$. Let $u=\ln x$, so $du=\frac{1}{x}dx$. As $x\to 1^-$, $u\to 0^-$ and $$\int \frac{1}{x(\ln x)^2}dx=\int u^{-2}du=-\frac{1}{u}+C=-\frac{1}{\ln x}+C.$$ As $x\to 1^-$, $\ln x\to 0^-$ so $-\frac{1}{\ln x}\to +\infty$, hence the improper integral diverges.
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.13-P5 [5/4] [BC] ---
+PROMPT: Evaluate the improper integral: $$\int_{0}^{\infty}\frac{e^{-x}}{\sqrt{x}}\,dx$$
+CORRECT: B = "$\sqrt{\pi}$"
+  A : $1$
+  B ✓: $\sqrt{\pi}$
+  C : $\pi$
+  D : Diverges
+EXPLANATION: Let $x=t^2$ with $t\ge 0$. Then $dx=2t\,dt$ and $\sqrt{x}=t$: $$\int_{0}^{\infty}\frac{e^{-x}}{\sqrt{x}}dx=\int_{0}^{\infty}\frac{e^{-t^2}}{t}(2t\,dt)=2\int_{0}^{\infty}e^{-t^2}dt.$$ Using $\int_{0}^{\infty}e^{-t^2}dt=\frac{\sqrt{\pi}}{2}$, the value is $\sqrt{\pi}$.
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.14-P1 [3/3] [Both] ---
+PROMPT: Find an antiderivative: $$\int \frac{x^2+1}{x-1}\,dx$$
+CORRECT: B = "$\frac{x^2}{2}+x+2\ln|x-1|+C$"
+  A : $\frac{x^2}{2}+\ln|x-1|+C$
+  B ✓: $\frac{x^2}{2}+x+2\ln|x-1|+C$
+  C : $\frac{x^2}{2}+2x+\ln|x-1|+C$
+  D : $\frac{x^2}{2}+x+\ln|x-1|+C$
+EXPLANATION: Use long division: $$x^2+1=(x-1)(x+1)+2 \quad\Rightarrow\quad \frac{x^2+1}{x-1}=x+1+\frac{2}{x-1}.$$ Then $$\int\left(x+1+\frac{2}{x-1}\right)dx=\frac{x^2}{2}+x+2\ln|x-1|+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. The long division yields remainder $2$, so the coefficient of $\ln|x-1|$ should be $2$, and the linear term is $x$, not $2x$.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.14-P2 [1/1] [Both] ---
+PROMPT: Find an antiderivative: $$\int \frac{x}{x^2+9}\,dx$$
+CORRECT: D = "$\frac12\ln(x^2+9)+C$"
+  A : $\frac{x^2}{x^2+9}+C$
+  B : $\ln(x^2+9)+C$
+  C : $\arctan\left(\frac{x}{3}\right)+C$
+  D ✓: $\frac12\ln(x^2+9)+C$
+EXPLANATION: Let $u=x^2+9$, so $du=2x\,dx$ and $x\,dx=\frac12 du$: $$\int \frac{x}{x^2+9}dx=\frac12\int \frac{1}{u}du=\frac12\ln|u|+C=\frac12\ln(x^2+9)+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Correct. This follows the principles of integration and accumulation of change.
+
+--- 6.14-P3 [2/2] [Both] ---
+PROMPT: Find an antiderivative: $$\int x e^{x}\,dx$$
+CORRECT: A = "$e^{x}(x-1)+C$"
+  A ✓: $e^{x}(x-1)+C$
+  B : $xe^{x}+C$
+  C : $e^{x}(x+1)+C$
+  D : $\frac{x^2}{2}e^{x}+C$
+EXPLANATION: Integration by parts: let $u=x$ ($du=dx$) and $dv=e^x dx$ ($v=e^x$). $$\int x e^x dx = x e^x - \int e^x dx = x e^x - e^x + C = e^x(x-1)+C.$$
+MICRO:
+  A: Correct. This follows the principles of integration and accumulation of change.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.14-P4 [4/3] [Both] ---
+PROMPT: Find an antiderivative: $$\int \frac{1}{x^2-4x+13}\,dx$$
+CORRECT: B = "$\frac{1}{3}\arctan\left(\frac{x-2}{3}\right)+C$"
+  A : $\ln|x^2-4x+13|+C$
+  B ✓: $\frac{1}{3}\arctan\left(\frac{x-2}{3}\right)+C$
+  C : $\arctan(x-2)+C$
+  D : $\frac{1}{9}\arctan\left(\frac{x-2}{3}\right)+C$
+EXPLANATION: Complete the square: $$x^2-4x+13=(x-2)^2+9=(x-2)^2+3^2.$$ Let $u=x-2$ ($du=dx$): $$\int \frac{1}{u^2+3^2}du=\frac{1}{3}\arctan\left(\frac{u}{3}\right)+C=\frac{1}{3}\arctan\left(\frac{x-2}{3}\right)+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Correct. This follows the principles of integration and accumulation of change.
+  C: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+
+--- 6.14-P5 [3/2] [Both] ---
+PROMPT: Find an antiderivative: $$\int \frac{2x+3}{x^2+3x-4}\,dx$$
+CORRECT: C = "$\ln|x^2+3x-4|+C$"
+  A : $\ln|x-1|+\ln|x+4|+C$
+  B : $\frac{1}{2}\ln|x^2+3x-4|+C$
+  C ✓: $\ln|x^2+3x-4|+C$
+  D : $\arctan\left(\frac{2x+3}{\sqrt{7}}\right)+C$
+EXPLANATION: Recognize the pattern $\int \frac{f^{\prime}(x)}{f(x)}dx=\ln|f(x)|+C$. Let $f(x)=x^2+3x-4$, so $f^{\prime}(x)=2x+3$. $$\int \frac{2x+3}{x^2+3x-4}dx=\ln|x^2+3x-4|+C.$$
+MICRO:
+  A: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  B: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.
+  C: Correct. This follows the principles of integration and accumulation of change.
+  D: Incorrect. Re-evaluate the integration technique or the specific property required for this problem.

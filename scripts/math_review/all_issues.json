@@ -1,0 +1,20 @@
+[
+  {
+    "unit": 5,
+    "title": "5.8-P1",
+    "severity": "CRITICAL",
+    "msg": "correct A ME says \"Incorrect\""
+  },
+  {
+    "unit": 5,
+    "title": "5.8-P1",
+    "severity": "CRITICAL",
+    "msg": "wrong D ME says \"Correct\""
+  },
+  {
+    "unit": 9,
+    "title": "9.9-P5",
+    "severity": "WARNING",
+    "msg": "duplicate option: \"$\\displaystyle\\frac12\\int_{\\alpha}^{\\bet\""
+  }
+]

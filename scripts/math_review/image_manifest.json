@@ -1,0 +1,994 @@
+[
+  {
+    "title": "1.0-UT-Q4",
+    "file": "1.0-UT-Q4.png",
+    "text": "Use the table in the image.  What is the best estimate of $$\\lim_{x\\to 2} g(x)?$$",
+    "correct": "D: 4.0",
+    "explanation": "As $x$ gets closer to $2$ from the left, $g(x)$ is near $4$, and from the right, $g(x)$ is also near $4$. Both sides approach $4$, so the best estimate is $4.0$.",
+    "options": "A: 3.6 | B: 3.9 | C: 4.4 | D: 4.0"
+  },
+  {
+    "title": "1.0-UT-Q10",
+    "file": "1.0-UT-Q10.png",
+    "text": "Use the graph in the image.  At $x=1$, what type of discontinuity does $h(x)$ have?",
+    "correct": "B: Jump discontinuity",
+    "explanation": "From the graph, as $x\\to 1^-$, $h(x)\\to 2$ (open circle). As $x\\to 1^+$, $h(x)\\to 3$ (right-hand segment). Since the one-sided limits are finite but unequal, the discontinuity is a jump discontinuity.",
+    "options": "A: Removable discontinuity | B: Jump discontinuity | C: Infinite discontinuity | D: No discontinuity (continuous)"
+  },
+  {
+    "title": "1.0-UT-Q18",
+    "file": "1.0-UT-Q18.png",
+    "text": "Use the graph in the image.  The function $p(x)$ is continuous on $[0,3]$. Based on the graph, which value is guaranteed to be attained by $p(x)$ for some $c\\in(0,3)$?",
+    "correct": "D: 0",
+    "explanation": "Because $p$ is continuous on $[0,3]$, it satisfies IVT. The graph indicates $p(0)<0$ and $p(3)>0$, so $0$ lies between them. Therefore there must exist $c\\in(0,3)$ such that $p(c)=0$.",
+    "options": "A: -2 | B: There is not enough information to guarantee any value. | C: 6 | D: 0"
+  },
+  {
+    "title": "1.3-P1",
+    "file": "1.3-P1.png",
+    "text": "Use the graph to evaluate the limit.  Find $\\displaystyle \\lim_{x\\to 2^-} f(x)$.",
+    "correct": "C: $3$",
+    "explanation": "As $x\\to 2^-$, the graph follows the left branch. The $y$-values approach $3$ (the open circle at $(2,3)$). Therefore, $\\lim_{x\\to 2^-} f(x)=3$.",
+    "options": "A: The limit does not exist | B: $4$ | C: $3$ | D: $2$"
+  },
+  {
+    "title": "1.3-P2",
+    "file": "1.3-P2.png",
+    "text": "Use the graph to evaluate the limit.  Find $\\displaystyle \\lim_{x\\to 1} f(x)$.",
+    "correct": "A: The limit does not exist",
+    "explanation": "From the left, $f(x)$ approaches $3$ (open circle at $(1,3)$). From the right, $f(x)$ approaches $1$ (horizontal segment). Since $\\lim_{x\\to 1^-} f(x)\\neq \\lim_{x\\to 1^+} f(x)$, $\\lim_{x\\to 1} f(x)$ does not exist.",
+    "options": "A: The limit does not exist | B: $3$ | C: $1$ | D: $2$"
+  },
+  {
+    "title": "1.3-P3",
+    "file": "1.3-P3.png",
+    "text": "Use the graph to evaluate the limit.  Find $\\displaystyle \\lim_{x\\to 0^+} f(x)$.",
+    "correct": "C: $\\infty$",
+    "explanation": "Near $x=0$ on the right, the graph shoots upward without bound. Therefore, $\\lim_{x\\to 0^+} f(x)=\\infty$.",
+    "options": "A: $-\\infty$ | B: $0$ | C: $\\infty$ | D: The limit does not exist"
+  },
+  {
+    "title": "1.3-P4",
+    "file": "1.3-P4.png",
+    "text": "Use the graph to evaluate the limit.  Find $\\displaystyle \\lim_{x\\to -1} f(x)$.",
+    "correct": "B: $1$",
+    "explanation": "Approaching $x=-1$ from either side, the graph stays at $y=1$. Even though there is a hole at $(-1,1)$, the approaching value is $1$, so $\\lim_{x\\to -1} f(x)=1$.",
+    "options": "A: The limit does not exist | B: $1$ | C: $-1$ | D: $0$"
+  },
+  {
+    "title": "1.3-P5",
+    "file": "1.3-P5.png",
+    "text": "Use the graph to evaluate the limit.  Find $\\displaystyle \\lim_{x\\to 0^+} f(x)$.",
+    "correct": "D: $0$",
+    "explanation": "The graph is defined for $x\\ge 0$ and approaches the point $(0,0)$ from the right. Therefore, $\\lim_{x\\to 0^+} f(x)=0$.",
+    "options": "A: $1$ | B: $\\infty$ | C: The limit does not exist | D: $0$"
+  },
+  {
+    "title": "1.5-P2",
+    "file": "1.5-P2.png",
+    "text": "Using the graph (see image 1.5-P2.png), evaluate $$\\lim_{x\\to 1}\\left(3f(x)-2g(x)\\right).$$",
+    "correct": "A: $8$",
+    "explanation": "From the graph, $$\\lim_{x\\to 1}f(x)=2,\\quad \\lim_{x\\to 1}g(x)=-1.$$ By limit laws, $$\\lim_{x\\to 1}(3f(x)-2g(x))=3\\cdot 2-2\\cdot(-1)=8.$$",
+    "options": "A: $8$ | B: $4$ | C: $-8$ | D: Does not exist"
+  },
+  {
+    "title": "1.6-P5",
+    "file": "1.6-P5.png",
+    "text": "A function has the graph shown (see image 1.6-P5.png). What value should be defined at $x=3$ to make the function continuous at $x=3$?",
+    "correct": "C: $6$",
+    "explanation": "To make $f$ continuous at $x=3$, define $f(3)$ to equal the two-sided limit. The graph shows a hole at $(3,6)$, so $$\\lim_{x\\to 3}f(x)=6$$ and the required definition is $f(3)=6$.",
+    "options": "A: $3$ | B: $0$ | C: $6$ | D: No value works"
+  },
+  {
+    "title": "1.7-P1",
+    "file": "1.7-P1.png",
+    "text": "Use the graph of $f$ to evaluate $\\lim_{x\\to -1} f(x)$. [image:1.7-P1.png]",
+    "correct": "C: $\\tfrac{1}{2}$",
+    "explanation": "Near $x=-1$, the curve follows the line segment on both sides and approaches the open-circle height. The filled point at $x=-1$ changes $f(-1)$ but not the limit.",
+    "options": "A: DNE because there is a hole | B: $2$ | C: $\\tfrac{1}{2}$ | D: DNE because there is a jump"
+  },
+  {
+    "title": "1.8-P2",
+    "file": "1.8-P2.png",
+    "text": "The graph shows three functions near $x=0$: $y=-|x|$, $y=x\\sin(\\frac{1}{x})$, and $y=|x|$. What is $\\lim_{x\\to 0} x\\sin(\\frac{1}{x})$? [image:1.8-P2.png]",
+    "correct": "A: $0$",
+    "explanation": "Since $-1\\le \\sin(\\frac{1}{x})\\le 1$, we have $-|x|\\le x\\sin(\\frac{1}{x})\\le |x|$. As $x\\to 0$, both $-|x|$ and $|x|$ approach $0$, so by the Squeeze Theorem the limit is $0$.",
+    "options": "A: $0$ | B: DNE | C: $1$ | D: The limit depends on the path to $0$"
+  },
+  {
+    "title": "1.8-P3",
+    "file": "1.8-P3.png",
+    "text": "The graph shows $g(x)=\\sin(\\frac{1}{x})$ near $x=0$. What is $\\lim_{x\\to 0} g(x)$? [image:1.8-P3.png]",
+    "correct": "B: DNE",
+    "explanation": "Even though $-1\\le \\sin(\\frac{1}{x})\\le 1$, the bounds do not squeeze to a single value. Near $0$, the function attains values arbitrarily close to many numbers in $[-1,1]$, so the limit does not exist.",
+    "options": "A: $0$ | B: DNE | C: $-1$ | D: $1$"
+  },
+  {
+    "title": "1.9-P1",
+    "file": "1.9-P1.png",
+    "text": "The graph of $f$ is shown in the figure labeled 1.9-P1. What is $\\lim_{x\\to 2} f(x)$?",
+    "correct": "A: $3$",
+    "explanation": "Read the approach values on both sides of $x=2$. The left-hand limit is $3$ and the right-hand limit is also $3$, so $\\lim_{x\\to 2} f(x)=3$.",
+    "options": "A: $3$ | B: $1$ | C: Does not exist | D: $2$"
+  },
+  {
+    "title": "1.9-P4",
+    "file": "1.9-P4.png",
+    "text": "The table shown in the figure labeled 1.9-P4 gives values of $f(x)$ near $x=2$. Estimate $\\lim_{x\\to 2} f(x)$.",
+    "correct": "B: $4$",
+    "explanation": "As $x$ gets closer to $2$ from both sides, the function values get closer to $4$, so $\\lim_{x\\to 2} f(x)\\approx 4$.",
+    "options": "A: $3.61$ | B: $4$ | C: $4.41$ | D: Does not exist"
+  },
+  {
+    "title": "1.10-P1",
+    "file": "1.10-P1.png",
+    "text": "The graph of $f$ is shown in the figure labeled 1.10-P1. What type of discontinuity does $f$ have at $x=1$?",
+    "correct": "B: Jump discontinuity",
+    "explanation": "At $x=1$, the function approaches one finite value from the left and a different finite value from the right, so the discontinuity is a jump discontinuity.",
+    "options": "A: Removable discontinuity | B: Jump discontinuity | C: No discontinuity | D: Infinite discontinuity"
+  },
+  {
+    "title": "1.10-P3",
+    "file": "1.10-P3.png",
+    "text": "The graph of $f$ is shown in the figure labeled 1.10-P3. Which statement is true about limits near $x=0$?",
+    "correct": "A: $\\lim_{x\\to 0^-} f(x)=-\\infty$ and $\\lim_{x\\to 0^+} f(x)=+\\infty$",
+    "explanation": "From the graph, as $x\\to 0^-$ the function decreases without bound, and as $x\\to 0^+$ it increases without bound. Therefore $\\lim_{x\\to 0^-} f(x)=-\\infty$ and $\\lim_{x\\to 0^+} f(x)=+\\infty$.",
+    "options": "A: $\\lim_{x\\to 0^-} f(x)=-\\infty$ and $\\lim_{x\\to 0^+} f(x)=+\\i | B: $\\lim_{x\\to 0^-} f(x)=+\\infty$ and $\\lim_{x\\to 0^+} f(x)=+\\i | C: $\\lim_{x\\to 0} f(x)=0$ | D: $\\lim_{x\\to 0} f(x)$ exists and is finite"
+  },
+  {
+    "title": "1.11-P2",
+    "file": "1.11-P2.png",
+    "text": "Use the graph (image). At $x=2$, which statement is true?  I. $\\lim_{x\\to 2} f(x)$ exists.  II. $f(2)$ exists.  III. $f$ is continuous at $x=2$.",
+    "correct": "C: II only",
+    "explanation": "From the graph, there is a filled point at $x=2$, so $f(2)$ exists. The value approached from the left differs from the value approached from the right, so $\\lim_{x\\to 2} f(x)$ does not exist. Without the limit, $f$ cannot be continuous at $x=2$.",
+    "options": "A: I only | B: I and II only | C: II only | D: I, II, and III"
+  },
+  {
+    "title": "1.12-P3",
+    "file": "1.12-P3.png",
+    "text": "Use the graph (image). On which set is $f$ continuous?",
+    "correct": "C: $[0,1)\\cup(1,4]$",
+    "explanation": "The graph shows a discontinuity at $x=1$ (the approached value(s) at $x=1$ do not agree with the function value). On each side of $1$, the graph is unbroken. Therefore $f$ is continuous on $[0,1)\\cup(1,4]$.",
+    "options": "A: $[0,4]$ | B: $[0,1]$ | C: $[0,1)\\cup(1,4]$ | D: $(1,4]$"
+  },
+  {
+    "title": "1.15-P2",
+    "file": "1.15-P2.png",
+    "text": "The table shows values of $f(x)=\\dfrac{3x^2+1}{x^2-4}$ for large $x$. See image: 1.15-P2.png Based on end behavior, which horizontal asymptote is correct?",
+    "correct": "B: $y=3$",
+    "explanation": "For $$f(x)=\\frac{3x^2+1}{x^2-4},$$ the degrees match, so $$\\lim_{x\\to\\pm\\infty} f(x)=\\frac{3}{1}=3.$$ Thus the horizontal asymptote is $y=3$.",
+    "options": "A: $y=-3$ | B: $y=3$ | C: $y=0$ | D: No horizontal asymptote"
+  },
+  {
+    "title": "1.15-P3",
+    "file": "1.15-P3.png",
+    "text": "A graph is shown. See image: 1.15-P3.png What is $$\\lim_{x\\to\\infty} f(x)?$$",
+    "correct": "C: $1$",
+    "explanation": "From the graph, as $x$ increases without bound, the curve approaches the horizontal line $y=1$. Therefore, $$\\lim_{x\\to\\infty} f(x)=1.$$",
+    "options": "A: $0$ | B: $2$ | C: $1$ | D: Does not exist"
+  },
+  {
+    "title": "1.16-P3",
+    "file": "1.16-P3.png",
+    "text": "A continuous function $y=f(x)$ is graphed, and the line $y=2$ is shown. See image: 1.16-P3.png Which statement is guaranteed by the Intermediate Value Theorem?",
+    "correct": "C: There exists $c$ such that $f(c)=2$.",
+    "explanation": "Because the curve is continuous and it crosses the horizontal line $y=2$, there is at least one point $c$ where $f(c)=2$. IVT justifies existence on any interval whose endpoints have function values on opposite sides of $2$.",
+    "options": "A: There exists $c$ such that $f(c)=0$. | B: There exists $c$ such that $f(c)=5$. | C: There exists $c$ such that $f(c)=2$. | D: $f$ must be differentiable everywhere shown."
+  },
+  {
+    "title": "1.16-P5",
+    "file": "1.16-P5.png",
+    "text": "A graph of $y=g(x)$ is shown. See image: 1.16-P5.png Which statement is correct?",
+    "correct": "D: IVT cannot be used on $[0,4]$ because $g$ is not continuous on that interval.",
+    "explanation": "The graph shows a removable discontinuity (a hole) at $x=2$. Since $g$ is not continuous on $[0,4]$, the Intermediate Value Theorem cannot be applied on that interval.",
+    "options": "A: IVT guarantees that $g(x)$ takes every value between $0$ and | B: $g$ is continuous on $[0,4]$ because the left and right side | C: IVT guarantees there exists $c\\in(0,4)$ such that $g(c)=1$. | D: IVT cannot be used on $[0,4]$ because $g$ is not continuous "
+  },
+  {
+    "title": "2.0-UT-Q3",
+    "file": "2.0-UT-Q3.png",
+    "text": "Use the graph (with two marked points). What is the slope of the secant line through the two marked points?",
+    "correct": "A: $2$",
+    "explanation": "From the graph, the marked points are $(1,1)$ and $(3,5)$. The secant slope is $$\\frac{5-1}{3-1}=2.$$",
+    "options": "A: $2$ | B: $-2$ | C: $4$ | D: $1$"
+  },
+  {
+    "title": "2.0-UT-Q6",
+    "file": "2.0-UT-Q6.png",
+    "text": "Use the table to estimate $f'(2)$ using a symmetric difference.",
+    "correct": "C: $4$",
+    "explanation": "A symmetric difference around $2$ gives $$f'(2)\\approx \\frac{f(2.01)-f(1.99)}{2.01-1.99}=\\frac{4.0401-3.9601}{0.02}=4.$$",
+    "options": "A: $0.2$ | B: $2$ | C: $4$ | D: $0$"
+  },
+  {
+    "title": "2.0-UT-Q8",
+    "file": "2.0-UT-Q8.png",
+    "text": "Use the graph of $y=|x|$. Which statement is true about the derivative at $x=0$?",
+    "correct": "B: The derivative does not exist at $x=0$.",
+    "explanation": "$|x|$ is continuous at $0$ but not differentiable there because the one-sided slopes differ ($-1$ vs $1$).",
+    "options": "A: The derivative exists and equals $0$. | B: The derivative does not exist at $x=0$. | C: The derivative exists and equals $-1$. | D: The derivative exists and equals $1$."
+  },
+  {
+    "title": "2.0-UT-Q14",
+    "file": "2.0-UT-Q14.png",
+    "text": "Use the graph of $y=\\sin x$ with a dashed tangent line at $x=0$. What is $\\sin'(0)$?",
+    "correct": "B: $1$",
+    "explanation": "$(\\sin x)'=\\cos x$, so $\\sin'(0)=\\cos 0=1$.",
+    "options": "A: $0$ | B: $1$ | C: $-1$ | D: $\\pi$"
+  },
+  {
+    "title": "2.3-P1",
+    "file": "2.3-P1.png",
+    "text": "Use the graph (see image) to best estimate $f'(2)$. The point $(2, f(2))$ is marked on the curve.",
+    "correct": "C: About $0.2$",
+    "explanation": "The derivative at a point is the slope of the tangent line. From the graph near $x=2$, the rise over run over a small interval (e.g., from $x=1.5$ to $x=2.5$) suggests an average slope close to $2$.",
+    "options": "A: About $1.2$ | B: About $2$ | C: About $0.2$ | D: About $6$"
+  },
+  {
+    "title": "2.3-P4",
+    "file": "2.3-P4.png",
+    "text": "A graph (see image) shows $y=f(x)$ and a symmetric secant line through the points at $x=1.0$ and $x=2.0$. Which value is the best estimate of $f'(1.5)$ using this symmetric secant?",
+    "correct": "A: \\frac{f(2.0) - f(1.0)}{2.0 - 1.0}",
+    "explanation": "A symmetric secant about $x=a$ uses points $a-h$ and $a+h$: $$f'(a) \\approx \\frac{f(a+h)-f(a-h)}{2h}$$ Here $a=1.5$ and the points are $1.0$ and $2.0$ (so $h=0.5$). Thus, $$f'(1.5) \\approx \\frac{f(2.0)-f(1.0)}{2.0-1.0} = \\frac{f(2.0)-f(1.0)}{1.0}$$",
+    "options": "A: \\frac{f(2.0) - f(1.0)}{2.0 - 1.0} | B: The slope of the secant from $x=1.0$ to $x=1.5$ only | C: \\frac{f(2.0) - f(1.5)}{2.0 - 1.5} | D: \\frac{f(1.5) - f(1.0)}{2.0 - 1.0}"
+  },
+  {
+    "title": "2.4-P5",
+    "file": "2.4-P5.png",
+    "text": "A function $f$ has the graph shown (see image), with $f(0) = 1$. Which statement is true about $f$ at $x=0$?",
+    "correct": "C: $f$ is continuous but not differentiable at $x=0$",
+    "explanation": "From the graph, the two pieces meet at $x=0$, so $\\lim_{x\\to 0} f(x) = f(0)$ and $f$ is continuous. The one-sided slopes at $x=0$ do not match, so $f$ is not differentiable at $x=0$.",
+    "options": "A: $f$ is differentiable at $x=0$ | B: $f$ is not continuous at $x=0$ but is differentiable at $x=0 | C: $f$ is continuous but not differentiable at $x=0$ | D: $f$ is neither continuous nor differentiable at $x=0$"
+  },
+  {
+    "title": "3.0-UT-Q3",
+    "file": "3.0-UT-Q3.png",
+    "text": "Given $x^2+y^2=25$, find $\\frac{dy}{dx}$ in terms of $x$ and $y$.",
+    "correct": "A: $-\\frac{x}{y}$",
+    "explanation": "Differentiate implicitly: $$2x+2y\\frac{dy}{dx}=0\\Rightarrow \\frac{dy}{dx}=-\\frac{x}{y}.$$",
+    "options": "A: $-\\frac{x}{y}$ | B: $-\\frac{y}{x}$ | C: $\\frac{x}{y}$ | D: $-\\frac{2x}{y}$"
+  },
+  {
+    "title": "3.0-UT-Q5",
+    "file": "3.0-UT-Q5.png",
+    "text": "Use the graph of $y=f(x)$ and its tangent line at $(1,2)$ (see image). What is $(f^{-1})'(2)$?",
+    "correct": "A: $-\\frac{1}{2}$",
+    "explanation": "From the tangent line in the image, $f'(1)=-2$ and $f(1)=2$. Therefore, $$(f^{-1})'(2)=\\frac{1}{f'(1)}=\\frac{1}{-2}=-\\frac{1}{2}.$$",
+    "options": "A: $-\\frac{1}{2}$ | B: $2$ | C: $-2$ | D: $\\frac{1}{2}$"
+  },
+  {
+    "title": "3.0-UT-Q17",
+    "file": "3.0-UT-Q17.png",
+    "text": "The curve is $x^2+xy+y^2=7$ with the point $(2,1)$ marked (see image). What is the slope of the tangent line at $(2,1)$?",
+    "correct": "A: $-\\frac{5}{4}$",
+    "explanation": "Differentiate: $$2x+\\frac{d}{dx}(xy)+2y\\frac{dy}{dx}=0,\\quad \\frac{d}{dx}(xy)=y+x\\frac{dy}{dx}.$$ So $$(2x+y)+(x+2y)\\frac{dy}{dx}=0.$$ At $(2,1)$: $$5+4\\frac{dy}{dx}=0\\Rightarrow \\frac{dy}{dx}=-\\frac{5}{4}.$$",
+    "options": "A: $-\\frac{5}{4}$ | B: $-\\frac{4}{5}$ | C: $\\frac{5}{4}$ | D: $-\\frac{3}{4}$"
+  },
+  {
+    "title": "3.3-P2",
+    "file": "3.3-P2.png",
+    "text": "The graph of a one-to-one function $y=f(x)$ and the line $y=x$ are shown in the figure labeled 3.3-P2. The point $(2,3)$ lies on $y=f(x)$ and $f'(2)=6$. What is $(f^{-1})'(3)$?",
+    "correct": "B: $\\dfrac{1}{6}$",
+    "explanation": "Because $f(2)=3$, we have $f^{-1}(3)=2$. Then $$ (f^{-1})'(3)=\\frac{1}{f'(f^{-1}(3))}=\\frac{1}{f'(2)}=\\frac{1}{6}. $$",
+    "options": "A: $6$ | B: $\\dfrac{1}{6}$ | C: $\\dfrac{1}{3}$ | D: $\\dfrac{1}{2}$"
+  },
+  {
+    "title": "3.4-P3",
+    "file": "3.4-P3.png",
+    "text": "The graph of $y=\\arctan(x)$ is shown in the figure labeled 3.4-P3, with the point $(1,\\arctan(1))$ marked. What is the slope of the tangent line at $x=1$?",
+    "correct": "A: $\\dfrac{1}{2}$",
+    "explanation": "Since $\\dfrac{d}{dx}\\arctan(x)=\\dfrac{1}{1+x^2}$, evaluate at $x=1$: $$\\arctan'(1)=\\frac{1}{1+1^2}=\\frac{1}{2}.$$",
+    "options": "A: $\\dfrac{1}{2}$ | B: $2$ | C: $\\dfrac{\\pi}{4}$ | D: $1$"
+  },
+  {
+    "title": "3.6-P5",
+    "file": "3.6-P5.png",
+    "text": "Use the graph of $f'(x)$ to determine where $f$ is concave down. (See image.)",
+    "correct": "B: $(-2,1)$",
+    "explanation": "$f$ is concave down where $f''(x)<0$, i.e., where $f'(x)$ is decreasing. From the graph, $f'(x)$ decreases on $(-2,2)$ and increases on $(2,4)$. Among the choices, the interval fully contained in the decreasing region is $(-2,1)$.",
+    "options": "A: $(1,3)$ | B: $(-2,1)$ | C: $(3,4)$ | D: $(-2,4)$"
+  },
+  {
+    "title": "4.0-UT-Q2",
+    "file": "4.0-UT-Q2.png",
+    "text": "The image shows position $s$ (meters) versus time $t$ (seconds). At $t=5$, which best describes the velocity $v(5)$? (See image.)",
+    "correct": "C: $v(5)>0$",
+    "explanation": "Velocity is $v(t)=s'(t)$, the slope of the position–time graph. At $t=5$ the curve is increasing, so $s'(5)>0$.",
+    "options": "A: $v(5)<0$ | B: $v(5)=0$ | C: $v(5)>0$ | D: Velocity cannot be determined from a position–time graph."
+  },
+  {
+    "title": "4.0-UT-Q9",
+    "file": "4.0-UT-Q9.png",
+    "text": "A $10$-ft ladder leans against a wall. Let $x$ be the distance (ft) from the wall to the foot of the ladder and $y$ the height (ft) of the top of the ladder. When $x=6$ and $\\frac{dx}{dt}=2$ ft/s, wha",
+    "correct": "B: $-\\frac{3}{4}$",
+    "explanation": "Using $x^2+y^2=100$, differentiate: $2x\\frac{dx}{dt}+2y\\frac{dy}{dt}=0$, so $\\frac{dy}{dt}=-\\frac{x}{y}\\frac{dx}{dt}$. When $x=6$, $y=\\sqrt{100-36}=8$, so $\\frac{dy}{dt}=-\\frac{6}{8}(2)=-\\frac{3}{4}$ ft/s.",
+    "options": "A: $-\\frac{3}{2}$ | B: $-\\frac{3}{4}$ | C: $\\frac{3}{2}$ | D: $\\frac{3}{4}$"
+  },
+  {
+    "title": "4.1-P3",
+    "file": "4.1-P3.png",
+    "text": "Refer to the graph. The temperature $T$ of a chemical bath (in $^\\circ\\!\\text{C}$) is shown as a function of time $t$ (in hours). A tangent line is drawn at $t=3$. Which value best estimates $T'(3)$?",
+    "correct": "A: About $1.0\\\\ ^\\circ\\!\\text{C}/\\text{hour}$",
+    "explanation": "The derivative at $t=3$ is the slope of the tangent line. From the drawn tangent, the rise is roughly $1.2\\\\ ^\\circ\\!\\text{C}$ over a run of about $1.2$ hours, giving a slope near $1\\\\ ^\\circ\\!\\text{C}/\\text{hour}$.",
+    "options": "A: About $1.0\\\\ ^\\circ\\!\\text{C}/\\text{hour}$ | B: About $0.1\\\\ ^\\circ\\!\\text{C}/\\text{hour}$ | C: About $10\\\\ ^\\circ\\!\\text{C}/\\text{hour}$ | D: About $-1.0\\\\ ^\\circ\\!\\text{C}/\\text{hour}$"
+  },
+  {
+    "title": "4.2-P2",
+    "file": "4.2-P2.png",
+    "text": "Refer to the position graph (velocity is slope). What is the cart's velocity at $t = 6$ seconds?",
+    "correct": "B: $-2$ m/s",
+    "explanation": "Velocity is the slope of the position graph. At $t=6$, the cart lies on the segment from $(5, 6)$ to $(7, 2)$, so $m = \\frac{2-6}{7-5} = -2$ m/s.",
+    "options": "A: $2$ m/s | B: $-2$ m/s | C: $-4$ m/s | D: $0$ m/s"
+  },
+  {
+    "title": "4.2-P5",
+    "file": "4.2-P5.png",
+    "text": "Refer to the velocity graph. Which value best represents the drone's acceleration at $t=2$ seconds?",
+    "correct": "A: $1.5\\\\ \\text{m/s}^2$",
+    "explanation": "Acceleration is the slope of the velocity graph. The graph is a straight line, so acceleration is constant: $$a=\\frac{10-(-2)}{8-0}=\\frac{12}{8}=1.5\\\\ \\text{m/s}^2.$$",
+    "options": "A: $1.5\\\\ \\text{m/s}^2$ | B: $0.75\\\\ \\text{m/s}^2$ | C: $-2\\\\ \\text{m/s}^2$ | D: $3\\\\ \\text{m/s}^2$"
+  },
+  {
+    "title": "4.3-P5",
+    "file": "4.3-P5.png",
+    "text": "A tank’s volume $V(t)$ (in liters) changes due to inflow and outflow. Inflow is $8\\ \\mathrm{L/min}$. Outflow is $2\\sqrt{V}\\ \\mathrm{L/min}$. At the instant when $V=25$, what is $\\dfrac{dV}{dt}$?",
+    "correct": "A: $-2\\ \\mathrm{L/min}$",
+    "explanation": "Net rate is inflow minus outflow: $\\dfrac{dV}{dt}=8-2\\sqrt{V}$. At $V=25$, $\\dfrac{dV}{dt}=8-2\\cdot 5=-2\\ \\mathrm{L/min}$.",
+    "options": "A: $-2\\ \\mathrm{L/min}$ | B: $18\\ \\mathrm{L/min}$ | C: $2\\ \\mathrm{L/min}$ | D: $0.8\\ \\mathrm{L/min}$"
+  },
+  {
+    "title": "4.4-P3",
+    "file": "4.4-P3.png",
+    "text": "A $10$-ft ladder leans against a vertical wall. The bottom slides away from the wall at $\\dfrac{dx}{dt}=2\\ \\mathrm{ft/s}$. At the instant when $x=6\\ \\mathrm{ft}$, what is $\\dfrac{dy}{dt}$, where $y$ i",
+    "correct": "D: $-1.5\\ \\mathrm{ft/s}$",
+    "explanation": "Constraint: $x^2+y^2=100$. Differentiate: $2x\\dfrac{dx}{dt}+2y\\dfrac{dy}{dt}=0\\Rightarrow \\dfrac{dy}{dt}=-\\dfrac{x}{y}\\dfrac{dx}{dt}$. When $x=6$, $y=\\sqrt{100-36}=8$, so $\\dfrac{dy}{dt}=-(\\frac{6}{8})(2)=-1.5\\ \\mathrm{ft/s}$.",
+    "options": "A: $-\\dfrac{8}{3}\\ \\mathrm{ft/s}$ | B: $-\\dfrac{1}{3}\\ \\mathrm{ft/s}$ | C: $1.5\\ \\mathrm{ft/s}$ | D: $-1.5\\ \\mathrm{ft/s}$"
+  },
+  {
+    "title": "4.4-P4",
+    "file": "4.4-P4.png",
+    "text": "Two variables satisfy $x^2+xy=10$, where $x$ and $y$ are functions of time $t$. If $\\dfrac{dx}{dt}=1$ and at the instant $x=2$ and $y=3$, what is $\\dfrac{dy}{dt}$?",
+    "correct": "D: $-\\dfrac{7}{2}$",
+    "explanation": "Differentiate: $\\dfrac{d}{dt}(x^2)+\\dfrac{d}{dt}(xy)=0\\Rightarrow 2x\\dfrac{dx}{dt}+x\\dfrac{dy}{dt}+y\\dfrac{dx}{dt}=0$. Substitute $x=2$, $y=3$, $\\frac{dx}{dt}=1$: $4+2\\,\\frac{dy}{dt}+3=0\\Rightarrow \\frac{dy}{dt}=\\frac{-7}{2}$.",
+    "options": "A: $-7$ | B: $\\dfrac{7}{2}$ | C: $-\\dfrac{7}{5}$ | D: $-\\dfrac{7}{2}$"
+  },
+  {
+    "title": "4.5-P1",
+    "file": "4.5-P1.png",
+    "text": "A $10$-ft ladder leans against a vertical wall (see image). Let $x$ be the distance (ft) from the wall to the foot of the ladder and let $y$ be the height (ft) of the top of the ladder on the wall. At",
+    "correct": "B: $-0.375$ ft/s",
+    "explanation": "Because the ladder length is constant, $x^2+y^2=10^2=100$. Differentiate with respect to $t$: $$2x\\frac{dx}{dt}+2y\\frac{dy}{dt}=0 \\;\\Rightarrow\\; \\frac{dy}{dt}= -\\frac{x}{y}\\frac{dx}{dt}.$$ When $x=6$, $y=\\sqrt{100-36}=8$, so $$\\frac{dy}{dt}= -\\frac{",
+    "options": "A: $-0.75$ ft/s | B: $-0.375$ ft/s | C: $0.375$ ft/s | D: $-0.5$ ft/s"
+  },
+  {
+    "title": "4.5-P3",
+    "file": "4.5-P3.png",
+    "text": "Water is poured into an inverted right circular cone with height $H=6$ m and base radius $R=3$ m (see image). Let $h$ be the water height (m) and $V$ the water volume (m$^3$). At the moment when $h=2$",
+    "correct": "D: $\\dfrac{1}{2\\pi}$ m/min",
+    "explanation": "By similar triangles, $$\\frac{r}{h}=\\frac{R}{H}=\\frac{3}{6}=\\frac{1}{2}\\;\\Rightarrow\\; r=\\frac{h}{2}.$$ Then $$V=\\frac{1}{3}\\pi r^2h=\\frac{1}{3}\\pi\\left(\\frac{h}{2}\\right)^2h=\\frac{\\pi}{12}h^3.$$ Differentiate: $$\\frac{dV}{dt}=\\frac{\\pi}{4}h^2\\frac{d",
+    "options": "A: $\\dfrac{1}{8\\pi}$ m/min | B: $\\dfrac{1}{\\pi}$ m/min | C: $\\dfrac{1}{4\\pi}$ m/min | D: $\\dfrac{1}{2\\pi}$ m/min"
+  },
+  {
+    "title": "4.6-P2",
+    "file": "4.6-P2.png",
+    "text": "The graph shows $f(x)=\\sqrt{x+1}$ and the tangent line at $x=3$ (see image). Use the tangent line (linearization at $x=3$) to approximate $\\sqrt{4.1}$.",
+    "correct": "D: $2.025$",
+    "explanation": "Write $\\sqrt{4.1}=\\sqrt{(3.1)+1}=f(3.1)$ for $f(x)=\\sqrt{x+1}$. Linearization at $a=3$: $$L(x)=f(3)+f'(3)(x-3).$$ Compute $f(3)=2$ and $$f'(x)=\\frac{1}{2\\sqrt{x+1}}\\;\\Rightarrow\\; f'(3)=\\frac{1}{4}.$$ Then $$\\sqrt{4.1}=f(3.1)\\approx L(3.1)=2+\\frac{1}",
+    "options": "A: $2.05$ | B: $2.00$ | C: $2.10$ | D: $2.025$"
+  },
+  {
+    "title": "5.0-UT-Q1",
+    "file": "5.0-UT-Q1.png",
+    "text": "IMAGE: unit_test-P1.png  The secant line between $x=0.8$ and $x=3.8$ has slope $2$. Assume $f$ is continuous on $[0.8,3.8]$ and differentiable on $(0.8,3.8)$. Which statement must be true?",
+    "correct": "D: There exists $c$ with $f'(c)=2$",
+    "explanation": "By the Mean Value Theorem, there exists $c$ such that $$f'(c)=\\frac{f(3.8)-f(0.8)}{3.8-0.8}=2.$$",
+    "options": "A: Both B and C must occur | B: There exists $c$ with $f'(c)>2$ | C: There exists $c$ with $f'(c)<2$ | D: There exists $c$ with $f'(c)=2$"
+  },
+  {
+    "title": "5.0-UT-Q7",
+    "file": "5.0-UT-Q7.png",
+    "text": "IMAGE: unit_test-P7.png  The graph shown is $f'(x)$. On which interval is $f$ decreasing?",
+    "correct": "C: $(-1,2)$",
+    "explanation": "$f$ is decreasing where $f'(x)<0$. From the graph, $f'(x)$ is negative on $(-1,2)$, so $f$ is decreasing on $(-1,2)$.",
+    "options": "A: $(-\\infty,-1)$ | B: $(2,\\infty)$ | C: $(-1,2)$ | D: None; $f$ is increasing for all $x$."
+  },
+  {
+    "title": "5.0-UT-Q10",
+    "file": "5.0-UT-Q10.png",
+    "text": "IMAGE: unit_test-P10.png  The graph shown is $f''(x)$. On which interval is $f$ concave down?",
+    "correct": "D: $(1,3)$",
+    "explanation": "$f$ is concave down where $f''(x)<0$. From the graph, $f''(x)$ is negative on $(1,3)$, so $f$ is concave down on $(1,3)$.",
+    "options": "A: All real $x$ | B: $(-\\infty,1)$ | C: $(3,\\infty)$ | D: $(1,3)$"
+  },
+  {
+    "title": "5.2-P3",
+    "file": "5.2-P3.png",
+    "text": "The graph of $f$ on $[-1,3]$ is shown in the provided image (5.2-P3.png). Which statement is supported by the graph?",
+    "correct": "B: The absolute maximum occurs at an interior point near $x\\approx 0.1$, and the ab",
+    "explanation": "Reading the graph on the closed interval $[-1,3]$, the highest point is a peak near $x\\approx 0.1$ and the lowest point is a valley near $x\\approx 2.0$. Thus the absolute maximum and absolute minimum are both attained at interior points.",
+    "options": "A: The absolute maximum occurs at $x=3$, and the absolute minim | B: The absolute maximum occurs at an interior point near $x\\app | C: The absolute maximum occurs at $x=-1$, and the absolute mini | D: The function has no absolute extrema on $[-1,3]$."
+  },
+  {
+    "title": "5.3-P3",
+    "file": "5.3-P3.png",
+    "text": "See image (5.3-P3.png). The graph shown is $y=f'(x)$. On which intervals is $f$ increasing?",
+    "correct": "D: $(-3,1)\\cup(2,\\infty)$",
+    "explanation": "A function $f$ is increasing where $f'(x)>0$. Reading the derivative graph, the curve is above the $x$-axis on $(-3,1)$ and on $(2,\\infty)$, and below the $x$-axis on $(-\\infty,-3)$ and $(1,2)$. Therefore $f$ is increasing on $(-3,1)\\cup(2,\\infty)$.",
+    "options": "A: $(-\\infty,-3)\\cup(1,2)$ | B: $(-3,2)$ | C: $(-\\infty,-3)\\cup(2,\\infty)$ | D: $(-3,1)\\cup(2,\\infty)$"
+  },
+  {
+    "title": "5.4-P2",
+    "file": "5.4-P2.png",
+    "text": "See image (5.4-P2.png). The graph shown is $y=f'(x)$. Which statement about relative extrema of $f$ is true?",
+    "correct": "C: Local maximum at $x=-1$ and local minimum at $x=2$",
+    "explanation": "By the First Derivative Test, $f$ has a local maximum where $f'(x)$ changes from $+$ to $-$, and a local minimum where $f'(x)$ changes from $-$ to $+$. From the graph: $f'(x)>0$ for $x<-1$, $f'(x)<0$ for $-1<x<2$, and $f'(x)>0$ for $x>2$. Therefore $",
+    "options": "A: Local minima at both $x=-1$ and $x=2$ | B: Local minimum at $x=-1$ and local maximum at $x=2$ | C: Local maximum at $x=-1$ and local minimum at $x=2$ | D: No local extrema because $f'(x)$ is defined everywhere"
+  },
+  {
+    "title": "5.4-P4",
+    "file": "5.4-P4.png",
+    "text": "See image (5.4-P4.png). Based on the graph of $f(x)$, which statement about local extrema is correct?",
+    "correct": "B: Local maximum at approximately $x=1$ and local minimum at approximately $x=3$",
+    "explanation": "Local extrema occur at turning points: increasing to decreasing gives a local maximum, and decreasing to increasing gives a local minimum. From the graph, $f$ turns downward near $x\\approx 1$ (local maximum) and turns upward near $x\\approx 3$ (local ",
+    "options": "A: Local maxima at approximately $x=1$ and $x=3$ | B: Local maximum at approximately $x=1$ and local minimum at ap | C: Local minimum at approximately $x=1$ and local maximum at ap | D: No local extrema are shown"
+  },
+  {
+    "title": "5.5-P3",
+    "file": "5.5-P3.png",
+    "text": "The graph of $f$ on $[0,4]$ is shown (see image: 5.5-P3.png). At approximately which $x$-value does $f$ attain its absolute maximum on $[0,4]$?",
+    "correct": "C: $x\\approx 2.5$",
+    "explanation": "Absolute maximum on a closed interval occurs at the highest function value among endpoints and interior peaks/valleys. From the graph, the highest point is the interior peak near $x\\approx 2.5$.",
+    "options": "A: $x=0$ | B: $x\\approx 1.2$ | C: $x\\approx 2.5$ | D: $x=4$"
+  },
+  {
+    "title": "5.6-P2",
+    "file": "5.6-P2.png",
+    "text": "The sign chart for $f^{\\prime\\prime}(x)$ is shown (see image: 5.6-P2.png). On the interval $(-3,6)$, how many inflection points does $f$ have?",
+    "correct": "B: 3",
+    "explanation": "Inflection points occur where $f^{\\prime\\prime}$ changes sign. From the chart, the sign changes at $x=-1$ (from $+$ to $-$), at $x=2$ (from $-$ to $+$), and at $x=5$ (from $+$ to $-$). All are inside $(-3,6)$, so there are 3 inflection points.",
+    "options": "A: 2 | B: 3 | C: 1 | D: 0"
+  },
+  {
+    "title": "5.6-P5",
+    "file": "5.6-P5.png",
+    "text": "The graph of $f^{\\prime}(x)$ is shown for $-2\\le x\\le 6$ (see image: 5.6-P5.png). On which interval is $f$ concave up?",
+    "correct": "C: $(\\tfrac{5}{2},6)$",
+    "explanation": "A function is concave up where $f^{\\prime\\prime}>0$, equivalently where $f^{\\prime}$ is increasing. From the graph, $f^{\\prime}(x)$ has its minimum at $x=\\tfrac{5}{2}$ and increases for $x>\\tfrac{5}{2}$. Thus $f$ is concave up on $(\\tfrac{5}{2},6)$.",
+    "options": "A: $(-2,\\tfrac{5}{2})$ | B: $(-2,1)\\cup(4,6)$ | C: $(\\tfrac{5}{2},6)$ | D: $(1,4)$"
+  },
+  {
+    "title": "5.8-P1",
+    "file": "5.8-P1.png",
+    "text": "The image (5.8-P1.png) shows the graph of $f$. On which interval is $f'(x)>0$ for all $x$ in the interval?",
+    "correct": "D: $(-1,2)$",
+    "explanation": "Where a function is increasing, its derivative is positive. The graph increases continuously from the local minimum near $x=-1$ to the local maximum near $x=2$, so $f'(x)>0$ on $(-1,2)$.",
+    "options": "A: $(-2,-1)$ | B: $(0,1)$ | C: $(2,3)$ | D: $(-1,2)$"
+  },
+  {
+    "title": "5.8-P2",
+    "file": "5.8-P2.png",
+    "text": "The image (5.8-P2.png) shows the graph of $f'(x)$. At which $x$-value does $f$ have a local maximum?",
+    "correct": "C: $x=1$",
+    "explanation": "A local maximum occurs where $f'(x)$ changes from $+$ to $-$. From the graph, this happens at $x=1$.",
+    "options": "A: $x=3$ | B: $x=-1$ | C: $x=1$ | D: $x=0$"
+  },
+  {
+    "title": "5.8-P3",
+    "file": "5.8-P3.png",
+    "text": "The image (5.8-P3.png) shows the graph of $f''(x)$. On which interval is $f$ concave down?",
+    "correct": "A: $(0,2)$",
+    "explanation": "A function is concave down where $f''(x)<0$. From the graph of $f''$, it is negative on $(0,2)$.",
+    "options": "A: $(0,2)$ | B: $(2,\\infty)$ | C: $(-\\infty,0)$ | D: All real numbers"
+  },
+  {
+    "title": "5.8-P4",
+    "file": "5.8-P4.png",
+    "text": "Suppose $f(x)=x^3-3x^2+1$. The image (5.8-P4.png) shows four candidate graphs (A–D). Which candidate graph could represent $f'(x)$?",
+    "correct": "D: A",
+    "explanation": "Differentiate: $f'(x)=3x^2-6x=3x(x-2)$. So $f'(x)$ is an upward-opening parabola crossing the $x$-axis at $0$ and $2$, which corresponds to option A.",
+    "options": "A: D | B: B | C: C | D: A"
+  },
+  {
+    "title": "5.8-P5",
+    "file": "5.8-P5.png",
+    "text": "The image (5.8-P5.png) shows the graph of $f$ and the tangent line at $x=2$. Which value is closest to $f'(2)$?",
+    "correct": "B: $0.29$",
+    "explanation": "The derivative at a point equals the slope of the tangent line there. Reading two convenient points on the tangent line from the graph gives a slope near $0.29$.",
+    "options": "A: $-0.29$ | B: $0.29$ | C: $0.58$ | D: $1.73$"
+  },
+  {
+    "title": "5.9-P1",
+    "file": "5.9-P1.png",
+    "text": "The graph of $f'(x)$ is shown. At which $x$-value does $f$ have a local maximum?",
+    "correct": "D: $x=-1$ only",
+    "explanation": "A local maximum of $f$ occurs where $f'(x)=0$ and the sign of $f'(x)$ changes from positive to negative. From the graph, $f'(x)=0$ at $x=-1,\\,\\tfrac{5}{3},\\,4$. Near $x=-1$, $f'(x)$ goes from $+$ to $-$, so $f$ has a local maximum at $x=-1$. Near $x=",
+    "options": "A: $x=\\dfrac{5}{3}$ only | B: Neither $x=-1$ nor $x=\\dfrac{5}{3}$ | C: Both $x=-1$ and $x=\\dfrac{5}{3}$ | D: $x=-1$ only"
+  },
+  {
+    "title": "5.9-P3",
+    "file": "5.9-P3.png",
+    "text": "Three graphs (I, II, III) are shown. One is $f$, one is $f'$, and one is $f''$ for the same function $f$. Which matching is consistent?",
+    "correct": "C: I is $f$, II is $f'$, III is $f''$",
+    "explanation": "Graph I has even-degree end behavior (both ends up) and multiple turning points, consistent with a quartic-like $f$. Graph II has odd-degree end behavior and an S-shape, consistent with a cubic-like $f'$. Graph III is U-shaped, consistent with a quad",
+    "options": "A: I is $f''$, II is $f'$, III is $f$ | B: I is $f'$, II is $f$, III is $f''$ | C: I is $f$, II is $f'$, III is $f''$ | D: I is $f$, II is $f''$, III is $f'$"
+  },
+  {
+    "title": "5.10-P2",
+    "file": "5.10-P2.png",
+    "text": "An open-top box is made by cutting out squares of side length $x$ from each corner of a square sheet of side length $s$ and folding up the sides. Which expression gives the volume $V(x)$ of the box?",
+    "correct": "B: $V(x)=x(s-2x)^2$",
+    "explanation": "Cutting out squares of side $x$ makes the box height $x$. Each dimension of the base loses $x$ on both ends, so the base side length is $s-2x$. Base area is $(s-2x)^2$, so $V(x)=x(s-2x)^2$.",
+    "options": "A: $V(x)=(s-x)^2x$ | B: $V(x)=x(s-2x)^2$ | C: $V(x)=x^2(s-2x)$ | D: $V(x)=(s-2x)^3$"
+  },
+  {
+    "title": "5.11-P3",
+    "file": "5.11-P3.png",
+    "text": "A $10\\times 16$ rectangle of cardboard is used to make an open-top box by cutting out squares of side $x$ from each corner and folding up the sides. (See image.) What value of $x$ maximizes the volume",
+    "correct": "C: 2",
+    "explanation": "Volume is $$V(x)=x(10-2x)(16-2x),\\quad 0<x<5.$$ Expanding: $$V(x)=4x^3-52x^2+160x,$$ so $$V'(x)=12x^2-104x+160=0\\Rightarrow 3x^2-26x+40=0.$$ Thus $x=2$ or $x=\\frac{20}{3}$, and only $x=2$ lies in $(0,5)$. Since endpoints give volume $0$, $x=2$ maximi",
+    "options": "A: 5 | B: 4 | C: 2 | D: 8"
+  },
+  {
+    "title": "5.12-P5",
+    "file": "5.12-P5.png",
+    "text": "The graph shows the curve $x^2+y^2=4y$ with labeled points A, B, C, and D. At which labeled point is the tangent line vertical? (See image.)",
+    "correct": "A: A",
+    "explanation": "For $x^2+y^2=4y$, $$y'=-\\frac{2x}{2y-4}.$$ A vertical tangent occurs when $2y-4=0$ and $x\\ne 0$, i.e., at points with $y=2$ on the curve. The labeled point with $y=2$ and $x\\ne 0$ is A.",
+    "options": "A: A | B: B | C: C | D: D"
+  },
+  {
+    "title": "6.0-UT-Q2",
+    "file": "6.0-UT-Q2.png",
+    "text": "The diagram shows rectangles used to approximate $\\int_0^4 \\sqrt{x}\\,dx$. Which expression matches the approximation shown?",
+    "correct": "A: $\\frac{4}{4}\\big(\\sqrt{0}+\\sqrt{1}+\\sqrt{2}+\\sqrt{3}\\big)$",
+    "explanation": "The picture shows a left Riemann sum with $n=4$ on $[0,4]$. Thus $\\Delta x=1$ and sample points are $0,1,2,3$: $$L_4=\\Delta x\\sum_{i=0}^{3}\\sqrt{i}=1(\\sqrt0+\\sqrt1+\\sqrt2+\\sqrt3).$$",
+    "options": "A: $\\frac{4}{4}\\big(\\sqrt{0}+\\sqrt{1}+\\sqrt{2}+\\sqrt{3}\\big)$ | B: $\\frac{4}{4}\\big(\\sqrt{1}+\\sqrt{2}+\\sqrt{3}+\\sqrt{4}\\big)$ | C: $\\frac{4}{5}\\big(\\sqrt{0}+\\sqrt{1}+\\sqrt{2}+\\sqrt{3}+\\sqrt{4 | D: $\\frac{4}{4}\\big(\\sqrt{0}+\\sqrt{1}+\\sqrt{2}+\\sqrt{4}\\big)$"
+  },
+  {
+    "title": "6.0-UT-Q5",
+    "file": "6.0-UT-Q5.png",
+    "text": "Let $F(x)=\\int_0^x g(t)\\,dt$. The graph of $g$ is shown. Which statement is true?",
+    "correct": "C: There exists a point in $(2,3)$ where $F$ has a local maximum.",
+    "explanation": "By FTC, $F'(x)=g(x)$. $F$ increases where $g>0$ and decreases where $g<0$. A local maximum of $F$ occurs where $g$ changes from positive to negative; the graph shows that change within $(2,3)$.",
+    "options": "A: $F(4)<F(3)$. | B: $F$ is increasing on $(2,3)$. | C: There exists a point in $(2,3)$ where $F$ has a local maximu | D: If $g(2)=0$, then $F$ must have an inflection point at $x=2$"
+  },
+  {
+    "title": "6.0-UT-Q8",
+    "file": "6.0-UT-Q8.png",
+    "text": "The shaded region is between $y=x$ and $y=x^2$ on $0\\le x\\le 1$. What is the area of the region?",
+    "correct": "D: $\\frac{1}{6}$",
+    "explanation": "On $[0,1]$, the top curve is $y=x$ and the bottom curve is $y=x^2$, so $$\\text{Area}=\\int_0^1 (x-x^2)\\,dx=\\left[\\frac{x^2}{2}-\\frac{x^3}{3}\\right]_0^1=\\frac16.$$",
+    "options": "A: $\\int_0^1 (x^2-x)\\,dx$ | B: $\\int_0^1 (x+x^2)\\,dx$ | C: $\\frac{1}{3}$ | D: $\\frac{1}{6}$"
+  },
+  {
+    "title": "6.0-UT-Q17",
+    "file": "6.0-UT-Q17.png",
+    "text": "Consider $\\int_0^4 \\frac{1}{(x-2)^2}\\,dx$. The graph of $y=\\frac{1}{(x-2)^2}$ is shown. Which statement is true?",
+    "correct": "D: The integral diverges.",
+    "explanation": "Split at the discontinuity: $$\\int_0^4 \\frac{1}{(x-2)^2}dx=\\lim_{b\\to2^-}\\int_0^b\\frac{1}{(x-2)^2}dx+\\lim_{a\\to2^+}\\int_a^4\\frac{1}{(x-2)^2}dx.$$ Each term diverges, so the integral diverges.",
+    "options": "A: The integral equals $\\left[-\\frac{1}{x-2}\\right]_0^4$. | B: The integral converges to $\\frac12$. | C: The integral converges to $1$. | D: The integral diverges."
+  },
+  {
+    "title": "6.3-P5",
+    "file": "6.3-P5.png",
+    "text": "The graph of $f$ is shown in the figure labeled 6.3-P5, where $f(x)=\\sqrt{x}$ on $[0,4]$ and the partition is $0,1,2.5,4$. Let $L$ be the left-endpoint Riemann sum and $R$ be the right-endpoint Rieman",
+    "correct": "C: $L<R$",
+    "explanation": "Since $f(x)=\\sqrt{x}$ is increasing on $[0,4]$, on each subinterval the left endpoint gives a smaller function value than the right endpoint. Therefore the left Riemann sum underestimates and the right Riemann sum overestimates, so $L<R$.",
+    "options": "A: $L=R$ | B: $L>R$ | C: $L<R$ | D: Cannot be determined without computing $L$ and $R$ exactly."
+  },
+  {
+    "title": "6.4-P5",
+    "file": "6.4-P5.png",
+    "text": "The graph of $f$ is shown in the figure labeled 6.4-P5. The graph is piecewise linear through $(0,1)$, $(1,3)$, $(3,0)$, and $(4,-2)$. Define $A(x)=\\int_{0}^{x} f(t)\\,dt$. What is $A(4)$?",
+    "correct": "B: $4$",
+    "explanation": "Compute signed areas. On $[0,1]$: trapezoid with bases $1$ and $3$, width $1$, area $\\frac{1+3}{2}\\cdot1=2$. On $[1,3]$: trapezoid with bases $3$ and $0$, width $2$, area $\\frac{3+0}{2}\\cdot2=3$. On $[3,4]$: trapezoid with bases $0$ and $-2$, width $",
+    "options": "A: $2$ | B: $4$ | C: $3$ | D: $-4$"
+  },
+  {
+    "title": "6.5-P2",
+    "file": "6.5-P2.png",
+    "text": "Let $A(x)=\\displaystyle\\int_{0}^{x} f(t)\\,dt$, where $f$ is shown in the figure. Which statement about $A$ at $x=4$ is true?",
+    "correct": "B: $A'(4)=0$ and $A$ has a local minimum at $x=4$.",
+    "explanation": "FTC gives $A'(x)=f(x)$ and $A''(x)=f'(x)$. From the figure, $f(4)=0$ and $f'(4)>0$, so $A$ has a local minimum at $x=4$.",
+    "options": "A: $A$ is increasing and concave down at $x=4$. | B: $A'(4)=0$ and $A$ has a local minimum at $x=4$. | C: $A$ has a local maximum at $x=4$. | D: $A$ is decreasing at $x=4$."
+  },
+  {
+    "title": "6.5-P4",
+    "file": "6.5-P4.png",
+    "text": "A tank contains $50$ gallons at $t=0$. Its volume is $V(t)=50+\\displaystyle\\int_{0}^{t} r(s)\\,ds$, where $r(t)$ (in gallons per hour) is shown in the figure. What is $V(6)$?",
+    "correct": "A: $58$",
+    "explanation": "Net change is the signed area under $r(t)$ from $0$ to $6$: $6+(-2)+4=8$. Add to the initial $50$ to get $58$.",
+    "options": "A: $58$ | B: $54$ | C: $60$ | D: $42$"
+  },
+  {
+    "title": "6.6-P5",
+    "file": "6.6-P5.png",
+    "text": "The graph of an odd function $h$ is shown in the figure. What is $\\displaystyle\\int_{-3}^{3} h(x)\\,dx$?",
+    "correct": "C: $0$",
+    "explanation": "If $h$ is odd, then $h(-x)=-h(x)$, so areas cancel on $[-3,3]$ and the integral equals $0$.",
+    "options": "A: $6$ | B: $-6$ | C: $0$ | D: Cannot be determined without an equation for $h$."
+  },
+  {
+    "title": "6.7-P1",
+    "file": "6.7-P1.png",
+    "text": "The graph of $f$ is shown. What is the value of $\\int_{0}^{4} f(x)\\,dx$?",
+    "correct": "C: $6$",
+    "explanation": "Compute the signed area under $f$ from $0$ to $4$ using geometry. From $0$ to $1$, the region is a triangle with base $1$ and height $2$, so area $=\\tfrac12(1)(2)=1$. From $1$ to $3$, the region is a rectangle of width $2$ and height $2$, so area $=4",
+    "options": "A: $7$ | B: $5$ | C: $6$ | D: $8$"
+  },
+  {
+    "title": "7.0-UT-Q3",
+    "file": "7.0-UT-Q3.png",
+    "text": "The image shows the slope field for $\\dfrac{dy}{dx}=x-y$. At the point $(1,0)$, which slope best matches the field?  ![7.0-UT-Q3](7.0-UT-Q3.png)",
+    "correct": "C: $1$",
+    "explanation": "Compute the slope from the DE: $\\dfrac{dy}{dx}=x-y$. At $(1,0)$, the slope is $1$.",
+    "options": "A: $-1$ | B: $0$ | C: $1$ | D: $2$"
+  },
+  {
+    "title": "7.0-UT-Q15",
+    "file": "7.0-UT-Q15.png",
+    "text": "Use Euler’s method with step size $h=0.5$ to approximate $y(1.5)$ for $y''=y-x$, $y(0)=1$.  ![7.0-UT-Q15](7.0-UT-Q15.png)",
+    "correct": "D: $2.5$",
+    "explanation": "Euler update: $y_{n+1}=y_n+h(y_n-x_n)$. Start $(0,1)$. $y_1=1+0.5(1-0)=1.5$. $y_2=1.5+0.5(1.5-0.5)=2.0$. $y_3=2.0+0.5(2.0-1.0)=2.5$ at $x=1.5$.",
+    "options": "A: $1.5$ | B: $2.25$ | C: $3.0$ | D: $2.5$"
+  },
+  {
+    "title": "7.3-P2",
+    "file": "7.3-P2.png",
+    "text": "Use the accompanying slope field (image). At the point $(1,0)$, which value best matches the slope $\\dfrac{dy}{dx}$ indicated by the field?",
+    "correct": "C: $1$",
+    "explanation": "Reading the segment at $(1,0)$, the local tilt is closest to slope $1$.",
+    "options": "A: $-1$ | B: $0$ | C: $1$ | D: $\\dfrac{1}{2}$"
+  },
+  {
+    "title": "7.4-P1",
+    "file": "7.4-P1.png",
+    "text": "Use the accompanying slope field (image). A solution satisfies $y(0)=0.5$. As $x\\to\\infty$, what value does $y$ approach?",
+    "correct": "B: $2$",
+    "explanation": "From the field, $y=0$ and $y=2$ are equilibrium lines. In the region $0<y<2$ the slopes are positive, so the solution increases toward the stable equilibrium $y=2$.",
+    "options": "A: $0$ | B: $2$ | C: $-\\infty$ | D: $+\\infty$"
+  },
+  {
+    "title": "7.4-P4",
+    "file": "7.4-P4.png",
+    "text": "Use the accompanying slope field (image). Which statement about the equilibrium solution $y=0$ is correct?",
+    "correct": "D: $y=0$ is stable because nearby solutions move toward it as $x$ increases.",
+    "explanation": "The field shows horizontal segments on $y=0$. For $y>0$ the slopes are negative and for $y<0$ the slopes are positive, so solutions move toward $y=0$ as $x$ increases. Therefore $y=0$ is stable.",
+    "options": "A: $y=0$ is unstable because nearby solutions move away from it | B: $y=0$ is neither stable nor unstable because slopes are zero | C: $y=0$ is not an equilibrium because the solution curve must  | D: $y=0$ is stable because nearby solutions move toward it as $"
+  },
+  {
+    "title": "8.0-UT-Q4",
+    "file": "8.0-UT-Q4.png",
+    "text": "The shaded region between $y=\\sin x$ and $y=\\cos x$ on $[0,\\frac{\\pi}{2}]$ is shown in 8.0-UT-Q4.png. Which expression equals the area of the region?",
+    "correct": "C: $\\int_0^{\\frac{\\pi}{4}}(\\cos x-\\sin x)\\,dx+\\int_{\\frac{\\pi}{4}}^{\\frac{\\pi}{2}}(",
+    "explanation": "Solve $\\sin x=\\cos x$ to find the switch point $x=\\frac{\\pi}{4}$. On $[0,\\frac{\\pi}{4}]$, top is $\\cos x$; on $[\\frac{\\pi}{4},\\frac{\\pi}{2}]$, top is $\\sin x$. Therefore $$A=\\int_0^{\\frac{\\pi}{4}}(\\cos x-\\sin x)\\,dx+\\int_{\\frac{\\pi}{4}}^{\\frac{\\pi}{2",
+    "options": "A: $\\int_0^{\\frac{\\pi}{2}}(\\sin x-\\cos x)\\,dx$ | B: $\\int_0^{\\frac{\\pi}{2}}|\\sin x-\\cos x|\\,dx$ | C: $\\int_0^{\\frac{\\pi}{4}}(\\cos x-\\sin x)\\,dx+\\int_{\\frac{\\pi}{ | D: $\\int_0^{\\frac{\\pi}{4}}(\\sin x-\\cos x)\\,dx+\\int_{\\frac{\\pi}{"
+  },
+  {
+    "title": "8.0-UT-Q5",
+    "file": "8.0-UT-Q5.png",
+    "text": "The region bounded by $x=y^2$ and $x=2y$ is shown in 8.0-UT-Q5.png. Which integral gives the area of the region?",
+    "correct": "D: $\\int_0^2(2y-y^2)\\,dy$",
+    "explanation": "Find intersections: $y^2=2y\\Rightarrow y=0,2$. Using horizontal slices, $$A=\\int_{0}^{2}\\big(x_{right}-x_{left}\\big)\\,dy=\\int_0^2(2y-y^2)\\,dy.$$",
+    "options": "A: $\\int_0^2(2-y^2)\\,dy$ | B: $\\int_0^2(y^2-2y)\\,dy$ | C: $\\int_0^4(\\sqrt{x}\\frac{-x}{2})\\,dx$ | D: $\\int_0^2(2y-y^2)\\,dy$"
+  },
+  {
+    "title": "8.0-UT-Q7",
+    "file": "8.0-UT-Q7.png",
+    "text": "A solid has base region bounded by $y=\\sqrt{x}$, $y=0$, and $0\\le x\\le 4$ (shown in 8.0-UT-Q7.png). Cross-sections perpendicular to the $x$-axis are squares. What is the volume?",
+    "correct": "B: $8$",
+    "explanation": "Square cross-sectional area is $A(x)=(\\text{side})^2=(\\sqrt{x})^2=x$. Thus $$V=\\int_0^4 A(x)\\,dx=\\int_0^4 x\\,dx=\\left[\\frac{x^2}{2}\\right]_0^4=8.$$",
+    "options": "A: $\\int_0^4 \\sqrt{x}\\,dx$ | B: $8$ | C: $\\int_0^4 x^2\\,dx$ | D: $4$"
+  },
+  {
+    "title": "8.0-UT-Q9",
+    "file": "8.0-UT-Q9.png",
+    "text": "The region under $y=2-x$ above the $x$-axis for $0\\le x\\le 2$ is shown in 8.0-UT-Q9.png. It is revolved about the $y$-axis. Which integral gives the volume using the disc/washer method?",
+    "correct": "B: $\\pi\\int_0^2(2-y)^2\\,dy$",
+    "explanation": "Write the boundary as $x=2-y$ for $0\\le y\\le 2$. Revolving about the $y$-axis gives discs of radius $R(y)=2-y$: $$V=\\pi\\int_0^2(2-y)^2\\,dy.$$",
+    "options": "A: $\\pi\\int_0^2(2-x)^2\\,dx$ | B: $\\pi\\int_0^2(2-y)^2\\,dy$ | C: $2\\pi\\int_0^2 x(2-x)\\,dx$ | D: $\\pi\\int_0^2(2-y)\\,dy$"
+  },
+  {
+    "title": "8.0-UT-Q10",
+    "file": "8.0-UT-Q10.png",
+    "text": "The region under $y=x^2$ above the $x$-axis on $0\\le x\\le 1$ is shown in 8.0-UT-Q10.png. It is revolved about the vertical line $x=1$. Which integral gives the volume using washers?",
+    "correct": "A: $\\pi\\int_0^1(1-\\sqrt{y})^2\\,dy$",
+    "explanation": "Washers about a vertical line use $dy$. Since $y=x^2$, we have $x=\\sqrt{y}$ for $0\\le y\\le 1$. The radius to $x=1$ is $R(y)=1-\\sqrt{y}$, so $$V=\\pi\\int_0^1(1-\\sqrt{y})^2\\,dy.$$",
+    "options": "A: $\\pi\\int_0^1(1-\\sqrt{y})^2\\,dy$ | B: $\\pi\\int_0^1(1-x)^2\\,dx$ | C: $2\\pi\\int_0^1(1-x)(x^2)\\,dx$ | D: $\\pi\\int_0^1(1-y)^2\\,dy$"
+  },
+  {
+    "title": "8.0-UT-Q12\n",
+    "file": "8.0-UT-Q12_.png",
+    "text": "The region between $y=x$ and $y=x^2$ on $0\\le x\\le 1$ is shown in 8.0-UT-Q12.png. It is revolved about $y=3$. Which integral gives the volume?",
+    "correct": "D: $\\pi\\int_0^1\\big((3-x)^2-(3-x^2)^2\\big)dx$",
+    "explanation": "Distances to $y=3$ give radii. Since $x^2\\le x$ on $[0,1]$, the lower curve is $y=x^2$ and is farther from $y=3$, so $R=3-x^2$ and $r=3-x$. $$V=\\pi\\int_0^1\\left((3-x^2)^2-(3-x)^2\\right)dx.$$",
+    "options": "A: $2\\pi\\int_0^1 (3-x)(x-x^2)dx$ | B: $\\pi\\int_0^1\\big((3-x^2)^2-(3-x)^2\\big)dx$ | C: $\\pi\\int_0^1\\big((3-x^2)-(3-x)\\big)dx$ | D: $\\pi\\int_0^1\\big((3-x)^2-(3-x^2)^2\\big)dx$"
+  },
+  {
+    "title": "8.0-UT-Q16",
+    "file": "8.0-UT-Q16.png",
+    "text": "The graph of $y=\\sin x$ on $[0,2\\pi]$ is shown in 8.0-UT-Q16.png. Which integral equals the total area between the curve and the $x$-axis on $[0,2\\pi]$?",
+    "correct": "C: $\\int_0^{2\\pi}|\\sin x|\\,dx$",
+    "explanation": "Because $\\sin x$ changes sign, total area is $$A=\\int_0^{2\\pi}|\\sin x|\\,dx.$$",
+    "options": "A: $\\int_0^{2\\pi}\\sin x\\,dx$ | B: $\\int_0^{\\pi}\\sin x\\,dx$ | C: $\\int_0^{2\\pi}|\\sin x|\\,dx$ | D: $\\int_0^{\\pi}|\\sin x|\\,dx$"
+  },
+  {
+    "title": "8.0-UT-Q19",
+    "file": "8.0-UT-Q19.png",
+    "text": "The curve $y=\\ln x$ on $[1,e]$ is shown in 8.0-UT-Q19.png. Which integral gives the exact arc length from $x=1$ to $x=e$?",
+    "correct": "A: $\\int_1^e\\sqrt{1+\\frac{1}{x^2}}\\,dx$",
+    "explanation": "For $y=f(x)$, arc length is $\\int_a^b\\sqrt{1+(f'(x))^2}dx$. Here $f(x)=\\ln x$ so $f'(x)=\\frac{1}{x}$, giving $$L=\\int_1^e\\sqrt{1+\\frac{1}{x^2}}\\,dx.$$",
+    "options": "A: $\\int_1^e\\sqrt{1+\\frac{1}{x^2}}\\,dx$ | B: $\\int_1^e\\sqrt{1+\\frac{1}{x}}\\,dx$ | C: $\\int_1^e\\left(1+\\frac{1}{x^2}\\right)dx$ | D: $\\int_0^1\\sqrt{1+\\frac{1}{x^2}}\\,dx$"
+  },
+  {
+    "title": "8.1-P2",
+    "file": "8.1-P2.png",
+    "text": "The graph of $f$ on $[0,4]$ is shown in the figure labeled 8.1-P2. Which expression equals the average value of $f$ on $[0,4]$?",
+    "correct": "A: $\\displaystyle \\frac{1}{4}\\int_0^4 f(x)\\,dx$",
+    "explanation": "For any function (graph or formula), the average value on $[a,b]$ is $$f_{\\mathrm{avg}}=\\frac{1}{b-a}\\int_a^b f(x)\\,dx.$$ With $a=0$ and $b=4$, this is $\\frac{1}{4}\\int_0^4 f(x)\\,dx$.",
+    "options": "A: $\\displaystyle \\frac{1}{4}\\int_0^4 f(x)\\,dx$ | B: $\\displaystyle \\int_0^4 f(x)\\,dx$ | C: $\\displaystyle \\frac{1}{f(4)-f(0)}\\int_0^4 f(x)\\,dx$ | D: $\\displaystyle \\frac{f(4)-f(0)}{4}$"
+  },
+  {
+    "title": "8.2-P2",
+    "file": "8.2-P2.png",
+    "text": "The velocity of a particle is shown in the figure labeled 8.2-P2. What is the total distance traveled on $0\\le t\\le 9$?",
+    "correct": "D: $9$",
+    "explanation": "Total distance traveled is $$\\int_0^9 |v(t)|\\,dt.$$ From the step graph: $v=1$ on $[0,5)$ gives $5$, $v=-2$ on $[5,7)$ gives $4$, and $v=0$ on $[7,9]$ gives $0$, so the total distance is $9$.",
+    "options": "A: $1$ | B: $5$ | C: $7$ | D: $9$"
+  },
+  {
+    "title": "8.3-P2",
+    "file": "8.3-P2.png",
+    "text": "See image: 8.3-P2.png. A tank initially contains $10$ liters of water. The net flow rate (in liters per hour) is $r(t)$ as shown. What is the amount of water in the tank at $t=8$ hours?",
+    "correct": "C: $24$",
+    "explanation": "Compute net change by signed areas under the step graph. From $0$ to $2$: $3\\cdot2=6$. From $2$ to $4$: $3\\cdot2=6$. From $4$ to $6$: $(-1)\\cdot2=-2$. From $6$ to $8$: $2\\cdot2=4$. Net change $=6+6-2+4=14$ liters. Final amount $=10+14=24$ liters.",
+    "options": "A: $14$ | B: $20$ | C: $24$ | D: $22$"
+  },
+  {
+    "title": "8.4-P4",
+    "file": "8.4-P4.png",
+    "text": "See image: 8.4-P4.png. The curves are $y=(x-1)^2$ and $y=3-x$. What is the area of the region enclosed by these two curves?",
+    "correct": "B: $$\\dfrac{9}{2}$$",
+    "explanation": "Find intersections: $(x-1)^2=3-x\\Rightarrow x^2-2x+1=3-x\\Rightarrow x^2-x-2=0\\Rightarrow x=-1,2$. On $[-1,2]$, the line is above the parabola (e.g., at $x=0$, $3>1$). Area: $$\\int_{-1}^{2}\\big((3-x)-(x-1)^2\\big)\\,dx=\\int_{-1}^{2} (2+x-x^2)\\,dx.$$ An ",
+    "options": "A: $$\\dfrac{9}{4}$$ | B: $$\\dfrac{9}{2}$$ | C: $3$ | D: $$\\dfrac{27}{2}$$"
+  },
+  {
+    "title": "8.4-P5",
+    "file": "8.4-P5.png",
+    "text": "See image: 8.4-P5.png. What is the area of the region enclosed by $y=\\sqrt{x}$ and $y=\\frac{x}{2}$?",
+    "correct": "D: $$\\dfrac{4}{3}$$",
+    "explanation": "Solve intersections: $\\sqrt{x}=\\frac{x}{2}\\Rightarrow 2\\sqrt{x}=x\\Rightarrow x=0$ or (for $x\\ne0$) $2=\\sqrt{x}\\Rightarrow x=4$. On $[0,4]$, $\\sqrt{x}\\ge \\frac{x}{2}$. Area: $$\\int_0^4\\left(\\sqrt{x}-\\frac{x}{2}\\right)dx=\\left[\\frac{2}{3}x^{\\frac{3}{2}",
+    "options": "A: $$\\dfrac{8}{3}$$ | B: $$\\dfrac{2}{3}$$ | C: $4$ | D: $$\\dfrac{4}{3}$$"
+  },
+  {
+    "title": "8.5-P2",
+    "file": "8.5-P2.png",
+    "text": "The shaded region is bounded by $x=y^2-1$ and $x=3-y$ (see image). Which integral equals the area of the shaded region?  ![8.5-P2](8.5-P2.png)",
+    "correct": "C: $\\displaystyle \\int_{y_1}^{y_2}\\big[(3-y)-(y^2-1)\\big]\\,dy$",
+    "explanation": "Because both boundaries are given as $x$ in terms of $y$, use horizontal slices. Let $y_1<y_2$ be the intersection $y$-values found from $y^2-1=3-y$. For each $y$ between $y_1$ and $y_2$, the right boundary is $x=3-y$ and the left boundary is $x=y^2-",
+    "options": "A: $\\displaystyle \\int_{y_1}^{y_2}\\big[(y^2-1)-(3-y)\\big]\\,dy$ | B: $\\displaystyle \\int_{x_1}^{x_2}\\big[(3-x)-\\sqrt{x+1}\\big]\\,d | C: $\\displaystyle \\int_{y_1}^{y_2}\\big[(3-y)-(y^2-1)\\big]\\,dy$ | D: $\\displaystyle \\int_{y_1}^{y_2}\\big[(3-y)+(y^2-1)\\big]\\,dy$"
+  },
+  {
+    "title": "8.5-P5",
+    "file": "8.5-P5.png",
+    "text": "The region $R$ is bounded by $y=2x$ and $y=x^2$ (see image). Using integration with respect to $y$, what is the area of $R$?  ![8.5-P5](8.5-P5.png)",
+    "correct": "D: $\\frac{4}{3}$",
+    "explanation": "Intersections: $2x=x^2\\Rightarrow x=0,2$, giving $y=0,4$. Solve for $x$ in terms of $y$: From $y=2x$, $x=\\frac{y}{2}$. From $y=x^2$ in the region, $x=\\sqrt{y}$. For $0\\le y\\le 4$, $\\frac{y}{2}\\le \\sqrt{y}$, so left is $x=\\frac{y}{2}$ and right is $x=",
+    "options": "A: $2$ | B: $\\frac{8}{3}$ | C: $\\frac{2}{3}$ | D: $\\frac{4}{3}$"
+  },
+  {
+    "title": "8.6-P3",
+    "file": "8.6-P3.png",
+    "text": "Find the area between $y=\\sin x$ and $y=0$ on $[0,2\\pi]$ (see image).  ![8.6-P3](8.6-P3.png)",
+    "correct": "B: $4$",
+    "explanation": "Geometric area is $$A=\\int_0^{2\\pi}|\\sin x|\\,dx=\\int_0^{\\pi}\\sin x\\,dx+\\int_{\\pi}^{2\\pi}(-\\sin x)\\,dx.$$ Compute: $$\\int_0^{\\pi}\\sin x\\,dx=[-\\cos x]_0^{\\pi}=2,$$ $$\\int_{\\pi}^{2\\pi}(-\\sin x)\\,dx=[\\cos x]_{\\pi}^{2\\pi}=2.$$ So $A=4$.",
+    "options": "A: $0$ | B: $4$ | C: $2$ | D: $\\pi$"
+  },
+  {
+    "title": "8.9-P2",
+    "file": "8.9-P2.png",
+    "text": "The graph of the region bounded by $y=x^2$, $y=0$, and $x=1$ is shown in the figure labeled 8.9-P2. The region is revolved about the $y$-axis. Using the disc method, what is the volume of the solid?",
+    "correct": "D: $\\dfrac{\\pi}{2}$",
+    "explanation": "For rotation about the $y$-axis using discs, take horizontal slices. Rewrite $y=x^2$ as $x=\\sqrt{y}$. Radius is $r(y)=\\sqrt{y}$ for $0\\le y\\le 1. $$V=\\pi\\int_0^1 r(y)^2\\,dy=\\pi\\int_0^1 y\\,dy=\\pi\\left[\\frac{y^2}{2}\\right]_0^1=\\frac{\\pi}{2}.$$",
+    "options": "A: $\\pi$ | B: $\\dfrac{2\\pi}{3}$ | C: $\\dfrac{\\pi}{3}$ | D: $\\dfrac{\\pi}{2}$"
+  },
+  {
+    "title": "8.9-P4",
+    "file": "8.9-P4.png",
+    "text": "The graph of the region bounded by $y=\\ln x$, $y=0$, $x=1$, and $x=e$ is shown in the figure labeled 8.9-P4. The region is revolved about the $x$-axis. What is the volume of the resulting solid?",
+    "correct": "B: $\\pi(e-2)$",
+    "explanation": "Disc method about the $x$-axis gives $$V=\\pi\\int_1^{e} (\\ln x)^2\\,dx.$$ Use $$\\int (\\ln x)^2\\,dx=x\\big((\\ln x)^2-2\\ln x+2\\big)+C.$$ Evaluate: at $x=e$ gives $e(1-2+2)=e$; at $x=1$ gives $1(0-0+2)=2$. So $\\int_1^e (\\ln x)^2\\,dx=e-2$, hence $V=\\pi(e-2)",
+    "options": "A: $\\pi(e+2)$ | B: $\\pi(e-2)$ | C: $e-2$ | D: $\\pi(e-1)$"
+  },
+  {
+    "title": "8.10-P2",
+    "file": "8.10-P2.png",
+    "text": "The graph of the region bounded by $y=x^2$, $y=0$, and $x=2$ is shown in the figure labeled 8.10-P2. The region is revolved about the vertical line $x=3$. What is the volume of the resulting solid?",
+    "correct": "B: $8\\pi$",
+    "explanation": "Rotate about $x=3$ (vertical), so use horizontal slices ($dy$) for washers. For a given $y$, the region runs from $x=\\sqrt{y}$ to $x=2$ for $0\\le y\\le 4$. Outer radius: $R(y)=3-\\sqrt{y}$, inner radius: $r(y)=3-2=1$. $$V=\\pi\\int_0^4\\big(R(y)^2-r(y)^2\\",
+    "options": "A: $4\\pi$ | B: $8\\pi$ | C: $\\dfrac{32\\pi}{3}$ | D: $12\\pi$"
+  },
+  {
+    "title": "8.10-P3",
+    "file": "8.10-P3.png",
+    "text": "The graph of the region bounded by $y=x^2$, $y=0$, $x=0$, and $x=1$ is shown in the figure labeled 8.10-P3. The region is revolved about the line $y=2$. What is the volume of the resulting solid?",
+    "correct": "A: $\\dfrac{43\\pi}{15}$",
+    "explanation": "Rotation about $y=2$ gives radius $r(x)=2-x^2$. $$V=\\pi\\int_0^1 (2-x^2)^2\\,dx=\\pi\\int_0^1 (4-4x^2+x^4)\\,dx =\\pi\\left[4x-\\frac{4}{3}x^3+\\frac{1}{5}x^5\\right]_0^1 =\\pi\\left(4-\\frac{4}{3}+\\frac{1}{5}\\right)=\\frac{43\\pi}{15}.$$",
+    "options": "A: $\\dfrac{43\\pi}{15}$ | B: $\\dfrac{7\\pi}{3}$ | C: $\\dfrac{43\\pi}{30}$ | D: $\\dfrac{\\pi}{3}$"
+  },
+  {
+    "title": "8.11-P2",
+    "file": "8.11-P2.png",
+    "text": "The region is bounded by $y=2x$ and $y=x^2$ for $0\\le x\\le 2$. The region is revolved about the $x$-axis. What is the volume?",
+    "correct": "B: $\\dfrac{64\\pi}{15}$",
+    "explanation": "Outer radius is $R(x)=2x$ and inner radius is $r(x)=x^2$ on $[0,2]$. $$V=\\pi\\int_0^2\\left(R^2-r^2\\right)dx=\\pi\\int_0^2(4x^2-x^4)\\,dx.$$ $$\\int_0^2(4x^2-x^4)\\,dx=\\left[\\frac{4x^3}{3}-\\frac{x^5}{5}\\right]_0^2=\\frac{32}{3}-\\frac{32}{5}=\\frac{64}{15}.$$ ",
+    "options": "A: $\\dfrac{32\\pi}{15}$ | B: $\\dfrac{64\\pi}{15}$ | C: $\\dfrac{64\\pi}{3}$ | D: $\\dfrac{64\\pi}{5}$"
+  },
+  {
+    "title": "8.11-P4",
+    "file": "8.11-P4.png",
+    "text": "The region is bounded by $x=y^2$ and $x=4$ for $0\\le y\\le 2$. The region is revolved about the $y$-axis. What is the volume?",
+    "correct": "C: $\\dfrac{128\\pi}{5}$",
+    "explanation": "About the $y$-axis with $dy$: outer radius $R(y)=4$, inner radius $r(y)=y^2$. $$V=\\pi\\int_0^2\\left(R^2-r^2\\right)dy=\\pi\\int_0^2(16-y^4)\\,dy.$$ $$\\int_0^2(16-y^4)dy=\\left[16y-\\frac{y^5}{5}\\right]_0^2=32-\\frac{32}{5}=\\frac{128}{5}.$$ So $V=\\dfrac{128\\p",
+    "options": "A: $\\dfrac{32\\pi}{5}$ | B: $\\dfrac{64\\pi}{5}$ | C: $\\dfrac{128\\pi}{5}$ | D: $\\dfrac{96\\pi}{5}$"
+  },
+  {
+    "title": "8.12-P1",
+    "file": "8.12-P1.png",
+    "text": "The region bounded by $y=\\sqrt{x}$ and $y=0$ for $0\\le x\\le 4$ is revolved about the line $y=1$. What is the volume?",
+    "correct": "D: $\\dfrac{8\\pi}{3}$",
+    "explanation": "Revolve about $y=1$. With vertical slices, distances to the axis are $1$ and $|\\sqrt{x}-1|$, so washer area is $$\\pi\\left(1^2-(|\\sqrt{x}-1|)^2\\right)=\\pi\\left(1-(\\sqrt{x}-1)^2\\right).$$ Simplify: $1-(\\sqrt{x}-1)^2=2\\sqrt{x}-x$. Thus $$V=\\pi\\int_0^4(2",
+    "options": "A: $\\dfrac{16\\pi}{3}$ | B: $4\\pi$ | C: $\\dfrac{10\\pi}{3}$ | D: $\\dfrac{8\\pi}{3}$"
+  },
+  {
+    "title": "8.12-P3",
+    "file": "8.12-P3.png",
+    "text": "The region bounded by $y=\\ln x$ and $y=0$ for $1\\le x\\le e$ is revolved about the line $x=-1$. What is the volume?",
+    "correct": "D: $\\pi\\left(\\dfrac{e^2-1}{2}+2e-5\\right)$",
+    "explanation": "Rotate about $x=-1$ using washers with $dy$. Since $y=\\ln x$, write $x=e^y$, and $y$ runs from $0$ to $1$. Left boundary is $x=1$. Radii are distances to $x=-1$: $R(y)=e^y+1$, $r(y)=2$. $$V=\\pi\\int_0^1\\left((e^y+1)^2-2^2\\right)dy=\\pi\\int_0^1\\left(e^{",
+    "options": "A: $\\pi\\left(\\dfrac{e^2-1}{2}+e-5\\right)$ | B: $\\pi\\left(\\dfrac{e^2-1}{2}+2e-2\\right)$ | C: $\\pi\\left(\\dfrac{e^2-1}{2}+2e-3\\right)$ | D: $\\pi\\left(\\dfrac{e^2-1}{2}+2e-5\\right)$"
+  },
+  {
+    "title": "8.13-P1",
+    "file": "8.13-P1.png",
+    "text": "The curve is given parametrically by $x=\\cos t$ and $y=\\sin t$ for $0\\le t\\le \\frac{\\pi}{2}$. The graph is shown in the figure labeled 8.13-P1. What is the exact arc length of the curve on this interv",
+    "correct": "B: $\\frac{\\pi}{2}$",
+    "explanation": "Use parametric arc length: $$L=\\int_{0}^{\\frac{\\pi}{2}}\\sqrt{\\left(\\frac{dx}{dt}\\right)^2+\\left(\\frac{dy}{dt}\\right)^2}\\,dt.$$ Here $\\frac{dx}{dt}=-\\sin t$ and $\\frac{dy}{dt}=\\cos t$, so the integrand is $\\sqrt{\\sin^2 t+\\cos^2 t}=1$. Thus $$L=\\int_0^",
+    "options": "A: $1$ | B: $\\frac{\\pi}{2}$ | C: $\\pi$ | D: $2$"
+  },
+  {
+    "title": "8.13-P3",
+    "file": "8.13-P3.png",
+    "text": "A particle moves along a line with velocity $v(t)$ shown in the figure labeled 8.13-P3. What is the total distance traveled from $t=0$ to $t=6$?",
+    "correct": "C: $7$",
+    "explanation": "Total distance traveled is $$\\int_0^6 |v(t)|\\,dt.$$ From the graph: $v=2$ on $[0,2]$, $v=-1$ on $[2,4]$, and $v=0.5$ on $[4,6]$. So $$\\int_0^2 2\\,dt+\\int_2^4 1\\,dt+\\int_4^6 0.5\\,dt=4+2+1=7.$$ ",
+    "options": "A: $3$ | B: $5$ | C: $7$ | D: $8$"
+  },
+  {
+    "title": "9.0-UT-Q8",
+    "file": "9.0-UT-Q8.png",
+    "text": "Refer to the figure (image). A particle has position $\\vec r(t)=\\langle t,\\ t^2\\rangle$ for $0\\le t\\le 2$. What is the slope $\\dfrac{dy}{dx}$ of the path at $t=1$?",
+    "correct": "B: $2$",
+    "explanation": "Here $x=t$ and $y=t^2$. Then $\\frac{dx}{dt}=1$ and $\\frac{dy}{dt}=2t$, so $$\\frac{dy}{dx}=\\frac{\\frac{dy}{dt}}{\\frac{dx}{dt}}=2t.$$ At $t=1$, the slope is $2$.",
+    "options": "A: $0$ | B: $2$ | C: $\\dfrac{1}{2}$ | D: $1$"
+  },
+  {
+    "title": "9.0-UT-Q12",
+    "file": "9.0-UT-Q12.png",
+    "text": "Refer to the polar graph (image) of $r=2+2\\cos\\theta$. What is the area enclosed by the curve?",
+    "correct": "A: $6\\pi$",
+    "explanation": "Use $$A=\\frac12\\int_0^{2\\pi} r^2\\,d\\theta=\\frac12\\int_0^{2\\pi}(2+2\\cos\\theta)^2\\,d\\theta.$$ Expand: $(2+2\\cos\\theta)^2=4(1+2\\cos\\theta+\\cos^2\\theta)$, so $$A=2\\int_0^{2\\pi}(1+2\\cos\\theta+\\cos^2\\theta)\\,d\\theta.$$ Over $[0,2\\pi]$, $\\int_0^{2\\pi}\\cos\\t",
+    "options": "A: $6\\pi$ | B: $8\\pi$ | C: $2\\pi$ | D: $4\\pi$"
+  },
+  {
+    "title": "9.0-UT-Q16",
+    "file": "9.0-UT-Q16.png",
+    "text": "Refer to the figure (image). Let $C_1$ be $r=2\\cos\\theta$ and $C_2$ be $r=1$. What is the area of the region inside both curves?",
+    "correct": "D: $\\dfrac{\\pi}{3}+\\dfrac{\\sqrt{3}}{2}$",
+    "explanation": "Intersect when $2\\cos\\theta=1$, so $\\theta=\\pm\\frac{\\pi}{3}$. Inside both curves means $0\\le r\\le \\min(1,2\\cos\\theta)$ for $\\frac{-\\pi}{2}\\le\\theta\\le\\frac{\\pi}{2}$.\\nThus $$A=\\frac12\\left(\\int_{\\frac{-\\pi}{3}}^{\\frac{\\pi}{3}}1^2\\,d\\theta+2\\int_{\\fra",
+    "options": "A: $\\dfrac{\\pi}{2}$ | B: $\\dfrac{\\pi}{3}+\\dfrac{\\sqrt{3}}{4}$ | C: $\\dfrac{2\\pi}{3}$ | D: $\\dfrac{\\pi}{3}+\\dfrac{\\sqrt{3}}{2}$"
+  },
+  {
+    "title": "9.1-P2",
+    "file": "9.1-P2.png",
+    "text": "A curve is given parametrically by $x(t)=t^2+1$ and $y(t)=t^3-2t$. What is the equation of the tangent line when $t=1$?",
+    "correct": "B: $y=\\dfrac{1}{2}x-\\dfrac{1}{2}$",
+    "explanation": "Compute $\\frac{dx}{dt}=2t$ and $\\frac{dy}{dt}=3t^2-2$. At $t=1$, $m=\\dfrac{\\frac{dy}{dt}}{\\frac{dx}{dt}}=\\dfrac{1}{2}$. Also $(x(1),y(1))=(2,-1)$. Thus $y+1=\\dfrac{1}{2}(x-2)$, so $y=\\dfrac{1}{2}x-\\dfrac{1}{2}$.",
+    "options": "A: $y=-\\dfrac{1}{2}x+\\dfrac{1}{2}$ | B: $y=\\dfrac{1}{2}x-\\dfrac{1}{2}$ | C: $y=2x-5$ | D: $y=\\dfrac{1}{2}x+\\dfrac{1}{2}$"
+  },
+  {
+    "title": "9.1-P4",
+    "file": "9.1-P4.png",
+    "text": "For $x(t)=e^t$ and $y(t)=e^{2t}$, what is $\\dfrac{dy}{dx}$ in terms of $t$?",
+    "correct": "A: $2e^t$",
+    "explanation": "Use $\\dfrac{dy}{dx}=\\dfrac{\\frac{dy}{dt}}{\\frac{dx}{dt}}$. Here $\\frac{dx}{dt}=e^t$ and $\\frac{dy}{dt}=2e^{2t}$, so $\\dfrac{dy}{dx}=\\dfrac{2e^{2t}}{e^t}=2e^t$.",
+    "options": "A: $2e^t$ | B: $2e^{2t}$ | C: $e^t$ | D: $\\dfrac{1}{2}e^t$"
+  },
+  {
+    "title": "9.3-P2",
+    "file": "9.3-P2.png",
+    "text": "A curve is given by $x=t^2-1$ and $y=2t$ for $0\\le t\\le 2$. The graph of this parametric curve is provided.  ![9.3-P2](9.3-P2.png)  Which integral gives the arc length of the curve on $[0,2]$?",
+    "correct": "A: $\\displaystyle \\int_0^2 \\sqrt{(2t)^2+(2)^2}\\,dt$",
+    "explanation": "Use $s=\\int_0^2 \\sqrt{(\\frac{dx}{dt})^2+(\\frac{dy}{dt})^2}\\,dt$. Here $\\frac{dx}{dt}=2t$ and $\\frac{dy}{dt}=2$, so $s=\\int_0^2 \\sqrt{4t^2+4}\\,dt$.",
+    "options": "A: $\\displaystyle \\int_0^2 \\sqrt{(2t)^2+(2)^2}\\,dt$ | B: $\\displaystyle \\int_0^2 \\left((2t)^2+(2)^2\\right)\\,dt$ | C: $\\displaystyle \\int_{-1}^{3} \\sqrt{1+\\left(\\frac{dy}{dx}\\rig | D: $\\displaystyle \\int_0^2 \\sqrt{(t^2-1)^2+(2t)^2}\\,dt$"
+  },
+  {
+    "title": "9.4-P4",
+    "file": "9.4-P4.png",
+    "text": "The plane curve is $\\mathbf{r}(t)=\\langle \\cos t, \\tfrac12\\sin(2t)\\rangle$. A tangent direction at $t=\\frac{\\pi}{3}$ is shown.  ![9.4-P4](9.4-P4.png)  What is $\\left.\\dfrac{dy}{dx}\\right|_{t=\\frac{\\pi",
+    "correct": "C: $\\dfrac{\\sqrt{3}}{3}$",
+    "explanation": "$\\frac{dx}{dt}=-\\sin t$ and $\\frac{dy}{dt}=\\cos(2t)$, so $\\frac{dy}{dx}=\\frac{\\cos(2t)}{-\\sin t}$. At $t=\\frac{\\pi}{3}$, this is $\\frac{\\frac{-1}{2}}{-\\sqrt{3}/2}=\\frac{\\sqrt{3}}{3}$.",
+    "options": "A: $-\\sqrt{3}$ | B: $\\sqrt{3}$ | C: $\\dfrac{\\sqrt{3}}{3}$ | D: $-\\dfrac{\\sqrt{3}}{3}$"
+  },
+  {
+    "title": "9.7-P5",
+    "file": "9.7-P5.png",
+    "text": "The image shows a polar graph. Which equation matches the graph?",
+    "correct": "B: $r=1+\\cos\\theta$",
+    "explanation": "The graph is symmetric about the polar axis and has a cusp at the origin, characteristic of a cardioid of the form $r=1+\\cos\\theta$.",
+    "options": "A: $r=1+\\sin\\theta$ | B: $r=1+\\cos\\theta$ | C: $r=1-\\cos\\theta$ | D: $r=2\\cos\\theta$"
+  },
+  {
+    "title": "9.8-P5",
+    "file": "9.8-P5.png",
+    "text": "The shaded region in the image is inside $r=2\\cos\\theta$ and outside $r=1$. Which integral represents the shaded area?",
+    "correct": "B: $\\displaystyle \\frac12\\int_{\\frac{-\\pi}{3}}^{\\frac{\\pi}{3}}\\left((2\\cos\\theta)^2",
+    "explanation": "For polar area between curves, $$A=\\frac12\\int_a^b\\left(r_{out}^2-r_{in}^2\\right)d\\theta.$$  Here $r_{out}=2\\cos\\theta$ and $r_{in}=1$, with intersections at $\\theta=\\pm\\pi/3$. Thus the correct setup is $$\\frac12\\int_{\\frac{-\\pi}{3}}^{\\frac{\\pi}{3}}\\",
+    "options": "A: $\\displaystyle \\frac12\\int_{0}^{\\frac{\\pi}{3}}\\left(1-(2\\cos | B: $\\displaystyle \\frac12\\int_{\\frac{-\\pi}{3}}^{\\frac{\\pi}{3}}\\ | C: $\\displaystyle \\frac12\\int_{\\frac{-\\pi}{3}}^{\\frac{\\pi}{3}}\\ | D: $\\displaystyle \\int_{\\frac{-\\pi}{3}}^{\\frac{\\pi}{3}}\\left((2"
+  },
+  {
+    "title": "9.9-P1",
+    "file": "9.9-P1.png",
+    "text": "Find the area of the region that lies inside $r=2+\\cos\\theta$ and outside $r=2$.",
+    "correct": "D: $4+\\dfrac{\\pi}{4}$",
+    "explanation": "Intersection occurs when $2+\\cos\\theta=2\\Rightarrow \\cos\\theta=0$, so $\\theta\\in[-\\frac{\\pi}{2},\\frac{\\pi}{2}]$ bounds the region where $2+\\cos\\theta\\ge 2$. Area is $$A=\\frac12\\int_{\\frac{-\\pi}{2}}^{\\frac{\\pi}{2}}\\Big((2+\\cos\\theta)^2-2^2\\Big)\\,d\\the",
+    "options": "A: $4+\\dfrac{\\pi}{2}$ | B: $\\dfrac{\\pi}{4}$ | C: $2+\\dfrac{\\pi}{4}$ | D: $4+\\dfrac{\\pi}{4}$"
+  },
+  {
+    "title": "9.9-P2",
+    "file": "9.9-P2.png",
+    "text": "Find the area of the region that lies inside $r=3\\sin\\theta$ and outside $r=1$.",
+    "correct": "A: $\\dfrac{7}{4}\\big(\\pi-2\\arcsin(\\tfrac{1}{3})\\big)+\\sqrt{2}$",
+    "explanation": "Intersections satisfy $3\\sin\\theta=1\\Rightarrow \\sin\\theta=\\tfrac{1}{3}$. Let $\\alpha=\\arcsin(\\tfrac{1}{3})$, so the region occurs for $\\theta\\in[\\alpha,\\pi-\\alpha]$. Area: $$A=\\frac12\\int_{\\alpha}^{\\pi-\\alpha}\\big((3\\sin\\theta)^2-1^2\\big)\\,d\\theta =",
+    "options": "A: $\\dfrac{7}{4}\\big(\\pi-2\\arcsin(\\tfrac{1}{3})\\big)+\\sqrt{2}$ | B: $\\dfrac{7}{4}\\big(\\pi-2\\arcsin(\\tfrac{1}{3})\\big)-\\sqrt{2}$ | C: $\\dfrac{7\\pi}{4}+\\sqrt{2}$ | D: $\\dfrac{1}{2}\\big(\\pi-2\\arcsin(\\tfrac{1}{3})\\big)$"
+  },
+  {
+    "title": "9.9-P3",
+    "file": "9.9-P3.png",
+    "text": "Which integral gives the area of the region inside $r=1+\\sin\\theta$ and outside $r=1$, for $0\\le \\theta\\le \\pi$?",
+    "correct": "A: $\\dfrac12\\int_{0}^{\\pi}\\left((1+\\sin\\theta)^2-1^2\\right)\\,d\\theta$",
+    "explanation": "For area between polar curves on $[a,b]$, use $$A=\\frac12\\int_a^b\\big(R(\\theta)^2-r(\\theta)^2\\big)\\,d\\theta,$$ where $R$ is the outer radius. Here $R(\\theta)=1+\\sin\\theta$ and $r(\\theta)=1$ on $0\\le\\theta\\le\\pi$.",
+    "options": "A: $\\dfrac12\\int_{0}^{\\pi}\\left((1+\\sin\\theta)^2-1^2\\right)\\,d\\ | B: $\\int_{0}^{\\pi}\\left((1+\\sin\\theta)-1\\right)\\,d\\theta$ | C: $\\dfrac12\\int_{0}^{\\pi}\\left((1+\\sin\\theta)-1\\right)\\,d\\thet | D: $\\dfrac12\\int_{0}^{\\pi}\\left(1^2-(1+\\sin\\theta)^2\\right)\\,d\\"
+  },
+  {
+    "title": "9.9-P4",
+    "file": "9.9-P4.png",
+    "text": "Find the area of the region that lies inside $r=4\\cos\\theta$ and outside $r=2$.",
+    "correct": "B: $\\dfrac{4\\pi}{3}+2\\sqrt{3}$",
+    "explanation": "Intersect when $4\\cos\\theta=2\\Rightarrow \\cos\\theta=\\tfrac12$, so $\\theta=\\pm\\tfrac{\\pi}{3}$. Area: $$A=\\frac12\\int_{\\frac{-\\pi}{3}}^{\\frac{\\pi}{3}}\\left((4\\cos\\theta)^2-2^2\\right)d\\theta =\\frac12\\int_{\\frac{-\\pi}{3}}^{\\frac{\\pi}{3}}(16\\cos^2\\theta-4",
+    "options": "A: $\\dfrac{8\\pi}{3}+4\\sqrt{3}$ | B: $\\dfrac{4\\pi}{3}+2\\sqrt{3}$ | C: $\\dfrac{4\\pi}{3}-2\\sqrt{3}$ | D: $\\dfrac{2\\pi}{3}+2\\sqrt{3}$"
+  },
+  {
+    "title": "9.9-P5",
+    "file": "9.9-P5.png",
+    "text": "If a region is bounded between the outer polar curve $r=R(\\theta)$ and the inner polar curve $r=r(\\theta)$ for $\\alpha\\le\\theta\\le\\beta$, which formula gives its area?",
+    "correct": "C: $\\displaystyle\\frac12\\int_{\\alpha}^{\\beta}\\big(R(\\theta)^2-r(\\theta)^2\\big)\\,d\\t",
+    "explanation": "Polar area uses $A=\\frac12\\int r^2\\,d\\theta$. For the region between two curves, subtract the inner area from the outer area on the same $\\theta$-interval: $$A=\\frac12\\int_{\\alpha}^{\\beta}\\big(R(\\theta)^2-r(\\theta)^2\\big)\\,d\\theta.$$",
+    "options": "A: $\\displaystyle\\int_{\\alpha}^{\\beta}\\big(R(\\theta)-r(\\theta)\\ | B: $\\displaystyle\\frac12\\int_{\\alpha}^{\\beta}\\big(r(\\theta)^2-R | C: $\\displaystyle\\frac12\\int_{\\alpha}^{\\beta}\\big(R(\\theta)^2-r | D: $\\displaystyle\\int_{\\alpha}^{\\beta}R(\\theta)^2\\,d\\theta$"
+  },
+  {
+    "title": "10.1-P5",
+    "file": "10.1-P5.png",
+    "text": "A student says: “The series $\\sum_{n=1}^{\\infty} a_n$ converges because the sequence $\\{S_k\\}$ is bounded.” Which additional condition, together with boundedness of $\\{S_k\\}$, would be sufficient to g",
+    "correct": "A: $\\{S_k\\}$ is increasing.",
+    "explanation": "A bounded monotonic sequence converges. If the partial sums $\\{S_k\\}$ are bounded and increasing, then $S_k$ converges and the series converges.",
+    "options": "A: $\\{S_k\\}$ is increasing. | B: $\\{a_n\\}$ is increasing. | C: $a_n>0$ for all $n$. | D: $S_k\\ne 0$ for all $k$."
+  },
+  {
+    "title": "10.13-P4",
+    "file": "10.13-P4.png",
+    "text": "See image (10.13-P4). Which interval notation matches the interval shown?",
+    "correct": "D: $$(-2,3]$$",
+    "explanation": "An open circle means the endpoint is not included (parenthesis). A closed circle means included (bracket). The image shows open at $-2$ and closed at $3$, so the interval is $(-2,3]$.",
+    "options": "A: $$[-2,3]$$ | B: $$(-2,3)$$ | C: $$[-2,3)$$ | D: $$(-2,3]$$"
+  }
+]

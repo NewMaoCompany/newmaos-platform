@@ -88,29 +88,30 @@ export const TopicDetail = () => {
         // Robust progress check for both regular sections and unit tests
         const effectiveId = subTopicId === 'unit_test' ? `${unitId}_unit_test` : subTopicId;
 
-        // Final status check using robust lookup
-        const status1 = getSectionStatus(effectiveId);
-        const status2 = subTopicId === 'unit_test' ? getSectionStatus('unit_test') : 'not_started';
-        const finalStatus = status1 !== 'not_started' ? status1 : status2;
-
+        // Fetch current snapshot
         const progress = getSectionProgressData(effectiveId);
-        const hasProgress = finalStatus !== 'not_started' || (progress && progress.correct_questions > 0);
+        const progressData = progress?.data;
+        const status = getSectionStatus(effectiveId);
 
-        // NEW: Check Review Progress using new data structure
-        const reviewData = progress?.data?.review;
-        const hasReviewProgress = reviewData?.status === 'in_progress';
-
-        // Determine isResuming based on mode
-        let isResuming = forceStartNew ? false : hasProgress;
+        // Determine isResuming accurately by looking explicitly at the relevant mode
+        let isResuming = false;
+        if (!forceStartNew) {
+            if (customMode === 'Review') {
+                isResuming = progressData?.review?.status === 'in_progress';
+            } else if (customMode === 'Adaptive' || !customMode) {
+                // If it's adaptive, we resume if firstAttempt is in progress. 
+                // Legacy fallback: if firstAttempt doesn't exist, we resume if global status is in_progress
+                isResuming = progressData?.firstAttempt?.status === 'in_progress' ||
+                    (!progressData?.firstAttempt && status === 'in_progress');
+            }
+        }
 
         // --- NEW: Review Round Management ---
         if (customMode === 'Review') {
-            isResuming = forceStartNew ? false : hasReviewProgress;
-
             // If starting a BRAND NEW review session, increment the round number immediately
             // to lock it in and avoid double-incrementing during multiple saves/reloads.
             if (!isResuming) {
-                const currentRound = reviewData?.round || 0;
+                const currentRound = progressData?.review?.round || 0;
                 const nextRound = currentRound + 1;
 
                 // Pre-save the next round number so the Practice page sees it immediately
@@ -118,7 +119,7 @@ export const TopicDetail = () => {
                 const newData = {
                     ...existingData,
                     review: {
-                        ...(reviewData || {}),
+                        ...(progressData?.review || {}),
                         status: 'in_progress' as const,
                         round: nextRound,
                         targetQuestionIds: [], // Will be populated by Practice.tsx
@@ -449,22 +450,21 @@ export const TopicDetail = () => {
                                     // Calculate state
                                     let buttonState: 'NOT_STARTED' | 'FIRST_ATTEMPT_IN_PROGRESS' | 'FIRST_ATTEMPT_COMPLETED' | 'REVIEW_IN_PROGRESS' | 'STILL_HAS_ERRORS' | 'COMPLETED' = 'NOT_STARTED';
 
-                                    // Compute actual incorrect count with absolute priority to currentIncorrectIds
+                                    // Compute actual incorrect count with absolute priority to questionResults (ground truth)
                                     const computeActualIncorrectCount = (): number => {
-                                        // 1. If we have currentIncorrectIds, this is the most accurate source of truth
-                                        if (progressData?.currentIncorrectIds !== undefined) {
-                                            return progressData.currentIncorrectIds.length;
-                                        }
-
-                                        // 2. Fallback: compute from firstAttempt.questionResults (legacy or just finished FA)
-                                        if (firstAttempt?.questionResults) {
-                                            const results = firstAttempt.questionResults;
-                                            return Object.values(results).filter((r: any) => r === false || r === 'incorrect').length;
-                                        }
-
-                                        // 3. Last fallback: check main top-level results if everything else is missing
+                                        // 1. Ground truth: compute from merged questionResults (includes first attempt + review corrections)
                                         if (progressData?.questionResults) {
                                             return Object.values(progressData.questionResults).filter((r: any) => r === false || r === 'incorrect').length;
+                                        }
+
+                                        // 2. Fallback: compute from firstAttempt.questionResults
+                                        if (firstAttempt?.questionResults) {
+                                            return Object.values(firstAttempt.questionResults).filter((r: any) => r === false || r === 'incorrect').length;
+                                        }
+
+                                        // 3. Last fallback: stored array only if no questionResults available
+                                        if (progressData?.currentIncorrectIds && progressData.currentIncorrectIds.length > 0) {
+                                            return progressData.currentIncorrectIds.length;
                                         }
 
                                         return 0;

@@ -68,9 +68,10 @@ const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
   return <>{children}</>;
 };
 
+// PageLayer component now removes the inactive page from document flow using `hidden` to fix the view duplication bug
 const PageLayer = ({ active, children, zIndex = 0 }: { active: boolean; children: React.ReactNode; zIndex?: number }) => (
   <div
-    className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${active ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+    className={`absolute inset-0 ${active ? 'opacity-100 pointer-events-auto flex animate-page-in' : 'opacity-0 pointer-events-none hidden'}`}
     style={{ zIndex }}
   >
     {children}
@@ -153,28 +154,6 @@ const AppRoutes = () => {
     doLoginStreak();
   }, [isAuthenticated, user?.id, path, recordLoginStreak]);
 
-  // --- Secret Gift for Creator ---
-  const { awardPoints, triggerCoinAnimation, userPoints } = useApp();
-  useEffect(() => {
-    if (isAuthenticated && user?.email === 'newmao6120@gmail.com' && user?.id) {
-      const hasReceivedGift = localStorage.getItem('creator_mega_gift_received_v4');
-      if (!hasReceivedGift) {
-        // Immediately award 99,999,999 points using a valid ledger type
-        awardPoints(99999999, 'manual_adjustment', 'admin_override', 'Creator Mega Gift', Date.now().toString()).then((res) => {
-          if (res.success) {
-            triggerCoinAnimation(100, window.innerWidth / 2, window.innerHeight / 2, 'earn');
-            localStorage.setItem('creator_mega_gift_received_v4', 'true');
-            // Show custom modal
-            setShowMegaGiftModal(true);
-          } else {
-            console.error('[GIFT ERROR] Failed to award points:', res);
-          }
-        }).catch(err => {
-          console.error('[GIFT ERROR] Exception:', err);
-        });
-      }
-    }
-  }, [isAuthenticated, user?.email, user?.id, awardPoints, triggerCoinAnimation, userPoints.balance]);
 
 
   if (isAuthLoading) {
@@ -198,7 +177,7 @@ const AppRoutes = () => {
   const isPracticeSession = path.startsWith('/practice/session') || path.startsWith('/practice/unit/');
 
   return (
-    <div className={`h-screen w-full bg-surface-light dark:bg-surface-dark overflow-x-auto overflow-y-hidden relative ${isPracticeSession ? '' : 'min-w-[360px]'}`}>
+    <div className={`h-screen w-full bg-background-light dark:bg-background-dark overflow-x-hidden overflow-y-hidden relative ${isPracticeSession ? '' : 'min-w-[360px]'}`}>
 
 
       {/* Persistent Page Layers (Main 5) */}
@@ -232,7 +211,7 @@ const AppRoutes = () => {
       {!isAuthenticated && (isAnalysis || isForum || isSettings) && <Navigate to="/login" replace />}
 
       {/* Sub-Routes & Non-Main Pages Layer (Always visible if NOT on a main page layer) */}
-      <div className={`absolute inset-0 z-[60] overflow-y-auto transition-opacity duration-300 ${isOnMainPage ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}>
+      <div className={`absolute inset-0 z-[60] overflow-y-auto ${isOnMainPage ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 pointer-events-auto flex flex-col animate-page-in'}`}>
         <Suspense fallback={<LazyFallback />}>
           <Routes>
             {/* Auth Pages (Always visible if not on main page) */}
@@ -285,13 +264,6 @@ const AppRoutes = () => {
         onClose={() => { setShowStreakModal(false); setIsStreakModalOpen(false); }}
         isRecovery={isStreakRecovery}
         checkinResult={checkinResult}
-      />
-
-      {/* Custom Creator Gift Modal */}
-      <CreatorGiftModal
-        isOpen={showMegaGiftModal}
-        onClose={() => setShowMegaGiftModal(false)}
-        amount="99,999,999"
       />
 
     </div>

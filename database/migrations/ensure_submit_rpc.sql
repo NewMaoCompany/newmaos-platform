@@ -51,7 +51,6 @@ BEGIN
     FROM public.question_attempts
     WHERE user_id = auth.uid() AND question_id = p_question_id;
 
-    -- Insert record
     INSERT INTO public.question_attempts (
         user_id,
         question_id,
@@ -67,7 +66,7 @@ BEGIN
         p_selected_option_id,
         p_answer_numeric,
         COALESCE(p_time_spent_seconds, 0),
-        COALESCE(p_error_tags, '{}')
+        COALESCE(p_error_tags, '{}'::text[])
     ) RETURNING id INTO v_attempt_id;
 
     -- Return success payload matching AppContext interface
@@ -76,11 +75,6 @@ BEGIN
         'attempt_id', v_attempt_id,
         'attempt_no', v_attempt_no,
         'is_correct', p_is_correct
-    );
-EXCEPTION WHEN OTHERS THEN
-    RETURN jsonb_build_object(
-        'success', false,
-        'error', SQLERRM
     );
 END;
 $$;

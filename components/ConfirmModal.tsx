@@ -36,7 +36,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 setRender(false);
                 setIsClosing(false);
                 document.body.style.overflow = 'unset';
-            }, 300);
+            }, 1200);
             return () => clearTimeout(timer);
         }
     }, [isOpen, render]);

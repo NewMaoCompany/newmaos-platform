@@ -1,0 +1,918 @@
+UNIT 7 MATHEMATICAL REVIEW (65 questions)
+============================================================
+
+--- 7.0-UT-Q1 [3/3] [Both] ---
+PROMPT: A population $P(t)$ (in bacteria) satisfies $\dfrac{dP}{dt}=kP$ for a constant $k$. If $P(0)=500$ and $P(2)=800$, which value of $k$ is correct?
+CORRECT: D = "$k=\dfrac{1}{2}\ln(1.6)$"
+  A : $k=\ln(1.6)$
+  B : $k=\dfrac{800-500}{2}$
+  C : $k=\dfrac{\ln(800)}{\ln(500)}$
+  D ✓: $k=\dfrac{1}{2}\ln(1.6)$
+EXPLANATION: Solve $P(t)=500e^{kt}$. Then $800=500e^{2k}$ so $e^{2k}=1.6$ and $k=\tfrac12\ln(1.6)$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Correct. This follows the principles for solving or interpreting differential equations.
+
+--- 7.0-UT-Q2 [2/2] [Both] ---
+PROMPT: Which function satisfies the differential equation $y''=2y-x$ for all $x$?
+CORRECT: A = "$y=Ce^{2x}+\dfrac{x}{2}+\dfrac{1}{4}$"
+  A ✓: $y=Ce^{2x}+\dfrac{x}{2}+\dfrac{1}{4}$
+  B : $y=Ce^{2x}+\dfrac{x}{2}-\dfrac{1}{4}$
+  C : $y=Ce^{x}+\dfrac{x}{2}+\dfrac{1}{4}$
+  D : $y=Ce^{2x}+\dfrac{x}{4}+\dfrac{1}{4}$
+EXPLANATION: Try $y=Ce^{2x}+ax+b$. Then $y''=2Ce^{2x}+a$ and $2y-x=2Ce^{2x}+(2a-1)x+2b$. Match coefficients: $2a-1=0\Rightarrow a=\tfrac12$ and $a=2b\Rightarrow b=\tfrac14$.
+MICRO:
+  A: Correct. This follows the principles for solving or interpreting differential equations.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q3 [2/1] [Both] ---
+PROMPT: The image shows the slope field for $\dfrac{dy}{dx}=x-y$. At the point $(1,0)$, which slope best matches the field?  ![7.0-UT-Q3](7.0-UT-Q3.png)
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$1$"
+  A : $-1$
+  B : $0$
+  C ✓: $1$
+  D : $2$
+EXPLANATION: Compute the slope from the DE: $\dfrac{dy}{dx}=x-y$. At $(1,0)$, the slope is $1$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Correct. This follows the principles for solving or interpreting differential equations.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q4 [4/4] [Both] ---
+PROMPT: For the differential equation $\dfrac{dy}{dx}=y(2-y)$, which statement is true?
+CORRECT: D = "$y=0$ and $y=2$ are equilibria; $y=2$ is stable and $y=0$ is unstable."
+  A : $y=0$ and $y=2$ are equilibria and both are unstable.
+  B : Only $y=0$ is an equilibrium solution.
+  C : $y=2$ is stable and $y=0$ is unstable.
+  D ✓: $y=0$ and $y=2$ are equilibria; $y=2$ is stable and $y=0$ is unstable.
+EXPLANATION: Equilibria satisfy $y(2-y)=0\Rightarrow y=0,2$. If $0<y<2$, then $y''>0$ so solutions rise; if $y>2$, then $y''<0$ so solutions fall. Thus $y=2$ is stable and $y=0$ is unstable.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Correct. This follows the principles for solving or interpreting differential equations.
+
+--- 7.0-UT-Q5 [3/3] [Both] ---
+PROMPT: Use Euler’s method with step size $h=0.5$ to approximate $y(1)$ for the initial value problem $y''=x+y$, $y(0)=1$.
+CORRECT: B = "$2.5$"
+  A : $2.25$
+  B ✓: $2.5$
+  C : $3$
+  D : $1.5$
+EXPLANATION: Two steps: $(x_0,y_0)=(0,1)$. $y_1=1+0.5(1)=1.5$ at $x=0.5$. Next slope $=0.5+1.5=2$. So $y_2=1.5+0.5(2)=2.5$ at $x=1$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Correct. This follows the principles for solving or interpreting differential equations.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q6 [4/4] [Both] ---
+PROMPT: Find the general solution of $\dfrac{dy}{dx}=\dfrac{x}{1+y^2}$.
+CORRECT: C = "$y+\dfrac{y^3}{3}=\dfrac{x^2}{2}+C$"
+  A : $\dfrac{1}{1+y^2}=\dfrac{x^2}{2}+C$
+  B : ${\arctan(y)}=\dfrac{x^2}{2}+C$
+  C ✓: $y+\dfrac{y^3}{3}=\dfrac{x^2}{2}+C$
+  D : $y^2=\dfrac{x^2}{2}+C$
+EXPLANATION: Separate: $(1+y^2)dy=x\,dx$. Integrate: $\int(1+y^2)dy=\int x\,dx\Rightarrow y+\tfrac{y^3}{3}=\tfrac{x^2}{2}+C$.
+MICRO:
+  A: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  B: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  C: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+  D: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+
+--- 7.0-UT-Q7 [3/3] [Both] ---
+PROMPT: Solve the initial value problem $\dfrac{dy}{dx}=3xy$, $y(0)=2$, and find $y(1)$.
+CORRECT: C = "$2e^{\frac{3}{2}}$"
+  A : $2e^{3}$
+  B : $2e$
+  C ✓: $2e^{\frac{3}{2}}$
+  D : $2e^{\frac{3}{4}}$
+EXPLANATION: Separate: $\dfrac{1}{y}dy=3x\,dx$. Integrate: $\ln|y|=\tfrac{3}{2}x^2+C$. Use $y(0)=2$ to get $C=\ln 2$, so $y=2e^{\tfrac{3}{2}x^2}$ and $y(1)=2e^{\frac{3}{2}}$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Correct. This follows the principles for solving or interpreting differential equations.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q8 [3/3] [Both] ---
+PROMPT: A cup of coffee cools in a room at $20^\circ\text{C}$ and satisfies $\dfrac{dT}{dt}=-k(T-20)$. If $T(0)=100$ and $T(10)=60$, what is $T(20)$?
+CORRECT: B = "$40$"
+  A : $30$
+  B ✓: $40$
+  C : $35$
+  D : $50$
+EXPLANATION: Let $u=T-20$. Then $u''=-ku$ so $u(t)=80e^{-kt}$. Given $u(10)=40$, we get $e^{-10k}=\tfrac12$. Then $u(20)=80(\tfrac12)^2=20$, so $T(20)=20+20=40$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Correct. This follows the principles for solving or interpreting differential equations.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q9 [2/2] [Both] ---
+PROMPT: A population satisfies the logistic differential equation $\dfrac{dP}{dt}=0.4P\left(1-\dfrac{P}{500}\right)$ with $P(0)=100$. What is $\dfrac{dP}{dt}$ at $t=0$?
+CORRECT: B = "$32$"
+  A : $20$
+  B ✓: $32$
+  C : $40$
+  D : $80$
+EXPLANATION: Plug in $P=100$: $P''(0)=0.4\cdot100\left(1-\frac{100}{500}\right)=40\cdot0.8=32$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Correct. This follows the principles for solving or interpreting differential equations.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q10 [4/4] [Both] ---
+PROMPT: Solve the initial value problem $\dfrac{dy}{dx}=(y-1)^2$, $y(0)=0$. Which solution is correct (for $x>-1$)?
+CORRECT: A = "$y=1-\dfrac{1}{x+1}$"
+  A ✓: $y=1-\dfrac{1}{x+1}$
+  B : $y=1-\dfrac{1}{x-1}$
+  C : $y=1-\dfrac{1}{1-x}$
+  D : $y=1+\dfrac{1}{x+1}$
+EXPLANATION: Separate: $\dfrac{dy}{(y-1)^2}=dx$. Integrate: $-\dfrac{1}{y-1}=x+C$. Use $y(0)=0$: $-\dfrac{1}{-1}=1=C$. So $-\dfrac{1}{y-1}=x+1\Rightarrow y=1-\dfrac{1}{x+1}$ (for $x>-1$).
+MICRO:
+  A: Correct. This follows the principles for solving or interpreting differential equations.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q11 [3/3] [Both] ---
+PROMPT: Consider the differential equation $\dfrac{dy}{dx}=xy$ with $y(0)=1$. Which function is the solution?
+CORRECT: D = "$y=e^{\frac{x^2}{2}}$"
+  A : $y=e^{x^2}$
+  B : $y=e^{x}$
+  C : $y=\dfrac{x^2}{2}+1$
+  D ✓: $y=e^{\frac{x^2}{2}}$
+EXPLANATION: Separate: $\dfrac{1}{y}dy=x\,dx$. Integrate: $\ln|y|=\tfrac{x^2}{2}+C$. With $y(0)=1$, $C=0$ and $y=e^{\frac{x^2}{2}}$.
+MICRO:
+  A: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  B: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  C: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  D: Correct. Slope fields provide a visual representation of a differential equation $dy/dx = f(x,y)$. The solution curves must follow the slopes indicate
+
+--- 7.0-UT-Q12 [2/2] [Both] ---
+PROMPT: A quantity $V(t)$ satisfies $\dfrac{dV}{dt}=-0.3V$ with $V(0)>0$. What is the half-life (time for $V$ to halve)?
+CORRECT: C = "${\dfrac{\ln 2}{0.3}}$"
+  A : ${\dfrac{\ln 2}{0.6}}$
+  B : ${\dfrac{2}{0.3}}$
+  C ✓: ${\dfrac{\ln 2}{0.3}}$
+  D : $\ln(0.3)$
+EXPLANATION: Solution: $V(t)=V(0)e^{-0.3t}$. Half-life: $\tfrac12= e^{-0.3t}\Rightarrow t=\dfrac{\ln 2}{0.3}$.
+MICRO:
+  A: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  B: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  C: Correct. Slope fields provide a visual representation of a differential equation $dy/dx = f(x,y)$. The solution curves must follow the slopes indicate
+  D: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+
+--- 7.0-UT-Q13 [3/3] [Both] ---
+PROMPT: Given $\dfrac{dy}{dx}=\dfrac{2y}{x}$ and $y(3)=5$, what is $y(6)$?
+CORRECT: A = "$20$"
+  A ✓: $20$
+  B : $15$
+  C : $10$
+  D : $25$
+EXPLANATION: Separate: $\dfrac{1}{y}dy=\dfrac{2}{x}dx\Rightarrow \ln y=2\ln x+C\Rightarrow y=Cx^2$. Use $y(3)=5$ so $C=\frac{5}{9}$. Then $y(6)= (\frac{5}{9})\cdot36=20$.
+MICRO:
+  A: Correct. Slope fields provide a visual representation of a differential equation $dy/dx = f(x,y)$. The solution curves must follow the slopes indicate
+  B: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  C: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  D: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+
+--- 7.0-UT-Q14 [2/3] [Both] ---
+PROMPT: For $y''=y$ with $y(0)=1$, Euler’s method with $h=1$ gives $y(1)\approx 2$. The exact value is $e$. What is the percent error $\left(\dfrac{|2-e|}{e}\right)\times 100\%$ to the nearest whole percent?
+CORRECT: B = "$26\%$"
+  A : $18\%$
+  B ✓: $26\%$
+  C : $36\%$
+  D : $72\%$
+EXPLANATION: Relative error is $\dfrac{|e-2|}{e}$. Using $e\approx 2.718$ gives $\dfrac{0.718}{2.718}\approx 0.264$, or $26\%$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Correct. This follows the principles for solving or interpreting differential equations.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q15 [3/3] [Both] ---
+PROMPT: Use Euler’s method with step size $h=0.5$ to approximate $y(1.5)$ for $y''=y-x$, $y(0)=1$.  ![7.0-UT-Q15](7.0-UT-Q15.png)
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$2.5$"
+  A : $1.5$
+  B : $2.25$
+  C : $3.0$
+  D ✓: $2.5$
+EXPLANATION: Euler update: $y_{n+1}=y_n+h(y_n-x_n)$. Start $(0,1)$. $y_1=1+0.5(1-0)=1.5$. $y_2=1.5+0.5(1.5-0.5)=2.0$. $y_3=2.0+0.5(2.0-1.0)=2.5$ at $x=1.5$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Correct. This follows the principles for solving or interpreting differential equations.
+
+--- 7.0-UT-Q16 [2/2] [Both] ---
+PROMPT: A family of functions is given by $y=x^2+C$. If $y$ satisfies $y''=2x$ and $y(1)=3$, what is $y(4)$?
+CORRECT: A = "$18$"
+  A ✓: $18$
+  B : $17$
+  C : $16$
+  D : $19$
+EXPLANATION: Use $y(1)=3$: $3=1+C$ so $C=2$. Then $y(4)=4^2+2=18$.
+MICRO:
+  A: Correct. This follows the principles for solving or interpreting differential equations.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q17 [3/3] [Both] ---
+PROMPT: A population satisfies $\dfrac{dP}{dt}=P(3-P)$ with $P(0)=4$. What is $\displaystyle\lim_{t\to\infty}P(t)$?
+CORRECT: D = "$3$"
+  A : $0$
+  B : $4$
+  C : $\infty$
+  D ✓: $3$
+EXPLANATION: Equilibria: $P=0,3$. If $P>3$, then $P''<0$ so $P$ decreases. If $0<P<3$, then $P''>0$ so $P$ increases. Thus solutions approach $3$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Correct. This follows the principles for solving or interpreting differential equations.
+
+--- 7.0-UT-Q18 [1/1] [Both] ---
+PROMPT: For $\dfrac{dy}{dx}=x-y$ with initial condition $y(0)=1$, is the solution initially increasing or decreasing at $x=0$?
+CORRECT: C = "Decreasing, because $x-y<0$ at $(0,1)$."
+  A : Increasing, because $x-y>0$ at $(0,1)$.
+  B : Neither; the slope is $0$ at $(0,1)$.
+  C ✓: Decreasing, because $x-y<0$ at $(0,1)$.
+  D : Cannot be determined without solving explicitly.
+EXPLANATION: Evaluate the slope at the initial point: $y''(0)=0-1=-1<0$, so the solution decreases initially.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Correct. This follows the principles for solving or interpreting differential equations.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q19 [3/3] [Both] ---
+PROMPT: A population satisfies $\dfrac{dN}{dt}=0.2N$ with $N(0)=50$. How long does it take for the population to reach $200$?
+CORRECT: B = "$5\ln 4$"
+  A : $\ln 4$
+  B ✓: $5\ln 4$
+  C : $\dfrac{\ln(200)}{\ln(50)}$
+  D : $\dfrac{150}{0.2}$
+EXPLANATION: Solution: $N(t)=50e^{0.2t}$. Set $200=50e^{0.2t}$ so $4=e^{0.2t}$ and $t=\dfrac{\ln4}{0.2}=5\ln4$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Correct. This follows the principles for solving or interpreting differential equations.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.0-UT-Q20 [5/5] [Both] ---
+PROMPT: For the autonomous differential equation $\dfrac{dy}{dt}=y^2-y$, which statement is correct?
+CORRECT: A = "$y=0$ and $y=1$ are equilibria; $y=0$ is stable and $y=1$ is unstable."
+  A ✓: $y=0$ and $y=1$ are equilibria; $y=0$ is stable and $y=1$ is unstable.
+  B : $y=1$ is stable and $y=0$ is unstable.
+  C : The only equilibrium is $y=0$, and it is unstable.
+  D : $y=0$ and $y=1$ are equilibria and both are stable.
+EXPLANATION: Equilibria: $y(y-1)=0\Rightarrow y=0,1$. If $0<y<1$, then $y(y-1)<0$ so $y$ decreases toward $0$. If $y<0$, then $y(y-1)>0$ so $y$ increases toward $0$. Thus $y=0$ is stable. Near $y=1$, values slightly less than $1$ move down and values slightly greater than $1$ move up, so $y=1$ is unstable.
+MICRO:
+  A: Correct. This follows the principles for solving or interpreting differential equations.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.1-P1 [2/2] [Both] ---
+PROMPT: A bacteria culture has population $P(t)$ (in thousands) at time $t$ hours. The instantaneous rate of change of the population is proportional to the square root of the population, and the population is increasing. Which differential equation models this situation?  I. $\dfrac{dP}{dt}=k\sqrt{P}$ II. $\dfrac{dP}{dt}=kP^2$ III. $\dfrac{dP}{dt}=-k\sqrt{P}$  Assume $k>0$ is a constant.
+CORRECT: C = "I only"
+  A : III only
+  B : II only
+  C ✓: I only
+  D : I and II
+EXPLANATION: “Rate is proportional to the square root of the population” translates to $\dfrac{dP}{dt}=k\sqrt{P}$ for some constant $k$. Since the population is increasing, the derivative must be positive, so no negative sign is included. Thus I only.
+MICRO:
+  A: Wrong sign (decreasing).
+  B: Wrong power of $P$.
+  C: Matches $\sqrt{P}$ and increasing.
+  D: Includes an incorrect model.
+
+--- 7.1-P2 [3/2] [Both] ---
+PROMPT: Let $V(t)$ be the volume of water (in liters) in a tank at time $t$ minutes. Water drains from the tank at a rate proportional to the volume in the tank, and the constant of proportionality is $0.04\ \text{min}^{-1}$. Which differential equation correctly models $V(t)$?
+CORRECT: B = "$\dfrac{dV}{dt}=-0.04V$"
+  A : $\dfrac{dV}{dt}=0.04V$
+  B ✓: $\dfrac{dV}{dt}=-0.04V$
+  C : $\dfrac{dV}{dt}=-\dfrac{0.04}{V}$
+  D : $\dfrac{dV}{dt}=-0.04t$
+EXPLANATION: “Rate proportional to volume” gives $\dfrac{dV}{dt}=kV$. Draining means $\dfrac{dV}{dt}<0$ for $V>0$, so $k$ must be negative. With magnitude $0.04\ \text{min}^{-1}$, the model is $\dfrac{dV}{dt}=-0.04V$.
+MICRO:
+  A: Wrong sign (increasing).
+  B: Correct proportionality and sign.
+  C: Wrong dependence on $V$.
+  D: Depends on $t$, not $V$.
+
+--- 7.1-P3 [1/1] [Both] ---
+PROMPT: A quantity $y$ is measured in grams and depends on time $t$ measured in seconds. Which statement best interprets $\dfrac{dy}{dt}=-5$ at $t=12$?
+CORRECT: A = "At $t=12$, $y$ is decreasing at $5$ grams per second."
+  A ✓: At $t=12$, $y$ is decreasing at $5$ grams per second.
+  B : At $t=12$, $y=-5$ grams.
+  C : At $t=12$, $y$ is increasing at $5$ grams per second.
+  D : At $t=12$, $t$ is decreasing at $5$ seconds per gram.
+EXPLANATION: $\dfrac{dy}{dt}$ gives the instantaneous rate of change of $y$ with respect to $t$. The value $-5$ means $y$ decreases at $5$ grams per second at that instant.
+MICRO:
+  A: A negative derivative means decreasing; magnitude $5$ gives the rate.
+  B: $\dfrac{dy}{dt}$ is a rate of change, not the value of $y$.
+  C: Sign is wrong: derivative is negative.
+  D: This inverts the derivative and swaps variables/units.
+
+--- 7.1-P4 [4/3] [Both] ---
+PROMPT: A function $y(t)$ satisfies the differential equation $$\frac{dy}{dt}=3t^2-2y.$$ If $y(1)=4$, what is the value of $\left.\dfrac{dy}{dt}\right|_{t=1}$?
+CORRECT: A = "$-5$"
+  A ✓: $-5$
+  B : $-2$
+  C : $11$
+  D : $1$
+EXPLANATION: The differential equation gives the derivative in terms of $t$ and $y$. At $t=1$, $y=4$, so $$\left.\frac{dy}{dt}\right|_{t=1}=3(1)^2-2(4)=3-8=-5.$$
+MICRO:
+  A: Direct substitution into the DE.
+  B: Arithmetic/sign slip.
+  C: Sign error on the $-2y$ term.
+  D: Does not use the equation.
+
+--- 7.1-P5 [3/2] [Both] ---
+PROMPT: A quantity $y$ is measured in meters and depends on time $t$ in seconds. Suppose $\dfrac{dy}{dt}=ky$ where $k$ is a constant. What are the correct units for $k$?
+CORRECT: D = "$\text{s}^{-1}$"
+  A : meters
+  B : seconds
+  C : $\text{m}\cdot\text{s}^{-1}$
+  D ✓: $\text{s}^{-1}$
+EXPLANATION: Since $\dfrac{dy}{dt}$ has units $\text{m}/\text{s}$ and $y$ has units $\text{m}$, the constant $k$ must have units $\dfrac{1}{\text{s}}$ so that $ky$ has units $\text{m}/\text{s}$.
+MICRO:
+  A: Ignores matching units of both sides.
+  B: Uses seconds instead of per second.
+  C: Creates wrong units.
+  D: Correct: $k$ is per second.
+
+--- 7.2-P1 [2/3] [Both] ---
+PROMPT: Which function is a solution to the differential equation $$\frac{dy}{dx}=2x(y-1)$$ for $y(x)$?
+CORRECT: A = "$y=1+e^{x^2}$"
+  A ✓: $y=1+e^{x^2}$
+  B : $y=1+e^{2x}$
+  C : $y=1+x^2$
+  D : $y=e^{x^2}$
+EXPLANATION: To verify, compute $y'$ and substitute into the right side. For $y=1+e^{x^2}$, $y'=2xe^{x^2}$ and $2x(y-1)=2x(e^{x^2})=2xe^{x^2}$. The two sides match for all $x$, so it is a solution.
+MICRO:
+  A: Derivative matches RHS exactly.
+  B: Missing factor of $x$.
+  C: Creates $2x^3$ on RHS.
+  D: RHS includes an extra $-2x$ term.
+
+--- 7.2-P2 [3/3] [Both] ---
+PROMPT: A function $y(x)$ is claimed to solve $$\frac{dy}{dx}=\frac{y}{x}$$ with initial condition $y(2)=6$. Which of the following functions satisfies BOTH the differential equation and the initial condition (for $x>0$)?
+CORRECT: C = "$y=3x$"
+  A : $y=6x$
+  B : $y=\dfrac{6}{x}$
+  C ✓: $y=3x$
+  D : $y=3x^2$
+EXPLANATION: Check each candidate. For $y=3x$, $y'=3$ and $\dfrac{y}{x}=3$, so it satisfies the DE. Also $y(2)=3\cdot 2=6$, so it satisfies the initial condition.
+MICRO:
+  A: Fails the initial condition.
+  B: Derivative sign does not match $\dfrac{y}{x}$.
+  C: Satisfies DE and $y(2)=6$.
+  D: Fails the DE.
+
+--- 7.2-P3 [4/2] [Both] ---
+PROMPT: Let $y(x)=\ln(x^2+1)$. Does $y$ satisfy the differential equation $$\frac{dy}{dx}=\frac{2x}{x^2+1}?$$
+CORRECT: B = "Yes, because $\dfrac{dy}{dx}=\dfrac{2x}{x^2+1}$."
+  A : No, because $\dfrac{dy}{dx}=\dfrac{1}{x^2+1}$.
+  B ✓: Yes, because $\dfrac{dy}{dx}=\dfrac{2x}{x^2+1}$.
+  C : No, because $\dfrac{dy}{dx}=\dfrac{2}{x^2+1}$.
+  D : Yes, because $\dfrac{dy}{dx}=\dfrac{x^2+1}{2x}$.
+EXPLANATION: Differentiate $y=\ln(x^2+1)$ using the chain rule. Let $u=x^2+1$, so $u'=2x$. Then $$\frac{dy}{dx}=\frac{u'}{u}=\frac{2x}{x^2+1},$$ which matches the differential equation. So the answer is yes.
+MICRO:
+  A: Chain rule factor omitted.
+  B: Correct chain rule computation.
+  C: Still missing factor $x$.
+  D: Inverts the derivative.
+
+--- 7.2-P4 [2/1] [Both] ---
+PROMPT: A student claims that $y=x^2-1$ is a solution to $$\frac{dy}{dx}=2x.$$ Which statement is correct?
+CORRECT: B = "It is a solution, because $\dfrac{dy}{dx}=2x$."
+  A : Not a solution, because $y$ is negative when $x=0$.
+  B ✓: It is a solution, because $\dfrac{dy}{dx}=2x$.
+  C : Not a solution, because $\dfrac{dy}{dx}=x$.
+  D : It is a solution only for $x\ge 0$.
+EXPLANATION: To verify, compute $y'$. For $y=x^2-1$, $y'=2x$, which matches the right-hand side exactly, so it is a solution for all real $x$.
+MICRO:
+  A: Verification depends on $y'$, not the sign of $y$.
+  B: Correct verification.
+  C: Derivative is miscomputed.
+  D: No domain restriction is needed here.
+
+--- 7.2-P5 [5/4] [Both] ---
+PROMPT: Consider the differential equation (for $x>0$) $$x\frac{dy}{dx}+y=\sqrt{x}.$$ Which function satisfies the equation for $x>0$?
+CORRECT: D = "$y=\dfrac{2}{3}\sqrt{x}$"
+  A : $y=\sqrt{x}$
+  B : $y=\dfrac{1}{\sqrt{x}}$
+  C : $y=\dfrac{2}{3}x$
+  D ✓: $y=\dfrac{2}{3}\sqrt{x}$
+EXPLANATION: Verify by substitution. For $y=\dfrac{2}{3}\sqrt{x}$, we have $y'=\dfrac{1}{3\sqrt{x}}$ (for $x>0$). Then $$x\frac{dy}{dx}+y=x\left(\frac{1}{3\sqrt{x}}\right)+\frac{2}{3}\sqrt{x}=\frac{\sqrt{x}}{3}+\frac{2\sqrt{x}}{3}=\sqrt{x},$$ so it satisfies the differential equation on $x>0$.
+MICRO:
+  A: Produces $\tfrac{3}{2}\sqrt{x}$, not $\sqrt{x}$.
+  B: Produces $\tfrac{1}{2\sqrt{x}}$, not $\sqrt{x}$.
+  C: Left side becomes proportional to $x$.
+  D: Matches exactly after substitution.
+
+--- 7.3-P1 [2/2] [Both] ---
+PROMPT: For the differential equation $\dfrac{dy}{dx}=\dfrac{x+y}{2}$, what is the slope of the small line segment you would draw at the point $(2,-1)$ when sketching a slope field?
+CORRECT: A = "$\dfrac{1}{2}$"
+  A ✓: $\dfrac{1}{2}$
+  B : $-\dfrac{1}{2}$
+  C : $1$
+  D : $\dfrac{3}{2}$
+EXPLANATION: Evaluate the right-hand side at $(2,-1)$: $$\frac{dy}{dx}=\frac{2+(-1)}{2}=\frac{1}{2}.$$
+MICRO:
+  A: Correct. Slope fields provide a visual representation of a differential equation $dy/dx = f(x,y)$. The solution curves must follow the slopes indicate
+  B: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  C: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  D: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+
+--- 7.3-P2 [3/3] [Both] ---
+PROMPT: Use the accompanying slope field (image). At the point $(1,0)$, which value best matches the slope $\dfrac{dy}{dx}$ indicated by the field?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$1$"
+  A : $-1$
+  B : $0$
+  C ✓: $1$
+  D : $\dfrac{1}{2}$
+EXPLANATION: Reading the segment at $(1,0)$, the local tilt is closest to slope $1$.
+MICRO:
+  A: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  B: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  C: Correct. Slope fields provide a visual representation of a differential equation $dy/dx = f(x,y)$. The solution curves must follow the slopes indicate
+  D: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+
+--- 7.3-P3 [4/4] [Both] ---
+PROMPT: A slope field has horizontal (zero-slope) segments along the line $y=x$. Below that line (where $y<x$), the segments tilt upward (positive slope). Above that line (where $y>x$), the segments tilt downward (negative slope). Which differential equation matches this slope field?
+CORRECT: D = "$\dfrac{dy}{dx}=x-y$"
+  A : $\dfrac{dy}{dx}=xy$
+  B : $\dfrac{dy}{dx}=y-x$
+  C : $\dfrac{dy}{dx}=x+y$
+  D ✓: $\dfrac{dy}{dx}=x-y$
+EXPLANATION: The described sign pattern is: slope $0$ on $y=x$, positive when $y<x$, and negative when $y>x$. The expression $x-y$ has exactly this behavior.
+MICRO:
+  A: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  B: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  C: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  D: Correct. Slope fields provide a visual representation of a differential equation $dy/dx = f(x,y)$. The solution curves must follow the slopes indicate
+
+--- 7.3-P4 [2/2] [Both] ---
+PROMPT: For $\dfrac{dy}{dx}=y^2-1$, along which curves in the $xy$-plane will the slope-field segments be horizontal?
+CORRECT: C = "$y=1$ and $y=-1$"
+  A : $y=0$ only
+  B : $y=1$ only
+  C ✓: $y=1$ and $y=-1$
+  D : $y=x$
+EXPLANATION: Horizontal segments occur where $\frac{dy}{dx}=0$: $$y^2-1=0\Rightarrow y^2=1\Rightarrow y=\pm 1.$$
+MICRO:
+  A: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  B: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  C: Correct. Slope fields provide a visual representation of a differential equation $dy/dx = f(x,y)$. The solution curves must follow the slopes indicate
+  D: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+
+--- 7.3-P5 [1/1] [Both] ---
+PROMPT: Consider the differential equation $\dfrac{dy}{dx}=x^2$. Which statement about its slope field is true?
+CORRECT: B = "The slope is the same along each vertical line $x=c$."
+  A : The slope is the same along each horizontal line $y=c$.
+  B ✓: The slope is the same along each vertical line $x=c$.
+  C : The slope is zero only on the line $y=0$.
+  D : The slope is negative whenever $x<0$.
+EXPLANATION: Because $\frac{dy}{dx}=x^2$ depends only on $x$, the slope is constant along any vertical line $x=c$.
+MICRO:
+  A: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  B: Correct. Slope fields provide a visual representation of a differential equation $dy/dx = f(x,y)$. The solution curves must follow the slopes indicate
+  C: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+  D: Incorrect. Verify the slope at specific coordinate points $(x, y)$ by plugging them into the differential equation and checking if they match the slop
+
+--- 7.4-P1 [3/4] [Both] ---
+PROMPT: Use the accompanying slope field (image). A solution satisfies $y(0)=0.5$. As $x\to\infty$, what value does $y$ approach?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$2$"
+  A : $0$
+  B ✓: $2$
+  C : $-\infty$
+  D : $+\infty$
+EXPLANATION: From the field, $y=0$ and $y=2$ are equilibrium lines. In the region $0<y<2$ the slopes are positive, so the solution increases toward the stable equilibrium $y=2$.
+MICRO:
+  A: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  B: Correct. Euler's method uses a sequence of tangent line steps to approximate points on a solution curve.
+  C: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  D: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+
+--- 7.4-P2 [4/4] [Both] ---
+PROMPT: For the autonomous differential equation $\dfrac{dy}{dx}=(y-3)(y+1)$, a solution satisfies $y(0)=2$. Which statement is correct about the solution as $x$ increases?
+CORRECT: D = "The solution decreases and approaches $y=-1$."
+  A : The solution increases and approaches $y=3$.
+  B : The solution decreases without bound to $-\infty$.
+  C : The solution is constant $y=2$ for all $x$.
+  D ✓: The solution decreases and approaches $y=-1$.
+EXPLANATION: Equilibria are $y=-1$ and $y=3$. Since $(y-3)(y+1)<0$ for $-1<y<3$, the solution starting at $2$ decreases. The equilibrium $y=-1$ is stable, so the solution approaches $-1$ as $x$ increases.
+MICRO:
+  A: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  B: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  C: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  D: Correct. Euler's method uses a sequence of tangent line steps to approximate points on a solution curve.
+
+--- 7.4-P3 [2/2] [Both] ---
+PROMPT: A slope field shows that along the horizontal line $y=0$ the segments are horizontal. For $y>0$, the segments tilt downward (negative slope). For $y<0$, the segments tilt upward (positive slope). Which differential equation is most consistent with this behavior?
+CORRECT: C = "$\dfrac{dy}{dx}=-y$"
+  A : $\dfrac{dy}{dx}=y$
+  B : $\dfrac{dy}{dx}=y^2$
+  C ✓: $\dfrac{dy}{dx}=-y$
+  D : $\dfrac{dy}{dx}=-y^2$
+EXPLANATION: The sign pattern is: slope $0$ at $y=0$, negative for $y>0$, and positive for $y<0$. The expression $-y$ matches this exactly.
+MICRO:
+  A: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  B: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  C: Correct. Euler's method uses a sequence of tangent line steps to approximate points on a solution curve.
+  D: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+
+--- 7.4-P4 [3/3] [Both] ---
+PROMPT: Use the accompanying slope field (image). Which statement about the equilibrium solution $y=0$ is correct?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$y=0$ is stable because nearby solutions move toward it as $x$ increases."
+  A : $y=0$ is unstable because nearby solutions move away from it.
+  B : $y=0$ is neither stable nor unstable because slopes are zero everywhere.
+  C : $y=0$ is not an equilibrium because the solution curve must be curved.
+  D ✓: $y=0$ is stable because nearby solutions move toward it as $x$ increases.
+EXPLANATION: The field shows horizontal segments on $y=0$. For $y>0$ the slopes are negative and for $y<0$ the slopes are positive, so solutions move toward $y=0$ as $x$ increases. Therefore $y=0$ is stable.
+MICRO:
+  A: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  B: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  C: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  D: Correct. Euler's method uses a sequence of tangent line steps to approximate points on a solution curve.
+
+--- 7.4-P5 [5/5] [Both] ---
+PROMPT: A solution to $\dfrac{dy}{dx}=x-y$ passes through $(0,0)$. Using slope-field reasoning (sign of $x-y$ near $x=0$), what can you conclude about $(0,0)$ on this solution curve?
+CORRECT: A = "It is a local minimum on the solution curve."
+  A ✓: It is a local minimum on the solution curve.
+  B : It is a point of inflection on the solution curve.
+  C : It is a local maximum on the solution curve.
+  D : Nothing can be concluded because the slope at $(0,0)$ is $0$.
+EXPLANATION: At $(0,0)$ the slope is $0$. For $x<0$ near the origin, $x-y<0$ so the solution decreases; for $x>0$ near the origin, $x-y>0$ so the solution increases. Decreasing then increasing implies a local minimum at $(0,0)$.
+MICRO:
+  A: Correct. Euler's method uses a sequence of tangent line steps to approximate points on a solution curve.
+  B: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  C: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  D: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+
+--- 7.5-P1 [2/2] [BC] ---
+PROMPT: Use Euler’s method with step size $h=0.5$ to approximate $y(1)$ for the IVP $$\frac{dy}{dx}=x+y,\quad y(0)=1.$$
+CORRECT: C = "$2.50$"
+  A : $2.75$
+  B : $2.25$
+  C ✓: $2.50$
+  D : $3.00$
+EXPLANATION: Euler update: $y_{n+1}=y_n+h\,f(x_n,y_n)$ with $f(x,y)=x+y$. \nStart $(x_0,y_0)=(0,1)$, $h=0.5$.  $y_1=1+0.5(0+1)=1.5$ at $x_1=0.5$.  $y_2=1.5+0.5(0.5+1.5)=1.5+1=2.5$ at $x_2=1$. \nSo $y(1)\approx 2.5$.
+MICRO:
+  A: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  B: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  C: Correct. Euler's method uses a sequence of tangent line steps to approximate points on a solution curve.
+  D: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+
+--- 7.5-P2 [1/1] [BC] ---
+PROMPT: A solution satisfies $\frac{dy}{dx}=4-x$ and $y(2)=5$. Using Euler’s method with step size $h=0.25$, what is the next approximation for $y(2.25)$?
+CORRECT: B = "$5.50$"
+  A : $5.25$
+  B ✓: $5.50$
+  C : $5.375$
+  D : $5.5625$
+EXPLANATION: Euler step: $y_{1}=y_0+h\,f(x_0,y_0)$ with $f(x,y)=4-x$. \nAt $x_0=2$, $f=4-2=2$. With $h=0.25$, $$y(2.25)\approx 5+0.25(2)=5.5.$$
+MICRO:
+  A: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  B: Correct. Euler's method uses a sequence of tangent line steps to approximate points on a solution curve.
+  C: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  D: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+
+--- 7.5-P3 [3/3] [BC] ---
+PROMPT: Consider the IVP $$\frac{dy}{dx}=y,\quad y(0)=1.$$ Using Euler’s method with step size $h=1$ to approximate $y(1)$, will the Euler approximation be an overestimate or an underestimate of the exact value?
+CORRECT: A = "Underestimate"
+  A ✓: Underestimate
+  B : Overestimate
+  C : Exact (no error)
+  D : Cannot be determined
+EXPLANATION: The exact solution is $y=e^x$, and $y''=e^x>0$ on $[0,1]$, so $y$ is concave up. \nEuler’s method uses the tangent line at the left endpoint. For concave up functions, tangent lines lie below the curve on the interval, so the Euler approximation underestimates the exact value.
+MICRO:
+  A: Correct. Euler's method uses a sequence of tangent line steps to approximate points on a solution curve.
+  B: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  C: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  D: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+
+--- 7.5-P4 [4/4] [BC] ---
+PROMPT: Use Euler’s method with step size $h=0.5$ to approximate $y(1)$ for $$\frac{dy}{dx}=2x,\quad y(0)=0.$$ Then compare with the exact value $y(1)$ and find the absolute error.
+CORRECT: D = "Approx $y(1)=0.5$, error $0.5$"
+  A : Approx $y(1)=0$, error $1$
+  B : Approx $y(1)=1$, error $0$
+  C : Approx $y(1)=0.25$, error $0.75$
+  D ✓: Approx $y(1)=0.5$, error $0.5$
+EXPLANATION: Euler: $y_{n+1}=y_n+h(2x_n)$ with $h=0.5$.  $(x_0,y_0)=(0,0)$: $y_1=0+0.5(0)=0$ at $x_1=0.5$. \nAt $x_1=0.5$: $y_2=0+0.5(2\cdot 0.5)=0.5$ at $x_2=1$. \nExact: $y'=2x \Rightarrow y=x^2+C$, and $y(0)=0\Rightarrow y=x^2$, so $y(1)=1$. \nAbsolute error: $|1-0.5|=0.5$.
+MICRO:
+  A: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  B: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  C: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  D: Correct. Euler's method uses a sequence of tangent line steps to approximate points on a solution curve.
+
+--- 7.5-P5 [3/3] [BC] ---
+PROMPT: Use Euler’s method with step size $h=0.1$ to approximate $y(0.2)$ for $$\frac{dy}{dx}=y^2,\quad y(0)=1.$$
+CORRECT: A = "$1.221$"
+  A ✓: $1.221$
+  B : $1.21$
+  C : $1.20$
+  D : $1.232$
+EXPLANATION: Euler update $y_{n+1}=y_n+h\,y_n^2$ with $h=0.1$.  $y_0=1$. \nAt $x=0.1$: $y_1=1+0.1(1^2)=1.1$. \nAt $x=0.2$: $y_2=1.1+0.1(1.1^2)=1.1+0.1(1.21)=1.221$. \nSo $y(0.2)\approx 1.221$.
+MICRO:
+  A: Correct. Euler's method uses a sequence of tangent line steps to approximate points on a solution curve.
+  B: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  C: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+  D: Incorrect. Ensure your step size (h) and slope calculations at each iteration are consistent with the formula y_ne$w = y$_old + h * slope.
+
+--- 7.6-P1 [2/2] [Both] ---
+PROMPT: Find the general solution of $$\frac{dy}{dx}=\frac{x^2}{y}$$ for $y\ne 0$.
+CORRECT: B = "$y^2=\frac{2}{3}x^3+C$"
+  A : $y=\frac{1}{3}x^3+C$
+  B ✓: $y^2=\frac{2}{3}x^3+C$
+  C : $\ln|y|=\frac{1}{3}x^3+C$
+  D : $y^2=\frac{1}{3}x^3+C$
+EXPLANATION: Separate: $\frac{dy}{dx}=\frac{x^2}{y}\Rightarrow y\,dy=x^2\,dx$. \nIntegrate: $\int y\,dy=\int x^2\,dx$ gives $\frac12 y^2=\frac13 x^3+C$. \nMultiply by 2: $y^2=\frac{2}{3}x^3+C$.
+MICRO:
+  A: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  B: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+  C: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  D: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+
+--- 7.6-P2 [3/3] [Both] ---
+PROMPT: Solve the IVP $\\frac{dy}{dx} = y \\cos x, \\quad y(0) = 2$.
+CORRECT: A = "$y = 2e^{\sin x}$"
+  A ✓: $y = 2e^{\sin x}$
+  B : $y = 2e^{\cos x}$
+  C : $y = 2 + \sin x$
+  D : $y = e^{2 \sin x}$
+EXPLANATION: Separate: $\frac{dy}{y} = \cos x dx$.\nIntegrate: $\ln |y| = \sin x + C$.\nExponentiate: $y = K e^{\sin x}$.\nUse $y(0) = 2$: $2 = K e^0 \implies K = 2$.\nSo $y = 2e^{\sin x}$.
+MICRO:
+  A: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+  B: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  C: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  D: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+
+--- 7.6-P3 [1/1] [Both] ---
+PROMPT: Which differential equation is separable? \nI. $\frac{dy}{dx}=x+y$ \nII. $\frac{dy}{dx}=xy$ \nIII. $\frac{dy}{dx}=\frac{x}{y}$
+CORRECT: D = "II and III only"
+  A : II only
+  B : III only
+  C : I, II, and III
+  D ✓: II and III only
+EXPLANATION: A first-order DE is separable if it can be written $\frac{dy}{dx}=g(x)h(y)$. \nII: $xy=g(x)h(y)$ with $g(x)=x$ and $h(y)=y$. \nIII: $\frac{x}{y}=g(x)h(y)$ with $g(x)=x$ and $h(y)=\frac{1}{y}$. \nI: $x+y$ is a sum, not a product of a pure $x$-function and a pure $y$-function.
+MICRO:
+  A: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  B: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  C: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  D: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+
+--- 7.6-P4 [4/4] [Both] ---
+PROMPT: Solve the IVP $$\frac{dy}{dx}=\frac{3y}{x},\quad y(2)=-4,$$ for $x>0$.
+CORRECT: B = "$y=-\frac{1}{2}x^3$"
+  A : $y=-2x^3$
+  B ✓: $y=-\frac{1}{2}x^3$
+  C : $y=-\frac{1}{2}x$
+  D : $y=\frac{1}{2}x^3$
+EXPLANATION: Separate: $\frac{dy}{dx}=\frac{3y}{x}\Rightarrow \frac{1}{y}dy=\frac{3}{x}dx$. \nIntegrate: $\ln|y|=3\ln|x|+C$. For $x>0$, $\ln|x|=\ln x$. \nExponentiate: $y=Cx^3$. \nUse $y(2)=-4$: $-4=C\cdot 8\Rightarrow C=-\frac{1}{2}$. \nSo $y=-\frac{1}{2}x^3$.
+MICRO:
+  A: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  B: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+  C: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  D: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+
+--- 7.6-P5 [5/5] [Both] ---
+PROMPT: Find an implicit general solution to $$\frac{dy}{dx}=(y-1)(y+2).$$
+CORRECT: C = "$\ln\left|\frac{y-1}{y+2}\right|=3x+C$"
+  A : $\ln|y-1|-\ln|y+2|=3x+C$
+  B : $\ln|y-1|+\ln|y+2|=x+C$
+  C ✓: $\ln\left|\frac{y-1}{y+2}\right|=3x+C$
+  D : $\ln|y^2+y-2|=x+C$
+EXPLANATION: Separate: $\frac{dy}{(y-1)(y+2)}=dx$. \nPartial fractions: $$\frac{1}{(y-1)(y+2)}=\frac{\frac{1}{3}}{y-1}-\frac{\frac{1}{3}}{y+2}.$$ \nIntegrate: $$\frac{1}{3}\ln|y-1|-\frac{1}{3}\ln|y+2|=x+C.$$ \nMultiply by 3 and combine logs: $$\ln\left|\frac{y-1}{y+2}\right|=3x+C'. $$
+MICRO:
+  A: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  B: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  C: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+  D: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+
+--- 7.7-P1 [2/3] [Both] ---
+PROMPT: Solve the differential equation with the given initial condition.  $$\frac{dy}{dx}=2xy^2,\quad y(0)=1$$ \nWhat is $y$ as a function of $x$ on the interval where the solution is defined?
+CORRECT: D = "$y=\dfrac{1}{1-x^2}$"
+  A : $y=e^{x^2}$
+  B : $y=\dfrac{1}{1+x^2}$
+  C : $y=1-x^2$
+  D ✓: $y=\dfrac{1}{1-x^2}$
+EXPLANATION: Separate and integrate: $$\frac{dy}{dx}=2xy^2\Rightarrow y^{-2}dy=2x\,dx$$ $$\int y^{-2}dy=\int 2x\,dx\Rightarrow -\frac{1}{y}=x^2+C$$\nApply $y(0)=1$: $$-1=C\Rightarrow -\frac{1}{y}=x^2-1\Rightarrow y=\frac{1}{1-x^2}.$$
+MICRO:
+  A: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  B: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  C: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  D: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+
+--- 7.7-P2 [3/3] [Both] ---
+PROMPT: Solve the differential equation with the given initial condition.  $$\frac{dy}{dx}=\frac{3x^2}{y},\quad y(1)=2$$ \nWhich function satisfies the initial value problem?
+CORRECT: A = "$y=\sqrt{2x^3+2}$"
+  A ✓: $y=\sqrt{2x^3+2}$
+  B : $y=\sqrt{2x^3+6}$
+  C : $y=\sqrt{x^3+3}$
+  D : $y=2x^{\frac{3}{2}}$
+EXPLANATION: Separate: $$\frac{dy}{dx}=\frac{3x^2}{y}\Rightarrow y\,dy=3x^2\,dx$$\nIntegrate: $$\frac12 y^2=x^3+C$$\nApply $y(1)=2$: $$2=1+C\Rightarrow C=1$$\nSo $y^2=2x^3+2$ and the branch matching $y(1)=2$ is $y=\sqrt{2x^3+2}$.
+MICRO:
+  A: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+  B: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  C: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  D: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+
+--- 7.7-P3 [1/2] [Both] ---
+PROMPT: Solve the initial value problem.  $$\frac{dy}{dx}=\frac{x}{y+1},\quad y(0)=0$$ \nWhat is $y$ as a function of $x$?
+CORRECT: C = "$y=\sqrt{x^2+1}-1$"
+  A : $y=\sqrt{x^2+2}-1$
+  B : $y=-\sqrt{x^2+1}-1$
+  C ✓: $y=\sqrt{x^2+1}-1$
+  D : $y=\dfrac{x^2}{2}-1$
+EXPLANATION: Separate: $$(y+1)\,dy=x\,dx$$\nIntegrate: $$\frac12 (y+1)^2=\frac12 x^2+C$$\nApply $y(0)=0$: $$\frac12(1)^2=C\Rightarrow C=\frac12$$\nSo $(y+1)^2=x^2+1$. The initial condition implies $y+1=\sqrt{x^2+1}$, hence $y=\sqrt{x^2+1}-1$.
+MICRO:
+  A: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  B: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  C: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+  D: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+
+--- 7.7-P4 [4/4] [Both] ---
+PROMPT: Solve the initial value problem.  $$\frac{dy}{dx}=y(1-y),\quad y(0)=\frac12$$ \nWhich expression for $y$ is correct?
+CORRECT: B = "$y=\dfrac{1}{1+e^{-x}}$"
+  A : $y=\dfrac{1}{1+e^{x}}$
+  B ✓: $y=\dfrac{1}{1+e^{-x}}$
+  C : $y=\dfrac{e^x}{1-e^x}$
+  D : $y=\dfrac{1}{1-e^{-x}}$
+EXPLANATION: Separate: $$\frac{dy}{dx}=y(1-y)\Rightarrow \frac{1}{y(1-y)}dy=dx$$\nUse partial fractions: $\dfrac{1}{y(1-y)}=\dfrac{1}{y}+\dfrac{1}{1-y}.$\nIntegrate: $$\ln|y|-\ln|1-y|=x+C\Rightarrow \ln\left|\frac{y}{1-y}\right|=x+C$$\nExponentiate: $\dfrac{y}{1-y}=Ke^x.$\nApply $y(0)=\tfrac12$: $1=K.$\nSolve: $y=\dfrac{e^x}{1+e^x}=\dfrac{1}{1+e^{-x}}.$
+MICRO:
+  A: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  B: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+  C: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  D: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+
+--- 7.7-P5 [3/3] [Both] ---
+PROMPT: A function $y(x)$ satisfies  $$\frac{dy}{dx}=\frac{2y}{x},\quad y(3)=-6$$ \nWhich is the correct particular solution?
+CORRECT: C = "$y=-\dfrac{2}{3}x^2$"
+  A : $y=-2x$
+  B : $y=-6x^2$
+  C ✓: $y=-\dfrac{2}{3}x^2$
+  D : $y=\dfrac{2}{3}x^2$
+EXPLANATION: Separate and integrate: $$\frac{dy}{dx}=\frac{2y}{x}\Rightarrow \frac{1}{y}dy=\frac{2}{x}dx$$ $$\ln|y|=2\ln|x|+C\Rightarrow y=Cx^2$$\nApply $y(3)=-6$: $$-6=9C\Rightarrow C=-\frac{2}{3}$$\nThus $y=-\dfrac{2}{3}x^2$.
+MICRO:
+  A: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  B: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+  C: Correct. Solving by separation of variables involves moving all $y$-terms to one side and all $x$-terms to the other, followed by indefinite integrati
+  D: Incorrect. Ensure all variables are properly separated (e.g., dy/$y = dx$) before integrating. Don'$t$ forget the constant of integration C early in t
+
+--- 7.8-P1 [2/3] [Both] ---
+PROMPT: The population $P(t)$ (in cells) is modeled by $\dfrac{dP}{dt}=kP$, where $t$ is measured in hours. The table in the image shows sample values of $P(t)$. Using the values at $t=0$ and $t=5$, estimate $k$. \nIMAGE: 7.8-P1.png
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$k\approx 0.28$"
+  A : $k\approx 0.14$
+  B ✓: $k\approx 0.28$
+  C : $k\approx 1.39$
+  D : $k\approx -0.28$
+EXPLANATION: For $\dfrac{dP}{dt}=kP$, $P(t)=P_0e^{kt}$. Using $P(0)=500$ and $P(5)=2000$: $$2000=500e^{5k}\Rightarrow 4=e^{5k}\Rightarrow k=\frac{\ln 4}{5}\approx 0.277.$$
+MICRO:
+  A: Too small; it is about half of $\dfrac{\ln 4}{5}$.
+  B: Correct. $k=\dfrac{\ln\left(\frac{2000}{500}\right)}{5}=\dfrac{\ln 4}{5}\approx \dfrac{1.386}{5}\approx 0.277$.
+  C: Forgets to divide by the 5-hour interval (uses $k=\ln 4$).
+  D: Wrong sign; the data show growth (increasing $P$).
+
+--- 7.8-P2 [3/3] [Both] ---
+PROMPT: A quantity $Q(t)$ satisfies $\dfrac{dQ}{dt}=kQ$ with $Q(0)=120$. \nIf $Q(3)=150$, which expression gives $Q(t)$?
+CORRECT: D = "$Q(t)=120\left(\frac{150}{120}\right)^{\frac{t}{3}}$"
+  A : $Q(t)=120\left(\frac{150}{120}\right)^t$
+  B : $Q(t)=150\left(\frac{120}{150}\right)^{\frac{t}{3}}$
+  C : $Q(t)=120+30e^{\frac{t}{3}}$
+  D ✓: $Q(t)=120\left(\frac{150}{120}\right)^{\frac{t}{3}}$
+EXPLANATION: Model: $Q(t)=120e^{kt}$. Use $Q(3)=150$: $$150=120e^{3k}\Rightarrow e^{3k}=\frac{150}{120}$$\nThen $$Q(t)=120e^{kt}=120(e^{3k})^{\frac{t}{3}}=120\left(\frac{150}{120}\right)^{\frac{t}{3}}.$$
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Correct. This follows the principles for solving or interpreting differential equations.
+
+--- 7.8-P3 [4/4] [Both] ---
+PROMPT: A radioactive substance decays according to $\dfrac{dM}{dt}=kM$, where $t$ is in years. \nThe half-life is 12 years. How long does it take for the amount to reach $10\%$ of its initial value?
+CORRECT: C = "$t=12\log_2(10)\approx 39.9$ years"
+  A : $t=12\log_2(0.1)$
+  B : $t=\dfrac{12}{10}=1.2$ years
+  C ✓: $t=12\log_2(10)\approx 39.9$ years
+  D : $t=12\ln(10)$
+EXPLANATION: Half-life model: $$\frac{M(t)}{M_0}=\left(\frac12\right)^{\frac{t}{12}}$$\nSet $M(t)=0.1M_0$: $$\left(\frac12\right)^{\frac{t}{12}}=0.1$$\nTake reciprocals: $$2^{\frac{t}{12}}=10$$\nSo $$t=12\log_2(10)\approx 39.9\text{ years}.$$
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Correct. This follows the principles for solving or interpreting differential equations.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.8-P4 [2/2] [Both] ---
+PROMPT: A population $P(t)$ satisfies $\dfrac{dP}{dt}=kP$ and is modeled by  $$P(t)=900e^{-0.06t},$$ \nwhere $t$ is measured in days. Which statement is true?
+CORRECT: A = "At any time $t$, the instantaneous rate of change is $-0.06P(t)$ cells per day."
+  A ✓: At any time $t$, the instantaneous rate of change is $-0.06P(t)$ cells per day.
+  B : The population decreases by $0.06$ cells per day.
+  C : The population is increasing at $6\%$ per day.
+  D : The half-life is $0.06$ days.
+EXPLANATION: Differentiate: $$P(t)=900e^{-0.06t}\Rightarrow P'(t)=900(-0.06)e^{-0.06t}=-0.06\cdot 900e^{-0.06t}=-0.06P(t).$$\nThus the instantaneous rate of change is always $-0.06P(t)$ cells per day.
+MICRO:
+  A: Correct. This follows the principles for solving or interpreting differential equations.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.8-P5 [5/5] [Both] ---
+PROMPT: A medication in the bloodstream follows $\dfrac{dA}{dt}=kA$, where $t$ is in hours. \nImmediately after a dose, $A(0)=80$ mg. After 4 hours, $A(4)=50$ mg. \nAt what time $t$ will $A(t)=20$ mg? Choose the closest value.
+CORRECT: D = "$t\approx 9.3$"
+  A : $t\approx 12.8$
+  B : $t\approx 6.4$
+  C : $t\approx 3.2$
+  D ✓: $t\approx 9.3$
+EXPLANATION: Model: $A(t)=80e^{kt}$. Use $A(4)=50$: $$50=80e^{4k}\Rightarrow k=\frac{1}{4}\ln\left(\frac{50}{80}\right).$$\nSolve $A(t)=20$: $$20=80e^{kt}\Rightarrow e^{kt}=\frac14\Rightarrow t=\frac{\ln(\frac{1}{4})}{k}\approx 9.3.$$
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Correct. This follows the principles for solving or interpreting differential equations.
+
+--- 7.9-P1 [2/2] [BC] ---
+PROMPT: A population $P(t)$ is modeled by the logistic differential equation $$\frac{dP}{dt}=0.4P\left(1-\frac{P}{800}\right),$$\nwhere $t$ is measured in years and $P$ is measured in individuals. Which statement is correct?
+CORRECT: C = "The carrying capacity is $800$."
+  A : The carrying capacity is $0.4$.
+  B : The population decreases whenever $0<P<800$.
+  C ✓: The carrying capacity is $800$.
+  D : The population increases whenever $P>800$.
+EXPLANATION: In a logistic model $$\frac{dP}{dt}=rP\left(1-\frac{P}{K}\right),$$\nthe carrying capacity is $K$. Here, $K=800$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Correct. This follows the principles for solving or interpreting differential equations.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.9-P2 [3/2] [BC] ---
+PROMPT: Consider the logistic differential equation $\frac{dP}{dt} = P(6-P)$. Which statement about equilibrium solutions is correct?
+CORRECT: B = "The equilibrium solutions are $P=0$ and $P=6$."
+  A : The only equilibrium solution is $P=0$.
+  B ✓: The equilibrium solutions are $P=0$ and $P=6$.
+  C : The only equilibrium solution is $P=6$.
+  D : There are no equilibrium solutions because $dP/dt$ depends on $P$.
+EXPLANATION: Equilibrium solutions satisfy $\frac{dP}{dt} = 0$. $P(6-P)=0 \implies P=0$ or $P=6$.
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Correct. This follows the principles for solving or interpreting differential equations.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.9-P3 [4/3] [BC] ---
+PROMPT: A population $P(t)$ satisfies $$\frac{dP}{dt}=P(10-P).$$\nAssume $P(0)=12$. Which statement about $P(t)$ is true for $t>0$?
+CORRECT: A = "$P(t)$ decreases and approaches $10$."
+  A ✓: $P(t)$ decreases and approaches $10$.
+  B : $P(t)$ increases without bound.
+  C : $P(t)$ decreases and approaches $0$.
+  D : $P(t)$ increases and approaches $10$.
+EXPLANATION: Because $P(0)=12>10$, we have $10-P<0$, so $$\frac{dP}{dt}=P(10-P)<0,$$\nmeaning $P(t)$ decreases. In a logistic model, solutions move toward the stable equilibrium $P=10$, so $P(t)\to 10$ as $t\to\infty$.
+MICRO:
+  A: Correct. This follows the principles for solving or interpreting differential equations.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+
+--- 7.9-P4 [5/5] [BC] ---
+PROMPT: A population satisfies the logistic equation $$\frac{dP}{dt}=2P\left(1-\frac{P}{5}\right).$$\nIf $P(0)=1$, which explicit solution is correct?
+CORRECT: D = "$P(t)=\dfrac{5}{1+4e^{-2t}}$"
+  A : $P(t)=\dfrac{1}{1+4e^{-2t}}$
+  B : $P(t)=\dfrac{5}{1+e^{-2t}}$
+  C : $P(t)=\dfrac{5}{1+4e^{2t}}$
+  D ✓: $P(t)=\dfrac{5}{1+4e^{-2t}}$
+EXPLANATION: Rewrite as $$\frac{dP}{dt}=2P\left(1-\frac{P}{5}\right)=\frac{2}{5}P(5-P).$$\nA standard logistic solution has the form $$P(t)=\frac{K}{1+Ce^{-rt}},$$\nwhere $K=5$ and $r=2$. Use $P(0)=1$: $$1=\frac{5}{1+C}\Rightarrow 1+C=5\Rightarrow C=4.$$ \nThus $$P(t)=\frac{5}{1+4e^{-2t}}.$$
+MICRO:
+  A: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Correct. This follows the principles for solving or interpreting differential equations.
+
+--- 7.9-P5 [3/3] [BC] ---
+PROMPT: A population is modeled by $\\frac{dP}{dt} = rP\\left(1 - \\frac{P}{K}\\right)$.\nWhich statement is always true about the rate of change $\\frac{dP}{dt}$?
+CORRECT: A = "If $0 < P < K$, then $\frac{dP}{dt} > 0$."
+  A ✓: If $0 < P < K$, then $\frac{dP}{dt} > 0$.
+  B : The maximum value of $\frac{dP}{dt}$ occurs at $P = K$.
+  C : If $P > K$, then $\frac{dP}{dt} > 0$.
+  D : If $P = \frac{K}{2}$, then $\frac{dP}{dt} = 0$.
+EXPLANATION: For $0 < P < K$, we have $P > 0$ and $1 - \frac{P}{K} > 0$, so $\frac{dP}{dt} = rP\left(1 - \frac{P}{K}\right) > 0$,\nmeaning the population increases in that range.
+MICRO:
+  A: Correct. This follows the principles for solving or interpreting differential equations.
+  B: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  C: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.
+  D: Incorrect. This option fails to align with the rules of separation, integration, or initial condition application.

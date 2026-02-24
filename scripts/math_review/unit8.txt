@@ -1,0 +1,1219 @@
+UNIT 8 MATHEMATICAL REVIEW (85 questions)
+============================================================
+
+--- 8.0-UT-Q1 [2/2] [Both] ---
+PROMPT: Let $f(x)=3x^2-2x$ on $[1,4]$. What is the average value of $f$ on this interval?
+CORRECT: C = "$16$"
+  A : $48$
+  B : $12$
+  C ✓: $16$
+  D : $29$
+EXPLANATION: Average value is $\frac{1}{b-a}\int_a^b f(x)dx$.
+MICRO:
+  A: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  B: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  C: Correct. The average value of f on $[a, b]$ is [1/(b-a)] * integral of $f(x)$ from a to b.
+  D: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+
+--- 8.0-UT-Q2 [3/3] [Both] ---
+PROMPT: A particle moves on a line with velocity $v(t)=2t-5$ (m/s) for $0\le t\le 6$. What is the total distance traveled on $[0,6]$?
+CORRECT: A = "$19$"
+  A ✓: $19$
+  B : $6$
+  C : $13$
+  D : $0$
+EXPLANATION: Total distance is $\int_0^6|v(t)|dt$. Since $2t-5=0$ at $t=2.5$, $$\int_0^{2.5}(5-2t)dt+\int_{2.5}^6(2t-5)dt=6.25+12.75=19.$$
+MICRO:
+  A: Correct. The average value of f on $[a, b]$ is [1/(b-a)] * integral of $f(x)$ from a to b.
+  B: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  C: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  D: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+
+--- 8.0-UT-Q3 [3/3] [Both] ---
+PROMPT: Water flows into a tank at rate $R(t)=4+\sin t$ liters/minute for $0\le t\le \pi$. The tank initially contains $10$ liters. How much water is in the tank at $t=\pi$?
+CORRECT: B = "$10+4\pi+2$"
+  A : $4\pi+2$
+  B ✓: $10+4\pi+2$
+  C : $10+4\pi-2$
+  D : $10+4\pi$
+EXPLANATION: Amount equals initial plus accumulation: $$A(\pi)=10+\int_0^\pi(4+\sin t)dt=10+4\pi+2.$$
+MICRO:
+  A: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  B: Correct. The average value of f on $[a, b]$ is [1/(b-a)] * integral of $f(x)$ from a to b.
+  C: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  D: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+
+--- 8.0-UT-Q4 [4/4] [Both] ---
+PROMPT: The shaded region between $y=\sin x$ and $y=\cos x$ on $[0,\frac{\pi}{2}]$ is shown in 8.0-UT-Q4.png. Which expression equals the area of the region?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$\int_0^{\frac{\pi}{4}}(\cos x-\sin x)\,dx+\int_{\frac{\pi}{4}}^{\frac{\pi}{2}}(\sin x-\cos x)\,dx$"
+  A : $\int_0^{\frac{\pi}{2}}(\sin x-\cos x)\,dx$
+  B : $\int_0^{\frac{\pi}{2}}|\sin x-\cos x|\,dx$
+  C ✓: $\int_0^{\frac{\pi}{4}}(\cos x-\sin x)\,dx+\int_{\frac{\pi}{4}}^{\frac{\pi}{2}}(\sin x-\cos x)\,dx$
+  D : $\int_0^{\frac{\pi}{4}}(\sin x-\cos x)\,dx+\int_{\frac{\pi}{4}}^{\frac{\pi}{2}}(\sin x-\cos x)\,dx$
+EXPLANATION: Solve $\sin x=\cos x$ to find the switch point $x=\frac{\pi}{4}$. On $[0,\frac{\pi}{4}]$, top is $\cos x$; on $[\frac{\pi}{4},\frac{\pi}{2}]$, top is $\sin x$. Therefore $$A=\int_0^{\frac{\pi}{4}}(\cos x-\sin x)\,dx+\int_{\frac{\pi}{4}}^{\frac{\pi}{2}}(\sin x-\cos x)\,dx.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Correct. This application of integration follows the standard geometric and physical principles.
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.0-UT-Q5 [4/4] [Both] ---
+PROMPT: The region bounded by $x=y^2$ and $x=2y$ is shown in 8.0-UT-Q5.png. Which integral gives the area of the region?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$\int_0^2(2y-y^2)\,dy$"
+  A : $\int_0^2(2-y^2)\,dy$
+  B : $\int_0^2(y^2-2y)\,dy$
+  C : $\int_0^4(\sqrt{x}\frac{-x}{2})\,dx$
+  D ✓: $\int_0^2(2y-y^2)\,dy$
+EXPLANATION: Find intersections: $y^2=2y\Rightarrow y=0,2$. Using horizontal slices, $$A=\int_{0}^{2}\big(x_{right}-x_{left}\big)\,dy=\int_0^2(2y-y^2)\,dy.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Correct. This application of integration follows the standard geometric and physical principles.
+
+--- 8.0-UT-Q6 [3/3] [Both] ---
+PROMPT: Let $y=x^2-4x$ and $y=0$. What is the area enclosed by the curves?
+CORRECT: C = "$\frac{32}{3}$"
+  A : $-\frac{32}{3}$
+  B : $\frac{16}{3}$
+  C ✓: $\frac{32}{3}$
+  D : $\frac{64}{3}$
+EXPLANATION: Intersections: $x^2-4x=0\Rightarrow x=0,4$. On $[0,4]$, $x^2-4x\le 0$, so $$A=\int_0^4(4x-x^2)\,dx=\left[2x^2-\frac{x^3}{3}\right]_0^4=32-\frac{64}{3}=\frac{32}{3}.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Correct. This application of integration follows the standard geometric and physical principles.
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.0-UT-Q7 [4/4] [Both] ---
+PROMPT: A solid has base region bounded by $y=\sqrt{x}$, $y=0$, and $0\le x\le 4$ (shown in 8.0-UT-Q7.png). Cross-sections perpendicular to the $x$-axis are squares. What is the volume?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$8$"
+  A : $\int_0^4 \sqrt{x}\,dx$
+  B ✓: $8$
+  C : $\int_0^4 x^2\,dx$
+  D : $4$
+EXPLANATION: Square cross-sectional area is $A(x)=(\text{side})^2=(\sqrt{x})^2=x$. Thus $$V=\int_0^4 A(x)\,dx=\int_0^4 x\,dx=\left[\frac{x^2}{2}\right]_0^4=8.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Correct. This application of integration follows the standard geometric and physical principles.
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.0-UT-Q8 [4/4] [Both] ---
+PROMPT: The base of a solid is the region between $y=1$ and $y=x^2$ for $-1\le x\le 1$. Cross-sections perpendicular to the $x$-axis are semicircles whose diameter runs from $y=x^2$ to $y=1$. Which integral gives the volume?
+CORRECT: C = "$\int_{-1}^1 \frac{\pi}{8}(1-x^2)^2\,dx$"
+  A : $\int_{-1}^1 \frac{\pi}{2}(1-x^2)^2\,dx$
+  B : $\int_{-1}^1 \pi(1-x^2)\,dx$
+  C ✓: $\int_{-1}^1 \frac{\pi}{8}(1-x^2)^2\,dx$
+  D : $\int_0^1 \frac{\pi}{8}(1-x^2)^2\,dx$
+EXPLANATION: Diameter is $d(x)=1-x^2$, so radius is $r(x)=\frac{1-x^2}{2}$. Semicircle area is $$A(x)=\frac12\pi r(x)^2=\frac12\pi\left(\frac{1-x^2}{2}\right)^2=\frac{\pi}{8}(1-x^2)^2.$$
+MICRO:
+  A: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  B: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  C: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+  D: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+
+--- 8.0-UT-Q9 [3/3] [Both] ---
+PROMPT: The region under $y=2-x$ above the $x$-axis for $0\le x\le 2$ is shown in 8.0-UT-Q9.png. It is revolved about the $y$-axis. Which integral gives the volume using the disc/washer method?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$\pi\int_0^2(2-y)^2\,dy$"
+  A : $\pi\int_0^2(2-x)^2\,dx$
+  B ✓: $\pi\int_0^2(2-y)^2\,dy$
+  C : $2\pi\int_0^2 x(2-x)\,dx$
+  D : $\pi\int_0^2(2-y)\,dy$
+EXPLANATION: Write the boundary as $x=2-y$ for $0\le y\le 2$. Revolving about the $y$-axis gives discs of radius $R(y)=2-y$: $$V=\pi\int_0^2(2-y)^2\,dy.$$
+MICRO:
+  A: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  B: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+  C: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  D: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+
+--- 8.0-UT-Q10 [4/4] [Both] ---
+PROMPT: The region under $y=x^2$ above the $x$-axis on $0\le x\le 1$ is shown in 8.0-UT-Q10.png. It is revolved about the vertical line $x=1$. Which integral gives the volume using washers?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\pi\int_0^1(1-\sqrt{y})^2\,dy$"
+  A ✓: $\pi\int_0^1(1-\sqrt{y})^2\,dy$
+  B : $\pi\int_0^1(1-x)^2\,dx$
+  C : $2\pi\int_0^1(1-x)(x^2)\,dx$
+  D : $\pi\int_0^1(1-y)^2\,dy$
+EXPLANATION: Washers about a vertical line use $dy$. Since $y=x^2$, we have $x=\sqrt{y}$ for $0\le y\le 1$. The radius to $x=1$ is $R(y)=1-\sqrt{y}$, so $$V=\pi\int_0^1(1-\sqrt{y})^2\,dy.$$
+MICRO:
+  A: Correct. This application of integration follows the standard geometric and physical principles.
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.0-UT-Q11 [3/3] [Both] ---
+PROMPT: The region between $y=x$ and $y=x^2$ on $0\le x\le 1$ is revolved about the $x$-axis. Which integral gives the volume?
+CORRECT: D = "$\pi\int_0^1(x^2-x^4)\,dx$"
+  A : $\pi\int_0^1(x-x^2)\,dx$
+  B : $2\pi\int_0^1 x(x-x^2)\,dx$
+  C : $\pi\int_0^1(x^4-x^2)\,dx$
+  D ✓: $\pi\int_0^1(x^2-x^4)\,dx$
+EXPLANATION: Washer method about the $x$-axis: $$V=\pi\int_0^1\big(R^2-r^2\big)dx=\pi\int_0^1(x^2-x^4)dx.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Correct. This application of integration follows the standard geometric and physical principles.
+
+--- 8.0-UT-Q12
+ [4/4] [Both] ---
+PROMPT: The region between $y=x$ and $y=x^2$ on $0\le x\le 1$ is shown in 8.0-UT-Q12.png. It is revolved about $y=3$. Which integral gives the volume?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$\pi\int_0^1\big((3-x)^2-(3-x^2)^2\big)dx$"
+  A : $2\pi\int_0^1 (3-x)(x-x^2)dx$
+  B : $\pi\int_0^1\big((3-x^2)^2-(3-x)^2\big)dx$
+  C : $\pi\int_0^1\big((3-x^2)-(3-x)\big)dx$
+  D ✓: $\pi\int_0^1\big((3-x)^2-(3-x^2)^2\big)dx$
+EXPLANATION: Distances to $y=3$ give radii. Since $x^2\le x$ on $[0,1]$, the lower curve is $y=x^2$ and is farther from $y=3$, so $R=3-x^2$ and $r=3-x$. $$V=\pi\int_0^1\left((3-x^2)^2-(3-x)^2\right)dx.$$
+MICRO:
+  A: This is not the washer formula for rotation about a horizontal line.
+  B: This reverses outer and inner radii; must have $R\ge r$.
+  C: Missing squares on radii.
+  D: Correct: outer radius uses the lower curve $y=x^2$ so $R=3-x^2$, inner uses $y=x$ so $r=3-x$.
+
+--- 8.0-UT-Q13 [5/5] [Both] ---
+PROMPT: For a smooth curve $y=f(x)$ on $[a,b]$, which expression gives the arc length?
+CORRECT: A = "$\int_a^b\sqrt{1+(f'(x))^2}\,dx$"
+  A ✓: $\int_a^b\sqrt{1+(f'(x))^2}\,dx$
+  B : $\int_a^b\sqrt{1+f'(x)}\,dx$
+  C : $\int_a^b\left(1+(f'(x))^2\right)dx$
+  D : $\int_a^b\sqrt{1+(f'''(x))^2}\,dx$
+EXPLANATION: Arc length for $y=f(x)$ on $[a,b]$ is $$L=\int_a^b\sqrt{1+(f'(x))^2}\,dx.$$
+MICRO:
+  A: Correct. This application of integration follows the standard geometric and physical principles.
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.0-UT-Q14 [2/2] [Both] ---
+PROMPT: A particle has acceleration $a(t)=6t$ and velocity $v(0)=-2$. What is $v(2)$?
+CORRECT: B = "$10$"
+  A : $4$
+  B ✓: $10$
+  C : $-14$
+  D : $-2$
+EXPLANATION: Velocity is initial plus accumulated acceleration: $$v(2)=v(0)+\int_0^2 a(t)dt=-2+\int_0^2 6t\,dt=-2+[3t^2]_0^2=-2+12=10.$$
+MICRO:
+  A: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  B: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+  C: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  D: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+
+--- 8.0-UT-Q15 [3/3] [Both] ---
+PROMPT: Let $F(x)=\int_2^x \sqrt{1+t^4}\,dt$. Which statement is correct about $F'(x)$ and $F(2)$?
+CORRECT: D = "$F'(x)=\sqrt{1+x^4}$ and $F(2)=0$"
+  A : $F'(x)=\frac{1}{2}(1+x^4)^{\frac{-1}{2}}$ and $F(2)=0$
+  B : $F'(x)=\sqrt{1+2^4}$ and $F(2)=0$
+  C : $F'(x)=\int_2^x \sqrt{1+t^4}\,dt$ and $F(2)=2$
+  D ✓: $F'(x)=\sqrt{1+x^4}$ and $F(2)=0$
+EXPLANATION: By FTC, if $F(x)=\int_2^x g(t)dt$, then $F'(x)=g(x)$. Here $g(x)=\sqrt{1+x^4}$, and $F(2)=\int_2^2 g(t)dt=0$.
+MICRO:
+  A: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  B: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  C: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  D: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+
+--- 8.0-UT-Q16 [4/4] [Both] ---
+PROMPT: The graph of $y=\sin x$ on $[0,2\pi]$ is shown in 8.0-UT-Q16.png. Which integral equals the total area between the curve and the $x$-axis on $[0,2\pi]$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$\int_0^{2\pi}|\sin x|\,dx$"
+  A : $\int_0^{2\pi}\sin x\,dx$
+  B : $\int_0^{\pi}\sin x\,dx$
+  C ✓: $\int_0^{2\pi}|\sin x|\,dx$
+  D : $\int_0^{\pi}|\sin x|\,dx$
+EXPLANATION: Because $\sin x$ changes sign, total area is $$A=\int_0^{2\pi}|\sin x|\,dx.$$
+MICRO:
+  A: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  B: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  C: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+  D: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+
+--- 8.0-UT-Q17 [2/2] [Both] ---
+PROMPT: A car’s speed is $v(t)$ miles/hour for $0\le t\le 2$ hours. Which expression gives the car’s average speed on $[0,2]$?
+CORRECT: A = "$\frac{1}{2}\int_0^2 |v(t)|\,dt$"
+  A ✓: $\frac{1}{2}\int_0^2 |v(t)|\,dt$
+  B : $\int_0^2 |v(t)|\,dt$
+  C : $\frac{1}{2}\int_0^2 v(t)\,dt$
+  D : $\int_0^2 v(t)\,dt$
+EXPLANATION: Average speed is distance divided by time: $$\text{Avg speed}=\frac{1}{2}\int_0^2 |v(t)|dt.$$
+MICRO:
+  A: Correct. This application of integration follows the standard geometric and physical principles.
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.0-UT-Q18 [3/3] [Both] ---
+PROMPT: Find the area between $y=2x$ and $y=x^2$ from their left intersection to their right intersection.
+CORRECT: B = "$\int_0^2(2x-x^2)\,dx$"
+  A : $\int_0^2(x^2-2x)\,dx$
+  B ✓: $\int_0^2(2x-x^2)\,dx$
+  C : $\int_{-2}^0(2x-x^2)\,dx$
+  D : $\int_0^2|2x-x^2|\,dx$
+EXPLANATION: Solve $x^2=2x\Rightarrow x=0,2$. Since $2x\ge x^2$ on $[0,2]$, area is $$A=\int_0^2(2x-x^2)dx.$$
+MICRO:
+  A: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  B: Correct. Arc length is the integral of sqrt(1 + [$f'(x)$]^2) over the interval.
+  C: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  D: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+
+--- 8.0-UT-Q19 [5/5] [Both] ---
+PROMPT: The curve $y=\ln x$ on $[1,e]$ is shown in 8.0-UT-Q19.png. Which integral gives the exact arc length from $x=1$ to $x=e$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\int_1^e\sqrt{1+\frac{1}{x^2}}\,dx$"
+  A ✓: $\int_1^e\sqrt{1+\frac{1}{x^2}}\,dx$
+  B : $\int_1^e\sqrt{1+\frac{1}{x}}\,dx$
+  C : $\int_1^e\left(1+\frac{1}{x^2}\right)dx$
+  D : $\int_0^1\sqrt{1+\frac{1}{x^2}}\,dx$
+EXPLANATION: For $y=f(x)$, arc length is $\int_a^b\sqrt{1+(f'(x))^2}dx$. Here $f(x)=\ln x$ so $f'(x)=\frac{1}{x}$, giving $$L=\int_1^e\sqrt{1+\frac{1}{x^2}}\,dx.$$
+MICRO:
+  A: Correct. Arc length is the integral of sqrt(1 + [$f'(x)$]^2) over the interval.
+  B: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  C: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  D: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+
+--- 8.0-UT-Q20 [4/4] [Both] ---
+PROMPT: The region bounded by $x=y$ and $x=y^2$ for $0\le y\le 1$ is revolved about the $y$-axis. Which integral gives the volume using washers?
+CORRECT: D = "$\pi\int_0^1 (y^2-y^4)\,dy$"
+  A : $\pi\int_0^1 (y-y^2)\,dy$
+  B : $\pi\int_0^1 (y^4-y^2)\,dy$
+  C : $2\pi\int_0^1 y(y-y^2)\,dy$
+  D ✓: $\pi\int_0^1 (y^2-y^4)\,dy$
+EXPLANATION: With $dy$ washers about the $y$-axis, radii are horizontal: $R=y$ and $r=y^2$. $$V=\pi\int_0^1\left(y^2-y^4\right)dy.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Correct. This application of integration follows the standard geometric and physical principles.
+
+--- 8.1-P1 [2/2] [Both] ---
+PROMPT: Let $f(x)=3x^2-6x+1$. What is the average value of $f$ on $[0,2]$?
+CORRECT: C = "$1$"
+  A : $-1$
+  B : $2$
+  C ✓: $1$
+  D : $4$
+EXPLANATION: Average value on $[a,b]$ is $$f_{\mathrm{avg}}=\frac{1}{b-a}\int_a^b f(x)\,dx.$$ Here, $$f_{\mathrm{avg}}=\frac{1}{2}\int_0^2(3x^2-6x+1)\,dx=\frac{1}{2}[x^3-3x^2+x]_0^2=1.$$
+MICRO:
+  A: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  B: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  C: Correct. The average value of f on $[a, b]$ is [1/(b-a)] * integral of $f(x)$ from a to b.
+  D: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+
+--- 8.1-P2 [3/1] [Both] ---
+PROMPT: The graph of $f$ on $[0,4]$ is shown in the figure labeled 8.1-P2. Which expression equals the average value of $f$ on $[0,4]$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\displaystyle \frac{1}{4}\int_0^4 f(x)\,dx$"
+  A ✓: $\displaystyle \frac{1}{4}\int_0^4 f(x)\,dx$
+  B : $\displaystyle \int_0^4 f(x)\,dx$
+  C : $\displaystyle \frac{1}{f(4)-f(0)}\int_0^4 f(x)\,dx$
+  D : $\displaystyle \frac{f(4)-f(0)}{4}$
+EXPLANATION: For any function (graph or formula), the average value on $[a,b]$ is $$f_{\mathrm{avg}}=\frac{1}{b-a}\int_a^b f(x)\,dx.$$ With $a=0$ and $b=4$, this is $\frac{1}{4}\int_0^4 f(x)\,dx$.
+MICRO:
+  A: Correct. The average value of f on $[a, b]$ is [1/(b-a)] * integral of $f(x)$ from a to b.
+  B: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  C: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  D: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+
+--- 8.1-P3 [4/2] [Both] ---
+PROMPT: A function $f$ satisfies $\int_1^5 f(x)\,dx=12$ and $\int_5^9 f(x)\,dx=-4$. What is the average value of $f$ on $[1,9]$?
+CORRECT: A = "$1$"
+  A ✓: $1$
+  B : $2$
+  C : $8$
+  D : $\frac{1}{2}$
+EXPLANATION: Combine adjacent integrals: $$\int_1^9 f(x)\,dx=\int_1^5 f(x)\,dx+\int_5^9 f(x)\,dx=12-4=8.$$ Average value on $[1,9]$ is $$f_{\mathrm{avg}}=\frac{1}{9-1}\int_1^9 f(x)\,dx=\frac{1}{8}\cdot 8=1.$$
+MICRO:
+  A: Correct. The average value of f on $[a, b]$ is [1/(b-a)] * integral of $f(x)$ from a to b.
+  B: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  C: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  D: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+
+--- 8.1-P4 [3/1] [Both] ---
+PROMPT: For $f(x)=e^x$ on $[0,\ln 4]$, which quantity equals the average value of $f$ on the interval?
+CORRECT: B = "$\displaystyle \frac{1}{\ln 4}\int_0^{\ln 4} e^x\,dx$"
+  A : $\displaystyle \frac{e^{\ln 4}-e^0}{\ln 4}$
+  B ✓: $\displaystyle \frac{1}{\ln 4}\int_0^{\ln 4} e^x\,dx$
+  C : $\displaystyle \int_0^{\ln 4} e^x\,dx$
+  D : $\displaystyle \frac{1}{4}\int_0^{\ln 4} e^x\,dx$
+EXPLANATION: Average value depends on the interval length in $x$: $$f_{\mathrm{avg}}=\frac{1}{\ln 4-0}\int_0^{\ln 4} e^x\,dx=\frac{1}{\ln 4}\int_0^{\ln 4} e^x\,dx.$$
+MICRO:
+  A: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  B: Correct. The average value of f on $[a, b]$ is [1/(b-a)] * integral of $f(x)$ from a to b.
+  C: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  D: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+
+--- 8.1-P5 [5/3] [Both] ---
+PROMPT: Find the value of $k$ such that the average value of $f(x)=kx+2$ on $[0,6]$ equals $8$.
+CORRECT: D = "$2$"
+  A : $1$
+  B : $\frac{4}{3}$
+  C : $3$
+  D ✓: $2$
+EXPLANATION: Set $$8=\frac{1}{6}\int_0^6 (kx+2)\,dx=\frac{1}{6}\left[\frac{k}{2}x^2+2x\right]_0^6=\frac{18k+12}{6}=3k+2.$$ Thus $3k=6$ and $k=2$.
+MICRO:
+  A: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  B: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  C: Incorrect. Remember to multiply the integral by the reciprocal of the interval width 1/(b-a).
+  D: Correct. The average value of f on $[a, b]$ is [1/(b-a)] * integral of $f(x)$ from a to b.
+
+--- 8.2-P1 [2/2] [Both] ---
+PROMPT: A particle moves along the $x$-axis with velocity $v(t)=4t-6$ (meters per second) for $0\le t\le 3$. If $x(0)=5$, what is $x(3)$?
+CORRECT: A = "$5$"
+  A ✓: $5$
+  B : $0$
+  C : $-5$
+  D : $9$
+EXPLANATION: Position accumulates velocity: $$x(t)=x(0)+\int_0^t v(s)\,ds.$$ Thus $$x(3)=5+\int_0^3(4t-6)\,dt=5+[2t^2-6t]_0^3=5.$$
+MICRO:
+  A: Correct. This application of integration follows the standard geometric and physical principles.
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.2-P2 [3/2] [Both] ---
+PROMPT: The velocity of a particle is shown in the figure labeled 8.2-P2. What is the total distance traveled on $0\le t\le 9$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$9$"
+  A : $1$
+  B : $5$
+  C : $7$
+  D ✓: $9$
+EXPLANATION: Total distance traveled is $$\int_0^9 |v(t)|\,dt.$$ From the step graph: $v=1$ on $[0,5)$ gives $5$, $v=-2$ on $[5,7)$ gives $4$, and $v=0$ on $[7,9]$ gives $0$, so the total distance is $9$.
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Correct. This application of integration follows the standard geometric and physical principles.
+
+--- 8.2-P3 [4/2] [Both] ---
+PROMPT: A particle has acceleration $a(t)=6t$ for $0\le t\le 2$ and velocity $v(0)=-1$. What is $v(2)$?
+CORRECT: B = "$11$"
+  A : $12$
+  B ✓: $11$
+  C : $-13$
+  D : $-1$
+EXPLANATION: Velocity accumulates from acceleration: $$v(t)=v(0)+\int_0^t a(s)\,ds.$$ So $$v(2)=-1+\int_0^2 6t\,dt=-1+[3t^2]_0^2=-1+12=11.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Correct. This application of integration follows the standard geometric and physical principles.
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.2-P4 [3/2] [Both] ---
+PROMPT: A particle’s velocity is $v(t)=t^2-4t$ for $0\le t\le 5$. What is the displacement on $[0,5]$?
+CORRECT: B = "$-\dfrac{25}{3}$"
+  A : $\displaystyle \int_0^5 |t^2-4t|\,dt$
+  B ✓: $-\dfrac{25}{3}$
+  C : $\dfrac{25}{3}$
+  D : $-25$
+EXPLANATION: Displacement is the signed integral of velocity: $$\text{displacement}=\int_0^5 v(t)\,dt=\int_0^5(t^2-4t)\,dt=\left[\frac{t^3}{3}-2t^2\right]_0^5=-\frac{25}{3}.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Correct. This application of integration follows the standard geometric and physical principles.
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.2-P5 [5/3] [Both] ---
+PROMPT: A particle moves on the $x$-axis with velocity $v(t)=\sin t$ for $0\le t\le 2\pi$. If $x(0)=0$, at what time $t$ is the particle farthest to the right?
+CORRECT: C = "$\pi$"
+  A : $0$
+  B : $\frac{\pi}{2}$
+  C ✓: $\pi$
+  D : $2\pi$
+EXPLANATION: Position is accumulated velocity: $$x(t)=x(0)+\int_0^t \sin s\,ds=\int_0^t \sin s\,ds=1-\cos t.$$ On $[0,2\pi]$, $1-\cos t$ is largest when $\cos t$ is smallest, which occurs at $t=\pi$.
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Correct. This application of integration follows the standard geometric and physical principles.
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.3-P1 [2/2] [Both] ---
+PROMPT: A particle moves along a line with velocity $v(t)=2t-1$ (meters per second) for $0\le t\le 3$. If its position at $t=0$ is $x(0)=5$, what is $x(3)$?
+CORRECT: B = "$11$"
+  A : $5$
+  B ✓: $11$
+  C : $14$
+  D : $-1$
+EXPLANATION: Net change in position is the integral of velocity: $$\Delta x=\int_0^3(2t-1)\,dt=\left[t^2-t\right]_0^3=9-3=6.$$ Therefore $x(3)=x(0)+\Delta x=5+6=11$.
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Correct. This application of integration follows the standard geometric and physical principles.
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.3-P2 [3/3] [Both] ---
+PROMPT: See image: 8.3-P2.png. A tank initially contains $10$ liters of water. The net flow rate (in liters per hour) is $r(t)$ as shown. What is the amount of water in the tank at $t=8$ hours?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$24$"
+  A : $14$
+  B : $20$
+  C ✓: $24$
+  D : $22$
+EXPLANATION: Compute net change by signed areas under the step graph. From $0$ to $2$: $3\cdot2=6$. From $2$ to $4$: $3\cdot2=6$. From $4$ to $6$: $(-1)\cdot2=-2$. From $6$ to $8$: $2\cdot2=4$. Net change $=6+6-2+4=14$ liters. Final amount $=10+14=24$ liters.
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Correct. This application of integration follows the standard geometric and physical principles.
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.3-P3 [5/4] [Both] ---
+PROMPT: Let $A(x)=\int_1^x (t^2-4)\,dt$. For what value of $x\ne 1$ does $A(x)=0$?
+CORRECT: A = "$$\dfrac{-1+3\sqrt{5}}{2}$$"
+  A ✓: $$\dfrac{-1+3\sqrt{5}}{2}$$
+  B : $$\dfrac{-1-3\sqrt{5}}{2}$$
+  C : $2$
+  D : $$\sqrt{11}$$
+EXPLANATION: Compute $$A(x)=\left[\frac{t^3}{3}-4t\right]_1^x=\left(\frac{x^3}{3}-4x\right)-\left(\frac{1}{3}-4\right)=\frac{x^3}{3}-4x+\frac{11}{3}.$$ Set $A(x)=0$ and multiply by $3$: $x^3-12x+11=0$. Since $x=1$ is a root, factor: $(x-1)(x^2+x-11)=0$. Thus $x=\dfrac{-1\pm\sqrt{45}}{2}=\dfrac{-1\pm3\sqrt5}{2}$. The non-1 positive solution is $\dfrac{-1+3\sqrt5}{2}$.
+MICRO:
+  A: Correct. This application of integration follows the standard geometric and physical principles.
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.3-P4 [1/3] [Both] ---
+PROMPT: An accumulation function is defined by $s(t)=\int_0^t v(u)\,du$, where $v$ is a velocity function. If $s(2)=4$ and $s(5)=10$, what is the average value of $v(t)$ on $[2,5]$?
+CORRECT: C = "$2$"
+  A : $14$
+  B : $6$
+  C ✓: $2$
+  D : $$\dfrac{10}{5}$$
+EXPLANATION: Since $s'(t)=v(t)$, the average value of $v$ on $[2,5]$ equals the average rate of change of $s$ on $[2,5]$: $$\frac{s(5)-s(2)}{5-2}=\frac{10-4}{3}=2.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Correct. This application of integration follows the standard geometric and physical principles.
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.3-P5 [2/2] [Both] ---
+PROMPT: Let $f(t)$ be the rate (in gallons per minute) at which water enters a pool at time $t$ minutes. Which statement best describes $\int_{20}^{50} f(t)\,dt$?
+CORRECT: D = "The total amount of water (in gallons) that enters the pool from $t=20$ to $t=50$."
+  A : The average rate at which water enters the pool between $t=20$ and $t=50$.
+  B : The change in the rate $f(t)$ from $t=20$ to $t=50$.
+  C : The instantaneous amount of water in the pool at $t=50$.
+  D ✓: The total amount of water (in gallons) that enters the pool from $t=20$ to $t=50$.
+EXPLANATION: Because $f(t)$ is a rate in gallons per minute, $$\int_{20}^{50} f(t)\,dt$$ accumulates gallons over that time interval. It represents the total volume of water that enters the pool from $t=20$ to $t=50$.
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Correct. This application of integration follows the standard geometric and physical principles.
+
+--- 8.4-P1 [2/2] [Both] ---
+PROMPT: Find the area of the region enclosed by $y=x^2$ and $y=2x$.
+CORRECT: D = "$$\dfrac{4}{3}$$"
+  A : $$\dfrac{8}{3}$$
+  B : $4$
+  C : $$\dfrac{2}{3}$$
+  D ✓: $$\dfrac{4}{3}$$
+EXPLANATION: First find intersections: $x^2=2x\Rightarrow x(x-2)=0$, so $x=0,2$. On $[0,2]$, $2x\ge x^2$. Area is $$\int_0^2 (2x-x^2)\,dx=\left[x^2-\frac{x^3}{3}\right]_0^2=4-\frac{8}{3}=\frac{4}{3}.$$
+MICRO:
+  A: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  B: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  C: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  D: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+
+--- 8.4-P2 [4/4] [Both] ---
+PROMPT: Find the area of the region between $y=|x|$ and $y=2-x$ on $[-1,2]$.
+CORRECT: A = "$4$"
+  A ✓: $4$
+  B : $3$
+  C : $$\dfrac{7}{2}$$
+  D : $5$
+EXPLANATION: Split because $|x|$ changes form at $0$, and the curves intersect when $|x|=2-x$, which occurs at $x=1$. On $[-1,0]$: $|x|=-x$ and top is $2-x$, difference $(2-x)-(-x)=2$. On $[0,1]$: top is $2-x$, difference $(2-x)-x=2-2x$. On $[1,2]$: top is $x$, difference $x-(2-x)=2x-2$. Area $$\int_{-1}^0 2\,dx+\int_0^1(2-2x)\,dx+\int_1^2(2x-2)\,dx=2+1+1=4.$$
+MICRO:
+  A: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+  B: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  C: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  D: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+
+--- 8.4-P3 [3/3] [Both] ---
+PROMPT: Which expression equals the area of the region between $y=\sin x$ and $y=\cos x$ on $\left[0,\frac{\pi}{2}\right]$?
+CORRECT: C = "$$\displaystyle \int_0^{\frac{\pi}{4}} (\cos x-\sin x)\,dx+\int_{\frac{\pi}{4}}^{\frac{\pi}{2}} (\sin x-\cos x)\,dx$$"
+  A : $$\displaystyle \int_0^{\frac{\pi}{2}} (\cos x-\sin x)\,dx$$
+  B : $$\displaystyle \int_0^{\frac{\pi}{2}} (\sin x-\cos x)\,dx$$
+  C ✓: $$\displaystyle \int_0^{\frac{\pi}{4}} (\cos x-\sin x)\,dx+\int_{\frac{\pi}{4}}^{\frac{\pi}{2}} (\sin x-\cos x)\,dx$$
+  D : $$\displaystyle \left|\int_0^{\frac{\pi}{2}} (\cos x-\sin x)\,dx\right|$$
+EXPLANATION: Area requires integrating (top minus bottom) where the top curve can change. Solve $\sin x=\cos x\Rightarrow x=\frac{\pi}{4}$ in $[0,\frac{\pi}{2}]$. On $[0,\frac{\pi}{4}]$, $\cos x\ge\sin x$; on $[\frac{\pi}{4},\frac{\pi}{2}]$, $\sin x\ge\cos x$. Thus the area is $$\int_0^{\frac{\pi}{4}} (\cos x-\sin x)\,dx+\int_{\frac{\pi}{4}}^{\frac{\pi}{2}} (\sin x-\cos x)\,dx.$$
+MICRO:
+  A: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  B: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  C: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+  D: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+
+--- 8.4-P4 [3/2] [Both] ---
+PROMPT: See image: 8.4-P4.png. The curves are $y=(x-1)^2$ and $y=3-x$. What is the area of the region enclosed by these two curves?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$$\dfrac{9}{2}$$"
+  A : $$\dfrac{9}{4}$$
+  B ✓: $$\dfrac{9}{2}$$
+  C : $3$
+  D : $$\dfrac{27}{2}$$
+EXPLANATION: Find intersections: $(x-1)^2=3-x\Rightarrow x^2-2x+1=3-x\Rightarrow x^2-x-2=0\Rightarrow x=-1,2$. On $[-1,2]$, the line is above the parabola (e.g., at $x=0$, $3>1$). Area: $$\int_{-1}^{2}\big((3-x)-(x-1)^2\big)\,dx=\int_{-1}^{2} (2+x-x^2)\,dx.$$ An antiderivative is $-\frac{x^3}{3}+\frac{x^2}{2}+2x$. Evaluate: at $2$ gives $\frac{10}{3}$; at $-1$ gives $-\frac{7}{6}$. Difference $=\frac{10}{3}+\frac{7}{6}=\frac{27}{6}=\frac{9}{2}$.
+MICRO:
+  A: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  B: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+  C: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  D: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+
+--- 8.4-P5 [2/2] [Both] ---
+PROMPT: See image: 8.4-P5.png. What is the area of the region enclosed by $y=\sqrt{x}$ and $y=\frac{x}{2}$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$$\dfrac{4}{3}$$"
+  A : $$\dfrac{8}{3}$$
+  B : $$\dfrac{2}{3}$$
+  C : $4$
+  D ✓: $$\dfrac{4}{3}$$
+EXPLANATION: Solve intersections: $\sqrt{x}=\frac{x}{2}\Rightarrow 2\sqrt{x}=x\Rightarrow x=0$ or (for $x\ne0$) $2=\sqrt{x}\Rightarrow x=4$. On $[0,4]$, $\sqrt{x}\ge \frac{x}{2}$. Area: $$\int_0^4\left(\sqrt{x}-\frac{x}{2}\right)dx=\left[\frac{2}{3}x^{\frac{3}{2}}-\frac{x^2}{4}\right]_0^4=\frac{16}{3}-4=\frac{4}{3}.$$
+MICRO:
+  A: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  B: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  C: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  D: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+
+--- 8.5-P1 [3/3] [Both] ---
+PROMPT: Find the area of the region bounded by $x=y^2$ and $x=4-y$. Choose the exact value.
+CORRECT: A = "$\frac{17\sqrt{17}}{6}$"
+  A ✓: $\frac{17\sqrt{17}}{6}$
+  B : $\frac{17\sqrt{17}}{3}$
+  C : $\frac{\sqrt{17}}{6}$
+  D : $\frac{17}{6}$
+EXPLANATION: Solve intersections: $y^2=4-y\Rightarrow y^2+y-4=0$, so $$y_1=\frac{-1-\sqrt{17}}{2},\quad y_2=\frac{-1+\sqrt{17}}{2}.$$ For a horizontal slice, right curve is $x=4-y$ and left curve is $x=y^2$. $$A=\int_{y_1}^{y_2}\big[(4-y)-y^2\big]\,dy.$$ Compute: $$\int(4-y-y^2)\,dy=4y-\frac{y^2}{2}-\frac{y^3}{3}.$$ Evaluating from $y_1$ to $y_2$ simplifies to $$A=\frac{17\sqrt{17}}{6}.$$
+MICRO:
+  A: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+  B: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  C: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  D: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+
+--- 8.5-P2 [2/2] [Both] ---
+PROMPT: The shaded region is bounded by $x=y^2-1$ and $x=3-y$ (see image). Which integral equals the area of the shaded region?  ![8.5-P2](8.5-P2.png)
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$\displaystyle \int_{y_1}^{y_2}\big[(3-y)-(y^2-1)\big]\,dy$"
+  A : $\displaystyle \int_{y_1}^{y_2}\big[(y^2-1)-(3-y)\big]\,dy$
+  B : $\displaystyle \int_{x_1}^{x_2}\big[(3-x)-\sqrt{x+1}\big]\,dx$
+  C ✓: $\displaystyle \int_{y_1}^{y_2}\big[(3-y)-(y^2-1)\big]\,dy$
+  D : $\displaystyle \int_{y_1}^{y_2}\big[(3-y)+(y^2-1)\big]\,dy$
+EXPLANATION: Because both boundaries are given as $x$ in terms of $y$, use horizontal slices. Let $y_1<y_2$ be the intersection $y$-values found from $y^2-1=3-y$. For each $y$ between $y_1$ and $y_2$, the right boundary is $x=3-y$ and the left boundary is $x=y^2-1$. Thus the area is $$\int_{y_1}^{y_2}\big[(3-y)-(y^2-1)\big]\,dy.$$
+MICRO:
+  A: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  B: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  C: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+  D: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+
+--- 8.5-P3 [2/2] [Both] ---
+PROMPT: Find the area of the region bounded by $x=y^2+1$ and $x=5-y^2$.
+CORRECT: B = "$\frac{16}{3}$"
+  A : $\frac{8}{3}$
+  B ✓: $\frac{16}{3}$
+  C : $\frac{32}{3}$
+  D : $8$
+EXPLANATION: Intersect: $y^2+1=5-y^2\Rightarrow 2y^2=4\Rightarrow y=\pm2$. Right-minus-left: $$A=\int_{-2}^{2}\big[(5-y^2)-(y^2+1)\big]\,dy=\int_{-2}^{2}(4-2y^2)\,dy.$$ Compute: $$\int(4-2y^2)\,dy=4y-\frac{2}{3}y^3.$$ Evaluate $[-2,2]$: $$A=\left(8-\frac{16}{3}\right)-\left(-8+\frac{16}{3}\right)=\frac{16}{3}.$$
+MICRO:
+  A: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  B: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+  C: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  D: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+
+--- 8.5-P4 [4/4] [Both] ---
+PROMPT: Let $R$ be the region bounded by $x=y$ and $x=y^3$ for $-1\le y\le 1$. What is the area of $R$?
+CORRECT: A = "$\frac{1}{2}$"
+  A ✓: $\frac{1}{2}$
+  B : $\frac{1}{4}$
+  C : $\frac{2}{3}$
+  D : $0$
+EXPLANATION: For $y\in[-1,0]$, $y^3>y$, so width is $(y^3-y)$. For $y\in[0,1]$, $y>y^3$, so width is $(y-y^3)$. Thus $$A=\int_{-1}^{0}(y^3-y)\,dy+\int_{0}^{1}(y-y^3)\,dy.$$ By symmetry these integrals are equal, so $$A=2\int_{0}^{1}(y-y^3)\,dy=2\left[\frac{y^2}{2}-\frac{y^4}{4}\right]_0^1=\frac12.$$
+MICRO:
+  A: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+  B: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  C: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  D: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+
+--- 8.5-P5 [5/5] [Both] ---
+PROMPT: The region $R$ is bounded by $y=2x$ and $y=x^2$ (see image). Using integration with respect to $y$, what is the area of $R$?  ![8.5-P5](8.5-P5.png)
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$\frac{4}{3}$"
+  A : $2$
+  B : $\frac{8}{3}$
+  C : $\frac{2}{3}$
+  D ✓: $\frac{4}{3}$
+EXPLANATION: Intersections: $2x=x^2\Rightarrow x=0,2$, giving $y=0,4$. Solve for $x$ in terms of $y$: From $y=2x$, $x=\frac{y}{2}$. From $y=x^2$ in the region, $x=\sqrt{y}$. For $0\le y\le 4$, $\frac{y}{2}\le \sqrt{y}$, so left is $x=\frac{y}{2}$ and right is $x=\sqrt{y}$. $$A=\int_0^4\left(\sqrt{y}-\frac{y}{2}\right)dy=\left[\frac{2}{3}y^{\frac{3}{2}}-\frac{y^2}{4}\right]_0^4=\frac{4}{3}.$$
+MICRO:
+  A: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  B: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  C: Incorrect. Check your boundary selection and ensure you integrate the difference of the functions.
+  D: Correct. Area between curves is the integral of [Top - Bottom] or [Right - Left] over the boundaries.
+
+--- 8.6-P1 [3/3] [Both] ---
+PROMPT: Find the area of the region enclosed by $y=|x|$ and $y=x^2$.
+CORRECT: D = "$\frac{1}{3}$"
+  A : $\frac{1}{6}$
+  B : $1$
+  C : $\frac{2}{3}$
+  D ✓: $\frac{1}{3}$
+EXPLANATION: Intersections solve $|x|=x^2$. For $x\ge 0$: $x=x^2\Rightarrow x=0,1$. For $x\le 0$: $-x=x^2\Rightarrow x=0,-1$. On $[0,1]$, top is $y=x$ and bottom is $y=x^2$. By symmetry, $$A=2\int_0^1(x-x^2)\,dx=2\left[\frac{x^2}{2}-\frac{x^3}{3}\right]_0^1=\frac13.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Correct. This application of integration follows the standard geometric and physical principles.
+
+--- 8.6-P2 [4/4] [Both] ---
+PROMPT: Let $f(x)=x^3-3x$. Find the area between the graph of $y=f(x)$ and the $x$-axis on $[-2,2]$.
+CORRECT: B = "$5$"
+  A : $0$
+  B ✓: $5$
+  C : $4$
+  D : $2$
+EXPLANATION: Zeros: $x^3-3x=x(x^2-3)=0\Rightarrow x=-\sqrt3,0,\sqrt3$. Area is $$\int_{-2}^{2}|x^3-3x|\,dx.$$ By odd symmetry, the area is twice the area on $[0,2]$. On $(0,\sqrt3)$, $x^3-3x<0$; on $(\sqrt3,2)$, $x^3-3x>0$. So $$A=2\left(\int_{0}^{\sqrt3}-(x^3-3x)\,dx+\int_{\sqrt3}^{2}(x^3-3x)\,dx\right)=5.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Correct. This application of integration follows the standard geometric and physical principles.
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.6-P3 [1/2] [Both] ---
+PROMPT: Find the area between $y=\sin x$ and $y=0$ on $[0,2\pi]$ (see image).  ![8.6-P3](8.6-P3.png)
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$4$"
+  A : $0$
+  B ✓: $4$
+  C : $2$
+  D : $\pi$
+EXPLANATION: Geometric area is $$A=\int_0^{2\pi}|\sin x|\,dx=\int_0^{\pi}\sin x\,dx+\int_{\pi}^{2\pi}(-\sin x)\,dx.$$ Compute: $$\int_0^{\pi}\sin x\,dx=[-\cos x]_0^{\pi}=2,$$ $$\int_{\pi}^{2\pi}(-\sin x)\,dx=[\cos x]_{\pi}^{2\pi}=2.$$ So $A=4$.
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Correct. This application of integration follows the standard geometric and physical principles.
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.6-P4 [5/5] [Both] ---
+PROMPT: Find the area between $y=\sin x$ and $y=\sin(2x)$ on $[0,2\pi]$.
+CORRECT: C = "$5$"
+  A : $3$
+  B : $0$
+  C ✓: $5$
+  D : $2$
+EXPLANATION: Intersections satisfy $\sin x=\sin 2x=2\sin x\cos x$. So either $\sin x=0$ giving $x=0,\pi,2\pi$, or $1=2\cos x$ giving $\cos x=\tfrac12$, so $x=\frac{\pi}{3},5\frac{\pi}{3}$. Thus split $[0,2\pi]$ at $0,\frac{\pi}{3},\pi,5\frac{\pi}{3},2\pi$. Area: $$A=\int_0^{2\pi}|\sin x-\sin 2x|\,dx,$$ and on each subinterval the sign is constant, so remove absolute value with the correct sign and add. The result is $A=5$.
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Correct. This application of integration follows the standard geometric and physical principles.
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.6-P5 [3/3] [Both] ---
+PROMPT: Let $R$ be the region enclosed by $y=x$ and $y=x^3$ on $[-1,1]$. What is the area of $R$?
+CORRECT: A = "$\frac{1}{2}$"
+  A ✓: $\frac{1}{2}$
+  B : $0$
+  C : $1$
+  D : $\frac{1}{4}$
+EXPLANATION: Intersections: $x=x^3\Rightarrow x(x^2-1)=0\Rightarrow x=-1,0,1$. On $[0,1]$, $x>x^3$, so gap is $(x-x^3)$. By symmetry, $$A=2\int_0^1(x-x^3)\,dx=2\left[\frac{x^2}{2}-\frac{x^4}{4}\right]_0^1=\frac12.$$
+MICRO:
+  A: Correct. This application of integration follows the standard geometric and physical principles.
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.7-P1 [2/2] [Both] ---
+PROMPT: Let $R$ be the region bounded by $y=x$ and $y=x^2$ for $0\le x\le 1$. Cross-sections perpendicular to the $x$-axis are squares whose bases lie in $R$. What is the volume of the solid?
+CORRECT: A = "$\dfrac{1}{30}$"
+  A ✓: $\dfrac{1}{30}$
+  B : $\dfrac{1}{6}$
+  C : $\dfrac{1}{15}$
+  D : $\dfrac{1}{20}$
+EXPLANATION: For squares, $A(x)=s(x)^2$ where $s(x)$ is (top − bottom) $=x-x^2$. Thus $$V=\int_0^1 (x-x^2)^2\,dx=\int_0^1 (x^2-2x^3+x^4)\,dx=\left[\frac{x^3}{3}-\frac{x^4}{2}+\frac{x^5}{5}\right]_0^1=\frac{1}{30}.$$
+MICRO:
+  A: Square cross-section: $A=s^2$.
+  B: Top minus bottom: $x-x^2$ on $[0,1]$.
+  C: Integrate $x^2-2x^3+x^4$.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 8.7-P2 [4/4] [Both] ---
+PROMPT: The region $R$ is bounded by $y=\cos x$ and $y=\sin x$ on $0\le x\le \frac{\pi}{4}$. Cross-sections perpendicular to the $x$-axis are rectangles whose height is $2x$ and whose base lies in $R$. What is the volume?
+CORRECT: B = "$\dfrac{\pi\sqrt2}{2}-2$"
+  A : $2-\dfrac{\pi\sqrt2}{2}$
+  B ✓: $\dfrac{\pi\sqrt2}{2}-2$
+  C : $\dfrac{\pi\sqrt2}{4}-1$
+  D : $\dfrac{\pi\sqrt2}{2}-1$
+EXPLANATION: Base $=\cos x-\sin x$ and height $=2x$, so $A(x)=2x(\cos x-\sin x)$. Then $$V=\int_0^{\frac{\pi}{4}}2x(\cos x-\sin x)\,dx=2\left[ x(\sin x+\cos x)+(\cos x-\sin x)\right]_0^{\frac{\pi}{4}}.$$ At $x=\pi/4$, $\sin x=\cos x=\frac{\sqrt2}{2}$ so the bracket is $\frac{\pi}{4}\cdot\sqrt2+0$. At $x=0$, the bracket is $1$. Thus $$V=2\left(\frac{\pi\sqrt2}{4}-1\right)=\frac{\pi\sqrt2}{2}-2.$$
+MICRO:
+  A: Rectangle area: base·height.
+  B: Base is vertical distance: $\cos x-\sin x$.
+  C: Use integration by parts for $x\cos x$ and $x\sin x$.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 8.7-P3 [3/3] [Both] ---
+PROMPT: Let $R$ be the region bounded by $x=y^2$ and $x=2y$. Cross-sections perpendicular to the $y$-axis are squares. What is the volume of the solid?
+CORRECT: D = "$\dfrac{16}{15}$"
+  A : $\dfrac{16}{5}$
+  B : $\dfrac{8}{15}$
+  C : $\dfrac{32}{15}$
+  D ✓: $\dfrac{16}{15}$
+EXPLANATION: Perpendicular to the $y$-axis means integrate with respect to $y$. The square side is $$s(y)=x_{right}-x_{left}=2y-y^2,$$ with intersections from $y^2=2y\Rightarrow y=0,2$. Then $$V=\int_0^2 (2y-y^2)^2\,dy=\int_0^2 (4y^2-4y^3+y^4)\,dy=\left[\frac{4y^3}{3}-y^4+\frac{y^5}{5}\right]_0^2=\frac{16}{15}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Side length is horizontal distance: right − left.
+  C: Bounds from $y^2=2y$: $[0,2]$.
+  D: Use $y$-integration since slices are ⟂ $y$-axis.
+
+--- 8.7-P4 [1/1] [Both] ---
+PROMPT: The base of a solid is the region under $y=4-x^2$ and above the $x$-axis. Cross-sections perpendicular to the $x$-axis are rectangles with constant height $3$. What is the volume?
+CORRECT: C = "$32$"
+  A : $\dfrac{32}{3}$
+  B : $64$
+  C ✓: $32$
+  D : $16$
+EXPLANATION: Since cross-sections are rectangles, $A(x)=\text{height}\cdot\text{base}=3(4-x^2)$. The region meets the $x$-axis at $4-x^2=0\Rightarrow x=\pm2$. Thus $$V=\int_{-2}^{2}3(4-x^2)\,dx=3\left[4x-\frac{x^3}{3}\right]_{-2}^{2}=32.$$
+MICRO:
+  A: Bounds from $4-x^2=0$: $x=\pm2$.
+  B: Evaluate on $[-2,2]$ without extra doubling.
+  C: Rectangle area uses constant height $3$.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 8.7-P5 [3/4] [Both] ---
+PROMPT: The base of a solid is the region between $y=e^{-x}$ and the $x$-axis on $0\le x\le 1$. Cross-sections perpendicular to the $x$-axis are rectangles whose height is $k$ times the base in the region. If the volume is $3(1-e^{-2})$, what is $k$?
+CORRECT: C = "$6$"
+  A : $3$
+  B : $\dfrac{3}{2}$
+  C ✓: $6$
+  D : $12$
+EXPLANATION: Base length is $e^{-x}-0=e^{-x}$. Rectangle height is $k$ times the base, so height $=k e^{-x}$. Area is $$A(x)=(e^{-x})(k e^{-x})=k e^{-2x}.$$ Thus $$V=\int_0^1 k e^{-2x}\,dx=\frac{k}{2}(1-e^{-2}).$$ Set equal to $3(1-e^{-2})$ to get $\frac{k}{2}=3\Rightarrow k=6$.
+MICRO:
+  A: Height proportional to base ⇒ area proportional to base$^2$.
+  B: Match coefficients of $(1-e^{-2})$.
+  C: Integrate $e^{-2x}$ carefully: factor $\frac12$.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 8.8-P1 [2/2] [Both] ---
+PROMPT: The base of a solid is the region between $y=\sqrt{x}$ and $y=0$ for $0\le x\le 4$. Cross-sections perpendicular to the $x$-axis are semicircles with diameter in the base. What is the volume?
+CORRECT: D = "$\pi$"
+  A : $\dfrac{\pi}{2}$
+  B : $2\pi$
+  C : $\dfrac{\pi}{4}$
+  D ✓: $\pi$
+EXPLANATION: The diameter is the vertical distance: $d(x)=\sqrt{x}-0=\sqrt{x}$. For a semicircle with diameter $d$, radius $r=\frac{d}{2}$, so $$A(x)=\frac{1}{2}\pi r^2=\frac{1}{2}\pi\left(\frac{d}{2}\right)^2=\frac{\pi}{8}d^2=\frac{\pi}{8}x.$$ Thus $$V=\int_0^4 \frac{\pi}{8}x\,dx=\frac{\pi}{8}\left[\frac{x^2}{2}\right]_0^4=\pi.$$
+MICRO:
+  A: Convert diameter to radius: $r=d/2$.
+  B: Semicircle area becomes $\frac{\pi}{8}d^2$.
+  C: Review this option carefully and compare with the correct answer.
+  D: Here $d^2=x$, so integrate a polynomial.
+
+--- 8.8-P2 [2/2] [Both] ---
+PROMPT: The base of a solid is the region between $y=x$ and $y=0$ for $0\le x\le 3$. Cross-sections perpendicular to the $x$-axis are equilateral triangles whose bases lie in the region. What is the volume?
+CORRECT: B = "$\dfrac{9\sqrt3}{4}$"
+  A : $\dfrac{27\sqrt3}{4}$
+  B ✓: $\dfrac{9\sqrt3}{4}$
+  C : $\dfrac{9}{4}$
+  D : $\dfrac{3\sqrt3}{4}$
+EXPLANATION: The triangle base is the vertical distance $b(x)=x-0=x$. For equilateral triangles, $$A(x)=\frac{\sqrt3}{4}b(x)^2=\frac{\sqrt3}{4}x^2.$$ So $$V=\int_0^3 \frac{\sqrt3}{4}x^2\,dx=\frac{\sqrt3}{4}\left[\frac{x^3}{3}\right]_0^3=\frac{9\sqrt3}{4}.$$
+MICRO:
+  A: Here $b=x$ from $y=x$ down to $y=0$.
+  B: Equilateral triangle area: $\frac{\sqrt3}{4}b^2$.
+  C: Integrate $x^2$ on $[0,3]$.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 8.8-P3 [5/5] [Both] ---
+PROMPT: The base of a solid is the region between $y=\ln x$ and $y=0$ for $1\le x\le e$. Cross-sections perpendicular to the $x$-axis are right isosceles triangles whose legs lie in the base. What is the volume?
+CORRECT: C = "$\dfrac{e-2}{2}$"
+  A : $e-2$
+  B : $\dfrac{e-1}{2}$
+  C ✓: $\dfrac{e-2}{2}$
+  D : $\dfrac{e}{2}$
+EXPLANATION: The leg length is the vertical distance $b(x)=\ln x-0=\ln x$. A right isosceles triangle with legs $b$ has area $$A(x)=\frac12 b^2=\frac12(\ln x)^2.$$ So $$V=\int_1^e \frac12(\ln x)^2\,dx=\frac12\left[x\big((\ln x)^2-2\ln x+2\big)\right]_1^e.$$ At $x=e$, this is $e(1-2+2)=e$. At $x=1$, this is $2$. Therefore $$V=\frac12(e-2).$$
+MICRO:
+  A: Use $\int (\ln x)^2 dx = x((\ln x)^2-2\ln x+2)$.
+  B: Here the leg is $\ln x$ from the base region.
+  C: Right triangle area: $\frac12(\text{leg})(\text{leg})$.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 8.8-P4 [3/3] [Both] ---
+PROMPT: Let $R$ be the region bounded by $x=y^2$ and $x=y$ for $0\le y\le 1$. Cross-sections perpendicular to the $y$-axis are semicircles whose diameters lie in $R$. What is the volume?
+CORRECT: D = "$\dfrac{\pi}{240}$"
+  A : $\dfrac{\pi}{120}$
+  B : $\dfrac{\pi}{480}$
+  C : $\dfrac{\pi}{60}$
+  D ✓: $\dfrac{\pi}{240}$
+EXPLANATION: Perpendicular to the $y$-axis implies $y$-integration. The diameter is horizontal distance: $$d(y)=x_{right}-x_{left}=y-y^2.$$ Semicircle area in terms of diameter is $$A(y)=\frac{\pi}{8}d(y)^2=\frac{\pi}{8}(y-y^2)^2.$$ So $$V=\int_0^1 \frac{\pi}{8}(y-y^2)^2\,dy=\frac{\pi}{8}\int_0^1 (y^2-2y^3+y^4)\,dy=\frac{\pi}{8}\left(\frac13-\frac12+\frac15\right)=\frac{\pi}{240}.$$
+MICRO:
+  A: Use $y$ since slices are ⟂ $y$-axis.
+  B: Review this option carefully and compare with the correct answer.
+  C: Semicircle area: $\frac{\pi}{8}d^2$.
+  D: Diameter is right − left: $y-y^2$.
+
+--- 8.8-P5 [4/4] [Both] ---
+PROMPT: The base of a solid is the region between $y=2-x$ and $y=0$ for $0\le x\le 2$. Cross-sections perpendicular to the $x$-axis are isosceles right triangles whose hypotenuses lie in the base. What is the volume?
+CORRECT: A = "$\dfrac{2}{3}$"
+  A ✓: $\dfrac{2}{3}$
+  B : $\dfrac{4}{3}$
+  C : $\dfrac{1}{3}$
+  D : $1$
+EXPLANATION: The hypotenuse length is the vertical distance $h(x)=(2-x)-0=2-x$. For an isosceles right triangle with hypotenuse $h$, each leg is $\frac{h}{\sqrt2}$, so $$A(x)=\frac12\left(\frac{h}{\sqrt2}\right)^2=\frac{h^2}{4}.$$ Thus $$V=\int_0^2 \frac{(2-x)^2}{4}\,dx=\frac14\int_0^2 (4-4x+x^2)\,dx=\frac14\left[4x-2x^2+\frac{x^3}{3}\right]_0^2=\frac{2}{3}.$$
+MICRO:
+  A: Area becomes $A=\frac12(h/\sqrt2)^2=\frac{h^2}{4}$.
+  B: Given hypotenuse $h$, each leg is $h/\sqrt2$.
+  C: Integrate $\frac{(2-x)^2}{4}$ over $[0,2]$.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 8.9-P1 [2/2] [Both] ---
+PROMPT: Let $R$ be the region bounded by $y=\sqrt{x}$, $y=0$, $x=0$, and $x=4$. The region $R$ is revolved about the $x$-axis. What is the volume of the resulting solid?
+CORRECT: C = "$8\pi$"
+  A : $16\pi$
+  B : $4\pi$
+  C ✓: $8\pi$
+  D : $\dfrac{32\pi}{3}$
+EXPLANATION: Using the disc method about the $x$-axis, radius $r(x)=\sqrt{x}$. Then $$V=\pi\int_0^4 r(x)^2\,dx=\pi\int_0^4 x\,dx=\pi\left[\frac{x^2}{2}\right]_0^4=8\pi.$$
+MICRO:
+  A: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  B: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  C: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+  D: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+
+--- 8.9-P2 [3/3] [Both] ---
+PROMPT: The graph of the region bounded by $y=x^2$, $y=0$, and $x=1$ is shown in the figure labeled 8.9-P2. The region is revolved about the $y$-axis. Using the disc method, what is the volume of the solid?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$\dfrac{\pi}{2}$"
+  A : $\pi$
+  B : $\dfrac{2\pi}{3}$
+  C : $\dfrac{\pi}{3}$
+  D ✓: $\dfrac{\pi}{2}$
+EXPLANATION: For rotation about the $y$-axis using discs, take horizontal slices. Rewrite $y=x^2$ as $x=\sqrt{y}$. Radius is $r(y)=\sqrt{y}$ for $0\le y\le 1. $$V=\pi\int_0^1 r(y)^2\,dy=\pi\int_0^1 y\,dy=\pi\left[\frac{y^2}{2}\right]_0^1=\frac{\pi}{2}.$$
+MICRO:
+  A: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  B: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  C: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  D: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+
+--- 8.9-P3 [1/1] [Both] ---
+PROMPT: The region bounded by $y=2x$, $y=0$, $x=0$, and $x=3$ is revolved about the $x$-axis. Which integral gives the volume of the solid using the disc method?
+CORRECT: A = "$\displaystyle \pi\int_0^3 (2x)^2\,dx$"
+  A ✓: $\displaystyle \pi\int_0^3 (2x)^2\,dx$
+  B : $\displaystyle 2\pi\int_0^3 (2x)\,dx$
+  C : $\displaystyle \int_0^3 2x\,dx$
+  D : $\displaystyle \pi\int_0^2 x^2\,dx$
+EXPLANATION: Disc method about the $x$-axis uses $V=\pi\int_a^b [r(x)]^2\,dx$ with $r(x)=y$. Here $y=2x$ and $x$ runs from $0$ to $3$, so $$V=\pi\int_0^3 (2x)^2\,dx.$$
+MICRO:
+  A: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+  B: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  C: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  D: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+
+--- 8.9-P4 [5/5] [Both] ---
+PROMPT: The graph of the region bounded by $y=\ln x$, $y=0$, $x=1$, and $x=e$ is shown in the figure labeled 8.9-P4. The region is revolved about the $x$-axis. What is the volume of the resulting solid?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$\pi(e-2)$"
+  A : $\pi(e+2)$
+  B ✓: $\pi(e-2)$
+  C : $e-2$
+  D : $\pi(e-1)$
+EXPLANATION: Disc method about the $x$-axis gives $$V=\pi\int_1^{e} (\ln x)^2\,dx.$$ Use $$\int (\ln x)^2\,dx=x\big((\ln x)^2-2\ln x+2\big)+C.$$ Evaluate: at $x=e$ gives $e(1-2+2)=e$; at $x=1$ gives $1(0-0+2)=2$. So $\int_1^e (\ln x)^2\,dx=e-2$, hence $V=\pi(e-2)$.
+MICRO:
+  A: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  B: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+  C: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  D: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+
+--- 8.9-P5 [4/4] [Both] ---
+PROMPT: The region bounded by $x=y$, $x=0$, $y=0$, and $y=2$ is revolved about the $y$-axis. What is the volume of the resulting solid using the disc method?
+CORRECT: A = "$\dfrac{8\pi}{3}$"
+  A ✓: $\dfrac{8\pi}{3}$
+  B : $4\pi$
+  C : $\dfrac{4\pi}{3}$
+  D : $8\pi$
+EXPLANATION: Rotate about the $y$-axis; discs use $dy$ with radius equal to the $x$-value. Since $x=y$, radius is $r(y)=y$ for $0\le y\le 2$. $$V=\pi\int_0^2 y^2\,dy=\pi\left[\frac{y^3}{3}\right]_0^2=\frac{8\pi}{3}.$$
+MICRO:
+  A: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+  B: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  C: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  D: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+
+--- 8.10-P1 [2/2] [Both] ---
+PROMPT: Let $R$ be the region bounded by $y=x$, $y=0$, $x=0$, and $x=1$. The region $R$ is revolved about the line $y=-1$. What is the volume of the resulting solid?
+CORRECT: D = "$\dfrac{7\pi}{3}$"
+  A : $\dfrac{\pi}{3}$
+  B : $\dfrac{8\pi}{3}$
+  C : $2\pi$
+  D ✓: $\dfrac{7\pi}{3}$
+EXPLANATION: Rotation about $y=-1$ shifts the radius by 1. For each $x$, the distance from $y=x$ to $y=-1$ is $r(x)=x+1$. $$V=\pi\int_0^1 (x+1)^2\,dx=\pi\left[\frac{(x+1)^3}{3}\right]_0^1=\pi\cdot\frac{8-1}{3}=\frac{7\pi}{3}.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Correct. This application of integration follows the standard geometric and physical principles.
+
+--- 8.10-P2 [4/4] [Both] ---
+PROMPT: The graph of the region bounded by $y=x^2$, $y=0$, and $x=2$ is shown in the figure labeled 8.10-P2. The region is revolved about the vertical line $x=3$. What is the volume of the resulting solid?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$8\pi$"
+  A : $4\pi$
+  B ✓: $8\pi$
+  C : $\dfrac{32\pi}{3}$
+  D : $12\pi$
+EXPLANATION: Rotate about $x=3$ (vertical), so use horizontal slices ($dy$) for washers. For a given $y$, the region runs from $x=\sqrt{y}$ to $x=2$ for $0\le y\le 4$. Outer radius: $R(y)=3-\sqrt{y}$, inner radius: $r(y)=3-2=1$. $$V=\pi\int_0^4\big(R(y)^2-r(y)^2\big)\,dy=\pi\int_0^4\big((3-\sqrt{y})^2-1\big)\,dy=8\pi.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Correct. This application of integration follows the standard geometric and physical principles.
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.10-P3 [3/3] [Both] ---
+PROMPT: The graph of the region bounded by $y=x^2$, $y=0$, $x=0$, and $x=1$ is shown in the figure labeled 8.10-P3. The region is revolved about the line $y=2$. What is the volume of the resulting solid?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\dfrac{43\pi}{15}$"
+  A ✓: $\dfrac{43\pi}{15}$
+  B : $\dfrac{7\pi}{3}$
+  C : $\dfrac{43\pi}{30}$
+  D : $\dfrac{\pi}{3}$
+EXPLANATION: Rotation about $y=2$ gives radius $r(x)=2-x^2$. $$V=\pi\int_0^1 (2-x^2)^2\,dx=\pi\int_0^1 (4-4x^2+x^4)\,dx =\pi\left[4x-\frac{4}{3}x^3+\frac{1}{5}x^5\right]_0^1 =\pi\left(4-\frac{4}{3}+\frac{1}{5}\right)=\frac{43\pi}{15}.$$
+MICRO:
+  A: Correct. This application of integration follows the standard geometric and physical principles.
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.10-P4 [1/1] [Both] ---
+PROMPT: The rectangular region bounded by $y=0$, $y=1$, $x=0$, and $x=1$ is revolved about the vertical line $x=-2$. What is the volume of the resulting solid?
+CORRECT: B = "$5\pi$"
+  A : $\pi$
+  B ✓: $5\pi$
+  C : $13\pi$
+  D : $\dfrac{5\pi}{2}$
+EXPLANATION: Revolving the strip $0\le x\le 1$ about $x=-2$ creates washers for each $y$. Outer radius $R=1-(-2)=3$, inner radius $r=0-(-2)=2$. Area is $\pi(R^2-r^2)=\pi(9-4)=5\pi$. Integrate over $y$ from 0 to 1: $$V=\int_0^1 5\pi\,dy=5\pi.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Correct. This application of integration follows the standard geometric and physical principles.
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.10-P5 [5/5] [Both] ---
+PROMPT: The region bounded by $x=y^2$, $x=0$, $y=0$, and $y=1$ is revolved about the vertical line $x=-1$. What is the volume of the resulting solid?
+CORRECT: C = "$\dfrac{13\pi}{15}$"
+  A : $\dfrac{8\pi}{15}$
+  B : $\dfrac{2\pi}{3}$
+  C ✓: $\dfrac{13\pi}{15}$
+  D : $\dfrac{\pi}{5}$
+EXPLANATION: Use washers with $dy$ (axis is vertical). For each $y\in[0,1]$, the region runs from $x=0$ to $x=y^2$. Distances to $x=-1$: outer radius $R(y)=y^2-(-1)=y^2+1$, inner radius $r(y)=0-(-1)=1$. $$V=\pi\int_0^1\big((y^2+1)^2-1^2\big)\,dy =\pi\int_0^1 (y^4+2y^2)\,dy =\pi\left(\frac{1}{5}+\frac{2}{3}\right)=\frac{13\pi}{15}.$$
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Correct. This application of integration follows the standard geometric and physical principles.
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.11-P1 [2/2] [Both] ---
+PROMPT: Let $R$ be the region bounded by $y=3-x$, $y=0$, $x=0$, and $x=2$. The region is revolved about the $x$-axis. What is the volume of the resulting solid?
+CORRECT: C = "$\dfrac{26\pi}{3}$"
+  A : $26\pi$
+  B : $\dfrac{13\pi}{3}$
+  C ✓: $\dfrac{26\pi}{3}$
+  D : $\dfrac{52\pi}{3}$
+EXPLANATION: Using washers about the $x$-axis: $$V=\pi\int_0^2(3-x)^2\,dx=\pi\int_0^2(x^2-6x+9)\,dx.$$ Compute $$\int_0^2(x^2-6x+9)\,dx=\left[\frac{x^3}{3}-3x^2+9x\right]_0^2=\frac{26}{3}.$$ Thus $V=\dfrac{26\pi}{3}$.
+MICRO:
+  A: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  B: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  C: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+  D: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+
+--- 8.11-P2 [4/4] [Both] ---
+PROMPT: The region is bounded by $y=2x$ and $y=x^2$ for $0\le x\le 2$. The region is revolved about the $x$-axis. What is the volume?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$\dfrac{64\pi}{15}$"
+  A : $\dfrac{32\pi}{15}$
+  B ✓: $\dfrac{64\pi}{15}$
+  C : $\dfrac{64\pi}{3}$
+  D : $\dfrac{64\pi}{5}$
+EXPLANATION: Outer radius is $R(x)=2x$ and inner radius is $r(x)=x^2$ on $[0,2]$. $$V=\pi\int_0^2\left(R^2-r^2\right)dx=\pi\int_0^2(4x^2-x^4)\,dx.$$ $$\int_0^2(4x^2-x^4)\,dx=\left[\frac{4x^3}{3}-\frac{x^5}{5}\right]_0^2=\frac{32}{3}-\frac{32}{5}=\frac{64}{15}.$$ So $V=\dfrac{64\pi}{15}$.
+MICRO:
+  A: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  B: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+  C: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  D: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+
+--- 8.11-P3 [3/3] [Both] ---
+PROMPT: The region bounded by $y=\sqrt{x}$, $y=0$, and $x=9$ is revolved about the $y$-axis. What is the volume?
+CORRECT: D = "$\dfrac{243\pi}{5}$"
+  A : $81\pi$
+  B : $\dfrac{81\pi}{5}$
+  C : $\dfrac{243\pi}{10}$
+  D ✓: $\dfrac{243\pi}{5}$
+EXPLANATION: Use washers with respect to $y$. Since $y=\sqrt{x}$, we have $x=y^2$. With $x=9$, $y$ runs from $0$ to $3$. $$V=\pi\int_0^3 (y^2)^2\,dy=\pi\int_0^3 y^4\,dy=\pi\left[\frac{y^5}{5}\right]_0^3=\frac{243\pi}{5}.$$
+MICRO:
+  A: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  B: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  C: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  D: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+
+--- 8.11-P4 [4/4] [Both] ---
+PROMPT: The region is bounded by $x=y^2$ and $x=4$ for $0\le y\le 2$. The region is revolved about the $y$-axis. What is the volume?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$\dfrac{128\pi}{5}$"
+  A : $\dfrac{32\pi}{5}$
+  B : $\dfrac{64\pi}{5}$
+  C ✓: $\dfrac{128\pi}{5}$
+  D : $\dfrac{96\pi}{5}$
+EXPLANATION: About the $y$-axis with $dy$: outer radius $R(y)=4$, inner radius $r(y)=y^2$. $$V=\pi\int_0^2\left(R^2-r^2\right)dy=\pi\int_0^2(16-y^4)\,dy.$$ $$\int_0^2(16-y^4)dy=\left[16y-\frac{y^5}{5}\right]_0^2=32-\frac{32}{5}=\frac{128}{5}.$$ So $V=\dfrac{128\pi}{5}$.
+MICRO:
+  A: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  B: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  C: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+  D: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+
+--- 8.11-P5 [1/1] [Both] ---
+PROMPT: The region bounded by $y=\dfrac{1}{x}$, $y=0$, $x=1$, and $x=3$ is revolved about the $x$-axis. What is the volume?
+CORRECT: A = "$\dfrac{2\pi}{3}$"
+  A ✓: $\dfrac{2\pi}{3}$
+  B : $2\pi$
+  C : $\dfrac{\pi}{3}$
+  D : $\dfrac{4\pi}{3}$
+EXPLANATION: Washer (disk) method about the $x$-axis: $$V=\pi\int_1^3\left(\frac{1}{x}\right)^2dx=\pi\int_1^3 x^{-2}dx=\pi\left[-\frac{1}{x}\right]_1^3=\pi\left(1-\frac{1}{3}\right)=\frac{2\pi}{3}.$$
+MICRO:
+  A: Correct. Volume formulas (Disk, Washer, Cross-sections) require integrating the area function $A(x)$ or $A(y)$.
+  B: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  C: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+  D: Incorrect. Verify if you need the Disk method (pi * $R^2$) or Washer method (pi * ($R^2$ - $r^2$)) and check the axis of rotation.
+
+--- 8.12-P1 [5/5] [Both] ---
+PROMPT: The region bounded by $y=\sqrt{x}$ and $y=0$ for $0\le x\le 4$ is revolved about the line $y=1$. What is the volume?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$\dfrac{8\pi}{3}$"
+  A : $\dfrac{16\pi}{3}$
+  B : $4\pi$
+  C : $\dfrac{10\pi}{3}$
+  D ✓: $\dfrac{8\pi}{3}$
+EXPLANATION: Revolve about $y=1$. With vertical slices, distances to the axis are $1$ and $|\sqrt{x}-1|$, so washer area is $$\pi\left(1^2-(|\sqrt{x}-1|)^2\right)=\pi\left(1-(\sqrt{x}-1)^2\right).$$ Simplify: $1-(\sqrt{x}-1)^2=2\sqrt{x}-x$. Thus $$V=\pi\int_0^4(2\sqrt{x}-x)\,dx=\pi\left[\frac{4}{3}x^{\frac{3}{2}}-\frac{x^2}{2}\right]_0^4=\pi\left(\frac{32}{3}-8\right)=\frac{8\pi}{3}.$$
+MICRO:
+  A: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  B: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  C: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  D: Correct. Arc length is the integral of sqrt(1 + [$f'(x)$]^2) over the interval.
+
+--- 8.12-P2 [4/4] [Both] ---
+PROMPT: The region bounded by $y=2$, $y=x^2$, and $0\le x\le 1$ is revolved about the line $y=-1$. What is the volume?
+CORRECT: C = "$\dfrac{107\pi}{15}$"
+  A : $\dfrac{32\pi}{15}$
+  B : $\dfrac{53\pi}{15}$
+  C ✓: $\dfrac{107\pi}{15}$
+  D : $\dfrac{107\pi}{5}$
+EXPLANATION: About $y=-1$, outer radius to $y=2$ is $R=3$ and inner radius to $y=x^2$ is $r=x^2+1$. $$V=\pi\int_0^1\left(R^2-r^2\right)dx=\pi\int_0^1\left(9-(x^2+1)^2\right)dx.$$ Since $(x^2+1)^2=x^4+2x^2+1$, integrand is $8-2x^2-x^4$. $$\int_0^1(8-2x^2-x^4)\,dx=\left[8x-\frac{2}{3}x^3-\frac{1}{5}x^5\right]_0^1=8-\frac{2}{3}-\frac{1}{5}=\frac{107}{15}.$$ So $V=\dfrac{107\pi}{15}$.
+MICRO:
+  A: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  B: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  C: Correct. Arc length is the integral of sqrt(1 + [$f'(x)$]^2) over the interval.
+  D: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+
+--- 8.12-P3 [5/5] [Both] ---
+PROMPT: The region bounded by $y=\ln x$ and $y=0$ for $1\le x\le e$ is revolved about the line $x=-1$. What is the volume?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$\pi\left(\dfrac{e^2-1}{2}+2e-5\right)$"
+  A : $\pi\left(\dfrac{e^2-1}{2}+e-5\right)$
+  B : $\pi\left(\dfrac{e^2-1}{2}+2e-2\right)$
+  C : $\pi\left(\dfrac{e^2-1}{2}+2e-3\right)$
+  D ✓: $\pi\left(\dfrac{e^2-1}{2}+2e-5\right)$
+EXPLANATION: Rotate about $x=-1$ using washers with $dy$. Since $y=\ln x$, write $x=e^y$, and $y$ runs from $0$ to $1$. Left boundary is $x=1$. Radii are distances to $x=-1$: $R(y)=e^y+1$, $r(y)=2$. $$V=\pi\int_0^1\left((e^y+1)^2-2^2\right)dy=\pi\int_0^1\left(e^{2y}+2e^y-3\right)dy.$$ $$\int_0^1\left(e^{2y}+2e^y-3\right)dy=\left[\frac{1}{2}e^{2y}+2e^y-3y\right]_0^1=\frac{e^2-1}{2}+2(e-1)-3.$$ Hence $V=\pi\left(\frac{e^2-1}{2}+2e-5\right)$.
+MICRO:
+  A: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  B: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  C: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  D: Correct. Arc length is the integral of sqrt(1 + [$f'(x)$]^2) over the interval.
+
+--- 8.12-P4 [3/3] [Both] ---
+PROMPT: The region bounded by $x=0$, $x=y+1$, $y=0$, and $y=2$ is revolved about the line $x=2$. What is the volume?
+CORRECT: A = "$\dfrac{22\pi}{3}$"
+  A ✓: $\dfrac{22\pi}{3}$
+  B : $\dfrac{20\pi}{3}$
+  C : $\dfrac{26\pi}{3}$
+  D : $8\pi$
+EXPLANATION: Use washers with $dy$ about $x=2$. For $y\in[0,2]$, segment runs from $x=0$ to $x=y+1$. Outer radius is $R=|2-0|=2$. Inner radius is $r=|2-(y+1)|=|1-y|$. $$V=\pi\int_0^2\left(R^2-r^2\right)dy=\pi\int_0^2\left(4-(1-y)^2\right)dy.$$ $$\int_0^2 (1-y)^2dy=\left[\frac{(y-1)^3}{3}\right]_0^2=\frac{1-(-1)}{3}=\frac{2}{3}.$$ Thus $V=\pi\left(8-\frac{2}{3}\right)=\frac{22\pi}{3}$.
+MICRO:
+  A: Correct. Arc length is the integral of sqrt(1 + [$f'(x)$]^2) over the interval.
+  B: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  C: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  D: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+
+--- 8.12-P5 [2/3] [Both] ---
+PROMPT: The region bounded by $y=x$, $y=0$, and $0\le x\le 2$ is revolved about the line $y=3$. What is the volume?
+CORRECT: B = "$\dfrac{28\pi}{3}$"
+  A : $\dfrac{20\pi}{3}$
+  B ✓: $\dfrac{28\pi}{3}$
+  C : $\dfrac{10\pi}{3}$
+  D : $\dfrac{26\pi}{3}$
+EXPLANATION: About $y=3$, outer radius to $y=0$ is $R=3$, inner radius to $y=x$ is $r=3-x$. $$V=\pi\int_0^2\left(R^2-r^2\right)dx=\pi\int_0^2\left(9-(3-x)^2\right)dx.$$ Since $9-(3-x)^2=6x-x^2$, $$V=\pi\int_0^2(6x-x^2)\,dx=\pi\left[3x^2-\frac{x^3}{3}\right]_0^2=\pi\left(12-\frac{8}{3}\right)=\frac{28\pi}{3}.$
+MICRO:
+  A: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  B: Correct. Arc length is the integral of sqrt(1 + [$f'(x)$]^2) over the interval.
+  C: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+  D: Incorrect. Review the arc length formula and ensure your derivative $f'(x)$ is correctly squared inside the square root.
+
+--- 8.13-P1 [2/2] [BC] ---
+PROMPT: The curve is given parametrically by $x=\cos t$ and $y=\sin t$ for $0\le t\le \frac{\pi}{2}$. The graph is shown in the figure labeled 8.13-P1. What is the exact arc length of the curve on this interval?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$\frac{\pi}{2}$"
+  A : $1$
+  B ✓: $\frac{\pi}{2}$
+  C : $\pi$
+  D : $2$
+EXPLANATION: Use parametric arc length: $$L=\int_{0}^{\frac{\pi}{2}}\sqrt{\left(\frac{dx}{dt}\right)^2+\left(\frac{dy}{dt}\right)^2}\,dt.$$ Here $\frac{dx}{dt}=-\sin t$ and $\frac{dy}{dt}=\cos t$, so the integrand is $\sqrt{\sin^2 t+\cos^2 t}=1$. Thus $$L=\int_0^{\frac{\pi}{2}}1\,dt=\frac{\pi}{2}.$$ 
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Correct. This application of integration follows the standard geometric and physical principles.
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.13-P2 [4/3] [BC] ---
+PROMPT: A curve is given parametrically by $x=t^2$ and $y=\frac{2}{3}t^3$ for $0\le t\le 1$. What is the exact arc length of the curve on this interval?
+CORRECT: A = "$\frac{2}{3}\left(2\sqrt{2}-1\right)$"
+  A ✓: $\frac{2}{3}\left(2\sqrt{2}-1\right)$
+  B : $\frac{2}{3}$
+  C : $\frac{2}{3}\left(2\sqrt{2}+1\right)$
+  D : $\frac{2}{3}\left(\sqrt{2}-1\right)$
+EXPLANATION: Compute derivatives: $\frac{dx}{dt}=2t$ and $\frac{dy}{dt}=2t^2$. Then $$L=\int_0^1\sqrt{(2t)^2+(2t^2)^2}\,dt=\int_0^1 2t\sqrt{1+t^2}\,dt.$$ Let $u=1+t^2$, so $du=2t\,dt$. When $t=0$, $u=1$; when $t=1$, $u=2$. Thus $$L=\int_1^2\sqrt{u}\,du=\left[\frac{2}{3}u^{\frac{3}{2}}\right]_1^2=\frac{2}{3}\left(2\sqrt{2}-1\right).$$ 
+MICRO:
+  A: Correct. This application of integration follows the standard geometric and physical principles.
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.13-P3 [3/2] [BC] ---
+PROMPT: A particle moves along a line with velocity $v(t)$ shown in the figure labeled 8.13-P3. What is the total distance traveled from $t=0$ to $t=6$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$7$"
+  A : $3$
+  B : $5$
+  C ✓: $7$
+  D : $8$
+EXPLANATION: Total distance traveled is $$\int_0^6 |v(t)|\,dt.$$ From the graph: $v=2$ on $[0,2]$, $v=-1$ on $[2,4]$, and $v=0.5$ on $[4,6]$. So $$\int_0^2 2\,dt+\int_2^4 1\,dt+\int_4^6 0.5\,dt=4+2+1=7.$$ 
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Correct. This application of integration follows the standard geometric and physical principles.
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+
+--- 8.13-P4 [5/4] [BC] ---
+PROMPT: Find the exact arc length of $y=x^2$ on the interval $0\le x\le 1$.
+CORRECT: D = "$\frac{1}{4}\left(2\sqrt{5}+\ln\left(2+\sqrt{5}\right)\right)$"
+  A : $\frac{1}{4}\left(2\sqrt{5}-\ln\left(2+\sqrt{5}\right)\right)$
+  B : $\sqrt{5}$
+  C : $\frac{7}{3}$
+  D ✓: $\frac{1}{4}\left(2\sqrt{5}+\ln\left(2+\sqrt{5}\right)\right)$
+EXPLANATION: For $y=x^2$, we have $y'=2x$, so $$L=\int_0^1\sqrt{1+(2x)^2}\,dx=\int_0^1\sqrt{1+4x^2}\,dx.$$ A standard antiderivative is $$\int\sqrt{1+4x^2}\,dx=\frac{x}{2}\sqrt{1+4x^2}+\frac{1}{4}\ln\left(2x+\sqrt{1+4x^2}\right)+C.$$ Evaluating from $0$ to $1$ gives $$L=\frac{1}{4}\left(2\sqrt{5}+\ln\left(2+\sqrt{5}\right)\right).$$ 
+MICRO:
+  A: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Correct. This application of integration follows the standard geometric and physical principles.
+
+--- 8.13-P5 [3/3] [BC] ---
+PROMPT: A particle's position is $s(t)=t^3-6t^2+9t$ for $0\le t\le 4$. What is the total distance traveled on $[0,4]$?
+CORRECT: A = "$12$"
+  A ✓: $12$
+  B : $4$
+  C : $8$
+  D : $0$
+EXPLANATION: Velocity is $v(t)=s'(t)=3t^2-12t+9=3(t-1)(t-3)$, so sign changes occur at $t=1$ and $t=3$. Compute positions: $s(0)=0$, $s(1)=4$, $s(3)=0$, and $s(4)=4$. Total distance is $$|s(1)-s(0)|+|s(3)-s(1)|+|s(4)-s(3)|=|4-0|+|0-4|+|4-0|=12.$$ 
+MICRO:
+  A: Correct. This application of integration follows the standard geometric and physical principles.
+  B: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  C: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).
+  D: Incorrect. Re-evaluate the setup of the integral, including bounds, integrand, and differential (dx or dy).

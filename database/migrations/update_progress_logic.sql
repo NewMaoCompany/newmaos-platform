@@ -122,7 +122,7 @@ BEGIN
         COUNT(*)
     INTO v_practice_score, v_practice_count
     FROM sections s
-    LEFT JOIN user_section_progress usp ON s.id = usp.section_id AND usp.user_id = p_user_id
+    LEFT JOIN user_section_progress usp ON s.id = usp.section_id AND usp.user_id = p_user_id AND usp.status = 'completed'
     WHERE s.topic_id = p_topic_id 
       AND (s.is_unit_test = false);
 
@@ -136,7 +136,7 @@ BEGIN
         COUNT(*) > 0
     INTO v_test_score, v_test_found
     FROM sections s
-    LEFT JOIN user_section_progress usp ON s.id = usp.section_id AND usp.user_id = p_user_id
+    LEFT JOIN user_section_progress usp ON s.id = usp.section_id AND usp.user_id = p_user_id AND usp.status = 'completed'
     WHERE s.topic_id = p_topic_id 
       AND s.is_unit_test = true;
 

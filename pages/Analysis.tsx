@@ -373,7 +373,7 @@ export const Analysis = () => {
     const displayStreak = isStreakValid ? (profile?.streak_days || 0) : 0;
 
     return (
-        <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-x-auto overflow-y-hidden">
+        <div className="h-full w-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-x-hidden overflow-y-hidden">
             {/* Pro Gate */}
             {!isPro && location.pathname === '/analysis' && <ProGateOverlay featureName="Analysis" />}
             {/* Global Style overrides for Charts */}

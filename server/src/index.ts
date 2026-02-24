@@ -15,9 +15,11 @@ import notificationsRoutes from './routes/notifications';
 import sectionsRoutes from './routes/sections';
 import uploadRoutes from './routes/upload';
 import { initEmailScheduler } from './services/emailScheduler';
+import { initNotificationScheduler } from './services/notificationScheduler';
 
 // Initialize Cron Jobs
 initEmailScheduler();
+initNotificationScheduler();
 
 const app = express();
 const PORT = process.env.PORT || 4000;

@@ -94,13 +94,13 @@ export const PrestigePage = () => {
     const [balanceChanges, setBalanceChanges] = useState<{ id: number; type: 'points' | 'stardust'; amount: number; location: string }[]>([]);
 
     const costs = useMemo(() => {
-        const base = 100 * Math.pow(5, level - 1);
+        const base = 300 * Math.pow(3, level - 1);
         return [
             base,       // 0 -> 1 star
-            base * 2.5, // 1 -> 2 stars
-            base * 5,   // 2 -> 3 stars
-            base * 10,  // 3 -> 4 stars (Next Level Ready)
-            base * 10   // Fallback
+            base * 1.5, // 1 -> 2 stars
+            base * 2,   // 2 -> 3 stars
+            base * 3,   // 3 -> 4 stars (Next Level Ready)
+            base * 3    // Fallback
         ];
     }, [level]);
 
@@ -271,7 +271,7 @@ export const PrestigePage = () => {
         setPrevTranslate(finalTranslate);
 
         if (containerRef.current) {
-            containerRef.current.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            containerRef.current.style.transition = 'transform 2.0s cubic-bezier(0.16, 1, 0.3, 1)';
         }
     };
 
@@ -292,7 +292,7 @@ export const PrestigePage = () => {
         setCurrentTranslate(finalTranslate);
         setPrevTranslate(finalTranslate);
         if (containerRef.current) {
-            containerRef.current.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            containerRef.current.style.transition = 'transform 2.0s cubic-bezier(0.16, 1, 0.3, 1)';
         }
     };
 
@@ -322,7 +322,7 @@ export const PrestigePage = () => {
 
                 // Animate
                 if (containerRef.current) {
-                    containerRef.current.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+                    containerRef.current.style.transition = 'transform 2.5s cubic-bezier(0.16, 1, 0.3, 1)';
                 }
 
                 // Set cooldown
@@ -333,7 +333,7 @@ export const PrestigePage = () => {
 
     return (
         <div
-            className="fixed inset-0 w-full h-[100dvh] bg-black text-white font-sans flex flex-col select-none"
+            className="fixed inset-0 w-full h-[100dvh] bg-black text-white font-sans flex flex-col select-none animate-fade-in-slow"
             style={{ overscrollBehavior: 'none' }}
             onWheel={handleWheelOptimized}
         >

@@ -1,0 +1,707 @@
+UNIT 3 MATHEMATICAL REVIEW (50 questions)
+============================================================
+
+--- 3.0-UT-Q1 [2/2] [Both] ---
+PROMPT: Let $f(x)=(3x-2)^7$. What is $f'(x)$?
+CORRECT: C = "$21(3x-2)^6$"
+  A : $63(3x-2)^6$
+  B : $7(3x-2)^6$
+  C ✓: $21(3x-2)^6$
+  D : $21(3x-2)^7$
+EXPLANATION: Use the chain rule: $$f'(x)=7(3x-2)^6\cdot 3=21(3x-2)^6.$$
+MICRO:
+  A: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  B: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  C: Correct. According to the Chain Rule, you must first differentiate the outer function while keeping the inner function intact, then multiply by the de
+  D: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+
+--- 3.0-UT-Q2 [3/3] [Both] ---
+PROMPT: Find $\frac{d}{dx}\left[x^2\sin(5x)\right]$.
+CORRECT: B = "$2x\sin(5x)+5x^2\cos(5x)$"
+  A : $2x\sin(5x)+x^2\cos(5x)$
+  B ✓: $2x\sin(5x)+5x^2\cos(5x)$
+  C : $2x\cos(5x)+5x^2\sin(5x)$
+  D : $x^2\cos(5x)$
+EXPLANATION: Use product rule: $$(x^2)'\sin(5x)+x^2(\sin(5x))'=2x\sin(5x)+x^2\big(\cos(5x)\cdot 5\big)=2x\sin(5x)+5x^2\cos(5x).$$
+MICRO:
+  A: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  B: Correct. According to the Chain Rule, you must first differentiate the outer function while keeping the inner function intact, then multiply by the de
+  C: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  D: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+
+--- 3.0-UT-Q3 [4/3] [Both] ---
+PROMPT: Given $x^2+y^2=25$, find $\frac{dy}{dx}$ in terms of $x$ and $y$.
+CORRECT: A = "$-\frac{x}{y}$"
+  A ✓: $-\frac{x}{y}$
+  B : $-\frac{y}{x}$
+  C : $\frac{x}{y}$
+  D : $-\frac{2x}{y}$
+EXPLANATION: Differentiate implicitly: $$2x+2y\frac{dy}{dx}=0\Rightarrow \frac{dy}{dx}=-\frac{x}{y}.$$
+MICRO:
+  A: This is correct: $2x+2y\frac{dy}{dx}=0\Rightarrow \frac{dy}{dx}=-\frac{x}{y}$.
+  B: This inverts the ratio when solving for $\frac{dy}{dx}$.
+  C: This drops the negative sign when isolating $\frac{dy}{dx}$.
+  D: This mishandles the common factor $2$ when solving.
+
+--- 3.0-UT-Q4 [3/3] [Both] ---
+PROMPT: If $f(2)=7$ and $f'(2)=-4$, what is $(f^{-1})'(7)$?
+CORRECT: C = "$-\frac{1}{4}$"
+  A : $-4$
+  B : $\frac{1}{4}$
+  C ✓: $-\frac{1}{4}$
+  D : $\frac{1}{7}$
+EXPLANATION: Use $(f^{-1})'(f(a))=\frac{1}{f'(a)}$. Since $f(2)=7$, $$(f^{-1})'(7)=\frac{1}{f'(2)}=\frac{1}{-4}=-\frac{1}{4}.$$
+MICRO:
+  A: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  B: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  C: Correct. Implicit differentiation requires attaching a dy/dx term whenever you differentiate a term containing y, then solving algebraically.
+  D: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+
+--- 3.0-UT-Q5 [4/4] [Both] ---
+PROMPT: Use the graph of $y=f(x)$ and its tangent line at $(1,2)$ (see image). What is $(f^{-1})'(2)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$-\frac{1}{2}$"
+  A ✓: $-\frac{1}{2}$
+  B : $2$
+  C : $-2$
+  D : $\frac{1}{2}$
+EXPLANATION: From the tangent line in the image, $f'(1)=-2$ and $f(1)=2$. Therefore, $$(f^{-1})'(2)=\frac{1}{f'(1)}=\frac{1}{-2}=-\frac{1}{2}.$$
+MICRO:
+  A: Correct. The derivative of an inverse function is g'(x) = 1 / f'(g(x)). This option correctly applies that reciprocal relationship.
+  B: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  C: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  D: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+
+--- 3.0-UT-Q6 [2/2] [Both] ---
+PROMPT: Find $\frac{d}{dx}\left[\arctan(3x)\right]$.
+CORRECT: B = "$\frac{3}{1+9x^2}$"
+  A : $\frac{1}{1+9x^2}$
+  B ✓: $\frac{3}{1+9x^2}$
+  C : $\frac{3}{\sqrt{1-9x^2}}$
+  D : $\frac{1}{\sqrt{1+9x^2}}$
+EXPLANATION: Let $u=3x$. Then $$\frac{d}{dx}\arctan(u)=\frac{u'}{1+u^2}=\frac{3}{1+9x^2}.$$
+MICRO:
+  A: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  B: Correct. The derivative of an inverse function is g'(x) = 1 / f'(g(x)). This option correctly applies that reciprocal relationship.
+  C: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  D: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+
+--- 3.0-UT-Q7 [5/4] [Both] ---
+PROMPT: If $\arcsin(y)=x^2-1$, find $\frac{dy}{dx}$ in terms of $x$ and $y$.
+CORRECT: B = "$2x\sqrt{1-y^2}$"
+  A : $\frac{2x}{\sqrt{1-y^2}}$
+  B ✓: $2x\sqrt{1-y^2}$
+  C : $\frac{2x\sqrt{1-y^2}}{y}$
+  D : $\frac{2}{\sqrt{1-y^2}}$
+EXPLANATION: Differentiate implicitly: $$\frac{1}{\sqrt{1-y^2}}\frac{dy}{dx}=2x\Rightarrow \frac{dy}{dx}=2x\sqrt{1-y^2}.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.0-UT-Q8 [3/3] [Both] ---
+PROMPT: Which approach is most efficient to differentiate $h(x)=\frac{(x^2-1)(x^2+1)}{x^2}$?
+CORRECT: C = "Algebraically simplify $h(x)$ first, then differentiate."
+  A : Use the quotient rule directly on the given form.
+  B : Use the product rule on $(x^2-1)(x^2+1)$, then divide by $x^2$.
+  C ✓: Algebraically simplify $h(x)$ first, then differentiate.
+  D : Use logarithmic differentiation because there is a product and quotient.
+EXPLANATION: Simplify first: $$(x^2-1)(x^2+1)=x^4-1,\quad h(x)=\frac{x^4-1}{x^2}=x^2-x^{-2}.$$ Then differentiate term-by-term.
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.0-UT-Q9 [2/2] [Both] ---
+PROMPT: Find $\frac{d}{dx}\left[e^{\sin x}\right]$.
+CORRECT: C = "$e^{\sin x}\cos x$"
+  A : $e^{\sin x}\sin x$
+  B : $e^{\cos x}$
+  C ✓: $e^{\sin x}\cos x$
+  D : $\cos x$
+EXPLANATION: Let $u=\sin x$. Then $$\frac{d}{dx}e^{u}=e^{u}u'=e^{\sin x}\cos x.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.0-UT-Q10 [5/5] [Both] ---
+PROMPT: If $x\cos y=y^2$ and $(0,0)$ lies on the curve, what is the slope of the tangent line at $(0,0)$?
+CORRECT: D = "Does not exist"
+  A : $0$
+  B : $1$
+  C : $-1$
+  D ✓: Does not exist
+EXPLANATION: Differentiate implicitly: $$\frac{d}{dx}(x\cos y)=\cos y-x\sin y\frac{dy}{dx},\quad \frac{d}{dx}(y^2)=2y\frac{dy}{dx}.$$ So $$\cos y-x\sin y\frac{dy}{dx}=2y\frac{dy}{dx}.$$ At $(0,0)$ this becomes $1=0$, impossible for any finite $\frac{dy}{dx}$. Therefore, a finite tangent slope at $(0,0)$ does not exist.
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+
+--- 3.0-UT-Q11 [3/3] [Both] ---
+PROMPT: Let $f(x)=\cos(2x)$. What is $f''(x)$?
+CORRECT: C = "$-4\cos(2x)$"
+  A : $-2\cos(2x)$
+  B : $4\cos(2x)$
+  C ✓: $-4\cos(2x)$
+  D : $-4\sin(2x)$
+EXPLANATION: First derivative: $f'(x)=-2\sin(2x)$. Second derivative: $$f''(x)=-2\cos(2x)\cdot 2=-4\cos(2x).$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.0-UT-Q12 [2/2] [Both] ---
+PROMPT: Which method is most appropriate to differentiate $y=x^x$ for $x>0$?
+CORRECT: D = "Logarithmic differentiation"
+  A : Power rule
+  B : Derivative of an inverse function
+  C : Quotient rule
+  D ✓: Logarithmic differentiation
+EXPLANATION: Logarithmic differentiation is appropriate because both the base and exponent vary: $$\ln y=x\ln x.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+
+--- 3.0-UT-Q13 [5/4] [Both] ---
+PROMPT: For $x>0$, if $y=x^x$, what is $\frac{dy}{dx}$?
+CORRECT: B = "$x^x(\ln x+1)$"
+  A : $x^{x-1}$
+  B ✓: $x^x(\ln x+1)$
+  C : $x^x\ln x$
+  D : $\ln x+1$
+EXPLANATION: Take logs: $\ln y=x\ln x$. Differentiate: $$\frac{1}{y}\frac{dy}{dx}=\ln x+1\Rightarrow \frac{dy}{dx}=x^x(\ln x+1).$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.0-UT-Q14 [4/4] [Both] ---
+PROMPT: Find $\frac{dy}{dx}$ if $x^2y+\sin y=3$.
+CORRECT: D = "$-\frac{2xy}{x^2+\cos y}$"
+  A : $-\frac{2xy}{x^2-\cos y}$
+  B : $\frac{2xy}{x^2+\cos y}$
+  C : $-\frac{2x}{x^2+\cos y}$
+  D ✓: $-\frac{2xy}{x^2+\cos y}$
+EXPLANATION: Differentiate: $$(x^2y)'=2xy+x^2\frac{dy}{dx},\quad (\sin y)'=\cos y\frac{dy}{dx}.$$ So $$2xy+(x^2+\cos y)\frac{dy}{dx}=0\Rightarrow \frac{dy}{dx}=-\frac{2xy}{x^2+\cos y}.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+
+--- 3.0-UT-Q15 [2/2] [Both] ---
+PROMPT: Find $\frac{d}{dx}\left[\arccos x\right]$.
+CORRECT: D = "$-\frac{1}{\sqrt{1-x^2}}$"
+  A : $\frac{1}{\sqrt{1-x^2}}$
+  B : $-\frac{1}{1+x^2}$
+  C : $\frac{1}{1+x^2}$
+  D ✓: $-\frac{1}{\sqrt{1-x^2}}$
+EXPLANATION: Recall the standard derivative: $$\frac{d}{dx}(\arccos x)=-\frac{1}{\sqrt{1-x^2}}.$$
+MICRO:
+  A: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  B: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  C: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  D: Correct. According to the Chain Rule, you must first differentiate the outer function while keeping the inner function intact, then multiply by the de
+
+--- 3.0-UT-Q16 [4/3] [Both] ---
+PROMPT: Find $\frac{d}{dx}\left[\arcsin(x^3)\right]$.
+CORRECT: B = "$\frac{3x^2}{\sqrt{1-x^6}}$"
+  A : $\frac{1}{\sqrt{1-x^6}}$
+  B ✓: $\frac{3x^2}{\sqrt{1-x^6}}$
+  C : $\frac{3x^2}{\sqrt{1-x^2}}$
+  D : $-\frac{3x^2}{\sqrt{1-x^6}}$
+EXPLANATION: Let $u=x^3$. Then $u'=3x^2$ and $$\frac{d}{dx}\arcsin(u)=\frac{u'}{\sqrt{1-u^2}}=\frac{3x^2}{\sqrt{1-x^6}}.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.0-UT-Q17 [4/4] [Both] ---
+PROMPT: The curve is $x^2+xy+y^2=7$ with the point $(2,1)$ marked (see image). What is the slope of the tangent line at $(2,1)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$-\frac{5}{4}$"
+  A ✓: $-\frac{5}{4}$
+  B : $-\frac{4}{5}$
+  C : $\frac{5}{4}$
+  D : $-\frac{3}{4}$
+EXPLANATION: Differentiate: $$2x+\frac{d}{dx}(xy)+2y\frac{dy}{dx}=0,\quad \frac{d}{dx}(xy)=y+x\frac{dy}{dx}.$$ So $$(2x+y)+(x+2y)\frac{dy}{dx}=0.$$ At $(2,1)$: $$5+4\frac{dy}{dx}=0\Rightarrow \frac{dy}{dx}=-\frac{5}{4}.$$
+MICRO:
+  A: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.0-UT-Q18 [3/3] [Both] ---
+PROMPT: To differentiate $p(x)=\frac{\ln(1+x^2)}{x}$, which set of rules is necessary in a straightforward approach?
+CORRECT: A = "Quotient rule and chain rule"
+  A ✓: Quotient rule and chain rule
+  B : Only the power rule
+  C : Product rule only
+  D : Implicit differentiation
+EXPLANATION: A direct method treats $p(x)$ as a quotient and differentiates the numerator using chain rule for $\ln(1+x^2)$.
+MICRO:
+  A: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.0-UT-Q19 [2/2] [Both] ---
+PROMPT: If $y=x^3$, what is $\frac{d^2y}{dx^2}$?
+CORRECT: D = "$6x$"
+  A : $3x^2$
+  B : $6$
+  C : $6x^2$
+  D ✓: $6x$
+EXPLANATION: Differentiate twice: $$\frac{dy}{dx}=3x^2,\quad \frac{d^2y}{dx^2}=6x.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+
+--- 3.0-UT-Q20 [5/5] [Both] ---
+PROMPT: Given $y^2=x$, find $\frac{d^2y}{dx^2}$ in terms of $y$.
+CORRECT: A = "$-\frac{1}{4y^3}$"
+  A ✓: $-\frac{1}{4y^3}$
+  B : $\frac{1}{4y^3}$
+  C : $-\frac{1}{2y^3}$
+  D : $-\frac{1}{4y^2}$
+EXPLANATION: Differentiate $y^2=x$: $$2y\frac{dy}{dx}=1\Rightarrow \frac{dy}{dx}=\frac{1}{2y}.$$ Differentiate again: $$\frac{d^2y}{dx^2}=\frac{d}{dx}\left(\frac{1}{2}y^{-1}\right)=\frac{1}{2}(-1)y^{-2}\frac{dy}{dx}=-\frac{1}{2y^2}\cdot\frac{1}{2y}=-\frac{1}{4y^3}.$$
+MICRO:
+  A: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.1-P1 [2/2] [Both] ---
+PROMPT: Let $f(x)=e^{(3x^2-5x)^4}$. What is $f'(x)$?
+CORRECT: C = "$4(6x-5)(3x^2-5x)^3e^{(3x^2-5x)^4}$"
+  A : $e^{(3x^2-5x)^4}(12x-5)$
+  B : $4(6x-5)e^{(3x^2-5x)^4}$
+  C ✓: $4(6x-5)(3x^2-5x)^3e^{(3x^2-5x)^4}$
+  D : $4(12x-5)(3x^2-5x)^3e^{(3x^2-5x)^4}$
+EXPLANATION: Let $u=(3x^2-5x)^4$. Then $f(x)=e^{u}$ so $f'(x)=e^{u}u'$. Also $u'=4(3x^2-5x)^3(6x-5)$. Therefore $$f'(x)=4(6x-5)(3x^2-5x)^3e^{(3x^2-5x)^4}.$$
+MICRO:
+  A: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  B: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  C: Correct. According to the Chain Rule, you must first differentiate the outer function while keeping the inner function intact, then multiply by the de
+  D: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+
+--- 3.1-P2 [3/3] [Both] ---
+PROMPT: Let $g(x)=x^2\sin(5x^3)$. What is $g'(x)$?
+CORRECT: B = "$2x\sin(5x^3)+15x^4\cos(5x^3)$"
+  A : $2x\sin(5x^3)+15x^2\cos(5x^3)$
+  B ✓: $2x\sin(5x^3)+15x^4\cos(5x^3)$
+  C : $2x\sin(5x^3)+5x^2\cos(5x^3)$
+  D : $2x\cos(5x^3)+15x^4\sin(5x^3)$
+EXPLANATION: Use product rule: $g'(x)=(x^2)'\sin(5x^3)+x^2(\sin(5x^3))'$. Compute $(x^2)'=2x$ and $(\sin(5x^3))'=\cos(5x^3)\cdot 15x^2$. Thus $$g'(x)=2x\sin(5x^3)+15x^4\cos(5x^3).$$
+MICRO:
+  A: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  B: Correct. According to the Chain Rule, you must first differentiate the outer function while keeping the inner function intact, then multiply by the de
+  C: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  D: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+
+--- 3.1-P3 [4/4] [Both] ---
+PROMPT: If $h(x)=\left(\cos(2x-1)\right)^5$, what is $h'\!\left(\tfrac{\pi}{2}\right)$?
+CORRECT: A = "$-10\left(\cos(\pi-1)\right)^4\sin(\pi-1)$"
+  A ✓: $-10\left(\cos(\pi-1)\right)^4\sin(\pi-1)$
+  B : $0$
+  C : $10\left(\cos(\pi-1)\right)^4\sin(\pi-1)$
+  D : $-5\left(\cos(\pi-1)\right)^4\sin(\pi-1)$
+EXPLANATION: Differentiate: $$h'(x)=5(\cos(2x-1))^4\cdot(-\sin(2x-1))\cdot 2=-10(\cos(2x-1))^4\sin(2x-1).$$ At $x=\tfrac{\pi}{2}$, $2x-1=\pi-1$, so $$h'\!\left(\tfrac{\pi}{2}\right)=-10\left(\cos(\pi-1)\right)^4\sin(\pi-1).$$
+MICRO:
+  A: Correct. According to the Chain Rule, you must first differentiate the outer function while keeping the inner function intact, then multiply by the de
+  B: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  C: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  D: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+
+--- 3.1-P4 [1/1] [Both] ---
+PROMPT: Let $p(x)=(7-4x)^{9}$. What is $p'(x)$?
+CORRECT: A = "$-36(7-4x)^8$"
+  A ✓: $-36(7-4x)^8$
+  B : $9(7-4x)^8$
+  C : $36(7-4x)^8$
+  D : $-4(7-4x)^9$
+EXPLANATION: Using chain rule: $$p'(x)=9(7-4x)^8\cdot(7-4x)'=9(7-4x)^8\cdot(-4)=-36(7-4x)^8.$$
+MICRO:
+  A: Correct. According to the Chain Rule, you must first differentiate the outer function while keeping the inner function intact, then multiply by the de
+  B: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  C: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+  D: Incorrect. Please check if you missed the derivative of the 'inner function' or if there was a logical error in handling multiple layers of nesting.
+
+--- 3.1-P5 [3/3] [Both] ---
+PROMPT: Let $q(x)=\ln\big(\sin(x^2+1)\big)$. Which expression equals $q'(x)$?
+CORRECT: D = "$\dfrac{2x\cos(x^2+1)}{\sin(x^2+1)}$"
+  A : $\dfrac{\cos(x^2+1)}{\sin(x^2+1)}$
+  B : $\dfrac{-2x\cos(x^2+1)}{\sin(x^2+1)}$
+  C : $\dfrac{2x\sin(x^2+1)}{\cos(x^2+1)}$
+  D ✓: $\dfrac{2x\cos(x^2+1)}{\sin(x^2+1)}$
+EXPLANATION: Let $u=\sin(x^2+1)$. Then $q(x)=\ln u$ so $q'(x)=\dfrac{u'}{u}$. Also $u'=\cos(x^2+1)\cdot 2x$. Thus $$q'(x)=\frac{2x\cos(x^2+1)}{\sin(x^2+1)}.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+
+--- 3.2-P1 [2/2] [Both] ---
+PROMPT: Given $x^2y+3y=7$, what is $\dfrac{dy}{dx}$ in terms of $x$ and $y$?
+CORRECT: D = "$-\dfrac{2xy}{x^2+3}$"
+  A : $\dfrac{2xy}{x^2+3}$
+  B : $-\dfrac{2x}{x^2+3}$
+  C : $-\dfrac{2xy}{x^2}$
+  D ✓: $-\dfrac{2xy}{x^2+3}$
+EXPLANATION: Differentiate implicitly: $(x^2y)'+(3y)'=0$. Product rule gives $2xy+x^2y'$, and $(3y)'=3y'$. Thus $2xy+(x^2+3)y'=0$, so $$\frac{dy}{dx}=y'=-\frac{2xy}{x^2+3}.$$
+MICRO:
+  A: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  B: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  C: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  D: Correct. Implicit differentiation requires attaching a dy/dx term whenever you differentiate a term containing y, then solving algebraically.
+
+--- 3.2-P2 [3/4] [Both] ---
+PROMPT: If $\sin(xy)=x$, what is $\dfrac{dy}{dx}$?
+CORRECT: B = "$\dfrac{1-y\cos(xy)}{x\cos(xy)}$"
+  A : $\dfrac{y\cos(xy)-1}{x\cos(xy)}$
+  B ✓: $\dfrac{1-y\cos(xy)}{x\cos(xy)}$
+  C : $\dfrac{1-y\cos(xy)}{\cos(xy)}$
+  D : $\dfrac{1-y\sin(xy)}{x\cos(xy)}$
+EXPLANATION: Differentiate: $(\sin(xy))'=\cos(xy)\cdot(xy)'=1$. Since $(xy)'=y+xy'$, we have $(y+xy')\cos(xy)=1$. Thus $$y'=\frac{1-y\cos(xy)}{x\cos(xy)}.$$
+MICRO:
+  A: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  B: Correct. Implicit differentiation requires attaching a dy/dx term whenever you differentiate a term containing y, then solving algebraically.
+  C: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  D: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+
+--- 3.2-P3 [4/5] [Both] ---
+PROMPT: The curve is defined implicitly by $x^2+y^2=25$. What is $\dfrac{d^2y}{dx^2}$ at the point $(3,4)$?
+CORRECT: B = "$-\dfrac{25}{64}$"
+  A : $\dfrac{25}{64}$
+  B ✓: $-\dfrac{25}{64}$
+  C : $-\dfrac{3}{4}$
+  D : $-\dfrac{4}{3}$
+EXPLANATION: Differentiate $x^2+y^2=25$: $2x+2yy'=0\Rightarrow y'=-\dfrac{x}{y}$. Differentiate $y'=-xy^{-1}$: $$y''=-(y^{-1}+x(-1)y^{-2}y')=-\frac{1}{y}+\frac{xy'}{y^2}.$$ At $(3,4)$, $y'=-\dfrac{3}{4}$, so $$y''=-\frac{1}{4}+\frac{3(\frac{-3}{4})}{16}=-\frac{1}{4}-\frac{9}{64}=-\frac{25}{64}.$$
+MICRO:
+  A: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  B: Correct. Implicit differentiation requires attaching a dy/dx term whenever you differentiate a term containing y, then solving algebraically.
+  C: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  D: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+
+--- 3.2-P4 [2/2] [Both] ---
+PROMPT: The curve is given by $x^3+y^3=16$. What is the slope of the tangent line at $(2,2)$?
+CORRECT: C = "$-1$"
+  A : $-\dfrac{2}{3}$
+  B : $1$
+  C ✓: $-1$
+  D : $-\dfrac{4}{3}$
+EXPLANATION: Differentiate: $3x^2+3y^2y'=0$. Solve: $y'=-\dfrac{x^2}{y^2}$. At $(2,2)$, $$\frac{dy}{dx}=-\frac{4}{4}=-1.$$
+MICRO:
+  A: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  B: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+  C: Correct. Implicit differentiation requires attaching a dy/dx term whenever you differentiate a term containing y, then solving algebraically.
+  D: Incorrect. The key to implicit differentiation is applying the Chain Rule to y-terms, producing a dy/dx factor for each instance.
+
+--- 3.2-P5 [3/4] [Both] ---
+PROMPT: Given $e^{y}=x^2+xy$, what is $\dfrac{dy}{dx}$?
+CORRECT: A = "$\dfrac{2x+y}{e^{y}-x}$"
+  A ✓: $\dfrac{2x+y}{e^{y}-x}$
+  B : $\dfrac{2x+y}{e^{y}+x}$
+  C : $\dfrac{2x+y}{e^{y}}$
+  D : $\dfrac{2x+xy}{e^{y}-x}$
+EXPLANATION: Differentiate: $(e^{y})'=e^{y}y'$. RHS: $(x^2)'=2x$ and $(xy)'=y+xy'$. So $$e^{y}y'=2x+y+xy'.$$ Then $(e^{y}-x)y'=2x+y$, hence $$\frac{dy}{dx}=\frac{2x+y}{e^{y}-x}.$$
+MICRO:
+  A: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.3-P1 [2/2] [Both] ---
+PROMPT: A differentiable one-to-one function $f$ satisfies $f(1)=4$ and $f'(1)=-2$. What is $(f^{-1})'(4)$?
+CORRECT: C = "$-\dfrac{1}{2}$"
+  A : $2$
+  B : $\dfrac{1}{2}$
+  C ✓: $-\dfrac{1}{2}$
+  D : $-2$
+EXPLANATION: Use $(f^{-1})'(y)=\dfrac{1}{f'(f^{-1}(y))}$. Since $f(1)=4$, $f^{-1}(4)=1$. Therefore $$ (f^{-1})'(4)=\frac{1}{f'(1)}=\frac{1}{-2}=-\frac{1}{2}. $$
+MICRO:
+  A: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  B: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  C: Correct. The derivative of an inverse function is g'(x) = 1 / f'(g(x)). This option correctly applies that reciprocal relationship.
+  D: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+
+--- 3.3-P2 [3/3] [Both] ---
+PROMPT: The graph of a one-to-one function $y=f(x)$ and the line $y=x$ are shown in the figure labeled 3.3-P2. The point $(2,3)$ lies on $y=f(x)$ and $f'(2)=6$. What is $(f^{-1})'(3)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$\dfrac{1}{6}$"
+  A : $6$
+  B ✓: $\dfrac{1}{6}$
+  C : $\dfrac{1}{3}$
+  D : $\dfrac{1}{2}$
+EXPLANATION: Because $f(2)=3$, we have $f^{-1}(3)=2$. Then $$ (f^{-1})'(3)=\frac{1}{f'(f^{-1}(3))}=\frac{1}{f'(2)}=\frac{1}{6}. $$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.3-P3 [4/4] [Both] ---
+PROMPT: Let $f(x)=x^3+x$ and let $g(x)=f^{-1}(x)$. What is $g'(0)$?
+CORRECT: D = "$1$"
+  A : $0$
+  B : $\dfrac{1}{3}$
+  C : $3$
+  D ✓: $1$
+EXPLANATION: First solve $f(x)=0$: $x^3+x=x(x^2+1)=0\Rightarrow x=0$, so $g(0)=0$. Next $f'(x)=3x^2+1$, so $f'(0)=1$. Therefore $$ g'(0)=\frac{1}{f'(g(0))}=\frac{1}{f'(0)}=1. $$
+MICRO:
+  A: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  B: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  C: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  D: Correct. The derivative of an inverse function is g'(x) = 1 / f'(g(x)). This option correctly applies that reciprocal relationship.
+
+--- 3.3-P4 [3/3] [Both] ---
+PROMPT: Let $f(x)=\ln(x+2)$. What is $(f^{-1})'(0)$?
+CORRECT: A = "$1$"
+  A ✓: $1$
+  B : $-1$
+  C : $\dfrac{1}{2}$
+  D : $-\dfrac{1}{2}$
+EXPLANATION: Find $f^{-1}(0)$ by solving $\ln(x+2)=0\Rightarrow x+2=1\Rightarrow x=-1$. Then $f'(x)=\dfrac{1}{x+2}$, so $f'(-1)=1$. Hence $$ (f^{-1})'(0)=\frac{1}{f'(f^{-1}(0))}=\frac{1}{f'(-1)}=1. $$
+MICRO:
+  A: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.3-P5 [2/2] [Both] ---
+PROMPT: A differentiable one-to-one function $f$ satisfies $f(3)=1$ and $(f^{-1})'(1)=4$. What is $f'(3)$?
+CORRECT: C = "$\dfrac{1}{4}$"
+  A : $4$
+  B : $-\dfrac{1}{4}$
+  C ✓: $\dfrac{1}{4}$
+  D : $\dfrac{3}{4}$
+EXPLANATION: Since $f(3)=1$, we know $f^{-1}(1)=3$. Then $$ (f^{-1})'(1)=\frac{1}{f'(f^{-1}(1))}=\frac{1}{f'(3)}. $$\nGiven $(f^{-1})'(1)=4$, solve $4=\dfrac{1}{f'(3)}$ to get $f'(3)=\dfrac{1}{4}$.
+MICRO:
+  A: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  B: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+  C: Correct. The derivative of an inverse function is g'(x) = 1 / f'(g(x)). This option correctly applies that reciprocal relationship.
+  D: Incorrect. The derivative of an inverse is the reciprocal of the original function's derivative at the corresponding point, not just a simple inversio
+
+--- 3.4-P1 [3/3] [Both] ---
+PROMPT: Find $\dfrac{d}{dx}\big(\arccos(2x)\big)$.
+CORRECT: D = "$-\dfrac{2}{\sqrt{1-4x^2}}$"
+  A : $\dfrac{2}{\sqrt{1-4x^2}}$
+  B : $-\dfrac{1}{\sqrt{1-4x^2}}$
+  C : $-\dfrac{2}{\sqrt{4x^2-1}}$
+  D ✓: $-\dfrac{2}{\sqrt{1-4x^2}}$
+EXPLANATION: Let $u=2x$. Then $$\frac{d}{dx}\arccos(u)=-\frac{u'}{\sqrt{1-u^2}}=-\frac{2}{\sqrt{1-(2x)^2}}=-\frac{2}{\sqrt{1-4x^2}}.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+
+--- 3.4-P2 [4/4] [Both] ---
+PROMPT: Find $\dfrac{d}{dx}\left(\arctan\left(\dfrac{1}{x}\right)\right)$ for $x\ne 0$.
+CORRECT: D = "$-\dfrac{1}{1+x^2}$"
+  A : $\dfrac{1}{1+\frac{1}{x^2}}$
+  B : $\dfrac{1}{1+x^2}$
+  C : $-\dfrac{1}{x^2}$
+  D ✓: $-\dfrac{1}{1+x^2}$
+EXPLANATION: Let $u=\dfrac{1}{x}$. Then $u'=-\dfrac{1}{x^2}$. Using $\dfrac{d}{dx}\arctan(u)=\dfrac{u'}{1+u^2}$, $$\frac{d}{dx}\arctan\left(\frac{1}{x}\right)=\frac{\frac{-1}{x^2}}{1+\frac{1}{x^2}}=\frac{\frac{-1}{x^2}}{\frac{x^2+1}{x}^2}=-\frac{1}{x^2+1}.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+
+--- 3.4-P3 [2/2] [Both] ---
+PROMPT: The graph of $y=\arctan(x)$ is shown in the figure labeled 3.4-P3, with the point $(1,\arctan(1))$ marked. What is the slope of the tangent line at $x=1$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\dfrac{1}{2}$"
+  A ✓: $\dfrac{1}{2}$
+  B : $2$
+  C : $\dfrac{\pi}{4}$
+  D : $1$
+EXPLANATION: Since $\dfrac{d}{dx}\arctan(x)=\dfrac{1}{1+x^2}$, evaluate at $x=1$: $$\arctan'(1)=\frac{1}{1+1^2}=\frac{1}{2}.$$
+MICRO:
+  A: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.4-P4 [3/3] [Both] ---
+PROMPT: For $-1<x<1$, what is $\dfrac{d}{dx}\big(\arcsin(x)+\arccos(x)\big)$?
+CORRECT: C = "$0$"
+  A : $\dfrac{2}{\sqrt{1-x^2}}$
+  B : $\dfrac{1}{\sqrt{1-x^2}}$
+  C ✓: $0$
+  D : $-\dfrac{2}{\sqrt{1-x^2}}$
+EXPLANATION: Differentiate term-by-term: $$\frac{d}{dx}\arcsin(x)=\frac{1}{\sqrt{1-x^2}},\qquad \frac{d}{dx}\arccos(x)=-\frac{1}{\sqrt{1-x^2}}.$$ \nSo the sum differentiates to $0$.
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.4-P5 [5/5] [Both] ---
+PROMPT: Let $h(x)=\operatorname{arccsc}(x)$ for $|x|>1$. What is $h'(2)$?
+CORRECT: B = "$-\dfrac{1}{2\sqrt{3}}$"
+  A : $\dfrac{1}{2\sqrt{3}}$
+  B ✓: $-\dfrac{1}{2\sqrt{3}}$
+  C : $-\dfrac{1}{\sqrt{3}}$
+  D : $-\dfrac{1}{2\sqrt{5}}$
+EXPLANATION: Use $$\frac{d}{dx}\operatorname{arccsc}(x)=-\frac{1}{|x|\sqrt{x^2-1}}.$$ \nAt $x=2$, $|2|=2$ and $\sqrt{2^2-1}=\sqrt{3}$, so $$h'(2)=-\frac{1}{2\sqrt{3}}.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.5-P1 [1/2] [Both] ---
+PROMPT: For $h(x)=(3x^2-5)^7$, which procedure is most appropriate to find $h'(x)$?
+CORRECT: A = "Chain rule"
+  A ✓: Chain rule
+  B : Product rule
+  C : Quotient rule
+  D : Implicit differentiation
+EXPLANATION: Since $h(x)=(u(x))^7$ with $u(x)=3x^2-5$, use the chain rule: differentiate the outer function and multiply by $u'(x)$.
+MICRO:
+  A: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.5-P2 [2/2] [Both] ---
+PROMPT: To differentiate $p(x)=x^3\sin(x^2)$ most efficiently, which set of rules must be used?
+CORRECT: C = "Product rule and chain rule"
+  A : Product rule only
+  B : Quotient rule and chain rule
+  C ✓: Product rule and chain rule
+  D : Chain rule only
+EXPLANATION: Because $p(x)$ is a product and one factor is a composition, apply the product rule, and within $\sin(x^2)$ apply the chain rule.
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.5-P3 [3/3] [Both] ---
+PROMPT: Let $q(x)=\dfrac{\ln x}{x^2+1}$ for $x>0$. Which expression matches $q'(x)$?
+CORRECT: D = "$\dfrac{\frac{1}{x}(x^2+1)-\ln x\,(2x)}{(x^2+1)^2}$"
+  A : $\dfrac{\frac{1}{x}}{x^2+1}$
+  B : $\dfrac{\ln x}{2x}$
+  C : $\dfrac{\frac{1}{x}(x^2+1)+\ln x\,(2x)}{(x^2+1)^2}$
+  D ✓: $\dfrac{\frac{1}{x}(x^2+1)-\ln x\,(2x)}{(x^2+1)^2}$
+EXPLANATION: Use the quotient rule with $u=\ln x$ and $v=x^2+1$. Then $u'=\frac{1}{x}$ and $v'=2x$, so $$q'(x)=\frac{u'v-uv'}{v^2}=\frac{\frac{1}{x}(x^2+1)-\ln x\,(2x)}{(x^2+1)^2}.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+
+--- 3.5-P4 [4/4] [Both] ---
+PROMPT: The curve is defined implicitly by $x^2+xy+y^2=7$. What is $\dfrac{dy}{dx}$?
+CORRECT: B = "$\dfrac{-2x-y}{x+2y}$"
+  A : $\dfrac{-2x+y}{x+2y}$
+  B ✓: $\dfrac{-2x-y}{x+2y}$
+  C : $\dfrac{-2x}{x+y}$
+  D : $\dfrac{-2x-y}{1+2y}$
+EXPLANATION: Differentiate: $2x+(x\,y'+y)+2y\,y'=0$. Combine $y'$ terms: $(x+2y)y'=-(2x+y)$. Thus $$\frac{dy}{dx}=\frac{-2x-y}{x+2y}.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.5-P5 [3/3] [Both] ---
+PROMPT: A differentiable function $f$ satisfies $f(2)=5$ and $f'(2)=-3$. What is $(f^{-1})'(5)$?
+CORRECT: A = "$-\dfrac{1}{3}$"
+  A ✓: $-\dfrac{1}{3}$
+  B : $\dfrac{1}{3}$
+  C : $-3$
+  D : $\dfrac{1}{-3+5}$
+EXPLANATION: Use $(f^{-1})'(b)=\dfrac{1}{f'(a)}$ where $f(a)=b$. Since $f(2)=5$, $$(f^{-1})'(5)=\frac{1}{f'(2)}=\frac{1}{-3}=-\frac{1}{3}.$$
+MICRO:
+  A: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.6-P1 [2/2] [Both] ---
+PROMPT: Let $f(x)=\sin(2x)$. What is $f''(x)$?
+CORRECT: B = "$-4\sin(2x)$"
+  A : $-4\cos(2x)$
+  B ✓: $-4\sin(2x)$
+  C : $2\cos(2x)$
+  D : $4\sin(2x)$
+EXPLANATION: Differentiate twice using the chain rule each time. First derivative: $f'(x)=2\cos(2x)$. Second derivative: $$f''(x)=2\cdot(-\sin(2x))\cdot 2=-4\sin(2x).$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.6-P2 [3/3] [Both] ---
+PROMPT: A particle’s position is $s(t)=t^3-6t^2+9t$ (meters), where $t$ is in seconds. What is the acceleration $a(2)$?
+CORRECT: A = "$0$"
+  A ✓: $0$
+  B : $-6$
+  C : $6$
+  D : $-3$
+EXPLANATION: Velocity is $v(t)=s''(t)=3t^2-12t+9$. Acceleration is $a(t)=v''(t)=s''(t)=6t-12$.\nThus $$a(2)=6\cdot 2-12=0.$$
+MICRO:
+  A: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.6-P3 [4/4] [Both] ---
+PROMPT: Let $g(x)=x^2e^{3x}$. What is $g''(0)$?
+CORRECT: D = "$2$"
+  A : $0$
+  B : $12$
+  C : $18$
+  D ✓: $2$
+EXPLANATION: First derivative: $$g''(x)=2x e^{3x}+x^2\cdot 3e^{3x}=e^{3x}(2x+3x^2).$$\nSecond derivative: $$g''(x)=3e^{3x}(2x+3x^2)+e^{3x}(2+6x)=e^{3x}(2+12x+9x^2).$$\nThus $$g''(0)=e^0\cdot 2=2.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+
+--- 3.6-P4 [3/3] [Both] ---
+PROMPT: A function has values of $f'(x)$ shown below:  $\begin{array}{c|ccc}  x & 1.9 & 2.0 & 2.1 \hline  f'(x) & 4.2 & 4.6 & 5.0 \end{array}$ \nUsing a symmetric difference quotient, estimate $f''(2)$.
+CORRECT: C = "$4$"
+  A : $2$
+  B : $8$
+  C ✓: $4$
+  D : $0.8$
+EXPLANATION: Estimate $f''(2)$ by the symmetric difference on $f'$: $$f''(2)\approx \frac{f'(2.1)-f'(1.9)}{2.1-1.9}=\frac{5.0-4.2}{0.2}=\frac{0.8}{0.2}=4.$$
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  C: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+
+--- 3.6-P5 [5/5] [Both] ---
+PROMPT: Use the graph of $f'(x)$ to determine where $f$ is concave down. (See image.)
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$(-2,1)$"
+  A : $(1,3)$
+  B ✓: $(-2,1)$
+  C : $(3,4)$
+  D : $(-2,4)$
+EXPLANATION: $f$ is concave down where $f''(x)<0$, i.e., where $f'(x)$ is decreasing. From the graph, $f'(x)$ decreases on $(-2,2)$ and increases on $(2,4)$. Among the choices, the interval fully contained in the decreasing region is $(-2,1)$.
+MICRO:
+  A: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  B: Correct. This option aligns with the mathematical logic of the Chain Rule, implicit differentiation, or inverse function derivatives.
+  C: Incorrect. This option contains a logical error in handling nested functions or implicit terms.
+  D: Incorrect. This option contains a logical error in handling nested functions or implicit terms.

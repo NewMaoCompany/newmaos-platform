@@ -1,0 +1,1334 @@
+UNIT 10 MATHEMATICAL REVIEW (95 questions)
+============================================================
+
+--- 10.0-UT-Q1 [2/2] [BC] ---
+PROMPT: Determine whether the infinite series $$\sum_{n=1}^{\infty}\frac{n}{n+1}$$ converges or diverges.
+CORRECT: D = "Diverges"
+  A : Converges by the ratio test
+  B : Converges by comparison with $$\sum \frac{1}{n}$$
+  C : Converges by telescoping
+  D ✓: Diverges
+EXPLANATION: Compute the term limit: $$\lim_{n\to\infty}\frac{n}{n+1}=\lim_{n\to\infty}\frac{1}{1+\frac{1}{n}}=1\ne 0.$$ Since the terms do not approach $0$, the series diverges by the nth-term test.
+MICRO:
+  A: Arithmetic/sign mistake.
+  B: Used the wrong approach value.
+  C: Dropped the constant term.
+  D: Correct direct substitution.
+
+--- 10.0-UT-Q2 [2/2] [BC] ---
+PROMPT: Find the sum of the infinite series $$\sum_{n=0}^{\infty} 6\left(\frac{2}{3}\right)^n$$ if it converges.
+CORRECT: B = "18"
+  A : 6
+  B ✓: 18
+  C : 12
+  D : Diverges
+EXPLANATION: This is geometric with first term $a=6$ and ratio $r=\frac{2}{3}$. Since $|r|<1$, it converges and $$S=\frac{a}{1-r}=\frac{6}{1\frac{-2}{3}}=18.$$
+MICRO:
+  A: Confused numerator value with limit value.
+  B: Correct factoring and cancellation.
+  C: Indeterminate form requires algebra/other method.
+  D: Simplified incorrectly.
+
+--- 10.0-UT-Q3 [3/3] [BC] ---
+PROMPT: Determine whether the series $$\sum_{n=2}^{\infty}\frac{1}{n(\ln n)^2}$$ converges or diverges.
+CORRECT: A = "Converges by the integral test"
+  A ✓: Converges by the integral test
+  B : Diverges by the ratio test
+  C : Diverges because it is larger than $$\sum \frac{1}{n}$$
+  D : Converges because it is a $p$-series with $p=2$
+EXPLANATION: Use the integral test with $f(x)=\frac{1}{x(\ln x)^2}$. Compute $$\int_2^{\infty}\frac{1}{x(\ln x)^2}\,dx.$$ Let $u=\ln x$, $du=\frac{1}{x}dx$. Then $$\int_{\ln 2}^{\infty}\frac{1}{u^2}\,du=\left[-\frac{1}{u}\right]_{\ln 2}^{\infty}=\frac{1}{\ln 2},$$ which is finite, so the series converges.
+MICRO:
+  A: Only right-hand limit.
+  B: Read the wrong feature of the graph.
+  C: Opposite infinite one-sided behavior.
+  D: Only left-hand limit.
+
+--- 10.0-UT-Q4 [1/1] [BC] ---
+PROMPT: For what values of $p$ does the series $$\sum_{n=1}^{\infty}\frac{1}{n^p}$$ converge?
+CORRECT: B = "$p>1$"
+  A : $p>0$
+  B ✓: $p>1$
+  C : $p\ge 1$
+  D : All real $p$
+EXPLANATION: A $p$-series $$\sum_{n=1}^{\infty}\frac{1}{n^p}$$ converges if and only if $p>1$, and it diverges for $p\le 1$.
+MICRO:
+  A: Used a point too far from 2.
+  B: Correct two-sided estimate near 4.
+  C: Ignored right-hand approach.
+  D: Used a point too far from 2.
+
+--- 10.0-UT-Q5 [3/3] [BC] ---
+PROMPT: Determine whether the series $$\sum_{n=1}^{\infty}\frac{3n+1}{n^3+2}$$ converges or diverges.
+CORRECT: C = "Converges by limit comparison with $$\sum \frac{1}{n^2}$$"
+  A : Diverges because it behaves like $$\sum \frac{1}{n}$$
+  B : Diverges by the nth-term test
+  C ✓: Converges by limit comparison with $$\sum \frac{1}{n^2}$$
+  D : Converges by the alternating series test
+EXPLANATION: Use limit comparison with $\sum \frac{1}{n^2}$. Let $a_n=\frac{3n+1}{n^3+2}$ and $b_n=\frac{1}{n^2}$. Then $$\lim_{n\to\infty}\frac{a_n}{b_n}=\lim_{n\to\infty}\frac{(3n+1)n^2}{n^3+2}=\lim_{n\to\infty}\frac{3n^3+n^2}{n^3+2}=3.$$ Since $0<3<\infty$ and $\sum 1/n^2$ converges, the given series converges.
+MICRO:
+  A: Arithmetic slip in the sum.
+  B: Forgot the first term.
+  C: Correct: both terms continuous at $x=-1$.
+  D: Mistakenly assumed nonexistence.
+
+--- 10.0-UT-Q6 [4/4] [BC] ---
+PROMPT: Determine whether the series $$\sum_{n=1}^{\infty}(-1)^{n-1}\frac{\ln n}{n}$$ converges absolutely, converges conditionally, or diverges.
+CORRECT: A = "Converges conditionally"
+  A ✓: Converges conditionally
+  B : Diverges
+  C : Converges absolutely
+  D : Converges but cannot be classified
+EXPLANATION: Let $b_n=\frac{\ln n}{n}$. Then $b_n>0$, $\lim b_n=0$, and $b_n$ is eventually decreasing, so the alternating series converges by AST. For absolute convergence, consider $$\sum_{n=1}^{\infty}\frac{\ln n}{n}.$$ By the integral test, $$\int \frac{\ln x}{x}\,dx=\frac{1}{2}(\ln x)^2\to\infty,$$ so the absolute series diverges. Therefore the series converges conditionally.
+MICRO:
+  A: Correct rationalization and substitution.
+  B: Confused with a different standard limit.
+  C: Stopped at indeterminate form.
+  D: Algebra error in rationalization.
+
+--- 10.0-UT-Q7 [3/3] [BC] ---
+PROMPT: Use the ratio test to determine the convergence of $$\sum_{n=1}^{\infty}\frac{n!}{3^n}$$.
+CORRECT: D = "Diverges"
+  A : Converges
+  B : Converges conditionally
+  C : Inconclusive
+  D ✓: Diverges
+EXPLANATION: Let $a_n=\frac{n!}{3^n}$. Then $$\frac{a_{n+1}}{a_n}=\frac{(n+1)!/3^{n+1}}{n!/3^n}=\frac{n+1}{3}.$$ Thus $$\lim_{n\to\infty}\frac{a_{n+1}}{a_n}=\infty>1,$$ so the series diverges by the ratio test.
+MICRO:
+  A: Confused limit with function value.
+  B: Continuity condition violated.
+  C: Point redefinition does not force DNE.
+  D: Correct: limit 2, value 7.
+
+--- 10.0-UT-Q8 [3/3] [BC] ---
+PROMPT: Determine whether $\sum_{n=1}^\infty (-1)^n \frac{1}{\sqrt{n}}$ converges absolutely, converges conditionally, or diverges.
+CORRECT: A = "Converges conditionally"
+  A ✓: Converges conditionally
+  B : Converges absolutely
+  C : Diverges
+  D : Inconclusive
+EXPLANATION: The series alternates. Let $b_n = \frac{1}{\sqrt{n}}$. $b_n \to 0$ and decreases, so it converges by AST. However, $\sum |a_n| = \sum \frac{1}{n^{1/2}}$ is a p-series with $p=1/2 \le 1$, so it diverges. Thus, conditional convergence.
+MICRO:
+  A: Correct squeeze argument to 0.
+  B: No justification; wrong scale.
+  C: Ignored shrinking amplitude.
+  D: Misread oscillation bounds.
+
+--- 10.0-UT-Q9 [4/4] [BC] ---
+PROMPT: Let $$S=\sum_{n=1}^{\infty}(-1)^{n-1}\frac{1}{n^2}.$$ What is the least $N$ such that the partial sum $S_N$ satisfies $|S-S_N|<0.001$?
+CORRECT: C = "$N=31$"
+  A : $N=10$
+  B : $N=20$
+  C ✓: $N=31$
+  D : $N=32$
+EXPLANATION: For an alternating series with decreasing $b_n$, the remainder satisfies $|S-S_N|\le b_{N+1}$. Here $b_n=\frac{1}{n^2}$, so require $$\frac{1}{(N+1)^2}<0.001=\frac{1}{1000}.$$ Thus $(N+1)^2>1000$. Since $31^2=961<1000$ and $32^2=1024>1000$, the least $N$ is $31$.
+MICRO:
+  A: Left side only; not close enough.
+  B: Uses only the point, not approach.
+  C: Right side only; not close enough.
+  D: Both sides, increasingly close.
+
+--- 10.0-UT-Q10 [2/2] [BC] ---
+PROMPT: Find the Maclaurin polynomial of degree 3 for $f(x)=\sin x$.
+CORRECT: B = "$x-\frac{x^3}{6}$"
+  A : $x+\frac{x^3}{6}$
+  B ✓: $x-\frac{x^3}{6}$
+  C : $1-\frac{x^2}{2}$
+  D : $x-\frac{x^2}{2}+\frac{x^3}{6}$
+EXPLANATION: The Maclaurin series is $$\sin x=x-\frac{x^3}{3!}+\frac{x^5}{5!}-\cdots.$$ Truncating at degree 3 gives $$P_3(x)=x-\frac{x^3}{6}.$$
+MICRO:
+  A: Would require equal one-sided limits.
+  B: Correct: finite but unequal one-sided limits.
+  C: No unbounded behavior shown.
+  D: Graph shows mismatch at $x=1$.
+
+--- 10.0-UT-Q11 [5/5] [BC] ---
+PROMPT: Let $P_3(x)$ be the degree-3 Maclaurin polynomial for $e^x$. Using the Lagrange error bound, which is an upper bound for $|e^{0.2}-P_3(0.2)|$?
+CORRECT: D = "$\dfrac{e^{0.2}(0.2)^4}{4!}$"
+  A : $\dfrac{e^{0.2}(0.2)^5}{5!}$
+  B : $\dfrac{e^{0.2}(0.2)^3}{3!}$
+  C : $\dfrac{(0.2)^4}{4!}$
+  D ✓: $\dfrac{e^{0.2}(0.2)^4}{4!}$
+EXPLANATION: For a degree-3 Taylor polynomial, the Lagrange remainder satisfies $$|R_3(x)|\le \frac{M|x|^4}{4!}$$ where $M=\max |f^{(4)}(t)|$ for $t$ between $0$ and $x$. For $f(x)=e^x$, $f^{(4)}(t)=e^t$, so on $[0,0.2]$ we have $M=e^{0.2}$. Therefore $$|e^{0.2}-P_3(0.2)|\le \frac{e^{0.2}(0.2)^4}{4!}.$$
+MICRO:
+  A: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+  B: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+  C: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+  D: Correct. Based on the definition of a limit, as the variable approaches a value, the left and right limits must be equal and approach a unique finite 
+
+--- 10.0-UT-Q12 [4/4] [BC] ---
+PROMPT: Find the radius of convergence of the power series $$\sum_{n=1}^{\infty}\frac{(x-2)^n}{n\,3^n}.$$
+CORRECT: C = "$R=3$"
+  A : $R=1$
+  B : $R=\frac{1}{3}$
+  C ✓: $R=3$
+  D : $R=0$
+EXPLANATION: Let $a_n=\frac{(x-2)^n}{n3^n}$. Then $$\left|\frac{a_{n+1}}{a_n}\right|=\left|\frac{x-2}{3}\right|\cdot\frac{n}{n+1}\to \left|\frac{x-2}{3}\right|.$$ Convergence requires $\left|\frac{x-2}{3}\right|<1$, i.e. $|x-2|<3$. Thus $R=3$.
+MICRO:
+  A: Forgot domain restriction.
+  B: Included the excluded point 3.
+  C: Correct: continuous on its domain.
+  D: Includes 3 where undefined.
+
+--- 10.0-UT-Q13 [5/5] [BC] ---
+PROMPT: Find the interval of convergence of $$\sum_{n=1}^{\infty}\frac{(x+1)^n}{n}.$$
+CORRECT: A = "$[-2,0)$"
+  A ✓: $[-2,0)$
+  B : $(-2,0)$
+  C : $(-2,0]$
+  D : $[-2,0]$
+EXPLANATION: Ratio test: with $a_n=\frac{(x+1)^n}{n}$, $$\left|\frac{a_{n+1}}{a_n}\right|=|x+1|\cdot\frac{n}{n+1}\to |x+1|.$$ So the series converges for $|x+1|<1$, i.e. $-2<x<0$. Endpoint checks: at $x=-2$, the series is $\sum \frac{(-1)^n}{n}$ (converges by AST). At $x=0$, the series is $\sum \frac{1}{n}$ (diverges). Therefore the interval is $[-2,0)$.
+MICRO:
+  A: Correct: set value equal to limit 4.
+  B: Used numerator at 2, not the limit.
+  C: Confused $x$ with $f(x)$.
+  D: Limit exists after simplification.
+
+--- 10.0-UT-Q14 [4/4] [BC] ---
+PROMPT: Find the first three nonzero terms of the Maclaurin series for $\ln(1+x)$.
+CORRECT: D = "$x-\frac{x^2}{2}+\frac{x^3}{3}$"
+  A : $x+\frac{x^2}{2}+\frac{x^3}{3}$
+  B : $x-\frac{x^3}{3}+\frac{x^5}{5}$
+  C : $1-x+\frac{x^2}{2}$
+  D ✓: $x-\frac{x^2}{2}+\frac{x^3}{3}$
+EXPLANATION: A standard Maclaurin series is $$\ln(1+x)=\sum_{n=1}^{\infty}(-1)^{n-1}\frac{x^n}{n}=x-\frac{x^2}{2}+\frac{x^3}{3}-\cdots.$$ Thus the first three nonzero terms are $x-\frac{x^2}{2}+\frac{x^3}{3}$.
+MICRO:
+  A: Denominator to 0 does not imply 0.
+  B: Square keeps denominator nonnegative.
+  C: Unbounded same-direction behavior is $+\infty$.
+  D: Correct infinite limit.
+
+--- 10.0-UT-Q15 [5/5] [BC] ---
+PROMPT: Given $$\frac{1}{1-x}=\sum_{n=0}^{\infty}x^n\quad (|x|<1),$$ find a power series for $$\frac{1}{(1-x)^2}$$ and state its interval of convergence.
+CORRECT: B = "$$\sum_{n=1}^{\infty}n x^{n-1},\\ |x|<1$$"
+  A : $$\sum_{n=0}^{\infty}x^n,\\ |x|<1$$
+  B ✓: $$\sum_{n=1}^{\infty}n x^{n-1},\\ |x|<1$$
+  C : $$\sum_{n=1}^{\infty}n x^{n},\\ |x|<1$$
+  D : $$\sum_{n=0}^{\infty}(n+1)x^{n+1},\\ |x|\le 1$$
+EXPLANATION: Differentiate $$\frac{1}{1-x}=\sum_{n=0}^{\infty}x^n$$ for $|x|<1$. The left side becomes $$\frac{d}{dx}(1-x)^{-1}=(1-x)^{-2}.$$ The right side becomes $$\sum_{n=1}^{\infty}n x^{n-1}.$$ Differentiation preserves the radius, so the interval of convergence remains $|x|<1$.
+MICRO:
+  A: Equal degrees do not go to 0.
+  B: Correct leading-coefficient ratio.
+  C: Compared wrong terms.
+  D: Equal degrees do not blow up.
+
+--- 10.0-UT-Q16 [3/3] [BC] ---
+PROMPT: Determine whether the series $$\sum_{n=1}^{\infty}\left(\frac{n}{n+1}\right)^n$$ converges or diverges.
+CORRECT: C = "Diverges by the nth-term test"
+  A : Converges by the ratio test
+  B : Converges by comparison with $$\sum \frac{1}{n}$$
+  C ✓: Diverges by the nth-term test
+  D : Diverges because it is geometric
+EXPLANATION: Let $a_n=\left(\frac{n}{n+1}\right)^n=\left(\frac{1}{1+\frac{1}{n}}\right)^n$. Then $$\lim_{n\to\infty}a_n=\left(\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^n\right)^{-1}=\frac{1}{e}\ne 0.$$ Since $\lim a_n\ne 0$, the series diverges by the nth-term test.
+MICRO:
+  A: Adds differentiability, not implied.
+  B: Adds monotonicity, not implied.
+  C: Correct IVT conclusion for 0.
+  D: 6 is outside the guaranteed range.
+
+--- 10.0-UT-Q17 [4/4] [BC] ---
+PROMPT: Determine whether the series $$\sum_{n=2}^{\infty}\frac{1}{n\ln n}$$ converges or diverges.
+CORRECT: C = "Diverges"
+  A : Converges by the integral test
+  B : Converges by comparison with $$\sum \frac{1}{n^2}$$
+  C ✓: Diverges
+  D : Converges conditionally
+EXPLANATION: Apply the integral test with $f(x)=\frac{1}{x\ln x}$. Then $$\int_2^{\infty}\frac{1}{x\ln x}\,dx.$$ Let $u=\ln x$, $du=\frac{1}{x}dx$, giving $$\int_{\ln 2}^{\infty}\frac{1}{u}\,du=\infty.$$ Therefore the series diverges.
+MICRO:
+  A: Equal one-sided limits imply limit exists.
+  B: Continuity requires defined value.
+  C: Correct: removable with limit 5.
+  D: Jump requires mismatch.
+
+--- 10.0-UT-Q18 [3/3] [BC] ---
+PROMPT: Determine whether the series $$\sum_{n=1}^{\infty}\frac{1}{n^2+\sin n}$$ converges or diverges.
+CORRECT: A = "Converges by comparison with $$\sum \frac{1}{n^2}$$"
+  A ✓: Converges by comparison with $$\sum \frac{1}{n^2}$$
+  B : Diverges because $\sin n$ oscillates
+  C : Diverges by the nth-term test
+  D : Inconclusive because the denominator is not monotone
+EXPLANATION: Since $-1\le \sin n\le 1$, for $n\ge 2$ we have $n^2+\sin n\ge n^2-1\ge \frac{1}{2}n^2$. Thus $$0<\frac{1}{n^2+\sin n}\le \frac{2}{n^2}.$$ Because $\sum \frac{2}{n^2}$ converges, the given series converges by comparison.
+MICRO:
+  A: Correct: sign change guarantees a root.
+  B: Not supported by the shown range.
+  C: Not bracketed by endpoint values.
+  D: IVT guarantees intermediate values.
+
+--- 10.0-UT-Q19 [4/4] [BC] ---
+PROMPT: Find the Maclaurin series for $$\frac{x^2}{1+x^2}.$$
+CORRECT: B = "$$\sum_{n=0}^{\infty}(-1)^n x^{2n+2}$$"
+  A : $$\sum_{n=0}^{\infty}(-1)^n x^{2n}$$
+  B ✓: $$\sum_{n=0}^{\infty}(-1)^n x^{2n+2}$$
+  C : $$\sum_{n=1}^{\infty}(-1)^{n-1}x^{n}$$
+  D : $$\sum_{n=0}^{\infty}x^{2n+2}$$
+EXPLANATION: Use $$\frac{1}{1-r}=\sum_{n=0}^{\infty}r^n$$ for $|r|<1$. Here $$\frac{1}{1+x^2}=\frac{1}{1-(-x^2)}=\sum_{n=0}^{\infty}(-x^2)^n=\sum_{n=0}^{\infty}(-1)^n x^{2n},\quad |x|<1.$$ Multiply by $x^2$: $$\frac{x^2}{1+x^2}=\sum_{n=0}^{\infty}(-1)^n x^{2n+2},\quad |x|<1.$$
+MICRO:
+  A: Mismatch would be needed for DNE.
+  B: Correct: common one-sided value.
+  C: Approach value is not the limit value.
+  D: Limit does not require knowing $f(4)$.
+
+--- 10.0-UT-Q20 [5/5] [BC] ---
+PROMPT: Consider the power series $$\sum_{n=1}^{\infty}\frac{(x-1)^n}{n^2}.$$ Which statement is true?
+CORRECT: D = "Radius of convergence is $R=1$, and the interval is $[0,2]$"
+  A : Radius of convergence is $R=0$
+  B : Radius of convergence is $R=1$, and the interval is $(0,2)$
+  C : Radius of convergence is $R=2$
+  D ✓: Radius of convergence is $R=1$, and the interval is $[0,2]$
+EXPLANATION: Let $a_n=\frac{(x-1)^n}{n^2}$. Ratio test: $$\left|\frac{a_{n+1}}{a_n}\right|=|x-1|\cdot\frac{n^2}{(n+1)^2}\to |x-1|.$$ Thus convergence for $|x-1|<1$, giving radius $R=1$ and preliminary interval $(0,2)$. Check endpoints: at $x=0$, the series is $$\sum \frac{(-1)^n}{n^2}$$ which converges absolutely since $\sum 1/n^2$ converges. At $x=2$, the series is $$\sum \frac{1}{n^2}$$ which converges. Therefore the interval of convergence is $[0,2]$.
+MICRO:
+  A: Ignored denominator behavior to 0.
+  B: Sign error: numerator is negative.
+  C: Limit may exist even if value undefined.
+  D: Correct sign + denominator to $0^+$.
+
+--- 10.1-P1 [2/2] [BC] ---
+PROMPT: Let $\sum_{n=1}^{\infty} a_n$ be an infinite series with partial sums $S_k=\sum_{n=1}^{k} a_n$. Which statement correctly describes what it means for $\sum_{n=1}^{\infty} a_n$ to converge?
+CORRECT: A = "The sequence $\{S_k\}$ approaches a finite limit as $k\to\infty$."
+  A ✓: The sequence $\{S_k\}$ approaches a finite limit as $k\to\infty$.
+  B : The sequence $\{a_n\}$ has a finite limit.
+  C : The sequence $\{S_k\}$ is increasing and bounded above.
+  D : The terms $a_n$ eventually become negative.
+EXPLANATION: By definition, an infinite series converges when its sequence of partial sums $S_k$ converges to a finite limit. The behavior of $a_n$ alone is not the definition of series convergence.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.1-P2 [3/3] [BC] ---
+PROMPT: A series has terms $a_n=\frac{1}{n(n+1)}$ for $n\ge 1$. Let $S_k=\sum_{n=1}^{k} a_n$. Which expression equals $S_k$?
+CORRECT: D = "$1-\frac{1}{k+1}$"
+  A : $1-\frac{1}{k}$
+  B : $\frac{1}{k+1}$
+  C : $\frac{k}{k+1}$
+  D ✓: $1-\frac{1}{k+1}$
+EXPLANATION: Decompose $a_n$ as $\frac{1}{n}-\frac{1}{n+1}$. The sum telescopes, leaving $S_k=1-\frac{1}{k+1}$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.1-P3 [1/1] [BC] ---
+PROMPT: Which object is a sequence (not a series)?
+CORRECT: B = "$\left\{\sum_{n=1}^{k} \frac{1}{n^2}\right\}_{k=1}^{\infty}$"
+  A : $\sum_{n=1}^{\infty} \frac{1}{n^2}$
+  B ✓: $\left\{\sum_{n=1}^{k} \frac{1}{n^2}\right\}_{k=1}^{\infty}$
+  C : $\frac{1}{1^2}+\frac{1}{2^2}+\frac{1}{3^2}+\cdots$
+  D : $\sum_{n=1}^{50} \frac{1}{n^2}$
+EXPLANATION: A sequence is an ordered list of numbers. The partial sums $\left\{\sum_{n=1}^{k} \frac{1}{n^2}\right\}$ form a sequence. The others are sums (series).
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.1-P4 [4/4] [BC] ---
+PROMPT: Suppose $S_k=3-\frac{2}{k}$ for the partial sums of an infinite series $\sum_{n=1}^{\infty} a_n$. What is the value of the infinite series?
+CORRECT: C = "$3$"
+  A : $1$
+  B : $2$
+  C ✓: $3$
+  D : The series diverges.
+EXPLANATION: The series sums to the limit of its partial sums. Since $S_k\to 3$, the infinite series has value $3$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.1-P5 [2/2] [BC] ---
+PROMPT: A student says: “The series $\sum_{n=1}^{\infty} a_n$ converges because the sequence $\{S_k\}$ is bounded.” Which additional condition, together with boundedness of $\{S_k\}$, would be sufficient to guarantee the series converges?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\{S_k\}$ is increasing."
+  A ✓: $\{S_k\}$ is increasing.
+  B : $\{a_n\}$ is increasing.
+  C : $a_n>0$ for all $n$.
+  D : $S_k\ne 0$ for all $k$.
+EXPLANATION: A bounded monotonic sequence converges. If the partial sums $\{S_k\}$ are bounded and increasing, then $S_k$ converges and the series converges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.2-P1 [2/2] [BC] ---
+PROMPT: Consider the series $\sum_{n=0}^{\infty} 6\left(-\frac{1}{3}\right)^n$. Which statement is true?
+CORRECT: B = "It converges because $\left|-\frac{1}{3}\right|<1$."
+  A : It diverges because the terms alternate in sign.
+  B ✓: It converges because $\left|-\frac{1}{3}\right|<1$.
+  C : It diverges because $r$ is negative.
+  D : It converges only if $r>0$.
+EXPLANATION: The series is geometric with ratio $r=-\frac{1}{3}$. Since $|r|<1$, the series converges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.2-P2 [3/3] [BC] ---
+PROMPT: Find the sum of the infinite geometric series $$5-\frac{5}{2}+\frac{5}{4}-\frac{5}{8}+\cdots.$$
+CORRECT: A = "$\frac{10}{3}$"
+  A ✓: $\frac{10}{3}$
+  B : $\frac{5}{3}$
+  C : $\frac{15}{2}$
+  D : $\frac{10}{7}$
+EXPLANATION: Identify $a=5$ and $r=-\frac{1}{2}$. The infinite geometric sum is $S=\frac{a}{1-r}=\frac{10}{3}$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.2-P3 [4/4] [BC] ---
+PROMPT: Write $0.\overline{27}$ as a fraction by interpreting it as a geometric series.
+CORRECT: B = "$\frac{3}{11}$"
+  A : $\frac{27}{100}$
+  B ✓: $\frac{3}{11}$
+  C : $\frac{27}{99}$
+  D : $\frac{27}{11}$
+EXPLANATION: Model the repeating decimal as a geometric series with first term $\frac{27}{100}$ and ratio $\frac{1}{100}$. The sum is $\frac{27}{99}=\frac{3}{11}$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.2-P4 [3/4] [BC] ---
+PROMPT: An infinite geometric series has first term $a$ and ratio $r$. Its sum is $12$, and its second term is $6$. What is $r$?
+CORRECT: C = "$\frac{1}{2}$"
+  A : $-\frac{1}{2}$
+  B : $2$
+  C ✓: $\frac{1}{2}$
+  D : $\frac{3}{2}$
+EXPLANATION: Use $S=\frac{a}{1-r}=12$ so $a=12(1-r)$. The second term is $ar=6$. Solving $12(1-r)r=6$ gives $r=\frac{1}{2}$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.2-P5 [5/5] [BC] ---
+PROMPT: Which sigma notation represents the geometric series $$\frac{3}{4}+\frac{3}{10}+\frac{3}{25}+\frac{3}{62.5}+\cdots\ ?$$
+CORRECT: D = "$\displaystyle \sum_{n=0}^{\infty} \frac{3}{4}\left(\frac{2}{5}\right)^n$"
+  A : $\displaystyle \sum_{n=1}^{\infty} \frac{3}{4}\left(\frac{2}{5}\right)^n$
+  B : $\displaystyle \sum_{n=0}^{\infty} \frac{3}{4}\left(\frac{5}{2}\right)^n$
+  C : $\displaystyle \sum_{n=1}^{\infty} \frac{3}{4}\left(\frac{5}{2}\right)^{n-1}$
+  D ✓: $\displaystyle \sum_{n=0}^{\infty} \frac{3}{4}\left(\frac{2}{5}\right)^n$
+EXPLANATION: The common ratio is $r=\frac{2}{5}$ and the first term is $\frac{3}{4}$. Using $n=0$ gives the first term directly, so $\sum_{n=0}^{\infty} \frac{3}{4}\left(\frac{2}{5}\right)^n$ matches the series.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.3-P1 [2/2] [BC] ---
+PROMPT: Consider the infinite series $$\sum_{n=1}^{\infty} \frac{3n+1}{2n-5}.$$ Which statement is true?
+CORRECT: A = "The series diverges because $\lim_{n\to\infty} \frac{3n+1}{2n-5} \neq 0$."
+  A ✓: The series diverges because $\lim_{n\to\infty} \frac{3n+1}{2n-5} \neq 0$.
+  B : The series converges because $\lim_{n\to\infty} \frac{3n+1}{2n-5}$ exists.
+  C : The series converges by the ratio test.
+  D : The series diverges because it is a $p$-series with $p=1$.
+EXPLANATION: Compute the term limit: $$\lim_{n\to\infty} \frac{3n+1}{2n-5} = \lim_{n\to\infty} \frac{3+\frac{1}{n}}{2-\frac{5}{n}} = \frac{3}{2}.$$ Since the terms do not approach $0$, the series diverges by the nth-term test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.3-P2 [3/3] [BC] ---
+PROMPT: Let $$a_n = \\frac{\\sin n}{\\sqrt{n}}$$ and consider $$\\sum_{n=1}^{\\infty} a_n.$$ Which statement is correct based only on the nth-term test?
+CORRECT: C = "The nth-term test is inconclusive because $\lim_{n\to\infty} a_n=0$."
+  A : The series diverges because $\sin n$ does not have a limit.
+  B : The series converges because $\sin n$ is bounded between $-1$ and $1$.
+  C ✓: The nth-term test is inconclusive because $\lim_{n\to\infty} a_n=0$.
+  D : The series converges because $\lim_{n\to\infty} a_n=0$.
+EXPLANATION: Because $|\\sin n|\\le 1$, we have $$|a_n|=\\frac{|\\sin n|}{\\sqrt{n}}\\le \\frac{1}{\\sqrt{n}}\\to 0.$$ Thus $\\lim_{n\\to\\infty} a_n=0$. The nth-term test does not decide convergence in this case, so it is inconclusive.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.3-P3 [4/4] [BC] ---
+PROMPT: Consider the series $$\sum_{n=1}^{\infty} \left(\sqrt{n+1}-\sqrt{n}\right).$$ What can be concluded using the nth-term test?
+CORRECT: D = "The nth-term test is inconclusive because $\sqrt{n+1}-\sqrt{n}\to 0$."
+  A : The series converges because $\sqrt{n+1}-\sqrt{n}\to 0$.
+  B : The series converges by the integral test.
+  C : The series diverges because $\sqrt{n+1}-\sqrt{n}\to \infty$.
+  D ✓: The nth-term test is inconclusive because $\sqrt{n+1}-\sqrt{n}\to 0$.
+EXPLANATION: Compute the term limit: $$\sqrt{n+1}-\sqrt{n}=\frac{(n+1)-n}{\sqrt{n+1}+\sqrt{n}}=\frac{1}{\sqrt{n+1}+\sqrt{n}}\to 0.$$ Since the limit is $0$, the nth-term test is inconclusive.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.3-P4 [3/2] [BC] ---
+PROMPT: Consider $$\sum_{n=1}^{\infty} \frac{n^2+5}{n^2-5n}.$$ What does the nth-term test imply?
+CORRECT: C = "The series diverges because $\lim_{n\to\infty}\frac{n^2+5}{n^2-5n}=1\ne 0$."
+  A : The nth-term test is inconclusive because the terms are rational functions.
+  B : The series converges because the degrees in numerator and denominator are equal.
+  C ✓: The series diverges because $\lim_{n\to\infty}\frac{n^2+5}{n^2-5n}=1\ne 0$.
+  D : The series converges because $\frac{n^2+5}{n^2-5n}<1$ for large $n$.
+EXPLANATION: Evaluate the term limit: $$\lim_{n\to\infty}\frac{n^2+5}{n^2-5n}=\lim_{n\to\infty}\frac{1+\frac{5}{n^2}}{1-\frac{5}{n}}=1.$$ Since the term limit is not $0$, the series diverges by the nth-term test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.3-P5 [5/5] [BC] ---
+PROMPT: For the series $$\sum_{n=1}^{\infty} \frac{n!}{(n+2)!},$$ what can be concluded from the nth-term test?
+CORRECT: B = "The nth-term test is inconclusive because $\lim_{n\to\infty}\frac{n!}{(n+2)!}=0$."
+  A : The series diverges because factorials grow too fast.
+  B ✓: The nth-term test is inconclusive because $\lim_{n\to\infty}\frac{n!}{(n+2)!}=0$.
+  C : The series converges because $\lim_{n\to\infty}\frac{n!}{(n+2)!}=0$.
+  D : The series diverges because $\lim_{n\to\infty}\frac{n!}{(n+2)!}$ does not exist.
+EXPLANATION: Simplify the term: $$(n+2)!=(n+2)(n+1)n!\Rightarrow \frac{n!}{(n+2)!}=\frac{1}{(n+1)(n+2)}.$$ Then $$\lim_{n\to\infty}\frac{1}{(n+1)(n+2)}=0.$$ Therefore, the nth-term test is inconclusive.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.4-P1 [3/3] [BC] ---
+PROMPT: Determine whether the series $$\sum_{n=2}^{\infty} \frac{1}{n(\ln n)^2}$$ converges or diverges. Use the integral test.
+CORRECT: D = "Converges, because $\int_2^{\infty} \frac{1}{x(\ln x)^2}\,dx$ converges."
+  A : Diverges, because $\frac{1}{n(\ln n)^2}$ is larger than $\frac{1}{n^2}$ for large $n$.
+  B : Diverges, because $\int_2^{\infty} \frac{1}{x(\ln x)^2}\,dx$ diverges.
+  C : Converges, because $\lim_{n\to\infty} \frac{1}{n(\ln n)^2}=0$.
+  D ✓: Converges, because $\int_2^{\infty} \frac{1}{x(\ln x)^2}\,dx$ converges.
+EXPLANATION: Let $f(x)=\frac{1}{x(\ln x)^2}$ for $x\ge 2$. It is positive, continuous, and decreasing for $x\ge 2$. Compute $$\int_2^{\infty}\frac{1}{x(\ln x)^2}\,dx.$$ Let $u=\ln x$, $du=\frac{1}{x}dx$: $$\int_{\ln 2}^{\infty}\frac{1}{u^2}\,du=\left[-\frac{1}{u}\right]_{\ln 2}^{\infty}=\frac{1}{\ln 2}.$$ Finite integral ⇒ series converges by the integral test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.4-P2 [2/3] [BC] ---
+PROMPT: A student wants to apply the integral test to $$\sum_{n=1}^{\infty} \frac{1}{n+(-1)^n}.$$ Which is the best reason the integral test is not appropriate?
+CORRECT: D = "The terms are not defined by a function $f(x)$ that is positive for all sufficiently large $x$."
+  A : Because the series is alternating, the integral test cannot be used.
+  B : The limit of the terms is not zero.
+  C : The integral of any rational function must diverge.
+  D ✓: The terms are not defined by a function $f(x)$ that is positive for all sufficiently large $x$.
+EXPLANATION: To use the integral test, we need a continuous, positive, decreasing function $f(x)$ on $[N,\infty)$ with $f(n)=a_n$. Here $a_n=\frac{1}{n+(-1)^n}$ cannot be naturally extended to a single continuous positive function on an interval: at $n=1$ the denominator is $0$, and the expression depends on parity, undermining a standard continuous model required for the test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.4-P3 [4/4] [BC] ---
+PROMPT: Use the integral test to determine whether $$\sum_{n=1}^{\infty} \frac{1}{\sqrt{n}(1+n)}$$ converges or diverges.
+CORRECT: A = "Converges, because $\int_1^{\infty} \frac{1}{\sqrt{x}(1+x)}\,dx$ converges."
+  A ✓: Converges, because $\int_1^{\infty} \frac{1}{\sqrt{x}(1+x)}\,dx$ converges.
+  B : Diverges, because $\int_1^{\infty} \frac{1}{\sqrt{x}(1+x)}\,dx$ diverges.
+  C : Diverges, because $\frac{1}{\sqrt{n}(1+n)} > \frac{1}{n}$ for large $n$.
+  D : Converges, because it is a geometric series.
+EXPLANATION: Let $f(x)=\frac{1}{\sqrt{x}(1+x)}$ for $x\ge 1$ (positive, continuous, decreasing). Evaluate $$\int_1^{\infty}\frac{1}{\sqrt{x}(1+x)}\,dx.$$ Let $x=t^2$, $dx=2t\,dt$, $\sqrt{x}=t$: $$\int_1^{\infty}\frac{1}{t(1+t^2)}\cdot 2t\,dt=\int_1^{\infty}\frac{2}{1+t^2}\,dt=\left[2\arctan t\right]_1^{\infty}=\frac{\pi}{2}.$$ Finite integral ⇒ series converges by the integral test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.4-P4 [2/2] [BC] ---
+PROMPT: Which series is the best candidate for the integral test (i.e., its terms come from a function that is positive, continuous, and decreasing for $x\ge 1$)?
+CORRECT: B = "$\displaystyle \sum_{n=1}^{\infty} \frac{1}{n^2+1}$"
+  A : $\displaystyle \sum_{n=1}^{\infty} \frac{(-1)^n}{n}$
+  B ✓: $\displaystyle \sum_{n=1}^{\infty} \frac{1}{n^2+1}$
+  C : $\displaystyle \sum_{n=1}^{\infty} \sin n$
+  D : $\displaystyle \sum_{n=1}^{\infty} \frac{1}{1+\sin n}$
+EXPLANATION: The integral test requires $a_n=f(n)$ where $f$ is positive, continuous, and decreasing on $[1,\infty)$. Among the options, $f(x)=\frac{1}{x^2+1}$ satisfies all conditions for $x\ge 1$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.4-P5 [5/5] [BC] ---
+PROMPT: Use the integral test to determine whether $$\sum_{n=3}^{\infty} \frac{1}{n\ln n\,\ln(\ln n)}$$ converges or diverges.
+CORRECT: C = "Diverges, because $\int_3^{\infty} \frac{1}{x\ln x\,\ln(\ln x)}\,dx$ diverges."
+  A : Converges, because the terms go to $0$.
+  B : Converges, because $\int_3^{\infty} \frac{1}{x\ln x\,\ln(\ln x)}\,dx$ converges.
+  C ✓: Diverges, because $\int_3^{\infty} \frac{1}{x\ln x\,\ln(\ln x)}\,dx$ diverges.
+  D : Diverges by the nth-term test because the limit does not exist.
+EXPLANATION: Let $f(x)=\frac{1}{x\ln x\,\ln(\ln x)}$ for $x\ge 3$ (positive, continuous, decreasing). Evaluate $$\int_3^{\infty}\frac{1}{x\ln x\,\ln(\ln x)}\,dx.$$ Let $u=\ln x$, $du=\frac{1}{x}dx$: $$\int_{\ln 3}^{\infty}\frac{1}{u\ln u}\,du.$$ Let $v=\ln u$, $dv=\frac{1}{u}du$: $$\int_{\ln(\ln 3)}^{\infty}\frac{1}{v}\,dv,$$ which diverges. Therefore the original integral diverges, and the series diverges by the integral test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.5-P1 [2/2] [BC] ---
+PROMPT: Determine whether the series converges or diverges: $$\sum_{n=1}^{\infty}\frac{1}{n^{\frac{3}{2}}}$$
+CORRECT: C = "Converges"
+  A : Diverges
+  B : Diverges because $\lim_{n\to\infty}\frac{1}{n^{\frac{3}{2}}}=0$
+  C ✓: Converges
+  D : Inconclusive by the $p$-series test
+EXPLANATION: A $p$-series $\sum \frac{1}{n^p}$ converges if and only if $p>1$. Here $p=\frac{3}{2}>1$, so the series converges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.5-P2 [3/3] [BC] ---
+PROMPT: Determine whether the series converges or diverges: $$\sum_{n=2}^{\infty}\frac{1}{n-1}$$
+CORRECT: A = "Diverges"
+  A ✓: Diverges
+  B : Converges by the $p$-series test with $p=1$
+  C : Converges by telescoping
+  D : Converges because terms decrease to $0$
+EXPLANATION: Reindex with $k=n-1$: $$\sum_{n=2}^{\infty}\frac{1}{n-1}=\sum_{k=1}^{\infty}\frac{1}{k}$$ which is the harmonic series, and it diverges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.5-P3 [4/4] [BC] ---
+PROMPT: Determine whether the series converges or diverges: $$\sum_{n=1}^{\infty}\frac{5}{\sqrt[3]{n^2}}$$
+CORRECT: A = "Diverges"
+  A ✓: Diverges
+  B : Converges because the constant factor $5$ makes it smaller
+  C : Converges by the $p$-series test with $p=\tfrac{2}{3}$
+  D : Inconclusive because radicals prevent the $p$-series test
+EXPLANATION: Since $\sqrt[3]{n^2}=n^{\frac{2}{3}}$, the series is $\sum 5n^{\frac{-2}{3}}$, a $p$-series with $p=\frac{2}{3}\le 1$. Therefore, the series diverges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.5-P4 [1/1] [BC] ---
+PROMPT: Determine whether the series converges or diverges: $$\sum_{n=1}^{\infty}\frac{1}{n}$$
+CORRECT: B = "Diverges"
+  A : Converges
+  B ✓: Diverges
+  C : Converges by the integral test
+  D : Inconclusive because $p=1$ is borderline
+EXPLANATION: The series $\sum_{n=1}^{\infty}\frac{1}{n}$ is the harmonic series, and it diverges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.5-P5 [5/5] [BC] ---
+PROMPT: Determine whether the series converges or diverges: $$\sum_{n=3}^{\infty}\frac{1}{n\ln(n)}$$
+CORRECT: D = "Diverges"
+  A : Converges because $\ln(n)$ grows without bound
+  B : Converges by comparison to $\sum \frac{1}{n^2}$
+  C : Inconclusive by standard tests
+  D ✓: Diverges
+EXPLANATION: Use the integral test with $f(x)=\frac{1}{x\ln x}$ for $x\ge 3$: $$\int_3^{\infty}\frac{1}{x\ln x}\,dx=\lim_{b\to\infty}\left(\ln(\ln b)-\ln(\ln 3)\right)=\infty.$$ Therefore, the series diverges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.6-P1 [2/3] [BC] ---
+PROMPT: Determine whether the series converges or diverges: $$\sum_{n=1}^{\infty}\frac{1}{n^2+4n}$$
+CORRECT: A = "Converges"
+  A ✓: Converges
+  B : Diverges by comparison to $\sum \frac{1}{n}$
+  C : Inconclusive because it is not a $p$-series
+  D : Diverges because terms are comparable to $\frac{1}{n}$
+EXPLANATION: For $n\ge 1$, $n^2+4n\ge n^2$, so $$0<\frac{1}{n^2+4n}\le \frac{1}{n^2}.$$ Since $\sum \frac{1}{n^2}$ converges, the given series converges by the direct comparison test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.6-P2 [3/4] [BC] ---
+PROMPT: Determine whether the series converges or diverges: $$\sum_{n=1}^{\infty}\frac{n+1}{n^2}$$
+CORRECT: C = "Diverges"
+  A : Converges by comparison to $\sum \frac{1}{n^2}$
+  B : Converges because $\frac{n+1}{n^2}\to 0$
+  C ✓: Diverges
+  D : Inconclusive because it is a sum of two series
+EXPLANATION: Decompose: $$\frac{n+1}{n^2}=\frac{1}{n}+\frac{1}{n^2}.$$ Then $$\sum\left(\frac{1}{n}+\frac{1}{n^2}\right)=\sum\frac{1}{n}+\sum\frac{1}{n^2}.$$ The harmonic series diverges, so the given series diverges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.6-P3 [4/4] [BC] ---
+PROMPT: Determine whether the series converges or diverges: $$\sum_{n=1}^{\infty}\frac{3n^2+1}{n^4+5}$$
+CORRECT: D = "Converges"
+  A : Inconclusive by limit comparison because degrees differ
+  B : Diverges by comparison to $\sum \frac{1}{n}$
+  C : Diverges because the numerator is quadratic
+  D ✓: Converges
+EXPLANATION: Let $a_n=\frac{3n^2+1}{n^4+5}$ and $b_n=\frac{1}{n^2}$. Then $$\lim_{n\to\infty}\frac{a_n}{b_n}=\lim_{n\to\infty}\frac{(3n^2+1)n^2}{n^4+5}=\lim_{n\to\infty}\frac{3n^4+n^2}{n^4+5}=3.$$ Since this limit is a positive finite number and $\sum \frac{1}{n^2}$ converges, the given series converges by limit comparison.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.6-P4 [1/2] [BC] ---
+PROMPT: Determine whether the series converges or diverges: $$\sum_{n=1}^{\infty}\frac{1}{\sqrt{n}}$$
+CORRECT: B = "Diverges"
+  A : Converges by comparison to $\sum \frac{1}{n}$
+  B ✓: Diverges
+  C : Converges because it is smaller than $1$
+  D : Converges because $\frac{1}{\sqrt{n}}\to 0$
+EXPLANATION: Rewrite as a $p$-series: $$\sum_{n=1}^{\infty}\frac{1}{\sqrt{n}}=\sum_{n=1}^{\infty}n^{\frac{-1}{2}}.$$ Since $p=\frac{1}{2}\le 1$, the series diverges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.6-P5 [5/5] [BC] ---
+PROMPT: Determine whether the series converges or diverges: $$\sum_{n=2}^{\infty}\frac{1}{n-\sqrt{n}}$$
+CORRECT: B = "Diverges"
+  A : Converges by comparison to $\sum \frac{1}{n^2}$
+  B ✓: Diverges
+  C : Converges because $n-\sqrt{n}\to\infty$
+  D : Inconclusive because of the subtraction in the denominator
+EXPLANATION: Let $a_n=\frac{1}{n-\sqrt{n}}$ and $b_n=\frac{1}{n}$. Then $$\lim_{n\to\infty}\frac{a_n}{b_n}=\lim_{n\to\infty}\frac{n}{n-\sqrt{n}}=\lim_{n\to\infty}\frac{1}{1-\frac{1}{\sqrt{n}}}=1.$$ Since the limit is positive and finite and $\sum \frac{1}{n}$ diverges, the given series diverges by limit comparison.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.7-P1 [2/2] [BC] ---
+PROMPT: Determine whether the series converges or diverges.  $$\sum_{n=1}^{\infty} (-1)^{n-1}\,\frac{n}{n+1}$$
+CORRECT: D = "Diverges because the terms do not approach $0$"
+  A : Converges by the Alternating Series Test
+  B : Converges absolutely
+  C : Converges conditionally but not absolutely
+  D ✓: Diverges because the terms do not approach $0$
+EXPLANATION: Let $a_n=\frac{n}{n+1}$. Since $\lim_{n\to\infty} a_n=1\neq 0$, the series cannot converge. By the nth-term test for divergence, $$\sum_{n=1}^{\infty} (-1)^{n-1}\frac{n}{n+1}$$ diverges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.7-P2 [3/3] [BC] ---
+PROMPT: For which values of $k$ does the series converge by the Alternating Series Test?  $$\sum_{n=1}^{\infty} (-1)^n\,\frac{1}{n^k}$$
+CORRECT: B = "For $k>0$"
+  A : For all real $k$
+  B ✓: For $k>0$
+  C : For $k>1$ only
+  D : For $0<k\le 1$ only
+EXPLANATION: Write $a_n=\frac{1}{n^k}$. For AST, we need $a_n$ decreasing eventually and $\lim_{n\to\infty} a_n=0$. If $k>0$, then $n^k\to\infty$, so $a_n\to 0$ and $a_n$ decreases for $n\ge1$. If $k\le 0$, then $a_n$ does not approach $0$, so the series diverges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.7-P3 [4/4] [BC] ---
+PROMPT: Determine whether the series converges or diverges.  $$\sum_{n=2}^{\infty} (-1)^n\,\frac{\ln n}{n}$$
+CORRECT: C = "Converges by the Alternating Series Test"
+  A : Diverges because $\ln n$ increases
+  B : Converges absolutely
+  C ✓: Converges by the Alternating Series Test
+  D : Diverges by the nth-term test because $\frac{\ln n}{n}\not\to 0$
+EXPLANATION: Let $a_n=\frac{\ln n}{n}$. First, $\lim_{n\to\infty}\frac{\ln n}{n}=0$. Next, $a_n$ is eventually decreasing: for $f(x)=\frac{\ln x}{x}$, $f^{\prime}(x)=\frac{1-\ln x}{x^2}<0$ for $x>e$. Therefore the alternating series converges by AST. It is not absolutely convergent because $\sum \frac{\ln n}{n}$ diverges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.7-P4 [3/3] [BC] ---
+PROMPT: The terms of an alternating series are defined by  $$\sum_{n=1}^{\infty} (-1)^{n-1}a_n,\quad a_n>0.$$ Which set of conditions is sufficient to guarantee convergence of the series?
+CORRECT: C = "$a_n$ is decreasing and $\lim_{n\to\infty} a_n=0$"
+  A : $a_n$ is increasing and $\lim_{n\to\infty} a_n=0$
+  B : $a_n$ is decreasing and $\sum a_n$ converges
+  C ✓: $a_n$ is decreasing and $\lim_{n\to\infty} a_n=0$
+  D : $a_n$ is bounded and $\lim_{n\to\infty} a_n=0$
+EXPLANATION: By the Alternating Series Test, $\sum_{n=1}^{\infty}(-1)^{n-1}a_n$ converges if $a_n$ is eventually decreasing and $\lim_{n\to\infty} a_n=0$. Choice C states these sufficient conditions.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.7-P5 [5/4] [BC] ---
+PROMPT: Determine whether the series converges or diverges.  $$\sum_{n=1}^{\infty} (-1)^{n-1}\,\frac{n+(-1)^n}{n^2}$$
+CORRECT: A = "Converges because it can be written as the sum of two convergent series"
+  A ✓: Converges because it can be written as the sum of two convergent series
+  B : Diverges because $\frac{n+(-1)^n}{n^2}$ does not approach $0$
+  C : Converges by the Alternating Series Test
+  D : Diverges because it behaves like an alternating harmonic series
+EXPLANATION: Expand the term: $$(-1)^{n-1}\frac{n+(-1)^n}{n^2}=(-1)^{n-1}\left(\frac{1}{n}+\frac{(-1)^n}{n^2}\right)=\frac{(-1)^{n-1}}{n}-\frac{1}{n^2}.$$ Thus $$\sum_{n=1}^{\infty}\left(\frac{(-1)^{n-1}}{n}-\frac{1}{n^2}\right)=\sum_{n=1}^{\infty}\frac{(-1)^{n-1}}{n}-\sum_{n=1}^{\infty}\frac{1}{n^2}.$$ The first series converges (alternating harmonic), and the second converges (p-series with $p=2$). Therefore the original series converges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.8-P1 [2/2] [BC] ---
+PROMPT: Determine whether the series converges or diverges.  $$\sum_{n=1}^{\infty} \frac{3^n}{n!}$$
+CORRECT: B = "Converges by the Ratio Test"
+  A : Diverges by the Ratio Test
+  B ✓: Converges by the Ratio Test
+  C : Ratio Test is inconclusive
+  D : Diverges because $3^n$ grows exponentially
+EXPLANATION: Let $a_n=\frac{3^n}{n!}$. Then $$\left|\frac{a_{n+1}}{a_n}\right|=\frac{3^{n+1}/(n+1)!}{\frac{3^n}{n}!}=\frac{3}{n+1}.$$ So $$\lim_{n\to\infty}\left|\frac{a_{n+1}}{a_n}\right|=0<1,$$ and the series converges by the Ratio Test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.8-P2 [4/4] [BC] ---
+PROMPT: Determine whether the series converges or diverges.  $$\sum_{n=1}^{\infty} \frac{n^5}{2^n}$$
+CORRECT: C = "Converges by the Ratio Test"
+  A : Diverges because $n^5$ increases without bound
+  B : Ratio Test is inconclusive
+  C ✓: Converges by the Ratio Test
+  D : Diverges by the nth-term test because $\frac{n^5}{2^n}\not\to 0$
+EXPLANATION: Let $a_n=\dfrac{n^5}{2^n}$. Then $$\frac{a_{n+1}}{a_n}=\frac{\frac{(n+1)^5}{2^{n+1}}}{\frac{n^5}{2^n}}=\left(\frac{n+1}{n}\right)^5\cdot\frac{1}{2}.$$ As $n\to\infty$, $\left(\frac{n+1}{n}\right)^5\to 1$, so $$\lim_{n\to\infty}\frac{a_{n+1}}{a_n}=\frac{1}{2}<1.$$ Therefore, the series converges by the Ratio Test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.8-P3 [3/4] [BC] ---
+PROMPT: For what values of $k$ does the series converge?  $$\sum_{n=1}^{\infty} \frac{k^n}{n}$$
+CORRECT: D = "Converges for $-1\le k<1$ and diverges otherwise"
+  A : Converges only when $k=0$
+  B : Converges for $|k|<1$ and diverges for $|k|\ge 1$
+  C : Converges for $|k|\le 1$
+  D ✓: Converges for $-1\le k<1$ and diverges otherwise
+EXPLANATION: Let $a_n=\frac{k^n}{n}$. For $|k|<1$, $$\left|\frac{a_{n+1}}{a_n}\right|=\left|\frac{k^{n+1}/(n+1)}{\frac{k^n}{n}}\right|=|k|\cdot\frac{n}{n+1}\to |k|<1,$$ so the series converges by the Ratio Test. For $k=1$, the series is $\sum \frac{1}{n}$ (diverges). For $k=-1$, the series is $\sum \frac{(-1)^n}{n}$ (converges by AST). Therefore it converges for $-1\le k<1$ and diverges otherwise.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.8-P4 [3/4] [BC] ---
+PROMPT: Determine whether the series converges or diverges.  $$\sum_{n=1}^{\infty} \frac{n!}{n^n}$$
+CORRECT: D = "Converges by the Ratio Test"
+  A : Diverges because $n!$ grows quickly
+  B : Ratio Test is inconclusive
+  C : Diverges by the nth-term test because $\frac{n!}{n^n}\not\to 0$
+  D ✓: Converges by the Ratio Test
+EXPLANATION: Let $a_n=\frac{n!}{n^n}$. Then $$\frac{a_{n+1}}{a_n}=\frac{(n+1)!/(n+1)^{n+1}}{n!/n^n}=\left(\frac{n}{n+1}\right)^n.$$ So $$\lim_{n\to\infty}\frac{a_{n+1}}{a_n}=\lim_{n\to\infty}\left(1-\frac{1}{n+1}\right)^n=\frac{1}{e}<1.$$ Therefore, the series converges by the Ratio Test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.8-P5 [5/3] [BC] ---
+PROMPT: Use the Ratio Test to analyze the series.  $$\sum_{n=1}^{\infty} \frac{1}{n}$$ Which statement is correct?
+CORRECT: A = "Ratio Test is inconclusive because the ratio limit equals $1$"
+  A ✓: Ratio Test is inconclusive because the ratio limit equals $1$
+  B : Ratio Test shows divergence because the ratio is greater than $1$
+  C : Ratio Test shows convergence because the ratio is less than $1$
+  D : Ratio Test cannot be applied because the terms are not positive
+EXPLANATION: Let $a_n=\frac{1}{n}$. Then $$\frac{a_{n+1}}{a_n}=\frac{\frac{1}{n+1}}{\frac{1}{n}}=\frac{n}{n+1},$$ so $$\lim_{n\to\infty}\frac{a_{n+1}}{a_n}=1.$$ When the ratio limit equals $1$, the Ratio Test is inconclusive. The series actually diverges, but that requires another test.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.9-P1 [2/2] [BC] ---
+PROMPT: Determine whether the series $\sum_{n=1}^{\infty} \frac{(-1)^{n}}{n}$ converges absolutely, converges conditionally, or diverges.
+CORRECT: B = "Converges conditionally"
+  A : Converges absolutely
+  B ✓: Converges conditionally
+  C : Diverges because terms alternate
+  D : Diverges because it is a $p$-series with $p=1$
+EXPLANATION: Check absolute convergence: $$\sum_{n=1}^{\infty}\left|\frac{(-1)^n}{n}\right|=\sum_{n=1}^{\infty}\frac{1}{n}$$ diverges. For conditional convergence, let $b_n=\frac{1}{n}$. Then $b_n$ decreases and $\lim_{n\to\infty}b_n=0$, so by AST, $$\sum_{n=1}^{\infty}\frac{(-1)^n}{n}$$ converges. Therefore it converges conditionally.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.9-P2 [4/4] [BC] ---
+PROMPT: Determine whether the series $\sum_{n=1}^{\infty} \frac{(-1)^n\, n}{n^2+1}$ converges absolutely, converges conditionally, or diverges.
+CORRECT: A = "Converges conditionally"
+  A ✓: Converges conditionally
+  B : Diverges by the $n$th-term test
+  C : Diverges because it is comparable to $\sum \frac{1}{n^2}$
+  D : Converges absolutely
+EXPLANATION: Absolute value series: $$\sum_{n=1}^{\infty}\left|\frac{(-1)^n n}{n^2+1}\right|=\sum_{n=1}^{\infty}\frac{n}{n^2+1}.$$ Since $$\lim_{n\to\infty}\frac{\frac{n}{n^2+1}}{\frac{1}{n}}=\lim_{n\to\infty}\frac{n^2}{n^2+1}=1,$$ it diverges by limit comparison with $\sum \frac{1}{n}$. For the original series, $b_n=\frac{n}{n^2+1}\to 0$ and is decreasing for large $n$, so the alternating series converges by AST. Therefore it converges conditionally.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.9-P3 [3/3] [BC] ---
+PROMPT: Determine whether the series $\sum_{n=1}^{\infty} (-1)^n\frac{3^n}{n!}$ converges absolutely, converges conditionally, or diverges.
+CORRECT: D = "Converges absolutely"
+  A : Diverges because it alternates
+  B : Converges conditionally
+  C : Diverges by the $n$th-term test
+  D ✓: Converges absolutely
+EXPLANATION: Consider absolute convergence: $$\sum_{n=1}^{\infty}\left|(-1)^n\frac{3^n}{n!}\right|=\sum_{n=1}^{\infty}\frac{3^n}{n!}.$$ Ratio Test: $$\frac{a_{n+1}}{a_n}=\frac{3^{n+1}/(n+1)!}{\frac{3^n}{n}!}=\frac{3}{n+1}\to 0<1.$$ Thus the absolute-value series converges, so the original series converges absolutely.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.9-P4 [5/5] [BC] ---
+PROMPT: Determine whether the series $\sum_{n=2}^{\infty} (-1)^n\frac{1}{\ln n}$ converges absolutely, converges conditionally, or diverges.
+CORRECT: A = "Converges conditionally"
+  A ✓: Converges conditionally
+  B : Converges absolutely
+  C : Diverges
+  D : Cannot be determined without the Integral Test
+EXPLANATION: Absolute value series: $$\sum_{n=2}^{\infty}\left|(-1)^n\frac{1}{\ln n}\right|=\sum_{n=2}^{\infty}\frac{1}{\ln n}.$$ For $n\ge 3$, $\ln n < n$, so $\frac{1}{\ln n}>\frac{1}{n}$. Since $\sum \frac{1}{n}$ diverges, $\sum \frac{1}{\ln n}$ diverges by comparison. For the alternating series, $b_n=\frac{1}{\ln n}$ is decreasing for $n>e$ and $\lim_{n\to\infty}b_n=0$, so it converges by AST. Therefore it converges conditionally.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.9-P5 [2/2] [BC] ---
+PROMPT: Determine whether the series $\sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n^3}$ converges absolutely, converges conditionally, or diverges.
+CORRECT: C = "Converges absolutely"
+  A : Converges conditionally
+  B : Diverges
+  C ✓: Converges absolutely
+  D : Diverges because it alternates
+EXPLANATION: Compute absolute values: $$\sum_{n=1}^{\infty}\left|\frac{(-1)^{n+1}}{n^3}\right|=\sum_{n=1}^{\infty}\frac{1}{n^3}.$$ This is a $p$-series with $p=3>1$, so it converges. Therefore the original series converges absolutely.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.10-P1 [2/2] [BC] ---
+PROMPT: Let $S=\sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n^2}$. If $S_N$ is the $N$th partial sum, which is a valid bound for the error $|S-S_N|$?
+CORRECT: B = "$|S-S_N|\le \frac{1}{(N+1)^2}$"
+  A : $|S-S_N|\le \frac{1}{N^2}$
+  B ✓: $|S-S_N|\le \frac{1}{(N+1)^2}$
+  C : $|S-S_N|\le \sum_{n=N+1}^{\infty}\frac{1}{n^2}$
+  D : $|S-S_N|\le \frac{1}{2(N+1)^2}$
+EXPLANATION: Here $b_n=\frac{1}{n^2}$ is positive, decreasing, and tends to $0$. By the Alternating Series Estimation Theorem, $$|S-S_N|\le b_{N+1}=\frac{1}{(N+1)^2}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.10-P2 [3/3] [BC] ---
+PROMPT: Use the Alternating Series Estimation Theorem to find the smallest $N$ such that the partial sum $S_N$ of $\sum_{n=1}^{\infty}\frac{(-1)^{n+1}}{n}$ approximates the sum within $0.001$.
+CORRECT: D = "$N=999$"
+  A : $N=998$
+  B : $N=1000$
+  C : $N=1001$
+  D ✓: $N=999$
+EXPLANATION: For an alternating series with decreasing terms, $$|S-S_N|\le b_{N+1}.$$ Here $b_n=\frac{1}{n}$, so require $$\frac{1}{N+1}\le 0.001=\frac{1}{1000}.$$ Thus $N+1\ge 1000$ and the smallest integer is $N=999$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.10-P3 [4/4] [BC] ---
+PROMPT: Let $S=\sum_{n=1}^{\infty} (-1)^{n+1}\frac{1}{\sqrt{n}}$. Which statement is guaranteed by the Alternating Series Estimation Theorem?
+CORRECT: C = "$|S-S_N|\le \frac{1}{\sqrt{N+1}}$"
+  A : $|S-S_N|\le \frac{1}{\sqrt{N}}$
+  B : The series converges absolutely
+  C ✓: $|S-S_N|\le \frac{1}{\sqrt{N+1}}$
+  D : $S_N$ is always less than $S$
+EXPLANATION: With $b_n=\frac{1}{\sqrt{n}}$, we have $b_n>0$, $b_n$ decreasing, and $b_n\to 0$. Thus the alternating series converges and $$|S-S_N|\le b_{N+1}=\frac{1}{\sqrt{N+1}}.$$ The theorem does not claim absolute convergence or a fixed direction between $S_N$ and $S$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.10-P4 [1/1] [BC] ---
+PROMPT: For $S=\sum_{n=1}^{\infty} (-1)^{n+1}\frac{1}{2n+1}$, find the smallest $N$ such that $|S-S_N|<0.01$ is guaranteed.
+CORRECT: A = "$N=49$"
+  A ✓: $N=49$
+  B : $N=50$
+  C : $N=99$
+  D : $N=24$
+EXPLANATION: By Alternating Series Estimation Theorem, $$|S-S_N|\le b_{N+1},\quad b_n=\frac{1}{2n+1}.$$ Require $$\frac{1}{2(N+1)+1}<0.01\;\Rightarrow\;\frac{1}{2N+3}<0.01\;\Rightarrow\;2N+3>100\;\Rightarrow\;N>48.5.$$ Smallest integer is $N=49$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.10-P5 [5/5] [BC] ---
+PROMPT: Let $S=\sum_{n=1}^{\infty} (-1)^{n+1}\frac{1}{n(n+1)}$. What is the smallest $N$ that guarantees $|S-S_N|\le 0.0005$?
+CORRECT: B = "$N=44$"
+  A : $N=43$
+  B ✓: $N=44$
+  C : $N=45$
+  D : $N=31$
+EXPLANATION: Let $b_n=\frac{1}{n(n+1)}$. Since $b_n>0$, decreases, and $b_n\to 0$, the alternating series converges and $$|S-S_N|\le b_{N+1}=\frac{1}{(N+1)(N+2)}.$$ Require $$\frac{1}{(N+1)(N+2)}\le 0.0005=\frac{1}{2000}\;\Rightarrow\;(N+1)(N+2)\ge 2000.$$ Check $N=43$: $(44)(45)=1980<2000$ (fails). Check $N=44$: $(45)(46)=2070\ge 2000$ (works). Thus the smallest is $N=44$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.11-P1 [2/2] [BC] ---
+PROMPT: Let $f(x)=\ln x$. What is the third-degree Taylor polynomial for $f(x)$ about $x=1$?
+CORRECT: C = "$T_3(x)=(x-1)-\dfrac{(x-1)^2}{2}+\dfrac{(x-1)^3}{3}$"
+  A : $T_3(x)=(x-1)+\dfrac{(x-1)^2}{2}+\dfrac{(x-1)^3}{3}$
+  B : $T_3(x)=1+(x-1)-\dfrac{(x-1)^2}{2}+\dfrac{(x-1)^3}{3}$
+  C ✓: $T_3(x)=(x-1)-\dfrac{(x-1)^2}{2}+\dfrac{(x-1)^3}{3}$
+  D : $T_3(x)=(x-1)-\dfrac{(x-1)^2}{2}+\dfrac{(x-1)^3}{6}$
+EXPLANATION: Use $T_3(x)=\sum_{k=0}^3 \dfrac{f^{(k)}(1)}{k!}(x-1)^k$. For $f(x)=\ln x$: $f(1)=0$, $f^{\prime}(1)=1$, $f^{\prime\prime}(1)=-1$, $f^{(3)}(1)=2$. Thus $$T_3(x)=(x-1)-\frac{(x-1)^2}{2}+\frac{(x-1)^3}{3}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.11-P2 [3/3] [BC] ---
+PROMPT: Use the second-degree Taylor polynomial for $f(x)=\sqrt{x}$ about $x=4$ to approximate $\sqrt{4.1}$.
+CORRECT: B = "$2.02484375$"
+  A : $2.0125$
+  B ✓: $2.02484375$
+  C : $2.024375$
+  D : $2.000625$
+EXPLANATION: At $a=4$, $f(4)=2$, $f^{\prime}(4)=\dfrac{1}{4}$, $f^{\prime\prime}(4)=-\dfrac{1}{32}$. With $h=0.1$, $$T_2(4.1)=2+\frac{1}{4}(0.1)+\frac{\frac{-1}{32}}{2}(0.1)^2=2+0.025-0.00015625=2.02484375.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.11-P3 [2/2] [BC] ---
+PROMPT: The Maclaurin series for $\sin x$ begins $\sin x=x-\dfrac{x^3}{3!}+\dfrac{x^5}{5!}-\cdots$. What is the coefficient of $x^5$?
+CORRECT: D = "$\dfrac{1}{120}$"
+  A : $-\dfrac{1}{24}$
+  B : $-\dfrac{1}{120}$
+  C : $\dfrac{1}{24}$
+  D ✓: $\dfrac{1}{120}$
+EXPLANATION: From $\sin x=x-\dfrac{x^3}{3!}+\dfrac{x^5}{5!}-\cdots$, the coefficient of $x^5$ is $$\frac{1}{5!}=\frac{1}{120}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.11-P4 [4/3] [BC] ---
+PROMPT: Find the third-degree Maclaurin polynomial for $g(x)=e^{2x}$.
+CORRECT: A = "$1+2x+2x^2+\dfrac{4}{3}x^3$"
+  A ✓: $1+2x+2x^2+\dfrac{4}{3}x^3$
+  B : $1+2x+\dfrac{(2x)^2}{2!}+\dfrac{(2x)^3}{3!}$
+  C : $1+2x+2x^2+\dfrac{2}{3}x^3$
+  D : $1+2x+\dfrac{x^2}{2}+\dfrac{x^3}{6}$
+EXPLANATION: Use $e^u=1+u+\dfrac{u^2}{2!}+\dfrac{u^3}{3!}+\cdots$ with $u=2x$. Truncate at degree 3: $$P_3(x)=1+2x+\frac{(2x)^2}{2!}+\frac{(2x)^3}{3!}=1+2x+2x^2+\frac{4}{3}x^3.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.11-P5 [3/2] [BC] ---
+PROMPT: Let $f(x)=\cos x$. Use the fourth-degree Maclaurin polynomial to approximate $\cos(0.2)$.
+CORRECT: C = "$0.980066666\ldots$"
+  A : $0.990066666\ldots$
+  B : $0.979933333\ldots$
+  C ✓: $0.980066666\ldots$
+  D : $0.980133333\ldots$
+EXPLANATION: Use $\cos x\approx 1-\dfrac{x^2}{2!}+\dfrac{x^4}{4!}$. With $x=0.2$: $$1-\frac{0.2^2}{2}+\frac{0.2^4}{24}=1-0.02+0.000066666\ldots=0.980066666\ldots.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.12-P1 [3/2] [BC] ---
+PROMPT: Use the Lagrange error bound to bound the error when approximating $e^{0.3}$ by the third-degree Maclaurin polynomial for $e^x$.
+CORRECT: B = "$\dfrac{e^{0.3}(0.3)^4}{4!}$"
+  A : $\dfrac{e^{0.3}(0.3)^3}{3!}$
+  B ✓: $\dfrac{e^{0.3}(0.3)^4}{4!}$
+  C : $\dfrac{(0.3)^4}{4!}$
+  D : $\dfrac{e^{0}(0.3)^4}{4!}$
+EXPLANATION: For $e^x$, the 4th derivative is $e^x$. On $[0,0.3]$, $M=\max e^t=e^{0.3}$. Thus $$|R_3(0.3)|\le \frac{e^{0.3}(0.3)^4}{4!}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.12-P2 [4/3] [BC] ---
+PROMPT: Approximate $\ln(1.2)$ using the third-degree Taylor polynomial for $\ln x$ about $x=1$. Using the Lagrange error bound, which is a valid upper bound for the magnitude of the error?
+CORRECT: A = "$\dfrac{6(0.2)^4}{4!\cdot 1^4}$"
+  A ✓: $\dfrac{6(0.2)^4}{4!\cdot 1^4}$
+  B : $\dfrac{6(0.2)^4}{4!}$
+  C : $\dfrac{6(0.2)^3}{3!}$
+  D : $\dfrac{6(0.2)^4}{4!\cdot (1.2)^4}$
+EXPLANATION: For $f(x)=\ln x$, $f^{(4)}(x)=-\dfrac{6}{x^4}$. On $[1,1.2]$, $|f^{(4)}(x)|=\dfrac{6}{x^4}$ is maximized at $x=1$, so $M=6$. Thus $$|R_3(1.2)|\le \frac{6(0.2)^4}{4!}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.12-P3 [2/2] [BC] ---
+PROMPT: A function $f$ has $|f^{(5)}(x)|\le 48$ for all $x$ between $0$ and $0.5$. What is a Lagrange error bound for approximating $f(0.5)$ using the fourth-degree Maclaurin polynomial for $f$?
+CORRECT: D = "$\dfrac{48(0.5)^5}{5!}$"
+  A : $\dfrac{48(0.5)^4}{4!}$
+  B : $\dfrac{48(0.5)^5}{4!}$
+  C : $\dfrac{48(0.5)^6}{6!}$
+  D ✓: $\dfrac{48(0.5)^5}{5!}$
+EXPLANATION: For a degree-4 Maclaurin polynomial, $$|R_4(x)|\le \frac{M|x|^{5}}{5!}.$$\nGiven $|f^{(5)}(x)|\le 48$ on $[0,0.5]$, take $M=48$ and $x=0.5$: $$|R_4(0.5)|\le \frac{48(0.5)^5}{5!}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.12-P4 [5/4] [BC] ---
+PROMPT: What is the smallest $n$ such that the Maclaurin polynomial of degree $n$ for $\sin x$ guarantees an error less than $10^{-6}$ when approximating $\sin(0.5)$ using the Lagrange error bound?
+CORRECT: C = "$n=7$"
+  A : $n=4$
+  B : $n=6$
+  C ✓: $n=7$
+  D : $n=8$
+EXPLANATION: For $\sin x$, all derivatives have magnitude $\le 1$, so take $M=1$. Need $$\frac{0.5^{n+1}}{(n+1)!}<10^{-6}.$$\nCheck: $n=6$ gives $\dfrac{0.5^7}{7!}\approx1.55\times10^{-6}$, while $n=7$ gives $\dfrac{0.5^8}{8!}\approx9.69\times10^{-8}$. Thus the smallest is $n=7$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.12-P5 [3/3] [BC] ---
+PROMPT: Use the Lagrange error bound to estimate an upper bound on the error when approximating $\sqrt[3]{1.1}$ by the linearization (degree-1 Taylor polynomial) of $f(x)=x^{\frac{1}{3}}$ about $x=1$.
+CORRECT: D = "$\dfrac{2}{9}\cdot\dfrac{(0.1)^2}{2}$"
+  A : $\dfrac{2}{9}\cdot\dfrac{(0.1)}{2}$
+  B : $\dfrac{2}{9}(1.1)^{\frac{-5}{3}}\cdot\dfrac{(0.1)^2}{2}$
+  C : $\dfrac{1}{3}\cdot\dfrac{(0.1)^2}{2}$
+  D ✓: $\dfrac{2}{9}\cdot\dfrac{(0.1)^2}{2}$
+EXPLANATION: For degree 1, $$|R_1(x)|\le \frac{M|x-1|^2}{2!},\quad M=\max_{1\le t\le 1.1}|f^{\prime\prime}(t)|.$$\nHere $f^{\prime\prime}(x)=-\dfrac{2}{9}x^{-5/3}$, so $|f^{\prime\prime}(x)|=\dfrac{2}{9}x^{-5/3}$ is maximized at $x=1$ on $[1,1.1]$. Thus $$|R_1(1.1)|\le \frac{\left(\frac{2}{9}\right)(0.1)^2}{2}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.13-P1 [3/3] [BC] ---
+PROMPT: Find the radius of convergence of the power series $$\sum_{n=1}^{\infty} \frac{(2x-1)^n}{n\,3^n}.$$
+CORRECT: B = "$$R=\frac{3}{2}$$"
+  A : $$R=3$$
+  B ✓: $$R=\frac{3}{2}$$
+  C : $$R=\frac{1}{3}$$
+  D : $$R=\frac{2}{3}$$
+EXPLANATION: Let $a_n=\frac{(2x-1)^n}{n3^n}$. Then $$\left|\frac{a_{n+1}}{a_n}\right|=\left|\frac{2x-1}{3}\right|\cdot\frac{n}{n+1}\to \left|\frac{2x-1}{3}\right|.$$ Convergence requires $\left|\frac{2x-1}{3}\right|<1\Rightarrow |2x-1|<3\Rightarrow |x-\tfrac12|<\tfrac32$, so $R=\tfrac32$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.13-P2 [4/4] [BC] ---
+PROMPT: Consider the power series $$\sum_{n=1}^{\infty} \frac{(x+2)^n}{n}. $$ After finding the radius of convergence, determine which statement about the interval of convergence is true.
+CORRECT: A = "Its interval of convergence is $[-3,-1)$."
+  A ✓: Its interval of convergence is $[-3,-1)$.
+  B : It converges only at $x=-2$.
+  C : Its interval of convergence is $(-3,-1)$.
+  D : It converges for all $x$.
+EXPLANATION: Ratio test: for $a_n=\frac{(x+2)^n}{n}$, $$\left|\frac{a_{n+1}}{a_n}\right|=|x+2|\cdot\frac{n}{n+1}\to |x+2|.$$ Converges when $|x+2|<1\Rightarrow -3<x<-1$. Test endpoints: $x=-3$ gives $\sum \frac{(-1)^n}{n}$ (alternating harmonic, convergent). $x=-1$ gives $\sum \frac{1}{n}$ (harmonic, divergent). So IOC is $[-3,-1)$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.13-P3 [2/2] [BC] ---
+PROMPT: A power series is written as $$\sum_{n=0}^{\infty} c_n\,(x-4)^n.$$ What is the center of the series?
+CORRECT: C = "$$4$$"
+  A : $$0$$
+  B : $$-4$$
+  C ✓: $$4$$
+  D : Cannot be determined without $c_n$.
+EXPLANATION: A power series in standard form is $\sum c_n(x-a)^n$. The center is the value $a$ in the factor $(x-a)$, so here $a=4$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.13-P4 [3/2] [BC] ---
+PROMPT: See image (10.13-P4). Which interval notation matches the interval shown?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$$(-2,3]$$"
+  A : $$[-2,3]$$
+  B : $$(-2,3)$$
+  C : $$[-2,3)$$
+  D ✓: $$(-2,3]$$
+EXPLANATION: An open circle means the endpoint is not included (parenthesis). A closed circle means included (bracket). The image shows open at $-2$ and closed at $3$, so the interval is $(-2,3]$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.13-P5 [5/5] [BC] ---
+PROMPT: Find the interval of convergence of $$\sum_{n=1}^{\infty} \frac{n(x-1)^n}{2^n}. $$
+CORRECT: D = "$$(-1,3)$$"
+  A : $$[-1,3)$$
+  B : $$[-1,3]$$
+  C : $$(-1,3]$$
+  D ✓: $$(-1,3)$$
+EXPLANATION: Let $a_n=\frac{n(x-1)^n}{2^n}$. Then $$\left|\frac{a_{n+1}}{a_n}\right|=\left|\frac{x-1}{2}\right|\cdot\frac{n+1}{n}\to \left|\frac{x-1}{2}\right|.$$ Convergence requires $|x-1|<2\Rightarrow -1<x<3$. Endpoints: $x=3$ gives $\sum n$ (diverges). $x=-1$ gives $\sum n(-1)^n$; terms do not go to 0, so diverges. Thus IOC is $(-1,3)$.
+MICRO:
+  A: Incorrect. At $x=-1$, the series becomes $\sum n(-1)^n$, whose terms do not approach $0$, so the series diverges. The left endpoint should be excluded
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.14-P1 [3/3] [BC] ---
+PROMPT: Find the Maclaurin series for $$f(x)=\frac{1}{1+x^2}$$ up to and including the $x^6$ term.
+CORRECT: C = "$$1-x^2+x^4-x^6$$"
+  A : $$1+x^2+x^4+x^6$$
+  B : $$1-2x^2+3x^4-4x^6$$
+  C ✓: $$1-x^2+x^4-x^6$$
+  D : $$1+x-x^2+x^3-x^4+x^5-x^6$$
+EXPLANATION: Rewrite $$\frac{1}{1+x^2}=\frac{1}{1-(-x^2)}.$$ For $|x|<1$, $$\frac{1}{1-r}=\sum_{n=0}^{\infty} r^n$$ with $r=-x^2$. Thus $$\frac{1}{1+x^2}=1-x^2+x^4-x^6+\cdots.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.14-P2 [4/4] [BC] ---
+PROMPT: Let $f(x)=\ln x$. What is the third-degree Taylor polynomial for $f$ centered at $x=1$?
+CORRECT: D = "$$T_3(x)=(x-1)-\frac{(x-1)^2}{2}+\frac{(x-1)^3}{3}$$"
+  A : $$T_3(x)=(x-1)-\frac{(x-1)^2}{2}-\frac{(x-1)^3}{3}$$
+  B : $$T_3(x)=(x-1)+\frac{(x-1)^2}{2}+\frac{(x-1)^3}{6}$$
+  C : $$T_3(x)=\ln(1)+(x-1)-\frac{(x-1)^2}{2}+\frac{(x-1)^3}{6}$$
+  D ✓: $$T_3(x)=(x-1)-\frac{(x-1)^2}{2}+\frac{(x-1)^3}{3}$$
+EXPLANATION: Compute derivatives: $f(1)=0$, $f'(1)=1$, $f''(1)=-1$, $f'''(1)=2$. Then $$T_3(x)=f(1)+f'(1)(x-1)+\frac{f''(1)}{2!}(x-1)^2+\frac{f'''(1)}{3!}(x-1)^3=(x-1)-\frac{(x-1)^2}{2}+\frac{(x-1)^3}{3}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.14-P3 [2/2] [BC] ---
+PROMPT: Given $$e^x=\sum_{n=0}^{\infty}\frac{x^n}{n!},$$ what is the coefficient of $x^5$ in the Maclaurin series for $e^{2x}$?
+CORRECT: B = "$$\frac{2^5}{5!}$$"
+  A : $$\frac{2}{5!}$$
+  B ✓: $$\frac{2^5}{5!}$$
+  C : $$\frac{5!}{2^5}$$
+  D : $$\frac{2^5}{5}$$
+EXPLANATION: Use substitution: $$e^{2x}=\sum_{n=0}^{\infty}\frac{(2x)^n}{n!}=\sum_{n=0}^{\infty}\frac{2^n}{n!}x^n.$$ Thus the coefficient of $x^5$ is $\frac{2^5}{5!}$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.14-P4 [5/5] [BC] ---
+PROMPT: Use $$\sin x=\sum_{n=0}^{\infty}(-1)^n\frac{x^{2n+1}}{(2n+1)!}$$ to find the Maclaurin series for $$g(x)=x\sin(x^2)$$ up to and including the $x^9$ term.
+CORRECT: B = "$$x^3-\frac{x^7}{3!}$$"
+  A : $$x^3-\frac{x^7}{3!}+\frac{x^{11}}{5!}$$
+  B ✓: $$x^3-\frac{x^7}{3!}$$
+  C : $$x^3-\frac{x^7}{3!}+\frac{x^9}{5!}$$
+  D : $$x^2-\frac{x^6}{3!}+\frac{x^{10}}{5!}$$
+EXPLANATION: Substitute $x^2$ into the sine series: $$\sin(x^2)=x^2-\frac{x^6}{3!}+\frac{x^{10}}{5!}-\cdots.$$ Multiply by $x$: $$x\sin(x^2)=x^3-\frac{x^7}{3!}+\frac{x^{11}}{5!}-\cdots.$$ Up to and including $x^9$, this is $$x^3-\frac{x^7}{3!}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.14-P5 [3/3] [BC] ---
+PROMPT: Use the second-degree Taylor polynomial for $e^x$ centered at $x=0$ to approximate $e^{0.1}$.
+CORRECT: A = "$$1+0.1+\frac{0.1^2}{2}=1.105$$"
+  A ✓: $$1+0.1+\frac{0.1^2}{2}=1.105$$
+  B : $$1+0.1+\frac{0.1^2}{6}=1.101666\ldots$$
+  C : $$1+0.1^2+\frac{0.1}{2}=1.06$$
+  D : $$1+0.1+\frac{0.1^2}{2!}+\frac{0.1^3}{3!}=1.105166\ldots$$
+EXPLANATION: The Maclaurin polynomial of degree 2 for $e^x$ is $$T_2(x)=1+x+\frac{x^2}{2}.$$ Plug in $x=0.1$: $$T_2(0.1)=1+0.1+\frac{0.01}{2}=1.105.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.15-P1 [2/2] [BC] ---
+PROMPT: Suppose $$f(x)=\sum_{n=0}^{\infty} \frac{x^n}{n+1}$$ for $|x|<1$. Which power series represents $x\,f(x)$?
+CORRECT: C = "$$\sum_{n=0}^{\infty}\frac{x^{n+1}}{n+1}$$"
+  A : $$\sum_{n=0}^{\infty}\frac{x^{n}}{n+1}$$
+  B : $$\sum_{n=1}^{\infty}\frac{x^{n}}{n+1}$$
+  C ✓: $$\sum_{n=0}^{\infty}\frac{x^{n+1}}{n+1}$$
+  D : $$\sum_{n=0}^{\infty}\frac{x^{n+1}}{n+2}$$
+EXPLANATION: Compute directly: $$x f(x)=x\sum_{n=0}^{\infty}\frac{x^n}{n+1}=\sum_{n=0}^{\infty}\frac{x^{n+1}}{n+1}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.15-P2 [3/3] [BC] ---
+PROMPT: Given $$\frac{1}{1-x}=\sum_{n=0}^{\infty} x^n\quad (|x|<1),$$ which series represents $$\frac{1}{1-3x}?$$
+CORRECT: C = "$$\sum_{n=0}^{\infty} (3x)^n$$"
+  A : $$\sum_{n=0}^{\infty} 3x^n$$
+  B : $$\sum_{n=0}^{\infty} \frac{x^n}{3^n}$$
+  C ✓: $$\sum_{n=0}^{\infty} (3x)^n$$
+  D : $$\sum_{n=1}^{\infty} (3x)^n$$
+EXPLANATION: Use the known identity with input $3x$: $$\frac{1}{1-3x}=\sum_{n=0}^{\infty}(3x)^n,\quad |3x|<1\Rightarrow |x|<\frac13.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.15-P3 [4/4] [BC] ---
+PROMPT: For $|x|<1$, suppose $$\ln(1+x)=\sum_{n=1}^{\infty}(-1)^{n-1}\frac{x^n}{n}.$$ Which series represents $$\frac{1}{1+x}?$$
+CORRECT: D = "$$\sum_{n=1}^{\infty}(-1)^{n-1}x^{n-1}$$"
+  A : $$\sum_{n=1}^{\infty}(-1)^{n-1}\frac{x^{n-1}}{n}$$
+  B : $$\sum_{n=1}^{\infty}(-1)^{n-1}\frac{x^{n}}{n+1}$$
+  C : $$\sum_{n=0}^{\infty}(-1)^{n}x^{n+1}$$
+  D ✓: $$\sum_{n=1}^{\infty}(-1)^{n-1}x^{n-1}$$
+EXPLANATION: Differentiate both sides for $|x|<1$: $$\frac{d}{dx}\ln(1+x)=\frac{1}{1+x}.$$ Also, $$\frac{d}{dx}\sum_{n=1}^{\infty}(-1)^{n-1}\frac{x^n}{n}=\sum_{n=1}^{\infty}(-1)^{n-1}x^{n-1}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.15-P4 [4/4] [BC] ---
+PROMPT: Using $$\frac{1}{1-x}=\sum_{n=0}^{\infty}x^n\\ (|x|<1),$$ which series represents $$\frac{x^2}{1+x^2}?$$
+CORRECT: B = "$$\sum_{n=0}^{\infty} (-1)^n x^{2n+2}$$"
+  A : $$\sum_{n=0}^{\infty} x^{2n+2}$$
+  B ✓: $$\sum_{n=0}^{\infty} (-1)^n x^{2n+2}$$
+  C : $$\sum_{n=0}^{\infty} (-1)^n x^{n+2}$$
+  D : $$\sum_{n=1}^{\infty} (-1)^n x^{2n}$$
+EXPLANATION: Start with $$\frac{1}{1+x^2}=\frac{1}{1-(-x^2)}=\sum_{n=0}^{\infty}(-x^2)^n=\sum_{n=0}^{\infty}(-1)^n x^{2n},\quad |x|<1.$$ Multiply by $x^2$: $$\frac{x^2}{1+x^2}=\sum_{n=0}^{\infty}(-1)^n x^{2n+2}.$$
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 10.15-P5 [5/5] [BC] ---
+PROMPT: A function is defined by the power series $$g(x)=\sum_{n=0}^{\infty} \frac{(x-2)^n}{3^n}.$$ For which set of $x$ does the series converge?
+CORRECT: A = "$$-1<x<5$$"
+  A ✓: $$-1<x<5$$
+  B : $$|x-2|\le 3$$
+  C : $$|x-2|<3$$
+  D : $$x>2$$
+EXPLANATION: Recognize a geometric series: $$g(x)=\sum_{n=0}^{\infty}\left(\frac{x-2}{3}\right)^n.$$ A geometric series converges when $$\left|\frac{x-2}{3}\right|<1\\ \Rightarrow\\ |x-2|<3\\ \Rightarrow\\ -1<x<5.$$ At $x=-1$ or $x=5$, the ratio is $-1$ or $1$, so it diverges.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: Review this option carefully and compare with the correct answer.
+  C: Review this option carefully and compare with the correct answer.
+  D: Review this option carefully and compare with the correct answer.

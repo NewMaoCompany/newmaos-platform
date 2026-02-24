@@ -120,17 +120,21 @@ router.get('/recommendation', authMiddleware, async (req: Request, res: Response
             .single();
 
         const { data: mastery } = await supabaseAdmin
-            .from('unit_mastery')
+            .from('topic_mastery')
             .select('*')
             .eq('user_id', userId)
             .order('mastery_score', { ascending: true });
 
-        // Find the topic with lowest mastery
-        const weakestTopic = mastery && mastery.length > 0
-            ? mastery[0]
-            : { subject: 'Limits', mastery_score: 0 };
+        // Filter out completely unattempted topics (0%) if they have other attempted topics
+        const attemptedMastery = (mastery || []).filter(m => m.mastery_score > 0);
+        const eligibleMastery = attemptedMastery.length > 0 ? attemptedMastery : (mastery || []);
 
-        const isNewUser = (profile?.problems_solved || 0) === 0;
+        // Find the topic with lowest mastery
+        const weakestTopic = eligibleMastery.length > 0
+            ? eligibleMastery[0]
+            : { topic_id: 'Both_Limits', mastery_score: 0 };
+
+        const isNewUser = (!mastery || mastery.length === 0);
         const currentCourse = profile?.current_course || 'AB';
 
         let recommendation;
@@ -143,8 +147,11 @@ router.get('/recommendation', authMiddleware, async (req: Request, res: Response
                 mode: 'Adaptive'
             };
         } else {
+            // Strip course prefix if present (e.g., 'Both_Limits' -> 'Limits')
+            const cleanTopic = weakestTopic.topic_id.includes('_') ? weakestTopic.topic_id.split('_')[1] : weakestTopic.topic_id;
+
             recommendation = {
-                topic: weakestTopic.subject,
+                topic: cleanTopic,
                 reason: `This topic has lower mastery (${weakestTopic.mastery_score}%). Focus here to improve.`,
                 currentMastery: weakestTopic.mastery_score || 0,
                 targetMastery: 85,

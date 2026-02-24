@@ -130,6 +130,7 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
                 topicId: q.topic_id || q.topic,
                 subTopicId: q.sub_topic_id || q.section_id,
                 sectionId: q.section_id || q.sub_topic_id,
+                correctOptionId: q.correct_option_id,
                 calculatorAllowed: q.calculator_allowed,
                 targetTimeSeconds: q.target_time_seconds,
 

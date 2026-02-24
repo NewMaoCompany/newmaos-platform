@@ -86,15 +86,6 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
     };
   }, []);
 
-  // Trigger system notifications on login
-  useEffect(() => {
-    if (isAuthenticated && user?.id) {
-      supabase.rpc('generate_system_notifications', { p_user_id: user.id })
-        .then(({ error }) => {
-          if (error) console.error('Error triggering system notifications:', error);
-        });
-    }
-  }, [isAuthenticated, user?.id]);
 
   // Check-in red dot: derived from global checkinStatus (no local state needed)
 
@@ -223,6 +214,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
 
   const dashboardUnreadCount = visibleNotifications.filter(n => n.unread && (n.link === '/checkin' || n.link === '/dashboard' || n.text?.includes('Daily Check-in'))).length;
   const analysisUnreadCount = visibleNotifications.filter(n => n.unread && n.link === '/analysis').length;
+  const practiceUnreadCount = visibleNotifications.filter(n => n.unread && n.link?.startsWith('/practice')).length;
   const settingsUnreadCount = visibleNotifications.filter(n => n.unread && (n.link?.includes('/settings') || n.text?.startsWith('[Membership]'))).length;
 
   // No more pseudo notifications — all notifications come from the database
@@ -372,8 +364,13 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
                   </span>
                 )}
               </Link>
-              <Link to="/practice" className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg whitespace-nowrap ${isActive('/practice') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
-                Practice
+              <Link to="/practice" className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${isActive('/practice') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+                <span>Practice</span>
+                {practiceUnreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
+                    {practiceUnreadCount > 9 ? '9+' : practiceUnreadCount}
+                  </span>
+                )}
               </Link>
               {isAuthenticated && isPro ? (
                 <Link to="/analysis" onClick={() => markLinkAsRead('/analysis')} className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>

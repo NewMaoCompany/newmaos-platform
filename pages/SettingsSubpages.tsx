@@ -204,6 +204,8 @@ export const ProfileSettings = () => {
 
         if (uploadError) throw uploadError;
 
+        // Force public URL usage (bucket MUST be public)
+        // Previous fetch HEAD check would fail due to CORS and incorrectly fallback to a signed URL.
         const { data: { publicUrl } } = supabase.storage
           .from('avatars')
           .getPublicUrl(filePath);

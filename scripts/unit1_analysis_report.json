@@ -1,0 +1,617 @@
+{
+  "total": 60,
+  "categories": {
+    "PROMPT_TYPE_MISMATCH": [
+      {
+        "title": "1.0-UT-Q4",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.0-UT-Q10",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.0-UT-Q18",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.3-P1",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.3-P2",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.3-P3",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.3-P4",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.3-P5",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.5-P2",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.6-P5",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.7-P1",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.8-P2",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.8-P3",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.9-P1",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.9-P4",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.10-P1",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.10-P3",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.11-P2",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.12-P3",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.15-P2",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.15-P3",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.16-P3",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      },
+      {
+        "title": "1.16-P5",
+        "category": "PROMPT_TYPE_MISMATCH",
+        "detail": "prompt_type is \"image\" but no image URL in prompt"
+      }
+    ],
+    "REP_TYPE_MISMATCH": [
+      {
+        "title": "1.0-UT-Q4",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.0-UT-Q10",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.0-UT-Q18",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.3-P1",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.3-P2",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.3-P3",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.3-P4",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.3-P5",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.5-P2",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.6-P5",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.7-P1",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.8-P2",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.8-P3",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.9-P1",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.9-P4",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.10-P1",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.10-P3",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.11-P2",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.12-P3",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.15-P2",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.15-P3",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.16-P3",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      },
+      {
+        "title": "1.16-P5",
+        "category": "REP_TYPE_MISMATCH",
+        "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+      }
+    ],
+    "MICRO_EXPL_KEYS": [
+      {
+        "title": "1.0-UT-Q5",
+        "category": "MICRO_EXPL_KEYS",
+        "detail": "micro_explanations uses numeric keys (0,1,2,3) instead of labels (A,B,C,D)"
+      },
+      {
+        "title": "1.9-P2",
+        "category": "MICRO_EXPL_KEYS",
+        "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+      },
+      {
+        "title": "1.9-P3",
+        "category": "MICRO_EXPL_KEYS",
+        "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+      },
+      {
+        "title": "1.9-P5",
+        "category": "MICRO_EXPL_KEYS",
+        "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+      },
+      {
+        "title": "1.10-P2",
+        "category": "MICRO_EXPL_KEYS",
+        "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+      },
+      {
+        "title": "1.10-P4",
+        "category": "MICRO_EXPL_KEYS",
+        "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+      },
+      {
+        "title": "1.10-P5",
+        "category": "MICRO_EXPL_KEYS",
+        "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+      }
+    ],
+    "MICRO_EXPL_COUNT": [
+      {
+        "title": "1.9-P2",
+        "category": "MICRO_EXPL_COUNT",
+        "detail": "3 micro_explanations but 4 options"
+      },
+      {
+        "title": "1.9-P3",
+        "category": "MICRO_EXPL_COUNT",
+        "detail": "3 micro_explanations but 4 options"
+      },
+      {
+        "title": "1.9-P5",
+        "category": "MICRO_EXPL_COUNT",
+        "detail": "3 micro_explanations but 4 options"
+      },
+      {
+        "title": "1.10-P2",
+        "category": "MICRO_EXPL_COUNT",
+        "detail": "3 micro_explanations but 4 options"
+      },
+      {
+        "title": "1.10-P4",
+        "category": "MICRO_EXPL_COUNT",
+        "detail": "3 micro_explanations but 4 options"
+      },
+      {
+        "title": "1.10-P5",
+        "category": "MICRO_EXPL_COUNT",
+        "detail": "3 micro_explanations but 4 options"
+      }
+    ],
+    "MICRO_EXPL_MISMATCH": [
+      {
+        "title": "1.9-P3",
+        "category": "MICRO_EXPL_MISMATCH",
+        "detail": "No micro_explanation for correct answer \"D\""
+      }
+    ]
+  },
+  "issues": [
+    {
+      "title": "1.0-UT-Q4",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.0-UT-Q4",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.0-UT-Q5",
+      "category": "MICRO_EXPL_KEYS",
+      "detail": "micro_explanations uses numeric keys (0,1,2,3) instead of labels (A,B,C,D)"
+    },
+    {
+      "title": "1.0-UT-Q10",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.0-UT-Q10",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.0-UT-Q18",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.0-UT-Q18",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.3-P1",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.3-P1",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.3-P2",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.3-P2",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.3-P3",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.3-P3",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.3-P4",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.3-P4",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.3-P5",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.3-P5",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.5-P2",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.5-P2",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.6-P5",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.6-P5",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.7-P1",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.7-P1",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.8-P2",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.8-P2",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.8-P3",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.8-P3",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.9-P1",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.9-P1",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.9-P2",
+      "category": "MICRO_EXPL_KEYS",
+      "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+    },
+    {
+      "title": "1.9-P2",
+      "category": "MICRO_EXPL_COUNT",
+      "detail": "3 micro_explanations but 4 options"
+    },
+    {
+      "title": "1.9-P3",
+      "category": "MICRO_EXPL_KEYS",
+      "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+    },
+    {
+      "title": "1.9-P3",
+      "category": "MICRO_EXPL_MISMATCH",
+      "detail": "No micro_explanation for correct answer \"D\""
+    },
+    {
+      "title": "1.9-P3",
+      "category": "MICRO_EXPL_COUNT",
+      "detail": "3 micro_explanations but 4 options"
+    },
+    {
+      "title": "1.9-P4",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.9-P4",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.9-P5",
+      "category": "MICRO_EXPL_KEYS",
+      "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+    },
+    {
+      "title": "1.9-P5",
+      "category": "MICRO_EXPL_COUNT",
+      "detail": "3 micro_explanations but 4 options"
+    },
+    {
+      "title": "1.10-P1",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.10-P1",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.10-P2",
+      "category": "MICRO_EXPL_KEYS",
+      "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+    },
+    {
+      "title": "1.10-P2",
+      "category": "MICRO_EXPL_COUNT",
+      "detail": "3 micro_explanations but 4 options"
+    },
+    {
+      "title": "1.10-P3",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.10-P3",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.10-P4",
+      "category": "MICRO_EXPL_KEYS",
+      "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+    },
+    {
+      "title": "1.10-P4",
+      "category": "MICRO_EXPL_COUNT",
+      "detail": "3 micro_explanations but 4 options"
+    },
+    {
+      "title": "1.10-P5",
+      "category": "MICRO_EXPL_KEYS",
+      "detail": "micro_explanations uses numeric keys (0,1,2) instead of labels (A,B,C,D)"
+    },
+    {
+      "title": "1.10-P5",
+      "category": "MICRO_EXPL_COUNT",
+      "detail": "3 micro_explanations but 4 options"
+    },
+    {
+      "title": "1.11-P2",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.11-P2",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.12-P3",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.12-P3",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.15-P2",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.15-P2",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.15-P3",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.15-P3",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.16-P3",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.16-P3",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    },
+    {
+      "title": "1.16-P5",
+      "category": "PROMPT_TYPE_MISMATCH",
+      "detail": "prompt_type is \"image\" but no image URL in prompt"
+    },
+    {
+      "title": "1.16-P5",
+      "category": "REP_TYPE_MISMATCH",
+      "detail": "Has image but representation_type is \"symbolic\" (expected \"graphical\" or \"mixed\")"
+    }
+  ]
+}

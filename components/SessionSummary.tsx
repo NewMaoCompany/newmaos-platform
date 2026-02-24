@@ -119,25 +119,26 @@ export const SessionSummary = ({
     const [reviewFilter, setReviewFilter] = useState<'all' | 'correct' | 'incorrect'>('all');
     const [visibleComments, setVisibleComments] = useState<Record<string, boolean>>({});
 
-    // Calculate Stats for ACTIVE selection
-    const total = questions.length;
     // Safety check: Filter results that actually match passed questions
     const validResults = Object.entries(activeQuestionResults).filter(([qid]) => questions.some(q => q.id === qid));
 
-    // CRITICAL FIX: When viewing Current Session (index -1), count ALL correct/incorrect in questionResults
-    // not just those matching filtered questions array (which may be Review subset)
+    // Calculate Stats for ACTIVE selection
+    // Dynamic Total: Use the actual number of results recorded for this session round.
+    // This fixes the bug where Review rounds (subset of questions) incorrectly used the full chapter length.
+    const total = selectedHistoryIndex === -1
+        ? (Object.keys(activeQuestionResults).length > 0 ? Object.keys(activeQuestionResults).length : questions.length)
+        : (validResults.length > 0 ? validResults.length : questions.length);
+
+    // Count correct answers
     const correctCount = selectedHistoryIndex === -1
         ? Object.values(activeQuestionResults).filter(r => r === 'correct' || r === true).length
         : validResults.filter(([, r]) => r === 'correct' || r === true).length;
 
-    const incorrectCount = selectedHistoryIndex === -1
-        ? Object.values(activeQuestionResults).filter(r => r === 'incorrect' || r === false).length
-        : validResults.length - correctCount;
+    // ROBUST: incorrectCount = total - correctCount (ensures they always add up)
+    const incorrectCount = total - correctCount;
 
-    // Accuracy based on what was *attempted* in this snapshot
-    const attemptedCount = selectedHistoryIndex === -1
-        ? Object.keys(activeQuestionResults).length
-        : validResults.length;
+    // Accuracy based on total questions
+    const attemptedCount = total;
     const accuracy = attemptedCount > 0 ? Math.round((correctCount / attemptedCount) * 100) : 0;
 
     // Determine Theme Configuration

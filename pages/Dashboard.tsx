@@ -91,7 +91,7 @@ const CourseCard = ({
 
         <p className="text-text-secondary dark:text-gray-400 font-medium leading-relaxed max-w-[85%]">
           {type === 'AB'
-            ? 'Track your mastery across all 8 units.'
+            ? 'Track your progress across all 8 units.'
             : 'Start your journey with Unit 1.'
           }
         </p>
@@ -225,7 +225,7 @@ export const Dashboard = () => {
 
   useEffect(() => {
     const fetchDailyStats = async () => {
-      if (!user?.id) return;
+      if (!isAuthenticated || !user?.id) return;
 
       // Use Start of Today (Midnight) instead of rolling 24h
       const startOfDay = new Date();
@@ -320,10 +320,10 @@ export const Dashboard = () => {
       }
     };
 
-    if (isAuthenticated) {
+    if (!isAuthLoading && isAuthenticated && user?.id) {
       fetchDailyStats();
     }
-  }, [user?.id, isAuthenticated]);
+  }, [user?.id, isAuthenticated, isAuthLoading]);
 
   const handleDismissPrompt = () => {
     setShowLoginPrompt(false);
@@ -376,7 +376,7 @@ export const Dashboard = () => {
   const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   return (
-    <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans overflow-x-auto overflow-y-hidden">
+    <div className="h-full w-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans overflow-x-hidden overflow-y-hidden">
       <Navbar />
 
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-8 sm:gap-12 w-full overflow-y-auto">
@@ -384,7 +384,15 @@ export const Dashboard = () => {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex flex-col gap-2">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-text-main dark:text-white">
-              Hello, {user.name ? user.name.split(' ')[0] : 'Student'}
+              Hello, {(() => {
+                if (!user.name) return 'Student';
+                let n = user.name.split(' ')[0];
+                if (n.toLowerCase() === 'newmaos.com' || n.includes('@')) {
+                  const fallback = user.email ? user.email.split('@')[0] : 'Student';
+                  return fallback.charAt(0).toUpperCase() + fallback.slice(1);
+                }
+                return n;
+              })()}
             </h2>
             <p className="text-xl text-text-secondary dark:text-gray-400 font-medium">
               Ready to conquer <span className="font-bold text-text-main dark:text-white">{courses[user.currentCourse].title}</span>
@@ -560,7 +568,7 @@ export const Dashboard = () => {
                 </div>
                 <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">Sign In Required</h3>
                 <p className="text-gray-500 dark:text-gray-400 mb-8">
-                  Save your progress, track your mastery, and get personalized AI recommendations.
+                  Save your progress, track your completion, and get personalized AI recommendations.
                 </p>
 
                 <div className="flex flex-col gap-3 w-full">

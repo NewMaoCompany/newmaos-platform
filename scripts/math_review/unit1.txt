@@ -1,0 +1,1426 @@
+UNIT 1 MATHEMATICAL REVIEW (100 questions)
+============================================================
+
+--- 1.0-UT-Q1 [2/1] [Both] ---
+PROMPT: Evaluate the limit.  $$\lim_{x\to 3}\left(2x^2-5x+1\right)$$
+CORRECT: A = "4"
+  A ✓: 4
+  B : 0
+  C : 10
+  D : -4
+EXPLANATION: Polynomials are continuous everywhere, so evaluate by direct substitution: $$\lim_{x\to 3}(2x^2-5x+1)=2(3^2)-5(3)+1=18-15+1=4.$$
+MICRO:
+  A: Correct. This option aligns with the definitions and laws of limits and continuity.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.0-UT-Q2 [3/2] [Both] ---
+PROMPT: Evaluate the limit.  $$\lim_{x\to 2}\frac{x^2-4}{x-2}$$
+CORRECT: A = "4"
+  A ✓: 4
+  B : 2
+  C : Does not exist
+  D : 0
+EXPLANATION: Rewrite and simplify: $$\frac{x^2-4}{x-2}=\frac{(x-2)(x+2)}{x-2}=x+2\quad (x\ne 2).$$ So $$\lim_{x\to 2}\frac{x^2-4}{x-2}=\lim_{x\to 2}(x+2)=4.$$
+MICRO:
+  A: Correct. This option aligns with the definitions and laws of limits and continuity.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.0-UT-Q3 [2/2] [Both] ---
+PROMPT: Use the graph in the image.  What is $$\lim_{x\to 2} f(x)?$$
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "+∞"
+  A : Does not exist
+  B : 0
+  C ✓: +∞
+  D : -∞
+EXPLANATION: From the graph, there is a vertical asymptote at $x=2$. As $x\to 2^-$, $f(x)\to +\infty$, and as $x\to 2^+$, $f(x)\to +\infty$. Since both one-sided limits agree and both tend to $+\infty$, we write $\lim_{x\to 2} f(x)=+\infty$.
+MICRO:
+  A: Both one-sided limits tend to $+\infty$, so they agree. The two-sided limit is $+\infty$, not nonexistent.
+  B: Confuses the $x$-axis intersection with the limit at $x=2$. The function grows without bound near $x=2.
+  C: As $x\to 2^-$, $f(x)\to +\infty$ and as $x\to 2^+$, $f(x)\to +\infty$. Both sides agree, so $\lim_{x\to 2} f(x)=+\infty$.
+  D: The graph shows the function increasing without bound (to $+\infty$) near $x=2$, not decreasing to $-\infty$.
+
+--- 1.0-UT-Q4 [2/2] [Both] ---
+PROMPT: Use the table in the image.  What is the best estimate of $$\lim_{x\to 2} g(x)?$$
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "4.0"
+  A : 3.6
+  B : 3.9
+  C : 4.4
+  D ✓: 4.0
+EXPLANATION: As $x$ gets closer to $2$ from the left, $g(x)$ is near $4$, and from the right, $g(x)$ is also near $4$. Both sides approach $4$, so the best estimate is $4.0$.
+MICRO:
+  A: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  B: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  C: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  D: Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.
+
+--- 1.0-UT-Q5 [3/2] [Both] ---
+PROMPT: Evaluate the limit using limit laws.  $$\lim_{x\to -1}\left(\frac{3}{x+2}+\frac{2x}{x^2+3}\right)$$
+CORRECT: A = "$\frac{5}{2}$"
+  A ✓: $\frac{5}{2}$
+  B : $\frac{5}{4}$
+  C : $\frac{1}{2}$
+  D : Does not exist
+EXPLANATION: Both denominators are nonzero at $x=-1$, so substitute: $$\frac{3}{-1+2}+\frac{2(-1)}{(-1)^2+3}=3-\frac12=\frac{5}{2}.$$
+MICRO:
+  A: Correct. Substituting $x=-1$: $\frac{3}{-1+2}+\frac{2(-1)}{(-1)^2+3}=3-\frac{1}{2}=\frac{5}{2}$.
+  B: Incorrect. $\frac{5}{4}$ comes from an arithmetic error, likely $\frac{3}{2}-\frac{1}{4}$.
+  C: Incorrect. $\frac{1}{2}$ results from computing only the second term and ignoring the first.
+  D: Incorrect. The limit exists because both denominators are nonzero at $x=-1$.
+
+--- 1.0-UT-Q6 [4/3] [Both] ---
+PROMPT: Evaluate the limit.  $$\lim_{x\to 0}\frac{\sqrt{1+x}-1}{x}$$
+CORRECT: C = "$\frac12$"
+  A : 0
+  B : 1
+  C ✓: $\frac12$
+  D : 2
+EXPLANATION: Rationalize: $$\frac{\sqrt{1+x}-1}{x}\cdot\frac{\sqrt{1+x}+1}{\sqrt{1+x}+1}=\frac{1}{\sqrt{1+x}+1}.$$ Then $$\lim_{x\to 0}\frac{1}{\sqrt{1+x}+1}=\frac12.$$
+MICRO:
+  A: Incorrect. Continuity requires three things: the limit exists, f(a) exists, and they are equal.
+  B: Incorrect. Continuity requires three things: the limit exists, f(a) exists, and they are equal.
+  C: Correct. A function is continuous at a point if the limit exists, the function value exists, and the limit value equals the function value.
+  D: Incorrect. Continuity requires three things: the limit exists, f(a) exists, and they are equal.
+
+--- 1.0-UT-Q7 [3/2] [Both] ---
+PROMPT: Let $$f(x)=\begin{cases} \frac{x^2-1}{x-1},& x\ne 1\\ 7,& x=1 \end{cases}$$ Which statement is true?
+CORRECT: B = "$\lim_{x\to 1}f(x)=2$ but $f(1)=7$"
+  A : $\lim_{x\to 1}f(x)=7$
+  B ✓: $\lim_{x\to 1}f(x)=2$ but $f(1)=7$
+  C : $\lim_{x\to 1}f(x)$ does not exist because $f(1)$ is defined differently
+  D : $\lim_{x\to 1}f(x)=7$ and $f$ is continuous at $x=1$
+EXPLANATION: For $x\ne 1$, $\frac{x^2-1}{x-1}=x+1$, so $$\lim_{x\to 1}f(x)=\lim_{x\to 1}(x+1)=2,$$ but $f(1)=7$. The limit exists; the function is not continuous at $x=1$.
+MICRO:
+  A: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  B: Correct. The Intermediate Value Theorem (IVT) states that if a continuous function takes different values at the ends of an interval, it must take all
+  C: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  D: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+
+--- 1.0-UT-Q8 [4/3] [Both] ---
+PROMPT: Evaluate the limit.  $$\lim_{x\to 0} x^2\sin\left(\frac{1}{x}\right)$$
+CORRECT: D = "0"
+  A : Does not exist
+  B : 1
+  C : -1
+  D ✓: 0
+EXPLANATION: Because $-1\le \sin(\frac{1}{x})\le 1$, multiplying by $x^2\ge 0$ gives $$-x^2\le x^2\sin(\frac{1}{x})\le x^2.$$ As $x\to 0$, both bounds go to $0$, so by the Squeeze Theorem the limit is $0$.
+MICRO:
+  A: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  D: Correct. This option aligns with the definitions and laws of limits and continuity.
+
+--- 1.0-UT-Q9 [3/2] [Both] ---
+PROMPT: A student wants to estimate $\lim_{x\to 1} f(x)$.  Which set of $x$-values is most appropriate for a numerical estimate of the limit?
+CORRECT: B = "$x=0.9,\ 0.99,\ 0.999,\ 1.001,\ 1.01,\ 1.1$"
+  A : $x=0.5,\ 0.6,\ 0.7,\ 0.8$
+  B ✓: $x=0.9,\ 0.99,\ 0.999,\ 1.001,\ 1.01,\ 1.1$
+  C : $x=1.1,\ 1.2,\ 1.3,\ 1.4$
+  D : $x=1,\ 1,\ 1,\ 1$
+EXPLANATION: To estimate a two-sided limit numerically, choose $x$-values that approach the target from both sides and get very close without being exactly equal to the target. Option B satisfies this.
+MICRO:
+  A: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+  B: Correct. Based on the definition of a limit, as the variable approaches a value, the left and right limits must be equal and approach a unique finite 
+  C: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+  D: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+
+--- 1.0-UT-Q10 [3/2] [Both] ---
+PROMPT: Use the graph in the image.  At $x=1$, what type of discontinuity does $h(x)$ have?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "Jump discontinuity"
+  A : Removable discontinuity
+  B ✓: Jump discontinuity
+  C : Infinite discontinuity
+  D : No discontinuity (continuous)
+EXPLANATION: From the graph, as $x\to 1^-$, $h(x)\to 2$ (open circle). As $x\to 1^+$, $h(x)\to 3$ (right-hand segment). Since the one-sided limits are finite but unequal, the discontinuity is a jump discontinuity.
+MICRO:
+  A: Incorrect. The Squeeze Theorem requires the bounding functions to have identical limits at the point of interest.
+  B: Correct. The Squeeze Theorem states that if a function is bounded by two others that approach the same limit, the middle function must also approach t
+  C: Incorrect. The Squeeze Theorem requires the bounding functions to have identical limits at the point of interest.
+  D: Incorrect. The Squeeze Theorem requires the bounding functions to have identical limits at the point of interest.
+
+--- 1.0-UT-Q11 [3/1] [Both] ---
+PROMPT: Which condition is NOT required for $f$ to be continuous at $x=a$?
+CORRECT: A = "$f'(a)$ exists"
+  A ✓: $f'(a)$ exists
+  B : $f(a)$ is defined
+  C : $\lim_{x\to a} f(x)$ exists
+  D : $\lim_{x\to a} f(x)=f(a)$
+EXPLANATION: Continuity at $x=a$ requires: (1) $f(a)$ exists, (2) $\lim_{x\to a}f(x)$ exists, and (3) the limit equals the function value. Differentiability is not required.
+MICRO:
+  A: Correct. This option aligns with the definitions and laws of limits and continuity.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.0-UT-Q12 [4/2] [Both] ---
+PROMPT: Let $$f(x)=\frac{1}{x-3}.$$ On which interval is $f$ continuous?
+CORRECT: B = "$(-\infty,3)\cup(3,\infty)$"
+  A : $(-\infty,\infty)$
+  B ✓: $(-\infty,3)\cup(3,\infty)$
+  C : $(-\infty,3]$
+  D : $[3,\infty)$
+EXPLANATION: A rational function is continuous wherever its denominator is nonzero. Here $x-3\ne 0\Rightarrow x\ne 3$, so $f$ is continuous on $(-\infty,3)\cup(3,\infty)$.
+MICRO:
+  A: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  B: Correct. This option aligns with the definitions and laws of limits and continuity.
+  C: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.0-UT-Q13 [4/3] [Both] ---
+PROMPT: Find the value of $k$ that makes $f$ continuous at $x=2$.  $$f(x)=\begin{cases} \frac{x^2-4}{x-2},& x\ne 2\\ k,& x=2 \end{cases}$$
+CORRECT: C = "4"
+  A : 0
+  B : 2
+  C ✓: 4
+  D : Does not exist
+EXPLANATION: For $x\ne 2$, $$\frac{x^2-4}{x-2}=\frac{(x-2)(x+2)}{x-2}=x+2.$$ Thus $$\lim_{x\to 2}f(x)=4.$$ Continuity at $x=2$ requires $k=4$.
+MICRO:
+  A: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Correct. This option aligns with the definitions and laws of limits and continuity.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.0-UT-Q14 [3/2] [Both] ---
+PROMPT: Let $$f(x)=\frac{5}{(x-4)^2}.$$ Evaluate $$\lim_{x\to 4} f(x).$$
+CORRECT: C = "$+\infty$"
+  A : 0
+  B : $-\infty$
+  C ✓: $+\infty$
+  D : Does not exist
+EXPLANATION: Because $(x-4)^2\to 0^+$ as $x\to 4$ and the numerator is positive, the quotient increases without bound: $$\lim_{x\to 4}\frac{5}{(x-4)^2}=+\infty.$$
+MICRO:
+  A: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Correct. This option aligns with the definitions and laws of limits and continuity.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.0-UT-Q15 [3/2] [Both] ---
+PROMPT: Evaluate the limit.  $$\lim_{x\to \infty}\frac{3x^2-7}{2x^2+5x}$$
+CORRECT: D = "$\frac{3}{2}$"
+  A : $\infty$
+  B : $\frac{3}{5}$
+  C : 0
+  D ✓: $\frac{3}{2}$
+EXPLANATION: Divide by $x^2$: $$\frac{3-\frac{7}{x^2}}{2+\frac{5}{x}}\xrightarrow[x\to\infty]{}\frac{3}{2}.$$
+MICRO:
+  A: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  D: Correct. This option aligns with the definitions and laws of limits and continuity.
+
+--- 1.0-UT-Q16 [5/3] [Both] ---
+PROMPT: Suppose $f$ is continuous on $[1,5]$, with $f(1)=-2$ and $f(5)=4$. Which statement must be true?
+CORRECT: B = "There exists $c$ in $(1,5)$ such that $f(c)=0$."
+  A : There exists $c$ in $(1,5)$ such that $f(c)=0$ and $f'(c)$ exists.
+  B ✓: There exists $c$ in $(1,5)$ such that $f(c)=0$.
+  C : There exists $c$ in $(1,5)$ such that $f(c)=1$ and $f$ is increasing on $[1,5]$.
+  D : There exists $c$ in $(1,5)$ such that $f(c)=6$.
+EXPLANATION: By the Intermediate Value Theorem, if $f$ is continuous on $[1,5]$, then for any value $L$ between $f(1)=-2$ and $f(5)=4$, there exists $c\in(1,5)$ with $f(c)=L$. Since $0$ is between $-2$ and $4$, such a $c$ must exist.
+MICRO:
+  A: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+  B: Correct. Based on the definition of a limit, as the variable approaches a value, the left and right limits must be equal and approach a unique finite 
+  C: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+  D: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+
+--- 1.0-UT-Q17 [4/3] [Both] ---
+PROMPT: For a function $f$, suppose $$\lim_{x\to 2^-} f(x)=5\quad\text{and}\quad\lim_{x\to 2^+} f(x)=5,$$ but $f(2)$ is undefined.  Which statement is true?
+CORRECT: C = "$\lim_{x\to 2} f(x)=5$ and the discontinuity is removable."
+  A : $\lim_{x\to 2} f(x)$ does not exist.
+  B : $f$ is continuous at $x=2$.
+  C ✓: $\lim_{x\to 2} f(x)=5$ and the discontinuity is removable.
+  D : $x=2$ is a jump discontinuity.
+EXPLANATION: Since $\lim_{x\to 2^-}f(x)=\lim_{x\to 2^+}f(x)=5$, the two-sided limit exists and equals $5$. Because $f(2)$ is undefined, $f$ is not continuous at $2$, but the discontinuity is removable: defining $f(2)=5$ restores continuity.
+MICRO:
+  A: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Correct. This option aligns with the definitions and laws of limits and continuity.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.0-UT-Q18 [4/3] [Both] ---
+PROMPT: Use the graph in the image.  The function $p(x)$ is continuous on $[0,3]$. Based on the graph, which value is guaranteed to be attained by $p(x)$ for some $c\in(0,3)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "0"
+  A : -2
+  B : There is not enough information to guarantee any value.
+  C : 6
+  D ✓: 0
+EXPLANATION: Because $p$ is continuous on $[0,3]$, it satisfies IVT. The graph indicates $p(0)<0$ and $p(3)>0$, so $0$ lies between them. Therefore there must exist $c\in(0,3)$ such that $p(c)=0$.
+MICRO:
+  A: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+  B: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+  C: Incorrect. Please check if the left-hand and right-hand limits agree, or if there is an indeterminate form (like 0/0) requiring simplification.
+  D: Correct. Based on the definition of a limit, as the variable approaches a value, the left and right limits must be equal and approach a unique finite 
+
+--- 1.0-UT-Q19 [2/1] [Both] ---
+PROMPT: If $$\lim_{x\to 4^-} f(x)=2\quad\text{and}\quad\lim_{x\to 4^+} f(x)=2,$$ then what is $$\lim_{x\to 4} f(x)?$$
+CORRECT: C = "2"
+  A : Does not exist
+  B : 4
+  C ✓: 2
+  D : Cannot be determined without knowing $f(4)$
+EXPLANATION: Because the one-sided limits exist and are equal, the two-sided limit exists and equals that common value: $$\lim_{x\to 4} f(x)=2.$$
+MICRO:
+  A: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+  B: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+  C: Correct. For a 0/0 indeterminate form, limits can be found by factoring, canceling common terms, or rationalizing the numerator/denominator.
+  D: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+
+--- 1.0-UT-Q20 [4/3] [Both] ---
+PROMPT: Consider $$f(x)=\frac{x-5}{\sqrt{x-1}}.$$ Which statement about $\lim_{x\to 1^+} f(x)$ is true?
+CORRECT: D = "The limit is $-\infty$."
+  A : The limit does not exist because $x=1$ is not in the domain.
+  B : The limit is $+\infty$.
+  C : The limit is $-4$.
+  D ✓: The limit is $-\infty$.
+EXPLANATION: The domain requires $x\ge 1$, so consider $x\to 1^+$. As $x\to 1^+$, $$x-5\to -4<0,\quad \sqrt{x-1}\to 0^+.$$ A negative constant divided by a positive number approaching $0$ tends to $-\infty$, so $$\lim_{x\to 1^+}\frac{x-5}{\sqrt{x-1}}=-\infty.$$
+MICRO:
+  A: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+  B: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+  C: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+  D: Correct. For a 0/0 indeterminate form, limits can be found by factoring, canceling common terms, or rationalizing the numerator/denominator.
+
+--- 1.1-P1 [2/2] [Both] ---
+PROMPT: A particle’s position is given by $s(t)=t^2+2t$ (meters), where $t$ is in seconds. What is the average velocity on the interval $[1,3]$?
+CORRECT: B = "$6\\ \text{m/s}$"
+  A : $4\\ \text{m/s}$
+  B ✓: $6\\ \text{m/s}$
+  C : $8\\ \text{m/s}$
+  D : $10\\ \text{m/s}$
+EXPLANATION: Average velocity on $[1,3]$ is the slope of the secant line: $$\frac{s(3)-s(1)}{3-1}=\frac{(3^2+2\cdot 3)-(1^2+2\cdot 1)}{2}=\frac{15-3}{2}=6.$$
+MICRO:
+  A: Distance change only.
+  B: Correct secant slope with units mph.
+  C: Uses [0,5], not [2,5].
+  D: Instantaneous rate at one time.
+
+--- 1.1-P2 [3/3] [Both] ---
+PROMPT: Let $f(x)=3x^2-5x$. Which expression represents the slope of the tangent line to $y=f(x)$ at $x=2$ using the definition of derivative?
+CORRECT: D = "$$\lim_{h\to 0}\frac{f(2+h)-f(2)}{h}$$"
+  A : $$\lim_{h\to 0}\frac{f(2)-f(2-h)}{h}$$
+  B : $$\lim_{h\to 0}\frac{f(h)-f(2)}{h-2}$$
+  C : $$\lim_{x\to 0}\frac{f(2)-f(x)}{2-x}$$
+  D ✓: $$\lim_{h\to 0}\frac{f(2+h)-f(2)}{h}$$
+EXPLANATION: By definition, the slope of the tangent line at $x=2$ is $$\lim_{h\to 0}\frac{f(2+h)-f(2)}{h}.$$
+MICRO:
+  A: Forgot 3-1=2.
+  B: Likely arithmetic/interval mistake.
+  C: Likely point-value confusion.
+  D: Correct: secant slope over [1,3] is 6.
+
+--- 1.1-P3 [4/4] [Both] ---
+PROMPT: Compute the instantaneous rate of change of $g(x)=\sqrt{x}$ at $x=9$ using the limit definition $$g'(9)=\lim_{h\to 0}\frac{\sqrt{9+h}-3}{h}.$$
+CORRECT: C = "$\dfrac{1}{6}$"
+  A : $\dfrac{1}{3}$
+  B : $\dfrac{1}{18}$
+  C ✓: $\dfrac{1}{6}$
+  D : $\dfrac{1}{9}$
+EXPLANATION: Rationalize: $$\frac{\sqrt{9+h}-3}{h}\cdot\frac{\sqrt{9+h}+3}{\sqrt{9+h}+3} =\frac{(9+h)-9}{h(\sqrt{9+h}+3)} =\frac{1}{\sqrt{9+h}+3}.$$ Then $$\lim_{h\to 0}\frac{1}{\sqrt{9+h}+3}=\frac{1}{3+3}=\frac{1}{6}.$$
+MICRO:
+  A: Used function value instead of limit.
+  B: Likely dropped terms/incorrect simplification.
+  C: Correct.
+  D: Binomial expansion error.
+
+--- 1.1-P4 [1/1] [Both] ---
+PROMPT: A car’s distance from home (in miles) after $t$ hours is $D(t)$. Which quantity best represents the average speed of the car from $t=2$ to $t=5$?
+CORRECT: A = "$$\frac{D(5)-D(2)}{5-2}$$"
+  A ✓: $$\frac{D(5)-D(2)}{5-2}$$
+  B : $D(5)-D(2)$
+  C : $$\frac{D(5)}{5}$$
+  D : $D'(2)$
+EXPLANATION: Average speed on $[2,5]$ is the average rate of change: $$\frac{D(5)-D(2)}{5-2}.$$
+MICRO:
+  A: Correct: limit is 1/6.
+  B: Missed full rationalization.
+  C: Substitution done incorrectly.
+  D: Incorrect denominator evaluation.
+
+--- 1.1-P5 [5/5] [Both] ---
+PROMPT: Let $p(x)=x^3$. Evaluate $$\lim_{h\to 0}\frac{p(2+h)-p(2)}{h}.$$
+CORRECT: A = "$12$"
+  A ✓: $12$
+  B : $6$
+  C : $8$
+  D : $4$
+EXPLANATION: Compute: $$(2+h)^3=8+12h+6h^2+h^3.$$ So $$\frac{(2+h)^3-8}{h}=\frac{12h+6h^2+h^3}{h}=12+6h+h^2.$$ Taking $h\to 0$ gives $12$.
+MICRO:
+  A: Correct increment form.
+  B: Can be transformed but not the intended clean form.
+  C: Treats h as input value, not increment.
+  D: Would need x→2, not x→0.
+
+--- 1.2-P1 [2/2] [Both] ---
+PROMPT: Suppose $\lim_{x\to 4} f(x)=7$. Which statement must be true?
+CORRECT: B = "For values of $x$ close to $4$ (but not necessarily equal to $4$), $f(x)$ can be made arbitrarily close to $7$."
+  A : $f(4)=7$
+  B ✓: For values of $x$ close to $4$ (but not necessarily equal to $4$), $f(x)$ can be made arbitrarily close to $7$.
+  C : $f(x)=7$ for all $x$ near $4$
+  D : $\lim_{x\to 7} f(x)=4$
+EXPLANATION: The statement $\lim_{x\to 4} f(x)=7$ means that for $x$ sufficiently close to $4$ (with $x\ne 4$ allowed), the values $f(x)$ can be made as close to $7$ as desired.
+MICRO:
+  A: Only right-hand value.
+  B: Correct: mismatch implies DNE.
+  C: Only left-hand value.
+  D: Not from either one-sided limit.
+
+--- 1.2-P2 [3/3] [Both] ---
+PROMPT: For $x\ne 1$, define $$f(x)=\frac{|x-1|}{x-1}.$$ Which statement is correct?
+CORRECT: D = "$$\lim_{x\to 1^-} f(x)=-1\\ \text{and}\\ \lim_{x\to 1^+} f(x)=1$$"
+  A : $f(1)=0$
+  B : $$\lim_{x\to 1} f(x)=1$$
+  C : $$\lim_{x\to 1} f(x)=-1$$
+  D ✓: $$\lim_{x\to 1^-} f(x)=-1\\ \text{and}\\ \lim_{x\to 1^+} f(x)=1$$
+EXPLANATION: If $x>1$, then $|x-1|=x-1$ so $f(x)=1$. If $x<1$, then $|x-1|=-(x-1)$ so $f(x)=-1$. Therefore $$\lim_{x\to 1^-} f(x)=-1,\qquad \lim_{x\to 1^+} f(x)=1,$$ so the two-sided limit does not exist.
+MICRO:
+  A: Sign slip.
+  B: Moved constant in wrong direction.
+  C: Did not undo shift by 3.
+  D: Correct.
+
+--- 1.2-P3 [4/3] [Both] ---
+PROMPT: If $\lim_{x\to 2} (f(x)-3)=5$, what is $\lim_{x\to 2} f(x)$?
+CORRECT: C = "$8$"
+  A : $2$
+  B : $5$
+  C ✓: $8$
+  D : $-8$
+EXPLANATION: Use limit laws: $$\lim_{x\to 2}(f(x)-3)=\lim_{x\to 2}f(x)-3=5,$$ so $$\lim_{x\to 2}f(x)=8.$$
+MICRO:
+  A: Limit does not force function value.
+  B: Limit does not force constancy nearby.
+  C: Correct epsilon-delta meaning (informal).
+  D: Unrelated.
+
+--- 1.2-P4 [1/1] [Both] ---
+PROMPT: Which notation correctly describes “the left-hand limit of $f(x)$ as $x$ approaches $5$”?
+CORRECT: B = "$$\lim_{x\to 5^-} f(x)$$"
+  A : $$\lim_{x\to 5^+} f(x)$$
+  B ✓: $$\lim_{x\to 5^-} f(x)$$
+  C : $$\lim_{f(x)\to 5^-} x$$
+  D : $$\lim_{x\to 5} f(5)$$
+EXPLANATION: Approaching from the left uses $5^-$, so the left-hand limit is $$\lim_{x\to 5^-} f(x).$$
+MICRO:
+  A: Plus means right side.
+  B: Correct left-hand notation.
+  C: f(5) is constant expression.
+  D: Incorrect variable roles.
+
+--- 1.2-P5 [5/5] [Both] ---
+PROMPT: Define $$f(x)=\begin{cases}2x+1,& x<0\\\\ x^2,& x\ge 0\end{cases}$$ What is $\lim_{x\to 0} f(x)$?
+CORRECT: A = "Does not exist"
+  A ✓: Does not exist
+  B : $1$
+  C : $0$
+  D : $2$
+EXPLANATION: Compute one-sided limits: $$\lim_{x\to 0^-} f(x)=\lim_{x\to 0^-}(2x+1)=1,$$ $$\lim_{x\to 0^+} f(x)=\lim_{x\to 0^+}(x^2)=0.$$ Since $1\ne 0$, $\lim_{x\to 0} f(x)$ does not exist.
+MICRO:
+  A: Correct left/right analysis.
+  B: Left-hand only is -1.
+  C: Right-hand only is 1.
+  D: Domain excludes x=1.
+
+--- 1.3-P1 [2/2] [Both] ---
+PROMPT: Use the graph to evaluate the limit.  Find $\displaystyle \lim_{x\to 2^-} f(x)$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$3$"
+  A : The limit does not exist
+  B : $4$
+  C ✓: $3$
+  D : $2$
+EXPLANATION: As $x\to 2^-$, the graph follows the left branch. The $y$-values approach $3$ (the open circle at $(2,3)$). Therefore, $\lim_{x\to 2^-} f(x)=3$.
+MICRO:
+  A: A one-sided limit can exist even if the two-sided limit fails; from the left the values approach a single number.
+  B: $4$ is the function value shown by the filled point at $x=2$, not the left-hand limit.
+  C: Approaching $x=2$ from the left follows the left linear branch, which approaches $y=3$ at the open circle.
+  D: $2$ confuses the $x$-value being approached with the $y$-value of the limit.
+
+--- 1.3-P2 [3/3] [Both] ---
+PROMPT: Use the graph to evaluate the limit.  Find $\displaystyle \lim_{x\to 1} f(x)$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "The limit does not exist"
+  A ✓: The limit does not exist
+  B : $3$
+  C : $1$
+  D : $2$
+EXPLANATION: From the left, $f(x)$ approaches $3$ (open circle at $(1,3)$). From the right, $f(x)$ approaches $1$ (horizontal segment). Since $\lim_{x\to 1^-} f(x)\neq \lim_{x\to 1^+} f(x)$, $\lim_{x\to 1} f(x)$ does not exist.
+MICRO:
+  A: Left-hand and right-hand limits are different ($3$ from the left and $1$ from the right), so the two-sided limit does not exist.
+  B: $3$ matches the left-hand approach (open circle), but the right-hand approach is different.
+  C: $1$ matches the right-hand approach (and the filled point), but the left-hand approach is different.
+  D: $2$ is not approached from either side; it results from averaging or guessing.
+
+--- 1.3-P3 [4/3] [Both] ---
+PROMPT: Use the graph to evaluate the limit.  Find $\displaystyle \lim_{x\to 0^+} f(x)$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$\infty$"
+  A : $-\infty$
+  B : $0$
+  C ✓: $\infty$
+  D : The limit does not exist
+EXPLANATION: Near $x=0$ on the right, the graph shoots upward without bound. Therefore, $\lim_{x\to 0^+} f(x)=\infty$.
+MICRO:
+  A: The branch shown for $x>0$ rises upward as $x\to 0^+$, not downward.
+  B: The $x$-axis is not being approached; the $y$-values grow large.
+  C: As $x\to 0^+$, the graph increases without bound, so the one-sided limit is $\infty$.
+  D: An infinite limit is a valid limit description; here the behavior is unbounded in a single direction.
+
+--- 1.3-P4 [2/2] [Both] ---
+PROMPT: Use the graph to evaluate the limit.  Find $\displaystyle \lim_{x\to -1} f(x)$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$1$"
+  A : The limit does not exist
+  B ✓: $1$
+  C : $-1$
+  D : $0$
+EXPLANATION: Approaching $x=-1$ from either side, the graph stays at $y=1$. Even though there is a hole at $(-1,1)$, the approaching value is $1$, so $\lim_{x\to -1} f(x)=1$.
+MICRO:
+  A: A hole does not prevent a limit from existing; the surrounding values can still approach one number.
+  B: Near $x=-1$, the graph lies on the horizontal line $y=1$ with a hole at $(-1,1)$, so the limit is $1$.
+  C: $-1$ is the $x$-value being approached, not the $y$-value of the limit.
+  D: The graph is not approaching $y=0$ near $x=-1$.
+
+--- 1.3-P5 [1/1] [Both] ---
+PROMPT: Use the graph to evaluate the limit.  Find $\displaystyle \lim_{x\to 0^+} f(x)$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$0$"
+  A : $1$
+  B : $\infty$
+  C : The limit does not exist
+  D ✓: $0$
+EXPLANATION: The graph is defined for $x\ge 0$ and approaches the point $(0,0)$ from the right. Therefore, $\lim_{x\to 0^+} f(x)=0$.
+MICRO:
+  A: At $x=0$, the graph begins at $y=0$, not $1$.
+  B: The curve does not blow up near $x=0$; it approaches $0$.
+  C: A right-hand limit can exist even if there is no left side shown.
+  D: As $x\to 0^+$ along the curve, $y\to 0$.
+
+--- 1.4-P1 [2/2] [Both] ---
+PROMPT: A function $f$ is defined near $x=3$. Use the table to estimate $\displaystyle \lim_{x\to 3} f(x)$.  $$ \begin{array}{c|cccccc} x & 2.9 & 2.99 & 2.999 & 3.001 & 3.01 & 3.1\\\\ \hline f(x) & 5.7 & 5.97 & 5.997 & 6.003 & 6.03 & 6.3 \end{array} $$
+CORRECT: B = "$6$"
+  A : $5.997$
+  B ✓: $6$
+  C : $6.003$
+  D : The limit does not exist
+EXPLANATION: As $x$ approaches $3$ from the left, $f(x)$ moves from $5.97$ to $5.997$. From the right, it moves from $6.03$ to $6.003$. These values cluster around $6$, so $\lim_{x\to 3} f(x)\approx 6$.
+MICRO:
+  A: Single left-side entry.
+  B: Both sides approach $6$.
+  C: Single right-side entry.
+  D: Trends indicate existence.
+
+--- 1.4-P2 [3/3] [Both] ---
+PROMPT: Use the table to determine $\displaystyle \lim_{x\to 2} f(x)$.  $$ \begin{array}{c|cccccc} x & 1.9 & 1.99 & 1.999 & 2.001 & 2.01 & 2.1\\\\ \hline f(x) & -1.1 & -1.01 & -1.001 & 3.001 & 3.01 & 3.1 \end{array} $$
+CORRECT: C = "The limit does not exist"
+  A : $1$
+  B : $-1$
+  C ✓: The limit does not exist
+  D : $3$
+EXPLANATION: From the left of $2$, $f(x)$ approaches $-1$ (e.g., $-1.001$). From the right of $2$, $f(x)$ approaches $3$ (e.g., $3.001$). Since the one-sided limits are unequal, $\lim_{x\to 2} f(x)$ does not exist.
+MICRO:
+  A: Averaging is invalid for limits.
+  B: Only left-hand limit.
+  C: One-sided limits differ.
+  D: Only right-hand limit.
+
+--- 1.4-P3 [4/3] [Both] ---
+PROMPT: Use the table to evaluate the limit.  $$ \begin{array}{c|cccccc} x & -0.1 & -0.01 & -0.001 & 0.001 & 0.01 & 0.1\\\\ \hline f(x) & 10 & 100 & 1000 & 1000 & 100 & 10 \end{array} $$  Find $\displaystyle \lim_{x\to 0} f(x)$.
+CORRECT: A = "$\infty$"
+  A ✓: $\infty$
+  B : $-\infty$
+  C : $0$
+  D : The limit does not exist
+EXPLANATION: When $x$ is closer to $0$ (e.g., $\pm 0.001$), $f(x)$ is much larger (1000) than when $x$ is farther (e.g., $\pm 0.1$ gives 10). The values increase without bound as $x\to 0$, so $\lim_{x\to 0} f(x)=\infty$.
+MICRO:
+  A: Unbounded growth both sides.
+  B: Wrong sign.
+  C: Opposite trend.
+  D: Infinite limit is a valid description here.
+
+--- 1.4-P4 [3/3] [Both] ---
+PROMPT: A function $f$ is defined near $x=2$. Use the table to estimate $$\displaystyle \lim_{x\to 2}\frac{f(x)-f(2)}{x-2}.$$  $$ \begin{array}{c|cccccc} x & 1.9 & 1.99 & 1.999 & 2.001 & 2.01 & 2.1\\\\ \hline f(x) & 4.61 & 4.9601 & 4.996001 & 5.004001 & 5.0401 & 5.41 \end{array} $$  Assume $f(2)=5$.
+CORRECT: D = "$4$"
+  A : $0$
+  B : The limit does not exist
+  C : $5$
+  D ✓: $4$
+EXPLANATION: Compute the difference quotient near $2$. From the right: $\frac{5.004001-5}{0}.001\approx 4.001$. From the left: $\frac{4.996001-5}{-0.001}\approx 3.999$. Both sides approach $4$, so the limit is approximately $4$.
+MICRO:
+  A: Slope is not near $0$.
+  B: Trends show existence.
+  C: Confuses value with slope.
+  D: Both sides approach $4$.
+
+--- 1.4-P5 [5/4] [Both] ---
+PROMPT: Use the table to determine $\displaystyle \lim_{x\to 0} f(x)$.  $$ \begin{array}{c|cccccc} x & -0.1 & -0.01 & -0.001 & 0.001 & 0.01 & 0.1\\\\ \hline f(x) & 1 & -1 & 1 & -1 & 1 & -1 \end{array} $$
+CORRECT: D = "The limit does not exist"
+  A : $0$
+  B : $1$
+  C : $-1$
+  D ✓: The limit does not exist
+EXPLANATION: As $x$ gets closer to $0$, the outputs keep switching between $1$ and $-1$. Since the values do not settle on a single number, $\lim_{x\to 0} f(x)$ does not exist.
+MICRO:
+  A: Averaging is not a limit rule.
+  B: Not consistently approaching $1$.
+  C: Not consistently approaching $-1$.
+  D: Oscillation prevents a limit.
+
+--- 1.5-P1 [1/1] [Both] ---
+PROMPT: Evaluate the limit: $$\lim_{x\to 3}\left(2x^2-5x+1\right).$$
+CORRECT: C = "$4$"
+  A : $-4$
+  B : $6$
+  C ✓: $4$
+  D : Does not exist
+EXPLANATION: Because polynomials are continuous, $$\lim_{x\to 3}(2x^2-5x+1)=2\cdot 3^2-5\cdot 3+1=4.$$
+MICRO:
+  A: Sign error.
+  B: Arithmetic error.
+  C: Use continuity of polynomials and substitute $x=3$.
+  D: Continuity guarantees existence.
+
+--- 1.5-P2 [3/3] [Both] ---
+PROMPT: Using the graph (see image 1.5-P2.png), evaluate $$\lim_{x\to 1}\left(3f(x)-2g(x)\right).$$
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$8$"
+  A ✓: $8$
+  B : $4$
+  C : $-8$
+  D : Does not exist
+EXPLANATION: From the graph, $$\lim_{x\to 1}f(x)=2,\quad \lim_{x\to 1}g(x)=-1.$$ By limit laws, $$\lim_{x\to 1}(3f(x)-2g(x))=3\cdot 2-2\cdot(-1)=8.$$
+MICRO:
+  A: This uses the correct limits from the graph: $f\to 2$, $g\to -1$.
+  B: This uses incorrect graph reading for one of the limits.
+  C: This comes from sign mistakes when computing $-2g$.
+  D: Both $f$ and $g$ approach finite values at $x=1$, so the limit exists.
+
+--- 1.5-P3 [2/2] [Both] ---
+PROMPT: Suppose $$\lim_{x\to 2}f(x)=5\quad\text{and}\quad \lim_{x\to 2}g(x)=-3.$$ Evaluate $$\lim_{x\to 2}\frac{(f(x))^2}{g(x)+7}.$$
+CORRECT: D = "$\frac{25}{4}$"
+  A : $\frac{10}{4}$
+  B : Does not exist
+  C : $\frac{25}{-10}$
+  D ✓: $\frac{25}{4}$
+EXPLANATION: By limit laws, $$\lim_{x\to 2}\frac{(f(x))^2}{g(x)+7}=\frac{(\lim f(x))^2}{\lim(g(x)+7)}=\frac{5^2}{-3+7}=\frac{25}{4}.$$
+MICRO:
+  A: Squaring is not doubling.
+  B: Denominator limit is nonzero.
+  C: Denominator limit is $4$, not $-10$.
+  D: Compute $(5)^2$ and divide by $4$.
+
+--- 1.5-P4 [4/4] [Both] ---
+PROMPT: Evaluate (or state that it does not exist): $$\lim_{x\to 2}\frac{x+1}{x^2-4}.$$
+CORRECT: B = "Does not exist (unbounded)"
+  A : $\frac{3}{0}$
+  B ✓: Does not exist (unbounded)
+  C : $\frac{3}{4}$
+  D : $0$
+EXPLANATION: Factor $x^2-4=(x-2)(x+2)$. As $x\to 2$, the numerator $x+1\to 3$ while the denominator $(x-2)(x+2)\to 0$. A nonzero number divided by something approaching $0$ becomes unbounded, so the two-sided limit does not exist.
+MICRO:
+  A: A limit cannot be left as “divide by zero.”
+  B: Nonzero over $0$ implies unbounded behavior.
+  C: Denominator at $2$ is $0$, not $4$.
+  D: Would require numerator $\to 0$.
+
+--- 1.5-P5 [2/2] [Both] ---
+PROMPT: Evaluate the limit: $$\lim_{x\to -1}\frac{x^2+3x+2}{x+2}.$$
+CORRECT: A = "$0$"
+  A ✓: $0$
+  B : $-1$
+  C : Does not exist
+  D : $1$
+EXPLANATION: Because the denominator approaches $-1+2=1\neq 0$, substitute directly: $$\lim_{x\to -1}\frac{x^2+3x+2}{x+2}=\frac{(-1)^2+3(-1)+2}{-1+2}=\frac{0}{1}=0.$$
+MICRO:
+  A: Denominator nonzero, so substitute directly.
+  B: Numerator evaluates to $0$, not $1$.
+  C: The computation shown contradicts the choice.
+  D: This is actually the correct numeric value but not justified by a wrong reason.
+
+--- 1.6-P1 [2/2] [Both] ---
+PROMPT: Evaluate the limit: $$\lim_{x\to 2}\frac{x^2-4}{x-2}.$$
+CORRECT: B = "$4$"
+  A : $2$
+  B ✓: $4$
+  C : $0$
+  D : Does not exist
+EXPLANATION: Factor: $$\frac{x^2-4}{x-2}=\frac{(x-2)(x+2)}{x-2}=x+2\ (x\neq 2).$$ Then $$\lim_{x\to 2}(x+2)=4.$$
+MICRO:
+  A: After canceling, you should get $x+2$, not $x$.
+  B: Cancel the common factor then substitute.
+  C: $0/0$ signals you must simplify first.
+  D: Removable discontinuity implies a finite limit.
+
+--- 1.6-P2 [4/4] [Both] ---
+PROMPT: Evaluate the limit: $$\lim_{x\to 0}\frac{\sqrt{1+x}-1}{x}.$$
+CORRECT: A = "$\frac{1}{2}$"
+  A ✓: $\frac{1}{2}$
+  B : $1$
+  C : $0$
+  D : Does not exist
+EXPLANATION: Rationalize: $$\frac{\sqrt{1+x}-1}{x}\cdot\frac{\sqrt{1+x}+1}{\sqrt{1+x}+1}=\frac{(1+x)-1}{x(\sqrt{1+x}+1)}=\frac{1}{\sqrt{1+x}+1}.$$ Then $$\lim_{x\to 0}\frac{1}{\sqrt{1+x}+1}=\frac{1}{2}.$$
+MICRO:
+  A: Rationalize to remove the radical in the numerator.
+  B: You must simplify before substituting.
+  C: $0/0$ means simplify, not guess.
+  D: The simplified form is continuous at $x=0$.
+
+--- 1.6-P3 [3/3] [Both] ---
+PROMPT: Evaluate the limit: $$\lim_{x\to 3}\frac{x-3}{\sqrt{x}-\sqrt{3}}.$$
+CORRECT: B = "$2\sqrt{3}$"
+  A : $\sqrt{3}$
+  B ✓: $2\sqrt{3}$
+  C : $6$
+  D : $\frac{1}{2\sqrt{3}}$
+EXPLANATION: Multiply by the conjugate: $$\frac{x-3}{\sqrt{x}-\sqrt{3}}\cdot\frac{\sqrt{x}+\sqrt{3}}{\sqrt{x}+\sqrt{3}}=\frac{(x-3)(\sqrt{x}+\sqrt{3})}{x-3}=\sqrt{x}+\sqrt{3}.$$ Then $$\lim_{x\to 3}(\sqrt{x}+\sqrt{3})=2\sqrt{3}.$$
+MICRO:
+  A: You should get $\sqrt{x}+\sqrt{3}$, not $\sqrt{x}$.
+  B: Conjugate cancels $(x-3)$ cleanly.
+  C: Do not turn $\sqrt{3}$ into $3$.
+  D: Not a reciprocal situation; simplify first.
+
+--- 1.6-P4 [3/3] [Both] ---
+PROMPT: Evaluate the limit: $$\lim_{x\to 1}\frac{x^3-1}{x-1}.$$
+CORRECT: D = "$3$"
+  A : $1$
+  B : $2$
+  C : Does not exist
+  D ✓: $3$
+EXPLANATION: Difference of cubes: $$x^3-1=(x-1)(x^2+x+1).$$ Then $$\frac{x^3-1}{x-1}=x^2+x+1\ (x\neq 1),$$ so $$\lim_{x\to 1}\frac{x^3-1}{x-1}=1^2+1+1=3.$$
+MICRO:
+  A: After canceling you should have $x^2+x+1$.
+  B: Difference of cubes factorization must be exact.
+  C: Removable discontinuity implies a finite limit.
+  D: Cancel then substitute.
+
+--- 1.6-P5 [5/5] [Both] ---
+PROMPT: A function has the graph shown (see image 1.6-P5.png). What value should be defined at $x=3$ to make the function continuous at $x=3$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$6$"
+  A : $3$
+  B : $0$
+  C ✓: $6$
+  D : No value works
+EXPLANATION: To make $f$ continuous at $x=3$, define $f(3)$ to equal the two-sided limit. The graph shows a hole at $(3,6)$, so $$\lim_{x\to 3}f(x)=6$$ and the required definition is $f(3)=6$.
+MICRO:
+  A: This confuses the $x$-coordinate with the needed $y$-value.
+  B: This would create a jump from the approaching value shown on the graph.
+  C: Correct: the hole is at $(3,6)$, so set the function value to $6$.
+  D: A removable discontinuity can be fixed by defining the missing point to match the limit.
+
+--- 1.7-P1 [3/3] [Both] ---
+PROMPT: Use the graph of $f$ to evaluate $\lim_{x\to -1} f(x)$. [image:1.7-P1.png]
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$\tfrac{1}{2}$"
+  A : DNE because there is a hole
+  B : $2$
+  C ✓: $\tfrac{1}{2}$
+  D : DNE because there is a jump
+EXPLANATION: Near $x=-1$, the curve follows the line segment on both sides and approaches the open-circle height. The filled point at $x=-1$ changes $f(-1)$ but not the limit.
+MICRO:
+  A: A hole does not prevent the limit from existing if both sides approach the same value.
+  B: $2$ is the filled point value at $x=-1$, not the limit.
+  C: Both sides approach the open circle on the line at $x=-1$, which is $y=\tfrac{1}{2}$.
+  D: The jump shown is at $x=0$, not at $x=-1$.
+
+--- 1.7-P2 [2/2] [Both] ---
+PROMPT: Which procedure is most efficient for evaluating $\lim_{x\to 3}\dfrac{x^2-9}{x-3}$?
+CORRECT: D = "Factor and cancel before substituting"
+  A : Direct substitution
+  B : One-sided limits from a table
+  C : Squeeze Theorem
+  D ✓: Factor and cancel before substituting
+EXPLANATION: This is a removable discontinuity form $\frac{0}{0}$ that resolves by factoring and canceling the common factor, then substituting.
+MICRO:
+  A: Indeterminate form signals more steps.
+  B: Table is slower and less exact.
+  C: Squeeze is for bounding/oscillation.
+  D: Classic factor-cancel-substitute.
+
+--- 1.7-P3 [4/3] [Both] ---
+PROMPT: For $f(x)=\dfrac{|x|}{x}$, what is $\lim_{x\to 0} f(x)$?
+CORRECT: B = "DNE"
+  A : $0$
+  B ✓: DNE
+  C : $-1$
+  D : $1$
+EXPLANATION: Use one-sided limits: if $x>0$, $\frac{|x|}{x}=1$; if $x<0$, $\frac{|x|}{x}=-1$. Since $1\ne -1$, the limit does not exist.
+MICRO:
+  A: Not approaching $0$.
+  B: Mismatch of one-sided limits.
+  C: Only $x\to 0^-$.
+  D: Only $x\to 0^+$.
+
+--- 1.7-P4 [3/3] [Both] ---
+PROMPT: Evaluate $\lim_{x\to 2}\dfrac{1}{(x-2)^2}$.
+CORRECT: A = "$+\infty$"
+  A ✓: $+\infty$
+  B : $0$
+  C : $-\infty$
+  D : DNE because of $\frac{1}{0}$
+EXPLANATION: As $x\to 2$, $(x-2)^2\to 0^+$, so $\frac{1}{(x-2)^2}\to +\infty$ (vertical asymptote at $x=2$).
+MICRO:
+  A: Correct infinite limit.
+  B: Reciprocal of tiny positive is huge.
+  C: Square prevents negative values.
+  D: Infinite limits are valid limit behavior.
+
+--- 1.7-P5 [1/2] [Both] ---
+PROMPT: A function $h$ is defined by a graph that clearly shows a jump discontinuity at $x=a$. Which statement must be true?
+CORRECT: C = "$\lim_{x\to a} h(x)$ does not exist"
+  A : $\lim_{x\to a} h(x)=h(a)$
+  B : $h(a)$ is undefined
+  C ✓: $\lim_{x\to a} h(x)$ does not exist
+  D : Both one-sided limits are infinite
+EXPLANATION: A jump discontinuity means $\lim_{x\to a^-}h(x)$ and $\lim_{x\to a^+}h(x)$ exist (finite) but are not equal, so the two-sided limit does not exist.
+MICRO:
+  A: Continuity fails at a jump.
+  B: Value at $a$ may be defined.
+  C: Unequal one-sided limits.
+  D: Infinite limits correspond to asymptotes.
+
+--- 1.8-P1 [3/3] [Both] ---
+PROMPT: Evaluate $\lim_{x\to 0} x^2\cos\left(\dfrac{1}{x}\right)$.
+CORRECT: D = "$0$"
+  A : DNE because $\cos(\frac{1}{x})$ oscillates
+  B : $1$
+  C : $-1$
+  D ✓: $0$
+EXPLANATION: Use $-1\le \cos(\frac{1}{x})\le 1$. Multiplying by $x^2\ge 0$ gives $-x^2\le x^2\cos(\frac{1}{x})\le x^2$. As $x\to 0$, both $\pm x^2\to 0$, so the limit is $0$.
+MICRO:
+  A: Squeeze can tame oscillation.
+  B: $x^2$ kills magnitude.
+  C: Bounds force approach to $0$.
+  D: Correct squeeze setup.
+
+--- 1.8-P2 [2/2] [Both] ---
+PROMPT: The graph shows three functions near $x=0$: $y=-|x|$, $y=x\sin(\frac{1}{x})$, and $y=|x|$. What is $\lim_{x\to 0} x\sin(\frac{1}{x})$? [image:1.8-P2.png]
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$0$"
+  A ✓: $0$
+  B : DNE
+  C : $1$
+  D : The limit depends on the path to $0$
+EXPLANATION: Since $-1\le \sin(\frac{1}{x})\le 1$, we have $-|x|\le x\sin(\frac{1}{x})\le |x|$. As $x\to 0$, both $-|x|$ and $|x|$ approach $0$, so by the Squeeze Theorem the limit is $0$.
+MICRO:
+  A: Because $-1\le \sin(1/x)\le 1$, multiplying by $x$ gives $-|x|\le x\sin(1/x)\le |x|$, and both bounds go to $0$.
+  B: The oscillation is bounded by functions that both go to $0$, so the limit exists.
+  C: The middle function stays between $-|x|$ and $|x|$, which both shrink to $0$.
+  D: This is a single-variable limit; squeeze forces a unique value.
+
+--- 1.8-P3 [4/4] [Both] ---
+PROMPT: The graph shows $g(x)=\sin(\frac{1}{x})$ near $x=0$. What is $\lim_{x\to 0} g(x)$? [image:1.8-P3.png]
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "DNE"
+  A : $0$
+  B ✓: DNE
+  C : $-1$
+  D : $1$
+EXPLANATION: Even though $-1\le \sin(\frac{1}{x})\le 1$, the bounds do not squeeze to a single value. Near $0$, the function attains values arbitrarily close to many numbers in $[-1,1]$, so the limit does not exist.
+MICRO:
+  A: Although values hit $0$ infinitely often, they also hit values near $1$ and $-1$ arbitrarily close to $0$.
+  B: The function oscillates between $-1$ and $1$ without approaching a single value.
+  C: The function also takes values near $1$ arbitrarily close to $0$.
+  D: The function also takes values near $-1$ arbitrarily close to $0$.
+
+--- 1.8-P4 [3/3] [Both] ---
+PROMPT: Suppose $|f(x)|\le 5|x-2|$ for all $x$ near $2$. What is $\lim_{x\to 2} f(x)$?
+CORRECT: D = "$0$"
+  A : Cannot be determined
+  B : $5$
+  C : DNE
+  D ✓: $0$
+EXPLANATION: Because $|f(x)|\le 5|x-2|$, we have $-5|x-2|\le f(x)\le 5|x-2|$. As $x\to 2$, both bounds go to $0$, so by Squeeze Theorem $\lim_{x\to 2} f(x)=0$.
+MICRO:
+  A: Inequality determines it.
+  B: Misreads inequality.
+  C: Squeeze guarantees a limit here.
+  D: Bounds shrink to $0$.
+
+--- 1.8-P5 [5/4] [Both] ---
+PROMPT: Evaluate $\lim_{x\to 0}\dfrac{\sin^2 x}{x}$.
+CORRECT: C = "$0$"
+  A : $1$
+  B : DNE because it is $\frac{0}{0}$
+  C ✓: $0$
+  D : $-1$
+EXPLANATION: Use the factorization $\frac{\sin^2 x}{x}=\left(\frac{\sin x}{x}\right)\sin x$. As $x\to 0$, $\frac{\sin x}{x}\to 1$ and $\sin x\to 0$, so the product tends to $0$.
+MICRO:
+  A: Forgets extra $\sin x$ factor.
+  B: $0/0$ needs analysis, not surrender.
+  C: Correct limit product.
+  D: Not consistent with small-angle behavior.
+
+--- 1.9-P1 [2/2] [Both] ---
+PROMPT: The graph of $f$ is shown in the figure labeled 1.9-P1. What is $\lim_{x\to 2} f(x)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$3$"
+  A ✓: $3$
+  B : $1$
+  C : Does not exist
+  D : $2$
+EXPLANATION: Read the approach values on both sides of $x=2$. The left-hand limit is $3$ and the right-hand limit is also $3$, so $\lim_{x\to 2} f(x)=3$.
+MICRO:
+  A: From the left, $f(x)$ approaches $3$. From the right, the graph is at $y=3$ near $x=2$. Both one-sided limits match.
+  B: $f(2)=1$ is the filled point, but the limit depends on nearby values, not the value at $x=2$.
+  C: The one-sided limits are equal here, so the two-sided limit exists.
+  D: There is no evidence the function approaches $2$ from either side near $x=2$.
+
+--- 1.9-P2 [3/2] [Both] ---
+PROMPT: A function satisfies $f(x)=(x-3)(x+1)$ for $x\ne 3$, and $f(3)=10$. What is $\lim_{x\to 3} f(x)$?
+CORRECT: A = "$0$"
+  A ✓: $0$
+  B : $4$
+  C : $10$
+  D : Does not exist
+EXPLANATION: For $x\ne 3$, $f(x)=(x-3)(x+1)$ is a polynomial expression, so the limit equals its value at $x=3$: $(3-3)(3+1)=0$.
+MICRO:
+  A: Compare with $f(3)$ to avoid confusing value with limit.
+  B: Polynomials have limits equal to their substituted values.
+  C: Use the given expression valid for $x\ne 3$ to analyze approach behavior.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 1.9-P3 [4/3] [Both] ---
+PROMPT: A table gives values of $g(x)$ near $x=1$. For $x<1$, the values trend toward $2$. For $x>1$, the values trend toward $-1$. Which statement is true?
+CORRECT: D = "$\lim_{x\to 1} g(x)$ does not exist"
+  A : $\lim_{x\to 1} g(x)=2$
+  B : $\lim_{x\to 1} g(x)=-1$
+  C : $g(1)=2$
+  D ✓: $\lim_{x\to 1} g(x)$ does not exist
+EXPLANATION: A two-sided limit exists only if the left-hand and right-hand limits are equal. Here the left-hand limit is $2$ and the right-hand limit is $-1$, so $\lim_{x\to 1} g(x)$ does not exist.
+MICRO:
+  A: Incorrect. $2$ is only the left-hand approach value from the table. The limit requires both sides to agree.
+  B: Incorrect. $-1$ is only the right-hand approach value. The two-sided limit needs matching one-sided limits.
+  C: Incorrect. $g(1)=2$ may be the function value, but it does not determine whether the limit exists.
+  D: Correct. The left-hand limit ($2$) and right-hand limit ($-1$) are different, so $\lim_{x\to 1} g(x)$ does not exist.
+
+--- 1.9-P4 [1/1] [Both] ---
+PROMPT: The table shown in the figure labeled 1.9-P4 gives values of $f(x)$ near $x=2$. Estimate $\lim_{x\to 2} f(x)$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$4$"
+  A : $3.61$
+  B ✓: $4$
+  C : $4.41$
+  D : Does not exist
+EXPLANATION: As $x$ gets closer to $2$ from both sides, the function values get closer to $4$, so $\lim_{x\to 2} f(x)\approx 4$.
+MICRO:
+  A: That is $f(1.9)$, not the value approached near $x=2$.
+  B: The values $3.9601$ and $4.0401$ cluster around $4$, suggesting the limit is $4$.
+  C: That is $f(2.1)$, which is farther from $2$ than $2.01$.
+  D: The table suggests approach toward a single value from both sides, so the limit exists.
+
+--- 1.9-P5 [5/3] [Both] ---
+PROMPT: Define $h(x)=\dfrac{|x-2|}{x-2}$ for $x\ne 2$. Which statement is true?
+CORRECT: C = "$\lim_{x\to 2} h(x)$ does not exist"
+  A : $\lim_{x\to 2} h(x)=0$
+  B : $\lim_{x\to 2} h(x)=1$
+  C ✓: $\lim_{x\to 2} h(x)$ does not exist
+  D : $h(x)=1$ for all $x\ne 2$
+EXPLANATION: If $x>2$, then $|x-2|=x-2$ so $h(x)=1$. If $x<2$, then $|x-2|=-(x-2)$ so $h(x)=-1$. Since the one-sided limits are different, $\lim_{x\to 2} h(x)$ does not exist.
+MICRO:
+  A: Rewrite $|x-2|$ piecewise for $x>2$ and $x<2$.
+  B: Evaluate left-hand and right-hand limits separately.
+  C: Conclude DNE if they differ.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 1.10-P1 [2/2] [Both] ---
+PROMPT: The graph of $f$ is shown in the figure labeled 1.10-P1. What type of discontinuity does $f$ have at $x=1$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "Jump discontinuity"
+  A : Removable discontinuity
+  B ✓: Jump discontinuity
+  C : No discontinuity
+  D : Infinite discontinuity
+EXPLANATION: At $x=1$, the function approaches one finite value from the left and a different finite value from the right, so the discontinuity is a jump discontinuity.
+MICRO:
+  A: A removable discontinuity would have matching one-sided limits. Here the left and right behaviors do not approach the same value.
+  B: The left-hand limit and right-hand limit are finite but unequal, indicating a jump.
+  C: The left and right sides do not meet at one common value.
+  D: An infinite discontinuity requires unbounded behavior near $x=1$, which is not shown.
+
+--- 1.10-P2 [3/2] [Both] ---
+PROMPT: Consider $p(x)=\dfrac{x^2-9}{x-3}$ for $x\ne 3$. What must $p(3)$ be to make $p$ continuous at $x=3$?
+CORRECT: B = "$6$"
+  A : $0$
+  B ✓: $6$
+  C : $3$
+  D : No value works
+EXPLANATION: Factor $x^2-9=(x-3)(x+3)$. For $x\ne 3$, $p(x)=x+3$, so $\lim_{x\to 3} p(x)=6$. Continuity requires $p(3)=6$.
+MICRO:
+  A: Factor the numerator.
+  B: Cancel $(x-3)$ for $x\ne 3$ to get the simplified form.
+  C: Set $p(3)$ equal to the limit value.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 1.10-P3 [4/3] [Both] ---
+PROMPT: The graph of $f$ is shown in the figure labeled 1.10-P3. Which statement is true about limits near $x=0$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$\lim_{x\to 0^-} f(x)=-\infty$ and $\lim_{x\to 0^+} f(x)=+\infty$"
+  A ✓: $\lim_{x\to 0^-} f(x)=-\infty$ and $\lim_{x\to 0^+} f(x)=+\infty$
+  B : $\lim_{x\to 0^-} f(x)=+\infty$ and $\lim_{x\to 0^+} f(x)=+\infty$
+  C : $\lim_{x\to 0} f(x)=0$
+  D : $\lim_{x\to 0} f(x)$ exists and is finite
+EXPLANATION: From the graph, as $x\to 0^-$ the function decreases without bound, and as $x\to 0^+$ it increases without bound. Therefore $\lim_{x\to 0^-} f(x)=-\infty$ and $\lim_{x\to 0^+} f(x)=+\infty$.
+MICRO:
+  A: The left branch goes downward without bound and the right branch goes upward without bound, indicating a vertical asymptote at $x=0$.
+  B: On the left side the graph goes to $-\infty$, not $+\infty$.
+  C: The function values do not approach $0$; they grow without bound in magnitude.
+  D: The function is unbounded near $x=0$, so a finite two-sided limit cannot exist.
+
+--- 1.10-P4 [1/1] [Both] ---
+PROMPT: At $x=a$, a function has $\lim_{x\to a^-} f(x)=5$ and $\lim_{x\to a^+} f(x)=5$, but $f(a)$ is not defined. What type of discontinuity is at $x=a$?
+CORRECT: D = "Removable discontinuity"
+  A : No discontinuity
+  B : Jump discontinuity
+  C : Infinite discontinuity
+  D ✓: Removable discontinuity
+EXPLANATION: Because both one-sided limits equal $5$, the two-sided limit exists and equals $5$. Since $f(a)$ is undefined, the discontinuity can be removed by defining $f(a)=5$.
+MICRO:
+  A: Review this option carefully and compare with the correct answer.
+  B: If they match and are finite, the limit exists.
+  C: Missing or mismatched function value implies removable discontinuity.
+  D: Check whether the one-sided limits match.
+
+--- 1.10-P5 [5/3] [Both] ---
+PROMPT: A function $f$ has $\lim_{x\to 4^-} f(x)=2$ and $\lim_{x\to 4^+} f(x)=2$. Also $f(4)=7$. Which statement is true?
+CORRECT: C = "$f$ has a removable discontinuity at $x=4$"
+  A : $f$ is continuous at $x=4$ because both one-sided limits exist
+  B : $\lim_{x\to 4} f(x)=7$
+  C ✓: $f$ has a removable discontinuity at $x=4$
+  D : $f$ has a jump discontinuity at $x=4$
+EXPLANATION: Since $\lim_{x\to 4^-} f(x)=\lim_{x\to 4^+} f(x)=2$, the two-sided limit exists and equals $2$. Because $f(4)=7\ne 2$, the discontinuity is removable.
+MICRO:
+  A: Equal one-sided limits imply $\lim_{x\to 4} f(x)=2$.
+  B: Compare $f(4)$ to the limit.
+  C: Mismatch implies discontinuity; since the limit exists, it is removable.
+  D: Review this option carefully and compare with the correct answer.
+
+--- 1.11-P1 [2/2] [Both] ---
+PROMPT: Let $f(x)=\begin{cases} x^2-1, & x \ne 1 \\\\ 3, & x=1 \end{cases}$. Which statement is true about continuity at $x=1$?
+CORRECT: B = "Not continuous because limit does not exist"
+  A : Continuous because limits exist
+  B ✓: Not continuous because limit does not exist
+  C : Not continuous because $f(1)$ is undefined
+  D : Not continuous because $\lim_{x\to 1}f(x) \ne f(1)$
+EXPLANATION: $\lim_{x\to 1} (x^2-1) = 0$. But $f(1)=3$. Since limit (0) $\ne$ value (3), $f$ is not continuous at $x=1$.
+MICRO:
+  A: Compute the limit from the defining formula for $x\ne 1$ and compare to $f(1)$.
+  B: Existence of $f(1)$ alone is insufficient.
+  C: Limit existence alone is insufficient.
+  D: Limit does exist; do the substitution.
+
+--- 1.11-P2 [3/3] [Both] ---
+PROMPT: Use the graph (image). At $x=2$, which statement is true?  I. $\lim_{x\to 2} f(x)$ exists.  II. $f(2)$ exists.  III. $f$ is continuous at $x=2$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "II only"
+  A : I only
+  B : I and II only
+  C ✓: II only
+  D : I, II, and III
+EXPLANATION: From the graph, there is a filled point at $x=2$, so $f(2)$ exists. The value approached from the left differs from the value approached from the right, so $\lim_{x\to 2} f(x)$ does not exist. Without the limit, $f$ cannot be continuous at $x=2$.
+MICRO:
+  A: The two-sided limit does not exist because the left- and right-hand limits are different.
+  B: II is true, but I is false and therefore III is also false.
+  C: Correct: the graph shows a filled point at $x=2$ so $f(2)$ exists; the left and right limits differ so the two-sided limit does not exist; hence not c
+  D: If the two-sided limit existed and $f(2)$ existed, continuity would still require equality; here the limit does not exist.
+
+--- 1.11-P3 [4/4] [Both] ---
+PROMPT: Find the value of $k$ that makes $f$ continuous at $x=3$ if $f(x) = \begin{cases} \frac{x^2-9}{x-3}, & x \ne 3 \\ k, & x=3 \end{cases}$
+CORRECT: A = "$k=6$"
+  A ✓: $k=6$
+  B : $k=9$
+  C : $k$ cannot be chosen to make $f$ continuous at $x=3$
+  D : $k=0$
+EXPLANATION: For $x \ne 3$, factor $x^2-9 = (x-3)(x+3)$, so $f(x) = x+3$. Thus $\lim_{x\to 3} f(x) = 6$. Continuity at $x=3$ requires $f(3)=k$ to equal this limit, so $k=6$.
+MICRO:
+  A: Removable discontinuities can be fixed by redefining the point.
+  B: Simplify to $x+3$ then evaluate at $x=3$.
+  C: Limit is of $x+3$, not $x^2$.
+  D: Do not plug into the unsimplified fraction; simplify first.
+
+--- 1.11-P4 [2/2] [Both] ---
+PROMPT: Let $f(x)=\begin{cases} 2x+1, & x<0 \\ x^2+1, & x\ge 0 \end{cases}$. Is $f$ continuous at $x=0$?
+CORRECT: D = "Yes, because $\lim_{x\to 0^-}f(x) = \lim_{x\to 0^+}f(x) = f(0)$"
+  A : No, because the left-hand limit and right-hand limit are different
+  B : Yes, because both formulas are polynomials
+  C : No, because $f(0)$ does not exist
+  D ✓: Yes, because $\lim_{x\to 0^-}f(x) = \lim_{x\to 0^+}f(x) = f(0)$
+EXPLANATION: Check one-sided limits: $\lim_{x\to 0^-} (2x+1) = 1$. $\lim_{x\to 0^+} (x^2+1) = 1$. Also $f(0) = 0^2+1 = 1$. Since limits match and equal $f(0)$, $f$ is continuous.
+MICRO:
+  A: Check left limit, right limit, and the value.
+  B: Need limit equality, not just existence of $f(0)$.
+  C: Evaluate the correct branch at $x=0$.
+  D: Boundary points still require matching at the switch.
+
+--- 1.11-P5 [5/5] [Both] ---
+PROMPT: Choose $a$ so that $f(x)=\begin{cases} ax+1, & x<1 \\\\ x^2, & x\ge 1 \end{cases}$ is continuous at $x=1$. What is $a$?
+CORRECT: C = "$a=0$"
+  A : $a=1$
+  B : $a=-1$
+  C ✓: $a=0$
+  D : No such $a$ exists
+EXPLANATION: Left limit: $\lim_{x\to 1^-}(ax+1) = a+1$. Right limit/value: $\lim_{x\to 1^+}(x^2)=1$. continuity $\implies a+1=1 \implies a=0$.
+MICRO:
+  A: Set $a+b=1$ and plug in $b=1$.
+  B: Check $a+b$ at $x=1$.
+  C: Check $a+b$ at $x=1$.
+  D: Check $a+b$ at $x=1$.
+
+--- 1.12-P1 [3/3] [Both] ---
+PROMPT: Let $g(x)=\sqrt{4-x}$. On which interval is $g$ continuous (as a real-valued function)?
+CORRECT: D = "$(-\infty,4]$"
+  A : $(-\infty,\infty)$
+  B : $(-\infty,4)$
+  C : $[4,\infty)$
+  D ✓: $(-\infty,4]$
+EXPLANATION: The function $g(x)=\sqrt{4-x}$ is defined when $4-x\ge 0$, i.e., $x\le 4$. Since $\sqrt{\cdot}$ and linear functions are continuous where defined, $g$ is continuous on $(-\infty,4]$ (with one-sided continuity at the endpoint).
+MICRO:
+  A: Check domain restrictions first.
+  B: Endpoint $x=4$ is allowed and continuous from the left.
+  C: Not defined for $x>4$.
+  D: Continuous on its full domain $x\le 4$.
+
+--- 1.12-P2 [4/4] [Both] ---
+PROMPT: Choose $k$ so that $h(x)=\begin{cases} kx+2, & x\le 2 \\\\ x^2-2, & x>2 \end{cases}$ is continuous for all real $x$. What is $k$?
+CORRECT: D = "$k=0$"
+  A : $k=2$
+  B : $k=1$
+  C : $k=-1$
+  D ✓: $k=0$
+EXPLANATION: The only possible discontinuity is at the split point $x=2$. Continuity requires $h(2) = \lim_{x\to 2^+} (x^2-2)$. Since $h(2) = 2k+2$ and the right-hand value is $2^2-2=2$, set $2k+2=2$, giving $k=0$.
+MICRO:
+  A: Check by solving; this option does not equal the solved value.
+  B: Does not satisfy the matching condition at $x=2$.
+  C: Does not satisfy the matching condition at $x=2$.
+  D: Setting $2k+2=2$ gives $k=0$.
+
+--- 1.12-P3 [3/3] [Both] ---
+PROMPT: Use the graph (image). On which set is $f$ continuous?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$[0,1)\cup(1,4]$"
+  A : $[0,4]$
+  B : $[0,1]$
+  C ✓: $[0,1)\cup(1,4]$
+  D : $(1,4]$
+EXPLANATION: The graph shows a discontinuity at $x=1$ (the approached value(s) at $x=1$ do not agree with the function value). On each side of $1$, the graph is unbroken. Therefore $f$ is continuous on $[0,1)\cup(1,4]$.
+MICRO:
+  A: There is a discontinuity at $x=1$, so $f$ is not continuous on the entire interval.
+  B: At $x=1$ the graph shows a mismatch between the approached value and the defined value, so not continuous on $[0,1]$.
+  C: Correct: the only break is at $x=1$; excluding $1$ makes the remaining pieces continuous.
+  D: The function is continuous for $x>1$ up to and including $x=4$ (endpoint continuity within domain).
+
+--- 1.12-P4 [2/2] [Both] ---
+PROMPT: For what set of $x$-values is $$p(x)=\dfrac{1}{(x-2)(x+5)}$$ continuous?
+CORRECT: B = "$(-\infty,-5)\cup(-5,2)\cup(2,\infty)$"
+  A : All real numbers
+  B ✓: $(-\infty,-5)\cup(-5,2)\cup(2,\infty)$
+  C : $(-5,2)$ only
+  D : $[-5,2]$
+EXPLANATION: A rational function is continuous everywhere it is defined. The denominator $(x-2)(x+5)=0$ at $x=2$ and $x=-5$, so $p$ is continuous on $(-\infty,-5)\cup(-5,2)\cup(2,\infty)$.
+MICRO:
+  A: Exclude denominator zeros; continuity holds on each remaining interval.
+  B: Domain restriction breaks this.
+  C: Too narrow; continuity holds on all domain intervals.
+  D: Includes undefined points.
+
+--- 1.12-P5 [5/5] [Both] ---
+PROMPT: Suppose $f$ is continuous on $[2,6]$, $f(2)=-3$, and $f(6)=5$. Which statement must be true?
+CORRECT: A = "There exists $c\in(2,6)$ such that $f(c)=0$."
+  A ✓: There exists $c\in(2,6)$ such that $f(c)=0$.
+  B : There exists $c\in(2,6)$ such that $f(c)=-4$.
+  C : There exists $c\in(2,6)$ such that $f(c)=6$.
+  D : $f$ must be increasing on $[2,6]$.
+EXPLANATION: By the Intermediate Value Theorem, if $f$ is continuous on $[2,6]$, then for any value $L$ between $f(2)=-3$ and $f(6)=5$, there exists $c\in(2,6)$ such that $f(c)=L$. Since $0$ lies between $-3$ and $5$, there must be some $c$ with $f(c)=0$.
+MICRO:
+  A: -4 is outside the endpoint range.
+  B: 0 is inside the endpoint range; IVT applies.
+  C: 6 is outside the endpoint range.
+  D: Continuity alone does not guarantee increasing behavior.
+
+--- 1.13-P1 [3/2] [Both] ---
+PROMPT: Let $$f(x)=\frac{x^2-9}{x-3}$$ for $x\ne 3$. Which value of $f(3)$ makes $f$ continuous at $x=3$?
+CORRECT: B = "$6$"
+  A : $3$
+  B ✓: $6$
+  C : $0$
+  D : No value works
+EXPLANATION: Factor $x^2-9=(x-3)(x+3)$. For $x\ne 3$, $f(x)=x+3$, so $$\lim_{x\to 3} f(x)=3+3=6.$$ Define $f(3)=6$ to make $f$ continuous at $x=3$.
+MICRO:
+  A: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+  B: Correct. For a 0/0 indeterminate form, limits can be found by factoring, canceling common terms, or rationalizing the numerator/denominator.
+  C: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+  D: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+
+--- 1.13-P2 [4/3] [Both] ---
+PROMPT: Define $$g(x)=\begin{cases} \frac{x^2-1}{x-1}, & x\ne 1 \\ k, & x=1 \end{cases}$$ Which value of $k$ makes $g$ continuous at $x=1$?
+CORRECT: A = "$2$"
+  A ✓: $2$
+  B : $0$
+  C : $1$
+  D : No such $k$
+EXPLANATION: Factor $x^2-1=(x-1)(x+1)$. For $x\ne 1$, $g(x)=x+1$, so $$\lim_{x\to 1} g(x)=2.$$ Continuity at $x=1$ requires $k=2$.
+MICRO:
+  A: Correct. This option aligns with the definitions and laws of limits and continuity.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.13-P3 [2/2] [Both] ---
+PROMPT: Evaluate $$\lim_{x\to -2}\frac{x^2+5x+6}{x+2}.$$
+CORRECT: A = "$1$"
+  A ✓: $1$
+  B : $-1$
+  C : $-2$
+  D : Does not exist
+EXPLANATION: Factor $x^2+5x+6=(x+2)(x+3)$. For $x\ne -2$, $$\frac{x^2+5x+6}{x+2}=x+3.$$ Thus $$\lim_{x\to -2}(x+3)=1.$$
+MICRO:
+  A: Correct. A function is continuous at a point if the limit exists, the function value exists, and the limit value equals the function value.
+  B: Incorrect. Continuity requires three things: the limit exists, f(a) exists, and they are equal.
+  C: Incorrect. Continuity requires three things: the limit exists, f(a) exists, and they are equal.
+  D: Incorrect. Continuity requires three things: the limit exists, f(a) exists, and they are equal.
+
+--- 1.13-P4 [5/4] [Both] ---
+PROMPT: Let $$h(x)=\begin{cases} \frac{x^2-4}{x-2}, & x<2 \\ ax+b, & x\ge 2 \end{cases}$$ If $h$ is continuous at $x=2$ and $h(3)=7$, what are $a$ and $b$?
+CORRECT: C = "$a=3,\\ b=-2$"
+  A : $a=1,\\ b=4$
+  B : $a=2,\\ b=0$
+  C ✓: $a=3,\\ b=-2$
+  D : $a=0,\\ b=4$
+EXPLANATION: For $x<2$, $$\frac{x^2-4}{x-2}=\frac{(x-2)(x+2)}{x-2}=x+2\quad(x\ne 2),$$ so $\lim_{x\to 2^-} h(x)=4$. Continuity at $x=2$ uses the right branch, so $$h(2)=2a+b=4.$$ Also $h(3)=3a+b=7$. Subtract to get $a=3$, then $2(3)+b=4$ gives $b=-2$.
+MICRO:
+  A: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+  B: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+  C: Correct. For a 0/0 indeterminate form, limits can be found by factoring, canceling common terms, or rationalizing the numerator/denominator.
+  D: Incorrect. Please double-check your algebraic steps, especially when expanding conjugates or simplifying complex fractions.
+
+--- 1.13-P5 [3/3] [Both] ---
+PROMPT: Evaluate $$\lim_{x\to 0}\frac{\sqrt{1+3x}-1}{x}.$$
+CORRECT: D = "$\frac{3}{2}$"
+  A : Does not exist
+  B : $3$
+  C : $0$
+  D ✓: $\frac{3}{2}$
+EXPLANATION: Rationalize: $$\frac{\sqrt{1+3x}-1}{x}\cdot\frac{\sqrt{1+3x}+1}{\sqrt{1+3x}+1} =\frac{(1+3x)-1}{x(\sqrt{1+3x}+1)} =\frac{3}{\sqrt{1+3x}+1}.$$ As $x\to 0$, this approaches $\frac{3}{2}$.
+MICRO:
+  A: Incorrect. Continuity requires three things: the limit exists, f(a) exists, and they are equal.
+  B: Incorrect. Continuity requires three things: the limit exists, f(a) exists, and they are equal.
+  C: Incorrect. Continuity requires three things: the limit exists, f(a) exists, and they are equal.
+  D: Correct. A function is continuous at a point if the limit exists, the function value exists, and the limit value equals the function value.
+
+--- 1.14-P1 [2/2] [Both] ---
+PROMPT: Evaluate $$\lim_{x\to 2^+}\frac{5}{x-2}.$$
+CORRECT: B = "$+\infty$"
+  A : $-\infty$
+  B ✓: $+\infty$
+  C : $0$
+  D : $5$
+EXPLANATION: As $x\to 2^+$, the denominator $x-2\to 0^+$, so $$\frac{5}{x-2}\to +\infty.$$
+MICRO:
+  A: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  B: Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.
+  C: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  D: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+
+--- 1.14-P2 [4/4] [Both] ---
+PROMPT: Let $$p(x)=\frac{(x-1)(x+2)}{(x-1)^2}.$$ Which statement is true?
+CORRECT: D = "$x=1$ is a vertical asymptote and $\lim_{x\to 1^+}p(x)=+\infty$"
+  A : $x=1$ is a removable discontinuity (a hole)
+  B : $\lim_{x\to 1}p(x)$ is finite
+  C : $x=-2$ is a vertical asymptote
+  D ✓: $x=1$ is a vertical asymptote and $\lim_{x\to 1^+}p(x)=+\infty$
+EXPLANATION: Cancel one factor: $$p(x)=\frac{(x-1)(x+2)}{(x-1)^2}=\frac{x+2}{x-1}\quad(x\ne 1).$$ The denominator still approaches $0$ at $x=1$, so there is a vertical asymptote at $x=1$. For $x\to 1^+$, $x-1\to 0^+$ and $x+2\to 3$, hence $p(x)\to +\infty$.
+MICRO:
+  A: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  B: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  C: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  D: Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.
+
+--- 1.14-P3 [3/3] [Both] ---
+PROMPT: Evaluate $$\lim_{x\to -3^-}\frac{2}{(x+3)^3}.$$
+CORRECT: C = "$-\infty$"
+  A : $+\infty$
+  B : $0$
+  C ✓: $-\infty$
+  D : Does not exist
+EXPLANATION: As $x\to -3^-$, $x+3\to 0^-$, so $(x+3)^3\to 0^-$. Therefore $$\frac{2}{(x+3)^3}\to -\infty.$$
+MICRO:
+  A: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  B: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  C: Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.
+  D: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+
+--- 1.14-P4 [5/5] [Both] ---
+PROMPT: For $$q(x)=\frac{x^2-4x+3}{x^2-5x+6},$$ which $x$-value is a vertical asymptote of $q$?
+CORRECT: A = "$x=2$"
+  A ✓: $x=2$
+  B : $x=3$
+  C : $x=1$
+  D : No vertical asymptotes
+EXPLANATION: Factor: $$x^2-4x+3=(x-1)(x-3),\quad x^2-5x+6=(x-2)(x-3).$$ Then for $x\ne 3$, $$q(x)=\frac{(x-1)(x-3)}{(x-2)(x-3)}=\frac{x-1}{x-2}.$$ The canceled factor creates a hole at $x=3$, while the remaining denominator zero gives a vertical asymptote at $x=2$.
+MICRO:
+  A: Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.
+  B: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  C: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  D: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+
+--- 1.14-P5 [3/3] [Both] ---
+PROMPT: Evaluate $$\lim_{x\to 4}\frac{x+1}{(x-4)^2}.$$
+CORRECT: B = "$+\infty$"
+  A : $-\infty$
+  B ✓: $+\infty$
+  C : Does not exist
+  D : $5$
+EXPLANATION: As $x\to 4$, $x+1\to 5>0$ and $(x-4)^2\to 0^+$ (from both sides). Therefore $$\frac{x+1}{(x-4)^2}\to +\infty.$$
+MICRO:
+  A: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  B: Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.
+  C: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  D: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+
+--- 1.15-P1 [2/2] [Both] ---
+PROMPT: For the function $$f(x)=\frac{5x^3-2x+7}{2x^3+9},$$ what is the horizontal asymptote of the graph of $f$?
+CORRECT: C = "$y=\frac{5}{2}$"
+  A : $y=\frac{5}{2}x$
+  B : $y=0$
+  C ✓: $y=\frac{5}{2}$
+  D : No horizontal asymptote
+EXPLANATION: As $x\to\pm\infty$, the highest-degree terms dominate: $$f(x)=\frac{5x^3-2x+7}{2x^3+9}\sim\frac{5x^3}{2x^3}=\frac{5}{2}.$$ So the horizontal asymptote is $y=\frac{5}{2}$.
+MICRO:
+  A: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Correct. This option aligns with the definitions and laws of limits and continuity.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.15-P2 [1/1] [Both] ---
+PROMPT: The table shows values of $f(x)=\dfrac{3x^2+1}{x^2-4}$ for large $x$. See image: 1.15-P2.png Based on end behavior, which horizontal asymptote is correct?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$y=3$"
+  A : $y=-3$
+  B ✓: $y=3$
+  C : $y=0$
+  D : No horizontal asymptote
+EXPLANATION: For $$f(x)=\frac{3x^2+1}{x^2-4},$$ the degrees match, so $$\lim_{x\to\pm\infty} f(x)=\frac{3}{1}=3.$$ Thus the horizontal asymptote is $y=3$.
+MICRO:
+  A: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  B: Correct. Vertical asymptotes occur where the function value goes to infinity, while horizontal asymptotes occur as the variable approaches infinity.
+  C: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+  D: Incorrect. Distinguish between horizontal asymptotes (behavior at infinity) and vertical asymptotes (infinite growth at a single point).
+
+--- 1.15-P3 [3/2] [Both] ---
+PROMPT: A graph is shown. See image: 1.15-P3.png What is $$\lim_{x\to\infty} f(x)?$$
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$1$"
+  A : $0$
+  B : $2$
+  C ✓: $1$
+  D : Does not exist
+EXPLANATION: From the graph, as $x$ increases without bound, the curve approaches the horizontal line $y=1$. Therefore, $$\lim_{x\to\infty} f(x)=1.$$
+MICRO:
+  A: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Correct. This option aligns with the definitions and laws of limits and continuity.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.15-P4 [4/3] [Both] ---
+PROMPT: Evaluate the limit: $$\lim_{x\to-\infty}\frac{-4x^4+7x^2-1}{2x^4+5x-9}.$$
+CORRECT: A = "$-2$"
+  A ✓: $-2$
+  B : $-\infty$
+  C : $\infty$
+  D : $2$
+EXPLANATION: Divide numerator and denominator by $x^4$: $$\frac{-4+\frac{7}{x^2}\frac{-1}{x^4}}{2+\frac{5}{x^3}\frac{-9}{x^4}}.$$ As $x\to-\infty$, the terms with $1/x^k$ go to $0$, so the limit is $$\frac{-4}{2}=-2.$$
+MICRO:
+  A: Correct. This option aligns with the definitions and laws of limits and continuity.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  D: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+
+--- 1.15-P5 [5/3] [Both] ---
+PROMPT: Find the end behavior of $$f(x)=\\frac{\\sqrt{x^2+4x+1}}{x}.$$ Which statement is correct?
+CORRECT: D = "$\lim_{x\to\infty}f(x)=1$ and $\lim_{x\to-\infty}f(x)=-1$"
+  A : $\lim_{x\to\infty}f(x)=0$ and $\lim_{x\to-\infty}f(x)=0$
+  B : Neither limit exists
+  C : $\lim_{x\to\infty}f(x)=1$ and $\lim_{x\to-\infty}f(x)=1$
+  D ✓: $\lim_{x\to\infty}f(x)=1$ and $\lim_{x\to-\infty}f(x)=-1$
+EXPLANATION: Factor $x^2$ inside the radical: $$f(x)=\\frac{\\sqrt{x^2(1+\\frac{4}{x}+\\frac{1}{x^2})}}{x}=\\frac{|x|}{x}\\sqrt{1+\\frac{4}{x}+\\frac{1}{x^2}}.$$ As $x\\to\\infty$, $\\frac{|x|}{x}=1$ and the radical $\\to 1$, so the limit is $1$. As $x\\to-\\infty$, $\\frac{|x|}{x}=-1$ and the radical $\\to 1$, so the limit is $-1$.
+MICRO:
+  A: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  B: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  C: Incorrect. This option does not satisfy the requirements of limit existence or relevant theorems.
+  D: Correct. This option aligns with the definitions and laws of limits and continuity.
+
+--- 1.16-P1 [2/2] [Both] ---
+PROMPT: Let $f$ be continuous on $[2,7]$ with $f(2)=-3$ and $f(7)=5$. Which statement must be true?
+CORRECT: B = "There exists $c\in(2,7)$ such that $f(c)=0$."
+  A : There exists $c\in(2,7)$ such that $f(c)=10$.
+  B ✓: There exists $c\in(2,7)$ such that $f(c)=0$.
+  C : There exists $c\in(2,7)$ such that $f(c)=-4$.
+  D : $f$ must be increasing on $[2,7]$.
+EXPLANATION: Because $f$ is continuous on $[2,7]$ and $0$ lies between $f(2)=-3$ and $f(7)=5$, the Intermediate Value Theorem guarantees a value $c\in(2,7)$ such that $f(c)=0$.
+MICRO:
+  A: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  B: Correct. The Intermediate Value Theorem (IVT) states that if a continuous function takes different values at the ends of an interval, it must take all
+  C: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  D: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+
+--- 1.16-P2 [3/3] [Both] ---
+PROMPT: Let $f(x)=x^3-6x+1$. Use the Intermediate Value Theorem to justify that there is a solution to $f(x)=-2$ in the interval $(0,1)$. Which calculation correctly supports the conclusion?
+CORRECT: A = "Let $g(x)=f(x)+2$. Then $g(0)=3$ and $g(1)=-2$, so there exists $c\in(0,1)$ with $g(c)=0$, i.e., $f(c)=-2$."
+  A ✓: Let $g(x)=f(x)+2$. Then $g(0)=3$ and $g(1)=-2$, so there exists $c\in(0,1)$ with $g(c)=0$, i.e., $f(c)=-2$.
+  B : $f(0)=1$ and $f(1)=-4$, so there is a solution to $f(x)=0$.
+  C : $f(0)=-2$ and $f(1)=2$, so there is a solution to $f(x)=-2$.
+  D : $f(0)=1$ and $f(1)=-4$, so there is a solution to $f(x)=2$.
+EXPLANATION: Define $g(x)=f(x)+2$. Since $f$ is a polynomial, $g$ is continuous on $[0,1]$. Compute: $$g(0)=f(0)+2=(1)+2=3,\quad g(1)=f(1)+2=(-4)+2=-2.$$ Because $g(0)>0$ and $g(1)<0$, IVT guarantees a $c\in(0,1)$ with $g(c)=0$, so $f(c)=-2$.
+MICRO:
+  A: Correct. The Intermediate Value Theorem (IVT) states that if a continuous function takes different values at the ends of an interval, it must take all
+  B: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  C: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  D: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+
+--- 1.16-P3 [2/2] [Both] ---
+PROMPT: A continuous function $y=f(x)$ is graphed, and the line $y=2$ is shown. See image: 1.16-P3.png Which statement is guaranteed by the Intermediate Value Theorem?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "There exists $c$ such that $f(c)=2$."
+  A : There exists $c$ such that $f(c)=0$.
+  B : There exists $c$ such that $f(c)=5$.
+  C ✓: There exists $c$ such that $f(c)=2$.
+  D : $f$ must be differentiable everywhere shown.
+EXPLANATION: Because the curve is continuous and it crosses the horizontal line $y=2$, there is at least one point $c$ where $f(c)=2$. IVT justifies existence on any interval whose endpoints have function values on opposite sides of $2$.
+MICRO:
+  A: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  B: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  C: Correct. The Intermediate Value Theorem (IVT) states that if a continuous function takes different values at the ends of an interval, it must take all
+  D: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+
+--- 1.16-P4 [4/3] [Both] ---
+PROMPT: Consider $$h(x)=\frac{x^2-9}{x-3}.$$ Which statement is correct about using the Intermediate Value Theorem to guarantee a solution to $h(x)=4$ on the interval $[2,5]$?
+CORRECT: D = "IVT does not apply on $[2,5]$ because $h$ is not continuous on $[2,5]$."
+  A : IVT applies on $[2,5]$ because $h$ is a rational function.
+  B : IVT applies on $[2,5]$ only if $h(3)=6$ is defined.
+  C : IVT applies on $[2,5]$ because $h(x)=x+3$ after simplification.
+  D ✓: IVT does not apply on $[2,5]$ because $h$ is not continuous on $[2,5]$.
+EXPLANATION: IVT requires continuity on the entire closed interval. The function $$h(x)=\frac{x^2-9}{x-3}$$ is undefined at $x=3$, and $3\in[2,5]$, so $h$ is not continuous on $[2,5]$. Therefore IVT cannot be applied on that interval to guarantee a solution to $h(x)=4$.
+MICRO:
+  A: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  B: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  C: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  D: Correct. The Intermediate Value Theorem (IVT) states that if a continuous function takes different values at the ends of an interval, it must take all
+
+--- 1.16-P5 [3/2] [Both] ---
+PROMPT: A graph of $y=g(x)$ is shown. See image: 1.16-P5.png Which statement is correct?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "IVT cannot be used on $[0,4]$ because $g$ is not continuous on that interval."
+  A : IVT guarantees that $g(x)$ takes every value between $0$ and $2$ on $[0,4]$.
+  B : $g$ is continuous on $[0,4]$ because the left and right sides approach the same value at $x=2$.
+  C : IVT guarantees there exists $c\in(0,4)$ such that $g(c)=1$.
+  D ✓: IVT cannot be used on $[0,4]$ because $g$ is not continuous on that interval.
+EXPLANATION: The graph shows a removable discontinuity (a hole) at $x=2$. Since $g$ is not continuous on $[0,4]$, the Intermediate Value Theorem cannot be applied on that interval.
+MICRO:
+  A: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  B: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  C: Incorrect. To apply IVT, the function must be continuous on the closed interval [a, b].
+  D: Correct. The Intermediate Value Theorem (IVT) states that if a continuous function takes different values at the ends of an interval, it must take all

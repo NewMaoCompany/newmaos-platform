@@ -3005,7 +3005,7 @@ export const Forum = () => {
     }, 0);
 
     return (
-        <div className="flex flex-col h-full bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans overflow-hidden">
+        <div className="w-full flex flex-col h-full bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-sans overflow-hidden">
             {/* Pro Gate */}
             {!isPro && <ProGateOverlay featureName="Forum" />}
             {renderProfileModal()}
@@ -3342,7 +3342,6 @@ export const Forum = () => {
                                     <div className="text-sm font-bold truncate text-text-main dark:text-white">{user.name}</div>
                                 </div>
                                 <div className="flex items-center gap-1 relative">
-
                                     {pendingPoints.amount > 0 && (
                                         <div className="group/btn relative">
                                             <button

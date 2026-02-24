@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useApp } from '../AppContext';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { COURSE_CONTENT_DATA } from '../constants';
+import { COURSE_CONTENT_DATA, COURSE_TOPICS } from '../constants';
 import { SessionMode, Question } from '../types';
 import { Navbar } from '../components/Navbar';
 import { AdvancedCalculator } from '../components/AdvancedCalculator';
@@ -13,6 +13,18 @@ import { supabase } from '../src/services/supabaseClient';
 import { QuestionCommentSection } from '../components/QuestionCommentSection';
 import { PointsBalanceBadge } from '../components/PointsCoin';
 import confetti from 'canvas-confetti';
+
+// Module-level helper: parse P/Q number from title for stable sort
+// e.g. '2.3-P4' -> 4, '1.0-UT-Q12' -> 12
+const parseTitleNumber = (title: string): number => {
+    const pMatch = title.match(/-P(\d+)$/i);
+    if (pMatch) return parseInt(pMatch[1]);
+    const qMatch = title.match(/-Q(\d+)$/i);
+    if (qMatch) return parseInt(qMatch[1]);
+    return 999999;
+};
+const sortByTitle = <T extends { title?: string }>(arr: T[]): T[] =>
+    [...arr].sort((a, b) => parseTitleNumber(a.title || '') - parseTitleNumber(b.title || ''));
 
 // Markdown-ish renderer for the lesson content
 // Markdown-ish renderer for the lesson content
@@ -45,9 +57,11 @@ const getOrdinal = (n: number): string => {
 
 
 export const Practice = () => {
+
     const {
         user, completePractice, questions: allQuestions, topicContent, submitAttempt,
         getTopicProgress, saveSectionProgress, completeSectionSession, getSectionProgress,
+        isPro,
         sections, incorrectQuestionIds, resetSectionProgress, getSectionProgressData,
         fetchAllUserProgress, logUserActivity, getUserActivities,
         awardPoints, triggerCoinAnimation, userPoints, pointsBalanceRef
@@ -81,17 +95,21 @@ export const Practice = () => {
 
     const subTopicId = effectiveState?.subTopicId;
     const sessionMode: SessionMode = effectiveState?.mode || 'Adaptive';
+    const initialIsErrorReview = effectiveState?.isErrorReviewAction || false;
 
     // Derived Clean Topic - available to all functions in component
     const cleanTopic = topicParam.includes('_') ? topicParam.split('_')[1] : topicParam;
 
     // If subTopicId exists AND it is NOT 'unit_test', we start in 'Lesson' view, otherwise 'Practice'
-    // Exception: If mode is 'Review', Resuming, or Force Start, skip lesson
+    // Exception: If error review, Resuming, or Force Start, skip lesson
     const [viewState, setViewState] = useState<'lesson' | 'practice'>(
-        sessionMode === 'Review' || effectiveState?.isResuming === true || effectiveState?.forceStartNew === true || !subTopicId
+        sessionMode === 'Review' || initialIsErrorReview || effectiveState?.isResuming === true || effectiveState?.forceStartNew === true || !subTopicId
             ? 'practice'
             : 'lesson'
     );
+
+    // Track Error Review State globally so finishSession knows which DB branch to save to
+    const [isErrorReviewState, setIsErrorReviewState] = useState<boolean>(initialIsErrorReview);
 
     // Track session start time for accurate duration logging
     const sessionStartTimeRef = useRef<number>(Date.now());
@@ -105,7 +123,10 @@ export const Practice = () => {
 
     // UNIQUE ID LOGIC: Prefix unit_test with topic to avoid collisions across units
     // Ensure we use the case-corrected topicParam
-    const effectiveSectionId = subTopicId === 'unit_test' ? `${topicParam}_unit_test` : subTopicId;
+    const [algorithmicSessionId] = useState<string>(
+        effectiveState?.sessionId || `algo_${sessionMode}_${Date.now()}`
+    );
+    const effectiveSectionId = subTopicId === 'unit_test' ? `${topicParam}_unit_test` : (subTopicId || algorithmicSessionId);
 
 
     // -------------------------------------------------------------------------
@@ -252,7 +273,7 @@ export const Practice = () => {
                     const savedSession = await getSectionProgress(effectiveSectionId);
 
                     // --- NEW: Load History from Main Section (for Review Mode access) or Current ---
-                    const mainId = subTopicId.endsWith('_review') ? subTopicId.replace('_review', '') : subTopicId;
+                    const mainId = subTopicId?.endsWith('_review') ? subTopicId.replace('_review', '') : subTopicId;
 
                     // Helper function to rebuild history from old data structure
                     const rebuildHistoryFromData = (data: any): any[] => {
@@ -280,7 +301,7 @@ export const Practice = () => {
                         return history;
                     };
 
-                    if (mainId !== effectiveSectionId) {
+                    if (mainId && mainId !== effectiveSectionId) {
                         // We are in Review/Unit Test with suffix? Fetch Main for History
                         getSectionProgress(mainId).then(mainP => {
                             if (mainP?.data) setSessionHistory(rebuildHistoryFromData(mainP.data));
@@ -292,15 +313,32 @@ export const Practice = () => {
                     // --- NEW: Handle Summary Mode (View Last Results) ---
                     if (sessionMode === 'Summary' && savedSession) {
                         if (savedSession.data) {
-                            setUserAnswers(savedSession.data.userAnswers || {});
-                            setQuestionResults(savedSession.data.questionResults || {});
+                            let targetData = savedSession.data;
+                            if (effectiveState?.historyTarget && savedSession.data.summaryHistory) {
+                                const matchedHistory = savedSession.data.summaryHistory.find((h: any) => h.label === effectiveState.historyTarget);
+                                if (matchedHistory) {
+                                    targetData = matchedHistory;
+                                    console.log('🔍 [Summary Mode] Loaded specific history target:', effectiveState.historyTarget);
+                                }
+                            }
+
+                            setUserAnswers(targetData.userAnswers || {});
+                            setQuestionResults(targetData.questionResults || {});
+
+                            const resObj = targetData.questionResults || {};
+                            const correctCount = Object.values(resObj).filter(r => r === 'correct').length;
+
+                            // Use snapshot's question IDs if available, else infer from results, else fallback to global total
+                            const totalCount = targetData.questionIds?.length || Object.keys(resObj).length || savedSession.total_questions || (savedSession.data.questions?.length || 0);
+
                             setSessionResults({
-                                correct: savedSession.correct_questions || 0,
-                                total: savedSession.total_questions || (savedSession.data.questions?.length || 0)
+                                correct: targetData.correct_questions !== undefined ? targetData.correct_questions : correctCount,
+                                total: totalCount
                             });
+
                             // Ensure history is set from rebuilt data
                             const rebuiltHistory = rebuildHistoryFromData(savedSession.data);
-                            console.log('🔍 [Summary Mode] rebuiltHistory:', rebuiltHistory.map(h => ({ type: h.type, label: h.label, round: h.round })));
+                            console.log('🔍 [Summary Mode] rebuiltHistory:', rebuiltHistory.map((h: any) => ({ type: h.type, label: h.label, round: h.round })));
                             setSessionHistory(rebuiltHistory);
                         }
                         setShowSummary(true);
@@ -330,8 +368,12 @@ export const Practice = () => {
 
                     const hasReviewProgress = review?.status === 'in_progress';
 
-                    if (sessionMode === 'Review') {
-                        // --- REVIEW MODE ---
+                    // Determine if we are actively in an Error Review loop based on passed action or DB state
+                    const currentIsError = initialIsErrorReview || (hasFirstAttemptProgress && data?.review?.status === 'in_progress');
+                    setIsErrorReviewState(currentIsError);
+
+                    if (currentIsError) {
+                        // --- ERROR REVIEW SUB-SESSION ---
                         if (hasReviewProgress && effectiveState?.isResuming) {
                             // Resume existing review
                             setUserAnswers(review.userAnswers || {});
@@ -376,7 +418,10 @@ export const Practice = () => {
                                 ? new Set(data.currentIncorrectIds as string[])
                                 : incorrectQuestionIds;
                             setFrozenReviewQuestionIds(targetIds);
-                            // Continue to init logic below
+
+                            setShowResumePrompt(false);
+                            setIsInitializing(false);
+                            return; // CRITICAL: Prevent fall-through into NORMAL/ADAPTIVE RESTORATION
                         }
                     }
 
@@ -411,8 +456,8 @@ export const Practice = () => {
                     // we show the data in pending but don't return, allowing a new session to init if needed
                     if (hasFirstAttemptProgress) {
                         setPendingResumeData(savedSession.data);
-                        // Special Case: In Review mode or Start Over, we ignore the old session's answers
-                        if ((sessionMode as SessionMode) === 'Review' || effectiveState?.forceStartNew) {
+                        // Special Case: In Error Review or Start Over, we ignore the old session's answers
+                        if (isErrorReviewState || effectiveState?.forceStartNew) {
                             // Continue to init new session logic
                             // CRITICAL: Clear locally frozen IDs so we don't carry over old questions
                             if (effectiveState?.forceStartNew) {
@@ -428,7 +473,8 @@ export const Practice = () => {
 
                     // 2. Initialize new session if NOT resuming
                     // Refined Logic warning: if hasFirstAttemptProgress is true, we returned above.
-                    if (effectiveState?.forceStartNew && effectiveSectionId && sessionMode !== 'Review') {
+                    // Wipe database if force Start New, UNLESS it's an error review sub-session where we want to keep the frame
+                    if (effectiveState?.forceStartNew && effectiveSectionId && !isErrorReviewState) {
                         await resetSectionProgress(effectiveSectionId);
                     }
 
@@ -440,6 +486,8 @@ export const Practice = () => {
                             ...(savedSession?.data || {}),
                             userAnswers: {},
                             currentQuestionIndex: 0,
+                            sessionTopic: topicParam,
+                            sessionMode: sessionMode,
                             questionIds: savedSession?.data?.questionIds || questions.map(q => q.id)
                         };
 
@@ -460,7 +508,7 @@ export const Practice = () => {
                             };
                         }
 
-                        await saveSectionProgress(effectiveSectionId, initData, { completed: 0, total: 0, score: 0 }, 'section', (sessionMode as SessionMode) === 'Review');
+                        await saveSectionProgress(effectiveSectionId, initData, { completed: 0, total: 0, score: 0 }, subTopicId ? 'section' : 'algorithmic', (sessionMode as SessionMode) === 'Review');
 
                         // Save UNIT progress (bubbling up) - Only if not Review
                         if (topicParam && (sessionMode as SessionMode) !== 'Review') {
@@ -571,9 +619,18 @@ export const Practice = () => {
                     ...existing,
                     userAnswers,
                     currentQuestionIndex,
-                    markedQuestionIds: markedArray
+                    markedQuestionIds: markedArray,
+                    sessionTopic: topicParam,
+                    sessionMode: sessionMode
                 };
-                saveSectionProgress(effectiveSectionId, newData, { completed: Object.keys(userAnswers).length, total: questions.length, score: 0 });
+                // Only send completed count when actually submitting the session.
+                // Sending userAnswers.length here inflates the 'correct_questions' db column incorrectly.
+                saveSectionProgress(
+                    effectiveSectionId,
+                    newData,
+                    { completed: 0, total: questions.length, score: 0 },
+                    subTopicId ? 'section' : 'algorithmic'
+                );
             });
         }
     };
@@ -638,105 +695,211 @@ export const Practice = () => {
     }, [topicParam, allQuestions.length]);
 
     // -------------------------------------------------------------------------
-    // REFACTOR: Use useMemo for synchronous filtering to eliminate render flash
+    // Algorithm Engine Integration: Fetch Recommendations from DB
     // -------------------------------------------------------------------------
-    const questions = React.useMemo(() => {
-        // Merge global questions with locally fetched ones, deduplicating by ID
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [isLoadingQuestions, setIsLoadingQuestions] = useState(true);
+    const [recommendationReasons, setRecommendationReasons] = useState<Record<string, any>>({});
+
+    // Fallback for Summary view which needs all questions
+    const getSummaryQuestions = React.useCallback(() => {
         const combinedRaw = [...allQuestions, ...localQuestions];
         const uniqueMap = new Map();
         combinedRaw.forEach(q => uniqueMap.set(q.id, q));
         const combined = Array.from(uniqueMap.values());
-
         if (combined.length === 0) return [];
-
-        let filtered = [];
-
-        // Base Filter
-        const baseQuestions = combined.filter(q => {
-            // NEW: Support for Unit 10 (BC_Series) which is BC only.
-            // If the user's current course is BC, they should see everything.
-            // If the question is 'Both', everyone sees it.
+        let filtered = combined.filter(q => {
             const isCourseMatch = user.currentCourse === 'BC' || q.course === user.currentCourse || q.course === 'Both';
-
             const qBase = q.topic.includes('_') ? q.topic.split('_')[1] : q.topic;
-            const isTopicMatch =
-                q.topic === topicParam ||
-                q.topicId === topicParam || // NEW: Check unified ID field
-                q.topic === cleanTopic ||
-                qBase === cleanTopic ||
-                // NEW: Handle cases where the database uses the full human title
-                q.topic === 'Infinite Sequences and Series' && topicParam === 'BC_Series';
-
-            // Relax status check for Unit 10/BC content to avoid "draft" items being hidden accidentally
-            // or if the status field is missing.
+            const isTopicMatch = q.topic === topicParam || q.topicId === topicParam || q.topic === cleanTopic || qBase === cleanTopic || (q.topic === 'Infinite Sequences and Series' && topicParam === 'BC_Series');
             const isStatusValid = q.status === 'published' || !q.status || q.status === 'draft';
-
             return isCourseMatch && isTopicMatch && isStatusValid;
         });
-
-        if (baseQuestions.length > 0 && combined.length > 0 && baseQuestions.length === 0) {
-            console.log('⚠️ [Practice] Questions were found in combined but filtered out by base filter:', {
-                count: combined.length,
-                topicParam,
-                cleanTopic,
-                course: user.currentCourse
-            });
-        }
-
-        // 1. Filter by SubTopic
         if (subTopicId) {
             if (subTopicId === 'unit_test') {
-                filtered = baseQuestions.filter(q => q.subTopicId === 'unit_test' || !q.subTopicId);
+                filtered = filtered.filter(q => q.subTopicId === 'unit_test' || !q.subTopicId);
             } else {
-                // Robustly strip '_review' suffix to find questions for the underlying section
                 const realSubTopicId = subTopicId.replace('_review', '');
-                filtered = baseQuestions.filter(q => q.subTopicId === realSubTopicId);
+                filtered = filtered.filter(q => q.subTopicId === realSubTopicId);
             }
         }
-        // 2. Otherwise filter by Unit Topic
-        else {
-            filtered = baseQuestions;
-        }
+        return sortByTitle(filtered);
+    }, [allQuestions, localQuestions, user.currentCourse, topicParam, subTopicId, cleanTopic]);
 
-        // --- APPLY MODE LOGIC ---
-        // NEW: If showing summary (overlay), strictly return ALL relevant questions for the section
-        // This ensures the SessionSummary component can render ANY historical attempt, even if
-        // the current session was just a small subset.
-        if (sessionMode === 'Summary' || showSummary) {
-            return filtered;
-        } else if (sessionMode === 'Random') {
-            return [...filtered].sort(() => Math.random() - 0.5);
-        } else if (sessionMode === 'Review') {
-            // NEW STATE MACHINE: Use review.targetQuestionIds first
+    // Main Engine Orchestrator
+    useEffect(() => {
+        let isMounted = true;
+        const fetchRecommendations = async () => {
+            if (!topicParam) return;
+
+            if (!user?.id) {
+                // Guest mode: Provide a small slice of local questions as a preview
+                if (isMounted) {
+                    setQuestions(getSummaryQuestions().slice(0, 5));
+                    setIsLoadingQuestions(false);
+                }
+                return;
+            }
+
+            const isSummary = sessionMode === 'Summary' || showSummary;
             const savedData = getSectionProgressData(effectiveSectionId)?.data;
-            const reviewData = savedData?.review;
 
-            // Priority 1: Use review.targetQuestionIds (new structure) if resuming
-            if (!effectiveState?.forceStartNew && reviewData?.targetQuestionIds?.length > 0) {
-                const orderMap = new Map(reviewData.targetQuestionIds.map((id: string, index: number) => [id, index]));
-                return baseQuestions.filter(q => orderMap.has(q.id))
-                    .sort((a, b) => (Number(orderMap.get(a.id)) || 0) - (Number(orderMap.get(b.id)) || 0));
+            if (isSummary) {
+                // If chapter/unit summary, load all questions for the topic
+                if (subTopicId) {
+                    if (isMounted) setQuestions(getSummaryQuestions());
+                    if (isMounted) setIsLoadingQuestions(false);
+                    return;
+                }
+                // If algorithmic summary, fall through to load the specific saved question IDs
             }
 
-            // Priority 2: Use frozen snapshot (set in checkProgress or fresh start)
-            if (frozenReviewQuestionIds.size > 0) {
-                return filtered.filter(q => frozenReviewQuestionIds.has(q.id));
+            // Scenario 1: Resuming an active session OR loading Summary OR loading an Error Review slice
+            const isErrorReviewTargetedFetch = effectiveState?.isErrorReviewAction || savedData?.review?.status === 'in_progress';
+            if ((effectiveState?.isResuming || (isSummary && !subTopicId) || isErrorReviewTargetedFetch) && savedData) {
+                let targetIds: string[] = [];
+                if (isErrorReviewTargetedFetch && !isSummary) {
+                    // Priority 1: ONLY use targetQuestionIds if we are actively in a review (prevents stale state reading corrupted 10-length arrays from old sessions)
+                    if (savedData.review?.status === 'in_progress' && savedData.review?.targetQuestionIds && savedData.review.targetQuestionIds.length > 0) {
+                        targetIds = savedData.review.targetQuestionIds;
+                    }
+                    // Priority 2: Use currentIncorrectIds snapshot if available
+                    else if (savedData.currentIncorrectIds && savedData.currentIncorrectIds.length > 0) {
+                        targetIds = savedData.currentIncorrectIds;
+                    }
+                    // Priority 3: Compute manually from previous attempt's results
+                    else {
+                        const previousResults = savedData.firstAttempt?.questionResults || savedData.questionResults || {};
+                        targetIds = Object.keys(previousResults).filter(id => previousResults[id] === false || previousResults[id] === 'incorrect');
+                    }
+                } else {
+                    targetIds = savedData.firstAttempt?.questionIds || savedData.questionIds || Object.keys(savedData.questionResults || {});
+                }
+
+                if (targetIds.length > 0) {
+                    setIsLoadingQuestions(true);
+                    try {
+                        const existingMap = new Map([...allQuestions, ...localQuestions].map(q => [q.id, q]));
+                        const missingIds = targetIds.filter(id => !existingMap.has(id));
+
+                        if (missingIds.length > 0) {
+                            const { data: fetchedData } = await supabase.from('questions').select('*').in('id', missingIds);
+                            if (fetchedData) {
+                                fetchedData.forEach(q => existingMap.set(q.id, q as Question));
+                            }
+                        }
+
+                        if (isMounted) {
+                            const hydrated = targetIds.map(id => existingMap.get(id)).filter(Boolean) as Question[];
+                            setQuestions(hydrated);
+                            setRecommendationReasons({}); // No reason details on resume/summary
+                        }
+                    } catch (err) {
+                        console.error('Failed to restore questions', err);
+                    } finally {
+                        if (isMounted) setIsLoadingQuestions(false);
+                    }
+                    return;
+                }
             }
 
-            // Priority 3: Use currentIncorrectIds from saved data
-            if (savedData?.currentIncorrectIds?.length > 0) {
-                const incorrectSet = new Set(savedData.currentIncorrectIds);
-                return filtered.filter(q => incorrectSet.has(q.id));
-            }
+            // Scenario 2: Generate Fresh Recommendations using Backend Engine
+            setIsLoadingQuestions(true);
+            try {
+                // Map frontend topic string like "Limits" to exact database topic_id like "Both_Limits"
+                let mappedTopicId = topicParam;
+                if (user?.currentCourse && COURSE_TOPICS[user.currentCourse]) {
+                    const match = COURSE_TOPICS[user.currentCourse].find(t => t.id.includes(topicParam));
+                    if (match) {
+                        mappedTopicId = match.id;
+                    }
+                }
 
-            // Fallback: Use global incorrectQuestionIds
-            return filtered.filter(q => incorrectQuestionIds.has(q.id));
+                // --- NEW: Pro Limit Enforcement ---
+                if (!isPro) {
+                    const { data: limitCheck, error: limitErr } = await supabase.rpc('check_daily_practice_limit');
+                    if (limitCheck && !limitCheck.allowed) {
+                        if (isMounted) {
+                            setShowProLimitModal(true);
+                            setIsLoadingQuestions(false);
+                            setQuestions([]);
+                        }
+                        return; // Block fetching
+                    }
+                }
+
+                const { data: recs, error } = await supabase.rpc('generate_practice_recommendations', {
+                    p_user_id: user.id,
+                    p_mode: (sessionMode as string).toLowerCase(),
+                    p_topic_id: mappedTopicId,
+                    p_section_id: subTopicId === 'unit_test' ? null : subTopicId,
+                    p_limit: 10
+                });
+
+                if (error) throw error;
+
+                if (!recs || recs.length === 0) {
+                    if (isMounted) {
+                        setQuestions([]);
+                        setIsLoadingQuestions(false);
+                    }
+                    return;
+                }
+
+                // Hydrate details
+                const qIds = recs.map((r: any) => r.question_id);
+                const existingMap = new Map([...allQuestions, ...localQuestions].map(q => [q.id, q]));
+                const missingIds = qIds.filter((id: string) => !existingMap.has(id));
+
+                if (missingIds.length > 0) {
+                    const { data: fetchedData } = await supabase.from('questions').select('*').in('id', missingIds);
+                    if (fetchedData) {
+                        fetchedData.forEach(q => existingMap.set(q.id, q as Question));
+                    }
+                }
+
+                if (isMounted) {
+                    const finalQuestions: Question[] = [];
+                    const reasonsMap: Record<string, any> = {};
+
+                    for (const r of recs) {
+                        const q = existingMap.get(r.question_id);
+                        if (q) {
+                            finalQuestions.push(q as Question);
+                            reasonsMap[q.id] = typeof r.reason_detail === 'string' ? JSON.parse(r.reason_detail) : r.reason_detail;
+                        }
+                    }
+
+                    setQuestions(finalQuestions);
+                    setRecommendationReasons(reasonsMap);
+                }
+            } catch (e) {
+                console.error('Recommendations Engine Failed:', e);
+                // Fallback to local if engine fails
+                if (isMounted) setQuestions(getSummaryQuestions().slice(0, 10)); // Just fallback to top 10
+            } finally {
+                if (isMounted) setIsLoadingQuestions(false);
+            }
+        };
+
+        fetchRecommendations();
+
+        return () => { isMounted = false; };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [topicParam, subTopicId, user?.id, sessionMode, effectiveState?.isResuming, showSummary, effectiveSectionId]);
+
+    // NEW: Handle late-loading questions for Summary view to prevent "No Questions Available" bug
+    useEffect(() => {
+        const isSummary = sessionMode === 'Summary' || showSummary;
+        // If we are in summary view for a chapter, and questions array is empty (failed to populate on mount because global questions weren't ready)
+        if (isSummary && subTopicId && questions.length === 0 && (allQuestions.length > 0 || localQuestions.length > 0)) {
+            const summaryQuestions = getSummaryQuestions();
+            if (summaryQuestions.length > 0) {
+                setQuestions(summaryQuestions);
+                setIsLoadingQuestions(false);
+            }
         }
-
-        return filtered;
-    }, [allQuestions, localQuestions, user.currentCourse, topicParam, subTopicId, cleanTopic, sessionMode, incorrectQuestionIds, effectiveSectionId, getSectionProgressData, questionResults, frozenReviewQuestionIds]);
-
-    const isLoadingQuestions = false; // No longer needed as useMemo is sync (cached)
+    }, [allQuestions.length, localQuestions.length, sessionMode, showSummary, subTopicId, questions.length, getSummaryQuestions]);
 
     // --- Dynamic Time Calculation ---
     const dynamicEstimatedMinutes = React.useMemo(() => {
@@ -764,10 +927,14 @@ export const Practice = () => {
     const [sessionResults, setSessionResults] = useState({ correct: 0, total: 0 });
     const [viewingOptionId, setViewingOptionId] = useState<string | null>(null);
     const [sessionHistory, setSessionHistory] = useState<any[]>([]); // NEW: Store history of attempts
+    const [showProLimitModal, setShowProLimitModal] = useState(false);
 
     // Fetch and sync session history when summary is shown
+    // IMPORTANT: Skip this when we JUST completed a session (justCompletedSessionLabel is set),
+    // because finishSession already set sessionHistory with the complete, accurate data.
+    // Re-fetching from DB would race with the save and potentially return stale/incomplete data.
     useEffect(() => {
-        if (showSummary && effectiveSectionId) {
+        if (showSummary && effectiveSectionId && !justCompletedSessionLabel) {
             const syncHistory = async () => {
                 const activities = await getUserActivities(effectiveSectionId);
                 console.log('🔄 Syncing session history from DB:', activities?.length, 'activities found');
@@ -1057,12 +1224,17 @@ export const Practice = () => {
         const timeSpent = Math.round((Date.now() - startTime) / 1000);
 
         try {
+            const selectedOpt = question.options.find(o => o.id === selectedAnswer);
+            const optErrorTag = selectedOpt?.errorTagId;
+            const finalErrorTags = [...(question.errorTags || [])];
+            if (optErrorTag) finalErrorTags.push(optErrorTag);
+
             const result = await submitAttempt({
                 questionId: question.id,
                 isCorrect,
                 selectedOptionId: selectedAnswer,
                 timeSpentSeconds: timeSpent,
-                errorTags: isCorrect ? [] : (question.errorTags || [])
+                errorTags: isCorrect ? [] : finalErrorTags
             });
 
             if (!result.success) {
@@ -1147,12 +1319,17 @@ export const Practice = () => {
 
                 // Only submit if NOT already submitted individually
                 if (!alreadySubmitted) {
+                    const selectedOpt = q.options.find(o => o.id === userAnswer);
+                    const optErrorTag = selectedOpt?.errorTagId;
+                    const finalErrorTags = [...(q.errorTags || [])];
+                    if (optErrorTag) finalErrorTags.push(optErrorTag);
+
                     const promise = submitAttempt({
                         questionId: q.id,
                         isCorrect: isCorrect,
                         selectedOptionId: userAnswer,
                         timeSpentSeconds: timePerQuestion,
-                        errorTags: isCorrect ? [] : (q.errorTags || [])
+                        errorTags: isCorrect ? [] : finalErrorTags
                     });
                     submissionPromises.push(promise);
                 } else {
@@ -1348,7 +1525,9 @@ export const Practice = () => {
         const finalCorrectCount = overrideCorrect !== undefined ? overrideCorrect : sessionResults.correct;
         const finalAnswers = overrideAnswers || userAnswers;
         const finalResults = overrideResults || questionResults;
-        const mainSectionId = subTopicId.endsWith('_review') ? subTopicId.replace('_review', '') : subTopicId;
+        const parsedSubTopicId = subTopicId?.endsWith('_review') ? subTopicId.replace('_review', '') : subTopicId;
+        const mainSectionId = parsedSubTopicId || effectiveSectionId;
+        const entityType = subTopicId ? 'section' : 'algorithmic';
 
         // 2. Fetch Latest Main Data (Background Fetch for Accuracy)
         let existingData: any = {};
@@ -1366,14 +1545,18 @@ export const Practice = () => {
 
         // === NEW STATE MACHINE DATA STRUCTURE ===
 
-        if (sessionMode === 'Review') {
-            // --- REVIEW SESSION COMPLETION ---
+        if (isErrorReviewState) {
+            // --- ERROR REVIEW SUB-SESSION COMPLETION ---
 
             // 1. Calculate which questions are still incorrect after this review round
+            // CRITICAL: Only consider questions that were part of THIS review's target set,
+            // not all loaded questions. Otherwise, questions the user already got correct
+            // in previous rounds would be re-added as "still incorrect".
+            const reviewTargetIds = existingData.review?.targetQuestionIds || questions.map(q => q.id);
             const stillIncorrectIds: string[] = [];
-            questions.forEach(q => {
-                if (finalResults[q.id] !== 'correct') {
-                    stillIncorrectIds.push(q.id);
+            reviewTargetIds.forEach((qid: string) => {
+                if (finalResults[qid] !== 'correct') {
+                    stillIncorrectIds.push(qid);
                 }
             });
 
@@ -1453,6 +1636,10 @@ export const Practice = () => {
 
             // 5. Build new data structure
             const newData = {
+                ...existingData,
+                sessionTopic: topicParam,
+                sessionMode: sessionMode,
+                mode: sessionMode, // NEW: Explicit mode tracking for robust slot filtering in PracticeHub
                 // Legacy fields (for backward compatibility)
                 userAnswers: mainUserAnswers,
                 questionResults: mainQuestionResults,
@@ -1462,6 +1649,7 @@ export const Practice = () => {
                 // NEW: firstAttempt (preserve existing or create from legacy)
                 firstAttempt: existingData.firstAttempt || {
                     status: 'completed' as const,
+                    mode: sessionMode,
                     userAnswers: existingData.userAnswers || mainUserAnswers,
                     questionResults: existingData.questionResults || mainQuestionResults,
                     currentQuestionIndex: existingData.currentQuestionIndex || 0,
@@ -1469,26 +1657,47 @@ export const Practice = () => {
                     completedAt: existingData.timestamp || new Date().toISOString()
                 },
 
-                // NEW: review (mark as completed or preserve round)
-                review: {
-                    status: 'completed' as const,
+                // NEW: review (mark as completed only if ALL errors fixed, otherwise reset for next round)
+                review: existingData.review?.status === 'in_progress' ? {
+                    status: (stillIncorrectIds.length === 0 ? 'completed' : 'not_started') as 'completed' | 'not_started',
                     round: reviewRound,
-                    targetQuestionIds: questions.map(q => q.id),
+                    targetQuestionIds: stillIncorrectIds, // Next review targets remaining errors
                     userAnswers: finalAnswers,
                     questionResults: finalResults,
                     currentQuestionIndex: questions.length
-                },
+                } : (existingData.review || {
+                    status: 'not_started' as const,
+                    round: 0,
+                    targetQuestionIds: [],
+                    userAnswers: {},
+                    questionResults: {},
+                    currentQuestionIndex: 0
+                }),
 
                 // NEW: currentIncorrectIds (the remaining errors)
                 currentIncorrectIds: stillIncorrectIds,
                 markedQuestionIds: [] // Marks 'die' after submission
             };
 
-            await saveSectionProgress(mainSectionId, newData, {
-                completed: Object.keys(mainUserAnswers).length,
-                total: mainTotal,
-                score: mainScore
-            }, 'section', true);
+            // If ALL questions across all attempts are now correct, mark as completed
+            const allCorrect = mainCorrect === mainTotal && mainTotal > 0;
+            if (allCorrect) {
+                await completeSectionSession(
+                    mainSectionId as string,
+                    mainCorrect,
+                    mainTotal,
+                    mainCorrect,
+                    newData,
+                    entityType,
+                    false
+                );
+            } else {
+                await saveSectionProgress(mainSectionId as string, newData, {
+                    completed: mainCorrect,
+                    total: mainTotal,
+                    score: mainScore
+                }, entityType, true);
+            }
 
             // 6. Explicit Activity Logging
             await logUserActivity({
@@ -1549,6 +1758,9 @@ export const Practice = () => {
 
             // 3. Build new data structure
             const newData = {
+                ...existingData,
+                sessionTopic: topicParam,
+                sessionMode: sessionMode,
                 // Legacy fields (for backward compatibility)
                 userAnswers: finalAnswers,
                 questionResults: finalResults,
@@ -1581,15 +1793,26 @@ export const Practice = () => {
                 markedQuestionIds: [] // Marks 'die' after submission
             };
 
-            await completeSectionSession(
-                effectiveSectionId,
-                finalCorrectCount,
-                questions.length,
-                finalCorrectCount,
-                newData,
-                'section',
-                false
-            );
+            // Only mark as 'completed' if user got ALL questions correct
+            const allCorrectFirstAttempt = finalCorrectCount === questions.length && questions.length > 0;
+            if (allCorrectFirstAttempt) {
+                await completeSectionSession(
+                    effectiveSectionId,
+                    finalCorrectCount,
+                    questions.length,
+                    finalCorrectCount,
+                    newData,
+                    entityType,
+                    false
+                );
+            } else {
+                // Save as in_progress — user still needs to Review Errors to complete
+                await saveSectionProgress(effectiveSectionId, newData, {
+                    completed: finalCorrectCount,
+                    total: questions.length,
+                    score: questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0
+                }, entityType);
+            }
 
             // 4. Explicit Activity Logging
             await logUserActivity({
@@ -1649,8 +1872,8 @@ export const Practice = () => {
             return;
         }
 
-        if (viewState === 'practice' && subTopicId) {
-            setShowExitConfirm(true); // Show confirmation dialog for ALL practice types
+        if (viewState === 'practice') {
+            setShowExitConfirm(true); // Show confirmation dialog for ALL practice types (unit or algorithmic)
         } else {
             // Check if we have a subTopicId to scroll back to
             if (subTopicId) {
@@ -1665,7 +1888,7 @@ export const Practice = () => {
         setIsSaving(true);
         try {
             // Save current state
-            if (subTopicId) {
+            if (effectiveSectionId) {
                 // Fetch existing data to preserve other fields
                 let existingData: any = {};
                 try {
@@ -1673,8 +1896,8 @@ export const Practice = () => {
                     existingData = mainP?.data || {};
                 } catch (e) { console.error('Failed to fetch existing data', e); }
 
-                if (sessionMode === 'Review') {
-                    // === REVIEW MODE: Save to review field ===
+                if (isErrorReviewState) {
+                    // === ERROR REVIEW SUB-SESSION MODE: Save to review field ===
                     const reviewState = {
                         status: 'in_progress' as const,
                         round: existingData.review?.round || 1,
@@ -1686,6 +1909,8 @@ export const Practice = () => {
 
                     const newData = {
                         ...existingData,
+                        sessionTopic: topicParam,
+                        sessionMode: sessionMode,
                         // Preserve firstAttempt
                         firstAttempt: existingData.firstAttempt || {
                             status: 'completed' as const,
@@ -1708,7 +1933,7 @@ export const Practice = () => {
                     };
 
                     await saveSectionProgress(effectiveSectionId, newData,
-                        { completed: 0, total: 0, score: 0 }, 'section', true);
+                        { completed: 0, total: 0, score: 0 }, subTopicId ? 'section' : 'algorithmic', true);
                 } else {
                     // === FIRST ATTEMPT MODE: Save to firstAttempt field ===
                     const firstAttemptState = {
@@ -1727,6 +1952,8 @@ export const Practice = () => {
                         userAnswers,
                         currentQuestionIndex,
                         questionResults,
+                        sessionTopic: topicParam,
+                        sessionMode: sessionMode,
                         // NEW: firstAttempt
                         firstAttempt: firstAttemptState,
                         // Preserve review if exists
@@ -1748,7 +1975,7 @@ export const Practice = () => {
                         completed: currentCompleted,
                         total: questions.length,
                         score: currentScore
-                    });
+                    }, subTopicId ? 'section' : 'algorithmic');
                 }
 
                 showToast('Progress saved successfully', 'success');
@@ -1759,13 +1986,21 @@ export const Practice = () => {
         } finally {
             setIsSaving(false);
             setShowExitConfirm(false);
-            navigate(`/practice/unit/${topicParam}`, { state: { scrollToSubTopicId: subTopicId } });
+            if (subTopicId) {
+                navigate(`/practice/unit/${topicParam}`, { state: { scrollToSubTopicId: subTopicId } });
+            } else {
+                navigate('/practice');
+            }
         }
     };
 
     const confirmExitWithoutSave = () => {
         setShowExitConfirm(false);
-        navigate(`/practice/unit/${topicParam}`, { state: { scrollToSubTopicId: subTopicId } });
+        if (subTopicId) {
+            navigate(`/practice/unit/${topicParam}`, { state: { scrollToSubTopicId: subTopicId } });
+        } else {
+            navigate('/practice');
+        }
     };
 
     // Kept for backward compatibility if needed, but mainly replaced by confirmSaveAndExit
@@ -2024,7 +2259,7 @@ export const Practice = () => {
     // --- RENDER CELEBRATION SUMMARY VIEW ---
     if (showSummary) {
         return (
-            <div className="h-screen flex flex-col bg-background-light dark:bg-background-dark text-text-main font-display overflow-hidden animate-fade-in">
+            <div className="min-h-[100dvh] flex flex-col bg-background-light dark:bg-background-dark text-text-main font-display animate-fade-in relative z-0">
                 <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border-light dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 sm:px-6 lg:px-12 pt-6 pb-2 shrink-0">
                     <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
                         <div className="size-8 flex items-center justify-center text-text-main dark:text-white bg-primary rounded-lg shrink-0">
@@ -2050,7 +2285,7 @@ export const Practice = () => {
                     </div>
                 </header>
 
-                <div className="flex-grow overflow-y-auto scroll-bounce">
+                <div className="flex-grow flex flex-col pb-24">
                     <SessionSummary
                         questions={questions}
                         userAnswers={userAnswers}
@@ -2065,8 +2300,10 @@ export const Practice = () => {
                                 state: {
                                     topic: topicParam,
                                     subTopicId: subTopicId,
-                                    mode: 'Review',
-                                    forceStartNew: true
+                                    mode: sessionMode,
+                                    isResuming: true,
+                                    forceStartNew: false,
+                                    isErrorReviewAction: true
                                 },
                                 replace: true
                             });
@@ -2253,8 +2490,8 @@ export const Practice = () => {
                             )}
 
                             {/* Question Section */}
-                            <div className={`lg:col-span-6 flex flex-col ${isSubmitted ? 'min-h-[250px]' : 'h-auto min-h-[300px] lg:h-[calc(100vh-280px)] lg:min-h-[450px]'} overflow-hidden`}>
-                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col gap-4 relative h-full scroll-bounce !overflow-y-auto ${isSubmitted ? 'p-3 opacity-90' : 'p-6'}`}>
+                            <div className={`lg:col-span-6 flex flex-col ${isSubmitted ? 'min-h-[150px] max-h-[300px]' : 'lg:h-[calc(100vh-280px)] lg:min-h-[450px]'} overflow-hidden`}>
+                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col gap-4 relative h-full scroll-bounce ${isSubmitted ? 'p-4' : 'p-6'}`}>
                                     <div className="flex justify-between items-start border-b border-gray-100 dark:border-gray-800 pb-3 mb-2">
                                         <div className="flex items-center gap-2 mr-6">
                                             <button onClick={() => setActiveTool(activeTool === 'scratchpad' ? 'none' : 'scratchpad')} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTool === 'scratchpad' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'}`}>
@@ -2300,8 +2537,8 @@ export const Practice = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex-grow overflow-y-auto">
-                                        <div className={`font-math text-text-main dark:text-gray-100 font-medium leading-relaxed ${isSubmitted ? 'text-sm' : 'text-lg md:text-xl'} overflow-x-auto max-w-full`}>
+                                    <div className="flex-grow overflow-y-auto scroll-bounce">
+                                        <div className={`font-math py-4 text-text-main dark:text-gray-100 font-medium leading-relaxed ${isSubmitted ? 'text-base' : 'text-lg md:text-xl'} overflow-x-auto overflow-y-visible max-w-full`}>
                                             {renderContent(question.prompt || '', question.promptType || 'text', { noBorder: true })}
                                         </div>
                                     </div>
@@ -2309,8 +2546,8 @@ export const Practice = () => {
                             </div>
 
                             {/* Options Section */}
-                            <div className={`lg:col-span-6 flex flex-col gap-4 ${isSubmitted ? 'min-h-[250px]' : 'h-auto lg:h-[calc(100vh-280px)] lg:min-h-[450px]'}`}>
-                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-2' : 'p-6'}`}>
+                            <div className={`lg:col-span-6 flex flex-col gap-4 ${isSubmitted ? 'min-h-[150px] max-h-[300px]' : 'lg:h-[calc(100vh-280px)] lg:min-h-[450px]'}`}>
+                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-4' : 'p-6'}`}>
                                     {/* Hide Header on Submit to save space as requested */}
                                     {!isSubmitted && (
                                         <div>
@@ -2323,7 +2560,7 @@ export const Practice = () => {
                                         </div>
                                     )}
 
-                                    <div className="flex-grow overflow-y-auto scroll-bounce p-1.5 flex flex-col gap-3">
+                                    <div className="flex-grow flex flex-col gap-3 overflow-y-auto scroll-bounce p-1 -m-1">
                                         {question.options.map((opt, idx) => {
                                             const isSelected = selectedAnswer === opt.id;
                                             const isCorrect = question.correctOptionId === opt.id;
@@ -2340,19 +2577,32 @@ export const Practice = () => {
                                                 textClass = 'text-gray-400 line-through decoration-2 decoration-gray-400';
                                             } else if (isSubmitted) {
                                                 if (isCorrect) {
+                                                    // ALWAYS explicitly highlight the correct answer in green
                                                     borderClass = 'border-green-500';
-                                                    bgClass = 'bg-green-50 dark:bg-green-900/20';
+                                                    bgClass = 'bg-green-100 dark:bg-green-900/40 text-black';
+                                                    textClass = 'text-green-900 dark:text-green-100';
                                                 } else if (isSelected && !isCorrect) {
+                                                    // The one the user selected, but it was wrong
                                                     borderClass = 'border-red-500';
-                                                    bgClass = 'bg-red-50 dark:bg-red-900/20';
-                                                }
-                                                // Highlight viewing option if distinct from selection
-                                                if (isViewing) {
-                                                    bgClass += ' ring-2 ring-primary ring-offset-2 dark:ring-offset-black';
+                                                    bgClass = 'bg-red-100 dark:bg-red-900/20 text-black';
+                                                    textClass = 'text-red-900 dark:text-red-100';
                                                 }
                                             } else if (isSelected) {
                                                 borderClass = 'border-primary';
                                                 bgClass = 'bg-white dark:bg-surface-dark ring-1 ring-primary';
+                                            }
+
+                                            let circleClass = 'bg-white dark:bg-white/10 border-gray-200 dark:border-gray-700 text-gray-500';
+                                            if (!isSubmitted && !isEliminated) {
+                                                if (isSelected) {
+                                                    circleClass = 'bg-primary border-primary text-black';
+                                                }
+                                            } else if (isSubmitted) {
+                                                if (isCorrect) {
+                                                    circleClass = 'bg-green-500 border-green-500 text-white';
+                                                } else if (isSelected && !isCorrect) {
+                                                    circleClass = 'bg-red-500 border-red-500 text-white';
+                                                }
                                             }
 
                                             return (
@@ -2383,7 +2633,7 @@ export const Practice = () => {
                                                     className={`group relative flex cursor-pointer rounded-xl border ${borderClass} ${bgClass} transition-all duration-200 ${isSubmitted ? 'p-2' : 'p-4'} ${!isSubmitted && !isEliminated && 'hover:border-primary/50'}`}
                                                 >
                                                     <div className="peer sr-only"></div>
-                                                    <div className="flex items-center gap-4 relative z-10 w-full overflow-hidden sm:pr-8 pr-2">
+                                                    <div className="flex items-center gap-4 relative z-10 w-full sm:pr-8 pr-2 py-1">
                                                         {/* Eliminate Button - Right Side */}
                                                         {!isSubmitted && (
                                                             <button
@@ -2395,14 +2645,14 @@ export const Practice = () => {
                                                             </button>
                                                         )}
 
-                                                        <div className={`flex items-center justify-center rounded-full border font-bold transition-all shrink-0 ${isSelected || (isSubmitted && isCorrect) ? 'bg-primary border-primary text-black' : 'bg-white dark:bg-white/10 border-gray-200 dark:border-gray-700 text-gray-500'} ${isSubmitted ? 'h-5 w-5 text-xs' : 'h-8 w-8 text-sm'}`}>
+                                                        <div className={`flex items-center justify-center rounded-full border font-bold transition-all shrink-0 ${circleClass} ${isSubmitted ? 'h-5 w-5 text-xs' : 'h-8 w-8 text-sm'}`}>
                                                             {opt.label || opt.id || String.fromCharCode(65 + idx)}
                                                         </div>
-                                                        <div className={`font-math w-full transition-all duration-500 overflow-x-auto ${textClass} ${isSubmitted ? 'text-sm' : 'text-lg'}`}>
+                                                        <div className={`font-math py-4 px-1 w-full transition-all duration-500 overflow-x-auto overflow-y-visible ${textClass} ${isSubmitted ? 'text-sm' : 'text-lg'}`}>
                                                             {renderContent(opt.value || (opt as any).text || '', opt.type, { noBorder: true })}
                                                         </div>
                                                         {isSubmitted && isCorrect && <span className="material-symbols-outlined ml-auto text-green-600">check_circle</span>}
-                                                        {isSubmitted && isSelected && !isCorrect && <span className="material-symbols-outlined ml-auto text-red-500">cancel</span>}
+                                                        {isSubmitted && isSelected && !isCorrect && <span className="material-symbols-outlined ml-auto text-red-500 opacity-70">cancel</span>}
                                                     </div>
                                                 </div>
                                             );
@@ -2631,6 +2881,38 @@ export const Practice = () => {
                 );
             })()
             }
+
+            {/* Pro Limit Modal */}
+            {showProLimitModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
+                    <div className="bg-surface-light dark:bg-surface-dark w-full max-w-md rounded-2xl p-6 shadow-2xl scale-in border border-gray-200 dark:border-gray-800 flex flex-col items-center text-center">
+                        <div className="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-4 text-orange-500">
+                            <span className="material-symbols-outlined text-3xl">workspace_premium</span>
+                        </div>
+                        <h2 className="text-2xl font-bold font-display text-text-main dark:text-white mb-2">Daily Limit Reached</h2>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6 font-display">
+                            You've reached the limit of 10 free practice questions per day. Upgrade to Pro for unlimited interactive practice, advanced algorithmic recommendations, and unrestricted access to all features!
+                        </p>
+                        <div className="flex flex-col w-full gap-3">
+                            <button
+                                onClick={() => navigate('/settings')}
+                                className="w-full bg-primary hover:bg-primary-hover text-black font-bold py-3 px-4 rounded-xl transition-colors font-display"
+                            >
+                                Upgrade to Pro
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowProLimitModal(false);
+                                    navigate('/dashboard');
+                                }}
+                                className="w-full border shadow-sm border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors font-display"
+                            >
+                                Back to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Report Modal Removed */}
 

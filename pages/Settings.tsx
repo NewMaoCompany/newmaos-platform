@@ -73,7 +73,7 @@ export const Settings = () => {
     };
 
     return (
-        <div className="h-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-x-auto overflow-y-hidden">
+        <div className="h-full w-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-x-hidden overflow-y-hidden">
             <Navbar />
 
             <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 animate-fade-in flex flex-col gap-6 sm:gap-10 overflow-y-auto scroll-bounce">
@@ -183,28 +183,30 @@ export const Settings = () => {
                     <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-1">Administration</h2>
                     <button
                         onClick={() => hasCreatorAccess ? navigate('/settings/creator') : setShowAccessModal(true)}
-                        className="bg-white dark:bg-surface-dark rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm flex items-center justify-between hover:border-primary/50 transition-colors group"
+                        className="bg-white dark:bg-surface-dark rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between hover:border-primary/50 transition-colors group gap-4"
                     >
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl group-hover:bg-primary group-hover:text-black transition-colors">
+                        <div className="flex items-center gap-4 w-full sm:w-auto">
+                            <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl group-hover:bg-primary group-hover:text-black transition-colors shrink-0">
                                 <span className="material-symbols-outlined">edit_square</span>
                             </div>
-                            <div className="flex flex-col items-start">
-                                <span className="text-base font-bold text-text-main dark:text-white">Creator Area</span>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">Manage question bank and content.</span>
+                            <div className="flex flex-col items-start overflow-hidden">
+                                <span className="text-base font-bold text-text-main dark:text-white truncate w-full text-left">Creator Area</span>
+                                <span className="text-sm text-gray-500 dark:text-gray-400 text-left line-clamp-2">Manage question bank and content.</span>
                             </div>
                         </div>
-                        {hasCreatorAccess ? (
-                            <div className="flex items-center gap-2 text-green-500">
-                                <span className="text-sm font-bold">Authorized</span>
-                                <span className="material-symbols-outlined">check_circle</span>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-2 text-blue-500 group-hover:text-primary transition-colors">
-                                <span className="text-xs font-bold">Request Access</span>
-                                <span className="material-symbols-outlined">lock</span>
-                            </div>
-                        )}
+                        <div className="w-full sm:w-auto flex justify-end">
+                            {hasCreatorAccess ? (
+                                <div className="flex items-center gap-2 text-green-500 shrink-0 bg-green-50/50 dark:bg-green-900/10 px-3 py-1.5 rounded-lg">
+                                    <span className="text-sm font-bold">Authorized</span>
+                                    <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-2 text-blue-500 group-hover:text-primary transition-colors shrink-0 bg-blue-50/50 dark:bg-primary/5 px-3 py-1.5 rounded-lg">
+                                    <span className="text-sm font-bold">Request Access</span>
+                                    <span className="material-symbols-outlined text-[18px]">lock</span>
+                                </div>
+                            )}
+                        </div>
                     </button>
                 </section>
 

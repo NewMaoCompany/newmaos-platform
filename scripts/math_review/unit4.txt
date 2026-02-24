@@ -1,0 +1,783 @@
+UNIT 4 MATHEMATICAL REVIEW (55 questions)
+============================================================
+
+--- 4.0-UT-Q1 [2/2] [Both] ---
+PROMPT: A bacteria culture has population $P(t)$ (in thousands) at time $t$ hours. At $t=6$, $P(6)=18$ and $P'(6)=-0.7$. Which statement is correct?
+CORRECT: C = "At $t=6$, the population is decreasing at $0.7$ thousand bacteria per hour."
+  A : From $t=5$ to $t=6$, the population decreased by $0.7$ thousand bacteria.
+  B : At $t=6$, the population is decreasing at $0.7$ bacteria per hour.
+  C ✓: At $t=6$, the population is decreasing at $0.7$ thousand bacteria per hour.
+  D : At $t=6$, the population is $-0.7$ thousand bacteria.
+EXPLANATION: Because $P$ is measured in thousands, $P'(6)=-0.7$ means the population is changing at $-0.7$ thousand bacteria per hour at $t=6$.
+MICRO:
+  A: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  B: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  C: Correct. In context, the derivative represents the instantaneous rate of change (e.g., change in a physical quantity per unit of time). This option ac
+  D: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+
+--- 4.0-UT-Q2 [3/3] [Both] ---
+PROMPT: The image shows position $s$ (meters) versus time $t$ (seconds). At $t=5$, which best describes the velocity $v(5)$? (See image.)
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$v(5)>0$"
+  A : $v(5)<0$
+  B : $v(5)=0$
+  C ✓: $v(5)>0$
+  D : Velocity cannot be determined from a position–time graph.
+EXPLANATION: Velocity is $v(t)=s'(t)$, the slope of the position–time graph. At $t=5$ the curve is increasing, so $s'(5)>0$.
+MICRO:
+  A: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  B: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  C: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+  D: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+
+--- 4.0-UT-Q3 [2/2] [Both] ---
+PROMPT: The radius $r$ of a circle is increasing at $\frac{dr}{dt}=3$ cm/s. The area is $A=\pi r^2$. Which expression correctly gives $\frac{dA}{dt}$ in terms of $r$?
+CORRECT: A = "$\frac{dA}{dt}=2\pi r\cdot 3$"
+  A ✓: $\frac{dA}{dt}=2\pi r\cdot 3$
+  B : $\frac{dA}{dt}=2\pi r$
+  C : $\frac{dA}{dt}=3\pi$
+  D : $\frac{dA}{dt}=3\pi r^2$
+EXPLANATION: Differentiate with respect to $t$: $\frac{dA}{dt}=\frac{d}{dt}(\pi r^2)=2\pi r\frac{dr}{dt}=2\pi r\cdot 3$.
+MICRO:
+  A: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+  B: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  C: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  D: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+
+--- 4.0-UT-Q4 [4/4] [Both] ---
+PROMPT: A spherical balloon has volume $V=\frac{4}{3}\pi r^3$. Air is pumped in at $\frac{dV}{dt}=10$ cm$^3$/s. When $r=5$ cm, what is $\frac{dr}{dt}$?
+CORRECT: C = "$\frac{1}{100\pi}$"
+  A : $\frac{1}{10\pi}$
+  B : $\frac{1}{25\pi}$
+  C ✓: $\frac{1}{100\pi}$
+  D : $\frac{1}{50\pi}$
+EXPLANATION: Differentiate: $\frac{dV}{dt}=4\pi r^2\frac{dr}{dt}$. At $r=5$, $10=4\pi(25)\frac{dr}{dt}=100\pi\frac{dr}{dt}$, so $\frac{dr}{dt}=\frac{1}{100\pi}$.
+MICRO:
+  A: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  B: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  C: Correct. Velocity is the derivative of position, and acceleration is the derivative of velocity. Whether an object speeds up or slows down depends on 
+  D: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+
+--- 4.0-UT-Q5 [3/3] [Both] ---
+PROMPT: A tank contains $W(t)$ liters of water. At $t=4$ minutes, $W(4)=120$ and the net rate of change is $W'(4)=-3$. Which interpretation is correct?
+CORRECT: D = "At $t=4$, water is leaving the tank $3$ L/min faster than it is entering."
+  A : At $t=4$, water is entering the tank at $3$ L/min.
+  B : At $t=4$, the tank contains $-3$ liters of water.
+  C : From $t=3$ to $t=4$, exactly $3$ liters left the tank.
+  D ✓: At $t=4$, water is leaving the tank $3$ L/min faster than it is entering.
+EXPLANATION: $W'(4)=-3$ L/min means the amount of water is decreasing at 3 L/min at that moment, so outflow exceeds inflow by 3 L/min.
+MICRO:
+  A: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  B: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  C: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  D: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+
+--- 4.0-UT-Q6 [4/4] [Both] ---
+PROMPT: Use linearization at $x=4$ to approximate $\sqrt{4.1}$.
+CORRECT: B = "$2.025$"
+  A : $2.01$
+  B ✓: $2.025$
+  C : $2.05$
+  D : $2.1$
+EXPLANATION: Let $f(x)=\sqrt{x}$. Then $f(4)=2$ and $f'(x)=\frac{1}{2\sqrt{x}}$, so $f'(4)=\frac{1}{4}$. Linearization $L(x)=2+\frac{1}{4}(x-4)$ gives $\sqrt{4.1}\approx L(4.1)=2.025$.
+MICRO:
+  A: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  B: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 4.0-UT-Q7 [3/3] [Both] ---
+PROMPT: A particle moves along a line with velocity $v(t)=t^2-4t+1$ (m/s). On what interval(s) is the particle moving to the left?
+CORRECT: A = "$(2-\sqrt{3},\,2+\sqrt{3})$"
+  A ✓: $(2-\sqrt{3},\,2+\sqrt{3})$
+  B : $(-\infty,0)$
+  C : $(2+\sqrt{3},\,\infty)$
+  D : Never
+EXPLANATION: Moving left means $v(t)<0$. Solve $t^2-4t+1<0$. The roots are $t=2\pm\sqrt{3}$. Since the parabola opens upward, it is negative between the roots, so the particle moves left on $(2-\sqrt{3},\,2+\sqrt{3})$.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 4.0-UT-Q8 [3/3] [Both] ---
+PROMPT: Evaluate $\displaystyle \lim_{x\to 0}\frac{\sin(5x)}{x}$.
+CORRECT: D = "$5$"
+  A : $0$
+  B : $1$
+  C : Does not exist
+  D ✓: $5$
+EXPLANATION: Use $\lim_{u\to 0}\frac{\sin u}{u}=1$ with $u=5x$: $\frac{\sin(5x)}{x}=5\cdot\frac{\sin(5x)}{5x}\to 5$.
+MICRO:
+  A: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  B: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  C: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  D: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+
+--- 4.0-UT-Q9 [4/4] [Both] ---
+PROMPT: A $10$-ft ladder leans against a wall. Let $x$ be the distance (ft) from the wall to the foot of the ladder and $y$ the height (ft) of the top of the ladder. When $x=6$ and $\frac{dx}{dt}=2$ ft/s, what is $\frac{dy}{dt}$? (See image.)
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$-\frac{3}{4}$"
+  A : $-\frac{3}{2}$
+  B ✓: $-\frac{3}{4}$
+  C : $\frac{3}{2}$
+  D : $\frac{3}{4}$
+EXPLANATION: Using $x^2+y^2=100$, differentiate: $2x\frac{dx}{dt}+2y\frac{dy}{dt}=0$, so $\frac{dy}{dt}=-\frac{x}{y}\frac{dx}{dt}$. When $x=6$, $y=\sqrt{100-36}=8$, so $\frac{dy}{dt}=-\frac{6}{8}(2)=-\frac{3}{4}$ ft/s.
+MICRO:
+  A: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  B: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+  C: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  D: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+
+--- 4.0-UT-Q10 [5/5] [Both] ---
+PROMPT: Sand falls onto a conical pile so that the volume increases at $\frac{dV}{dt}=12$ ft$^3$/min. The pile maintains the ratio $\frac{r}{h}=\frac{1}{3}$. When $h=6$ ft, how fast is the height increasing, $\frac{dh}{dt}$?
+CORRECT: C = "$\frac{3}{\pi}$"
+  A : $\frac{1}{\pi}$
+  B : $\frac{9}{\pi}$
+  C ✓: $\frac{3}{\pi}$
+  D : $\frac{27}{\pi}$
+EXPLANATION: With $r=\frac{h}{3}$, $V=\frac{1}{3}\pi r^2h=\frac{\pi}{27}h^3$. Differentiate: $\frac{dV}{dt}=\frac{\pi}{9}h^2\frac{dh}{dt}$. At $h=6$, $12=\frac{\pi}{9}(36)\frac{dh}{dt}=4\pi\frac{dh}{dt}$, so $\frac{dh}{dt}=\frac{3}{\pi}$ ft/min.
+MICRO:
+  A: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  B: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  C: Correct. Linearization uses the tangent line equation L(x) = f(a) + f'(a)(x-a) to approximate function values near the point of tangency.
+  D: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+
+--- 4.0-UT-Q11 [3/3] [Both] ---
+PROMPT: A company's profit (in millions of dollars) is $P(x)$ where $x$ is the number of thousands of units sold. At $x=30$, $P(30)=12$ and $P'(30)=0.4$. Which is the best interpretation of $P'(30)=0.4$?
+CORRECT: A = "When 30,000 units have been sold, profit is increasing at about $0.4$ million dollars per additional 1,000 units sold."
+  A ✓: When 30,000 units have been sold, profit is increasing at about $0.4$ million dollars per additional 1,000 units sold.
+  B : When 30,000 units have been sold, profit is increasing at about $0.4$ million dollars per unit sold.
+  C : After 30,000 units are sold, profit will be $0.4$ million dollars.
+  D : From 29,000 to 30,000 units sold, profit increased by exactly $0.4$ million dollars.
+EXPLANATION: Since $x$ is in thousands of units, $P'(30)=0.4$ means profit changes by about $0.4$ million dollars for each additional $1{,}000$ units sold at $x=30$.
+MICRO:
+  A: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  B: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 4.0-UT-Q12 [4/4] [Both] ---
+PROMPT: The temperature of a chemical reactor (in $^\circ$C) is modeled by $T(t)=80+20e^{-0.1t}$, where $t$ is in minutes. What is the instantaneous rate of change of temperature at $t=0$?
+CORRECT: A = "$-2$"
+  A ✓: $-2$
+  B : $-0.1$
+  C : $2$
+  D : $-20$
+EXPLANATION: Differentiate: $T'(t)=20(-0.1)e^{-0.1t}=-2e^{-0.1t}$. Thus $T'(0)=-2$ $^\circ$C/min.
+MICRO:
+  A: Correct. When a limit presents a 0/0 or infinity/infinity indeterminate form, L'Hospital's Rule allows you to differentiate the numerator and denomina
+  B: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  C: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  D: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+
+--- 4.0-UT-Q13 [4/4] [Both] ---
+PROMPT: An oil spill forms a circular region with area $A=\pi r^2$. The area is increasing at $\frac{dA}{dt}=50$ m$^2$/min. When $r=20$ m, what is $\frac{dr}{dt}$?
+CORRECT: A = "$\frac{5}{4\pi}$"
+  A ✓: $\frac{5}{4\pi}$
+  B : $\frac{50}{\pi}$
+  C : $\frac{5}{2\pi}$
+  D : $\frac{25}{2\pi}$
+EXPLANATION: Differentiate $A=\pi r^2$: $\frac{dA}{dt}=2\pi r\frac{dr}{dt}$. At $r=20$, $50=2\pi(20)\frac{dr}{dt}$, so $\frac{dr}{dt}=\frac{50}{40\pi}=\frac{5}{4\pi}$ m/min.
+MICRO:
+  A: Correct. Linearization uses the tangent line equation L(x) = f(a) + f'(a)(x-a) to approximate function values near the point of tangency.
+  B: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  C: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  D: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+
+--- 4.0-UT-Q14 [4/4] [Both] ---
+PROMPT: The fuel efficiency of a car is modeled by $E(v)$ (miles per gallon) at speed $v$ (mph). At $v=60$, $E(60)=32$ and $E'(60)=-0.15$. Estimate $E(62)$.
+CORRECT: B = "$31.7$"
+  A : $32.3$
+  B ✓: $31.7$
+  C : $31.85$
+  D : $29.0$
+EXPLANATION: Linear approximation: $E(62)\approx E(60)+E'(60)(62-60)=32+(-0.15)(2)=31.7$.
+MICRO:
+  A: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  B: Correct. When a limit presents a 0/0 or infinity/infinity indeterminate form, L'Hospital's Rule allows you to differentiate the numerator and denomina
+  C: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  D: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+
+--- 4.0-UT-Q15 [5/5] [Both] ---
+PROMPT: Use differentials to estimate the change in $f(x)=\ln x$ when $x$ changes from $5$ to $5.2$.
+CORRECT: D = "$0.04$"
+  A : $0.2$
+  B : $0.2\ln 5$
+  C : $5$
+  D ✓: $0.04$
+EXPLANATION: For $f(x)=\ln x$, $f'(x)=\frac{1}{x}$. With $x=5$ and $dx=0.2$, $df\approx f'(5)dx=\frac{1}{5}(0.2)=0.04$.
+MICRO:
+  A: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  B: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  C: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  D: Correct. When a limit presents a 0/0 or infinity/infinity indeterminate form, L'Hospital's Rule allows you to differentiate the numerator and denomina
+
+--- 4.0-UT-Q16 [4/4] [Both] ---
+PROMPT: Evaluate $\displaystyle \lim_{x\to 0}\frac{e^{2x}-1-2x}{x^2}$.
+CORRECT: C = "$2$"
+  A : $0$
+  B : $1$
+  C ✓: $2$
+  D : Does not exist
+EXPLANATION: This is $\frac{0}{0}$. Apply L'Hospital: first derivative gives $\lim_{x\to 0}\frac{2e^{2x}-2}{2x}=\lim_{x\to 0}\frac{e^{2x}-1}{x}$, still $\frac{0}{0}$. Apply again: $\lim_{x\to 0}\frac{2e^{2x}}{1}=2$.
+MICRO:
+  A: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  B: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  C: Correct. When a limit presents a 0/0 or infinity/infinity indeterminate form, L'Hospital's Rule allows you to differentiate the numerator and denomina
+  D: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+
+--- 4.0-UT-Q17 [3/3] [Both] ---
+PROMPT: Let $f(x)=x^3$. Use linearization at $x=2$ to approximate $f(2.02)$.
+CORRECT: B = "$8.24$"
+  A : $8.12$
+  B ✓: $8.24$
+  C : $8.08$
+  D : $8.00$
+EXPLANATION: Linearization: $L(x)=f(2)+f'(2)(x-2)$. With $f'(x)=3x^2$, $f'(2)=12$. Thus $f(2.02)\approx 8+12(0.02)=8.24$.
+MICRO:
+  A: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  B: Correct. When a limit presents a 0/0 or infinity/infinity indeterminate form, L'Hospital's Rule allows you to differentiate the numerator and denomina
+  C: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  D: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+
+--- 4.0-UT-Q18 [4/4] [Both] ---
+PROMPT: A particle has acceleration $a(t)=6t-12$ (m/s$^2$) and velocity $v(0)=3$ (m/s). At what time $t>0$ does the particle first change direction?
+CORRECT: D = "$t=2-\sqrt{3}$"
+  A : $t=\frac{1}{2}$
+  B : $t=1$
+  C : $t=2+\sqrt{3}$
+  D ✓: $t=2-\sqrt{3}$
+EXPLANATION: Since $v'(t)=a(t)=6t-12$, integrate: $v(t)=3t^2-12t+C$. Using $v(0)=3$ gives $C=3$. Solve $3t^2-12t+3=0\Rightarrow t^2-4t+1=0\Rightarrow t=2\pm\sqrt{3}$. The first positive time is $t=2-\sqrt{3}$.
+MICRO:
+  A: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  B: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  C: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  D: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+
+--- 4.0-UT-Q19 [4/4] [Both] ---
+PROMPT: Use the second derivative to bound the error when approximating $\sin(0.1)$ by its linearization at $0$. Which is a valid upper bound on the absolute error?
+CORRECT: B = "$\frac{1}{2}(0.1)^2$"
+  A : $\frac{1}{2}(0.1)$
+  B ✓: $\frac{1}{2}(0.1)^2$
+  C : $0.05$
+  D : $\frac{1}{6}(0.1)^3$
+EXPLANATION: For $f(x)=\sin x$, $f^{(3)}(x)=-\sin x$, so $|f^{(3)}(x)|\le 1$ near 0. The first-order remainder satisfies $|R_1(x)|\le \frac{M}{2}(x-a)^2$ with $M=1$, $a=0$, $x=0.1$, so $|R_1|\le \frac{1}{2}(0.1)^2=0.005$.
+MICRO:
+  A: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  B: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 4.0-UT-Q20 [5/5] [Both] ---
+PROMPT: Evaluate $\displaystyle \lim_{x\to \infty}\frac{\ln x}{x^{\frac{1}{3}}}$.
+CORRECT: D = "$0$"
+  A : $\infty$
+  B : $1$
+  C : Does not exist
+  D ✓: $0$
+EXPLANATION: This is an $\frac{\infty}{\infty}$ form. L'Hospital gives $\frac{(\frac{1}{x})}{(\frac{1}{3})x^{\frac{-2}{3}}}=3x^{\frac{-1}{3}}\to 0$ as $x\to\infty$.
+MICRO:
+  A: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  B: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  C: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  D: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+
+--- 4.1-P1 [3/3] [Both] ---
+PROMPT: A company's weekly profit is modeled by $P(t)=120t-5t^2$, where $P$ is in thousands of dollars and $t$ is measured in weeks since a new product launch. Which statement best interprets $P'(8)$?
+CORRECT: D = "At $t=8$, the profit is increasing at $40$ thousand dollars per week."
+  A : At $t=8$, the profit is decreasing and equals $P'(8)$ thousand dollars.
+  B : At $t=8$, the profit will be $40$ thousand dollars next week.
+  C : At $t=8$, the profit is decreasing at $40$ thousand dollars per week.
+  D ✓: At $t=8$, the profit is increasing at $40$ thousand dollars per week.
+EXPLANATION: Compute $P'(t)=120-10t$, so $P'(8)=120-80=40$. Because $P'(8)>0$, profit is increasing at that instant at a rate of $40$ thousand dollars per week.
+MICRO:
+  A: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  B: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  C: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  D: Correct. In context, the derivative represents the instantaneous rate of change (e.g., change in a physical quantity per unit of time). This option ac
+
+--- 4.1-P2 [2/2] [Both] ---
+PROMPT: The amount of salt in a tank is $S(t)$ grams, where $t$ is measured in minutes. Which set of units is correct for $S'(t)$?
+CORRECT: A = "grams per minute"
+  A ✓: grams per minute
+  B : minutes
+  C : minutes per gram
+  D : grams
+EXPLANATION: $S'(t)$ is the rate of change of salt amount (grams) with respect to time (minutes), so its units are grams per minute.
+MICRO:
+  A: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+  B: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  C: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  D: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+
+--- 4.1-P3 [4/4] [Both] ---
+PROMPT: Refer to the graph. The temperature $T$ of a chemical bath (in $^\circ\!\text{C}$) is shown as a function of time $t$ (in hours). A tangent line is drawn at $t=3$. Which value best estimates $T'(3)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "About $1.0\\ ^\circ\!\text{C}/\text{hour}$"
+  A ✓: About $1.0\\ ^\circ\!\text{C}/\text{hour}$
+  B : About $0.1\\ ^\circ\!\text{C}/\text{hour}$
+  C : About $10\\ ^\circ\!\text{C}/\text{hour}$
+  D : About $-1.0\\ ^\circ\!\text{C}/\text{hour}$
+EXPLANATION: The derivative at $t=3$ is the slope of the tangent line. From the drawn tangent, the rise is roughly $1.2\\ ^\circ\!\text{C}$ over a run of about $1.2$ hours, giving a slope near $1\\ ^\circ\!\text{C}/\text{hour}$.
+MICRO:
+  A: Correct. In context, the derivative represents the instantaneous rate of change (e.g., change in a physical quantity per unit of time). This option ac
+  B: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  C: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  D: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+
+--- 4.1-P4 [3/3] [Both] ---
+PROMPT: The total cost to produce $x$ items is $C(x)$ dollars. If $C'(50)=12$, which statement best describes what this means?
+CORRECT: C = "When 50 items have been produced, the cost is increasing at about $\\$12$ per additional item."
+  A : The cost to produce 50 items is $\\$12$.
+  B : The average cost per item when $x=50$ is $\\$12$.
+  C ✓: When 50 items have been produced, the cost is increasing at about $\\$12$ per additional item.
+  D : When 50 items have been produced, the cost will be $\\$12$ higher after producing 50 more items.
+EXPLANATION: $C'(50)$ is the instantaneous rate of change of cost with respect to number of items at $x=50$. It estimates the marginal cost: producing one more item near 50 increases total cost by about $\\$12$.
+MICRO:
+  A: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  B: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  C: Correct. In context, the derivative represents the instantaneous rate of change (e.g., change in a physical quantity per unit of time). This option ac
+  D: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+
+--- 4.1-P5 [1/1] [Both] ---
+PROMPT: A runner's distance from the start is $s(t)$ miles after $t$ hours. If $s'(2)=6$, which statement must be true?
+CORRECT: B = "At $t=2$, the runner's instantaneous speed is 6 miles per hour."
+  A : The runner traveled 6 miles during the second hour.
+  B ✓: At $t=2$, the runner's instantaneous speed is 6 miles per hour.
+  C : The runner has run 6 miles total by $t=2$.
+  D : The runner's average speed from $t=0$ to $t=2$ is 6 miles per hour.
+EXPLANATION: $s'(2)$ is the instantaneous rate of change of distance with respect to time at $t=2$, i.e., the instantaneous speed (in miles per hour) at that moment.
+MICRO:
+  A: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  B: Correct. In context, the derivative represents the instantaneous rate of change (e.g., change in a physical quantity per unit of time). This option ac
+  C: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  D: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+
+--- 4.2-P1 [3/3] [Both] ---
+PROMPT: A particle moves along a line with position $x(t)=t^3-6t^2+9t$ meters for $0\le t\le 4$, where $t$ is in seconds. At which time(s) is the velocity zero?
+CORRECT: C = "$t=1$ and $t=3$"
+  A : $t=0$ only
+  B : $t=2$ only
+  C ✓: $t=1$ and $t=3$
+  D : $t=1$ only
+EXPLANATION: Velocity is $v(t)=x'(t)=3t^2-12t+9=3(t-1)(t-3)$. Thus $v(t)=0$ at $t=1$ and $t=3$, both in $[0,4]$.
+MICRO:
+  A: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  B: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  C: Correct. Velocity is the derivative of position, and acceleration is the derivative of velocity. Whether an object speeds up or slows down depends on 
+  D: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+
+--- 4.2-P2 [4/4] [Both] ---
+PROMPT: Refer to the position graph (velocity is slope). What is the cart's velocity at $t = 6$ seconds?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$-2$ m/s"
+  A : $2$ m/s
+  B ✓: $-2$ m/s
+  C : $-4$ m/s
+  D : $0$ m/s
+EXPLANATION: Velocity is the slope of the position graph. At $t=6$, the cart lies on the segment from $(5, 6)$ to $(7, 2)$, so $m = \frac{2-6}{7-5} = -2$ m/s.
+MICRO:
+  A: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  B: Correct. Velocity is the derivative of position, and acceleration is the derivative of velocity. Whether an object speeds up or slows down depends on 
+  C: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  D: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+
+--- 4.2-P3 [3/3] [Both] ---
+PROMPT: A particle's velocity is $v(t)=4-0.5t$ meters per second for $0\le t\le 6$. If $x(0)=10$ meters, what is $x(6)$?
+CORRECT: B = "$25$"
+  A : $19$
+  B ✓: $25$
+  C : $24$
+  D : $21$
+EXPLANATION: Displacement is the integral of velocity: $$x(6)=x(0)+\int_0^6 (4-0.5t)\,dt=10+\left[4t-0.25t^2\right]_0^6.$$\nCompute $24-9=15$, so $x(6)=10+15=25$.
+MICRO:
+  A: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  B: Correct. Velocity is the derivative of position, and acceleration is the derivative of velocity. Whether an object speeds up or slows down depends on 
+  C: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  D: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+
+--- 4.2-P4 [2/2] [Both] ---
+PROMPT: An object's acceleration is constant at $a(t)=-3 \text{ m/s}^2$, and its velocity at $t=0$ is $v(0)=12 \text{ m/s}$. When does it first come to rest?
+CORRECT: D = "$t=4$ s"
+  A : $t=3$ s
+  B : $t=12$ s
+  C : $t=6$ s
+  D ✓: $t=4$ s
+EXPLANATION: With constant acceleration, velocity is $v(t)=v(0)+at=12-3t$. Set $v(t)=0$: $12-3t=0 \Rightarrow t=4 \text{ s}$.
+MICRO:
+  A: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  B: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  C: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  D: Correct. Velocity is the derivative of position, and acceleration is the derivative of velocity. Whether an object speeds up or slows down depends on 
+
+--- 4.2-P5 [5/5] [Both] ---
+PROMPT: Refer to the velocity graph. Which value best represents the drone's acceleration at $t=2$ seconds?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$1.5\\ \text{m/s}^2$"
+  A ✓: $1.5\\ \text{m/s}^2$
+  B : $0.75\\ \text{m/s}^2$
+  C : $-2\\ \text{m/s}^2$
+  D : $3\\ \text{m/s}^2$
+EXPLANATION: Acceleration is the slope of the velocity graph. The graph is a straight line, so acceleration is constant: $$a=\frac{10-(-2)}{8-0}=\frac{12}{8}=1.5\\ \text{m/s}^2.$$
+MICRO:
+  A: Correct. In context, the derivative represents the instantaneous rate of change (e.g., change in a physical quantity per unit of time). This option ac
+  B: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  C: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  D: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+
+--- 4.3-P1 [2/2] [Both] ---
+PROMPT: A company’s profit (in thousands of dollars) from selling $x$ units is $P(x)=120-0.02(x-3000)^2$. What is the best interpretation of $P'(2500)$?
+CORRECT: B = "At $x=2500$, profit is increasing at about $20$ thousand dollars per additional unit sold."
+  A : At $x=2500$, profit is decreasing at about $20$ thousand dollars per additional unit sold.
+  B ✓: At $x=2500$, profit is increasing at about $20$ thousand dollars per additional unit sold.
+  C : At $x=2500$, profit is $20$ thousand dollars.
+  D : At $x=2500$, selling one more unit makes profit increase by $20$ dollars.
+EXPLANATION: Differentiate: $P'(x)=-0.04(x-3000)$. Then $P'(2500)=-0.04(-500)=20$. So near $x=2500$, each additional unit sold increases profit by about $20$ thousand dollars.
+MICRO:
+  A: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  B: Correct. Velocity is the derivative of position, and acceleration is the derivative of velocity. Whether an object speeds up or slows down depends on 
+  C: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+  D: Incorrect. Please distinguish between velocity and speed, and understand how they interact with acceleration to determine the state of motion.
+
+--- 4.3-P2 [3/3] [Both] ---
+PROMPT: The radius of a spherical balloon is increasing at $\dfrac{dr}{dt}=0.2\ \mathrm{cm/s}$. At the instant when $r=10\ \mathrm{cm}$, what is $\dfrac{dV}{dt}$ for the balloon’s volume $V$?
+CORRECT: C = "$\dfrac{dV}{dt}=4\pi(10)^2(0.2)=80\pi\ \mathrm{\frac{cm^3}{s}}$"
+  A : $\dfrac{dV}{dt}=\dfrac{4}{3}\pi(10)^3(0.2)$
+  B : $\dfrac{dV}{dt}=4\pi(10)(0.2)=8\pi\ \mathrm{\frac{cm^3}{s}}$
+  C ✓: $\dfrac{dV}{dt}=4\pi(10)^2(0.2)=80\pi\ \mathrm{\frac{cm^3}{s}}$
+  D : $\dfrac{dV}{dt}=\dfrac{4}{3}\pi(10)^3=\dfrac{4000}{3}\pi\ \mathrm{\frac{cm^3}{s}}$
+EXPLANATION: With $V=\dfrac{4}{3}\pi r^3$, we have $\dfrac{dV}{dt}=4\pi r^2\dfrac{dr}{dt}$. At $r=10$ and $\dfrac{dr}{dt}=0.2$, $\dfrac{dV}{dt}=4\pi(100)(0.2)=80\pi\ \mathrm{\frac{cm^3}{s}}$.
+MICRO:
+  A: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  B: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  C: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+  D: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+
+--- 4.3-P3 [4/3] [Both] ---
+PROMPT: A bacterial population is modeled by $N(t)=800e^{0.18t}$ where $t$ is in hours. At $t=5$, which expression gives the instantaneous growth rate $N'(5)$ (in bacteria per hour)?
+CORRECT: C = "$0.18\cdot 800e^{0.18\cdot 5}$"
+  A : $800e^{0.18\cdot 5}$
+  B : $\dfrac{N(6)-N(5)}{1}$
+  C ✓: $0.18\cdot 800e^{0.18\cdot 5}$
+  D : $0.18\cdot 5\cdot 800e^{0.18\cdot 5}$
+EXPLANATION: Differentiate: $N'(t)=800\cdot 0.18\,e^{0.18t}$. Therefore $N'(5)=0.18\cdot 800e^{0.9}$ bacteria per hour.
+MICRO:
+  A: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  B: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  C: Correct. In context, the derivative represents the instantaneous rate of change (e.g., change in a physical quantity per unit of time). This option ac
+  D: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+
+--- 4.3-P4 [1/1] [Both] ---
+PROMPT: Let $C(t)$ be the concentration of a chemical (in $\mathrm{\frac{mg}{L}}$) in a tank at time $t$ minutes. The table gives values near $t=4$.  $t$: 3.9, 4.0, 4.1  $C(t)$: 12.4, 12.0, 11.6 \nWhich is the best estimate of $C'(4)$ (in $\mathrm{\frac{mg}{L\cdot min}}$)?
+CORRECT: D = "$-4$"
+  A : $-8$
+  B : $-0.4$
+  C : $4$
+  D ✓: $-4$
+EXPLANATION: Estimate with a centered difference: $\;C'(4)\approx \dfrac{C(4.1)-C(3.9)}{4.1-3.9}=\dfrac{11.6-12.4}{0.2}=-4$.
+MICRO:
+  A: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  B: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  C: Incorrect. Remember that the derivative's units are typically '(units of dependent variable) / (units of independent variable)'. This option misinterp
+  D: Correct. In context, the derivative represents the instantaneous rate of change (e.g., change in a physical quantity per unit of time). This option ac
+
+--- 4.3-P5 [5/4] [Both] ---
+PROMPT: A tank’s volume $V(t)$ (in liters) changes due to inflow and outflow. Inflow is $8\ \mathrm{L/min}$. Outflow is $2\sqrt{V}\ \mathrm{L/min}$. At the instant when $V=25$, what is $\dfrac{dV}{dt}$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$-2\ \mathrm{L/min}$"
+  A ✓: $-2\ \mathrm{L/min}$
+  B : $18\ \mathrm{L/min}$
+  C : $2\ \mathrm{L/min}$
+  D : $0.8\ \mathrm{L/min}$
+EXPLANATION: Net rate is inflow minus outflow: $\dfrac{dV}{dt}=8-2\sqrt{V}$. At $V=25$, $\dfrac{dV}{dt}=8-2\cdot 5=-2\ \mathrm{L/min}$.
+MICRO:
+  A: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+  B: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  C: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  D: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+
+--- 4.4-P1 [2/2] [Both] ---
+PROMPT: A circle’s radius $r$ is increasing at $\dfrac{dr}{dt}=3\ \mathrm{cm/s}$. What is $\dfrac{dA}{dt}$ when $r=5\ \mathrm{cm}$ for area $A=\pi r^2$?
+CORRECT: B = "$30\pi\ \mathrm{\frac{cm^2}{s}}$"
+  A : $15\pi\ \mathrm{\frac{cm^2}{s}}$
+  B ✓: $30\pi\ \mathrm{\frac{cm^2}{s}}$
+  C : $75\pi\ \mathrm{\frac{cm^2}{s}}$
+  D : $3\ \mathrm{\frac{cm^2}{s}}$
+EXPLANATION: Differentiate $A=\pi r^2$ with respect to $t$: $\dfrac{dA}{dt}=2\pi r\dfrac{dr}{dt}$. Substitute $r=5$ and $\dfrac{dr}{dt}=3$ to get $\dfrac{dA}{dt}=30\pi\ \mathrm{\frac{cm^2}{s}}$.
+MICRO:
+  A: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  B: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 4.4-P2 [3/3] [Both] ---
+PROMPT: The side length $s$ of a cube is changing at $\dfrac{ds}{dt}=-0.4\ \mathrm{cm/s}$. At the instant when $s=6\ \mathrm{cm}$, what is $\dfrac{dV}{dt}$ for $V=s^3$?
+CORRECT: A = "$-43.2\ \mathrm{\frac{cm^3}{s}}$"
+  A ✓: $-43.2\ \mathrm{\frac{cm^3}{s}}$
+  B : $-7.2\ \mathrm{\frac{cm^3}{s}}$
+  C : $-86.4\ \mathrm{\frac{cm^3}{s}}$
+  D : $0.4\ \mathrm{\frac{cm^3}{s}}$
+EXPLANATION: Differentiate $V=s^3$ with respect to $t$: $\dfrac{dV}{dt}=3s^2\dfrac{ds}{dt}$. At $s=6$ and $\dfrac{ds}{dt}=-0.4$, $\dfrac{dV}{dt}=3(36)(-0.4)=-43.2\ \mathrm{\frac{cm^3}{s}}$.
+MICRO:
+  A: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  B: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 4.4-P3 [4/4] [Both] ---
+PROMPT: A $10$-ft ladder leans against a vertical wall. The bottom slides away from the wall at $\dfrac{dx}{dt}=2\ \mathrm{ft/s}$. At the instant when $x=6\ \mathrm{ft}$, what is $\dfrac{dy}{dt}$, where $y$ is the height of the top on the wall?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$-1.5\ \mathrm{ft/s}$"
+  A : $-\dfrac{8}{3}\ \mathrm{ft/s}$
+  B : $-\dfrac{1}{3}\ \mathrm{ft/s}$
+  C : $1.5\ \mathrm{ft/s}$
+  D ✓: $-1.5\ \mathrm{ft/s}$
+EXPLANATION: Constraint: $x^2+y^2=100$. Differentiate: $2x\dfrac{dx}{dt}+2y\dfrac{dy}{dt}=0\Rightarrow \dfrac{dy}{dt}=-\dfrac{x}{y}\dfrac{dx}{dt}$. When $x=6$, $y=\sqrt{100-36}=8$, so $\dfrac{dy}{dt}=-(\frac{6}{8})(2)=-1.5\ \mathrm{ft/s}$.
+MICRO:
+  A: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  B: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+
+--- 4.4-P4 [3/2] [Both] ---
+PROMPT: Two variables satisfy $x^2+xy=10$, where $x$ and $y$ are functions of time $t$. If $\dfrac{dx}{dt}=1$ and at the instant $x=2$ and $y=3$, what is $\dfrac{dy}{dt}$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$-\dfrac{7}{2}$"
+  A : $-7$
+  B : $\dfrac{7}{2}$
+  C : $-\dfrac{7}{5}$
+  D ✓: $-\dfrac{7}{2}$
+EXPLANATION: Differentiate: $\dfrac{d}{dt}(x^2)+\dfrac{d}{dt}(xy)=0\Rightarrow 2x\dfrac{dx}{dt}+x\dfrac{dy}{dt}+y\dfrac{dx}{dt}=0$. Substitute $x=2$, $y=3$, $\frac{dx}{dt}=1$: $4+2\,\frac{dy}{dt}+3=0\Rightarrow \frac{dy}{dt}=\frac{-7}{2}$.
+MICRO:
+  A: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  B: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+
+--- 4.4-P5 [5/5] [Both] ---
+PROMPT: Water is poured into a cone at a constant rate of $\dfrac{dV}{dt}=6\ \mathrm{\frac{cm^3}{s}}$. The cone has height $12\ \mathrm{cm}$ and radius $4\ \mathrm{cm}$. At the instant when the water depth is $h=3\ \mathrm{cm}$, what is $\dfrac{dh}{dt}$?
+CORRECT: C = "$\dfrac{6}{\pi}$"
+  A : $\dfrac{2}{\pi}$
+  B : $\dfrac{6}{\pi(3)^2}$
+  C ✓: $\dfrac{6}{\pi}$
+  D : $\dfrac{18}{\pi}$
+EXPLANATION: Similar triangles give $\frac{r}{h}=\frac{4}{12}=\frac{1}{3}$, so $r=\frac{h}{3}$. Then $V=\dfrac{1}{3}\pi r^2h=\dfrac{1}{3}\pi\left(\dfrac{h}{3}\right)^2h=\dfrac{1}{27}\pi h^3$. Differentiate: $\dfrac{dV}{dt}=\dfrac{1}{9}\pi h^2\dfrac{dh}{dt}$. At $h=3$, $\dfrac{dV}{dt}=\pi\dfrac{dh}{dt}$. With $\dfrac{dV}{dt}=6$, $\dfrac{dh}{dt}=\dfrac{6}{\pi}$.
+MICRO:
+  A: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  B: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  C: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 4.5-P1 [3/3] [Both] ---
+PROMPT: A $10$-ft ladder leans against a vertical wall (see image). Let $x$ be the distance (ft) from the wall to the foot of the ladder and let $y$ be the height (ft) of the top of the ladder on the wall. At the moment when $x=6$, the foot of the ladder is sliding away from the wall at a rate of $\dfrac{dx}{dt}=0.5$ ft/s. What is $\dfrac{dy}{dt}$ at that moment?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$-0.375$ ft/s"
+  A : $-0.75$ ft/s
+  B ✓: $-0.375$ ft/s
+  C : $0.375$ ft/s
+  D : $-0.5$ ft/s
+EXPLANATION: Because the ladder length is constant, $x^2+y^2=10^2=100$. Differentiate with respect to $t$: $$2x\frac{dx}{dt}+2y\frac{dy}{dt}=0 \;\Rightarrow\; \frac{dy}{dt}= -\frac{x}{y}\frac{dx}{dt}.$$ When $x=6$, $y=\sqrt{100-36}=8$, so $$\frac{dy}{dt}= -\frac{6}{8}(0.5)=-0.375\text{ ft/s}.$$
+MICRO:
+  A: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  B: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 4.5-P2 [2/2] [Both] ---
+PROMPT: A circular oil spill expands so that its radius increases at a constant rate of $\dfrac{dr}{dt}=0.4$ m/min. When the radius is $r=10$ m, what is the rate of change of the area of the spill, $\dfrac{dA}{dt}$?
+CORRECT: A = "$8\pi$ m$^2$/min"
+  A ✓: $8\pi$ m$^2$/min
+  B : $4\pi$ m$^2$/min
+  C : $40\pi$ m$^2$/min
+  D : $80\pi$ m$^2$/min
+EXPLANATION: With $A=\pi r^2$, differentiate: $$\frac{dA}{dt}=2\pi r\frac{dr}{dt}.$$ At $r=10$ and $\frac{dr}{dt}=0.4$, $$\frac{dA}{dt}=2\pi(10)(0.4)=8\pi\text{ m}^2/\text{min}.$$
+MICRO:
+  A: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  B: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 4.5-P3 [4/4] [Both] ---
+PROMPT: Water is poured into an inverted right circular cone with height $H=6$ m and base radius $R=3$ m (see image). Let $h$ be the water height (m) and $V$ the water volume (m$^3$). At the moment when $h=2$ m, water is being poured in at a rate of $\dfrac{dV}{dt}=0.5$ m$^3$/min. What is $\dfrac{dh}{dt}$ at that moment?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$\dfrac{1}{2\pi}$ m/min"
+  A : $\dfrac{1}{8\pi}$ m/min
+  B : $\dfrac{1}{\pi}$ m/min
+  C : $\dfrac{1}{4\pi}$ m/min
+  D ✓: $\dfrac{1}{2\pi}$ m/min
+EXPLANATION: By similar triangles, $$\frac{r}{h}=\frac{R}{H}=\frac{3}{6}=\frac{1}{2}\;\Rightarrow\; r=\frac{h}{2}.$$ Then $$V=\frac{1}{3}\pi r^2h=\frac{1}{3}\pi\left(\frac{h}{2}\right)^2h=\frac{\pi}{12}h^3.$$ Differentiate: $$\frac{dV}{dt}=\frac{\pi}{4}h^2\frac{dh}{dt}.$$ At $h=2$, $$0.5=\frac{\pi}{4}(4)\frac{dh}{dt}=\pi\frac{dh}{dt}\;\Rightarrow\;\frac{dh}{dt}=\frac{1}{2\pi}\text{ m/min}.$$
+MICRO:
+  A: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  B: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+
+--- 4.5-P4 [3/3] [Both] ---
+PROMPT: A $2$-m tall person walks away from a streetlight that is $6$ m tall. If the person walks away from the light at a rate of $1.5$ m/s, how fast is the length of the person’s shadow changing when the person is $4$ m from the pole? (Let $x$ be the distance from pole to person and $s$ be the shadow length.)
+CORRECT: A = "$0.75$ m/s"
+  A ✓: $0.75$ m/s
+  B : $1.0$ m/s
+  C : $1.5$ m/s
+  D : $3.0$ m/s
+EXPLANATION: From similar triangles, $$\frac{6}{x+s}=\frac{2}{s}\;\Rightarrow\;6s=2(x+s)\;\Rightarrow\;4s=2x\;\Rightarrow\;s=\frac{x}{2}.$$ Differentiate: $$\frac{ds}{dt}=\frac{1}{2}\frac{dx}{dt}=\frac{1}{2}(1.5)=0.75\text{ m/s}.$$
+MICRO:
+  A: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  B: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  C: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 4.5-P5 [5/4] [Both] ---
+PROMPT: Two cars start from the same intersection. Car A travels east at $30$ mph and Car B travels north at $40$ mph. How fast is the distance between the cars increasing $2$ hours after they start?
+CORRECT: C = "$50$ mph"
+  A : $25$ mph
+  B : $70$ mph
+  C ✓: $50$ mph
+  D : $100$ mph
+EXPLANATION: Let $x=30t$ and $y=40t$. Then $$d=\sqrt{x^2+y^2}=\sqrt{(30t)^2+(40t)^2}=\sqrt{2500t^2}=50t.$$ Therefore $\dfrac{dd}{dt}=50$ mph for all $t$, including $t=2$.
+MICRO:
+  A: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  B: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  C: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 4.6-P1 [2/2] [Both] ---
+PROMPT: Use linear approximation to estimate $\sqrt{10}$ by linearizing $f(x)=\sqrt{x}$ at $x=9$.
+CORRECT: B = "$3.166\overline{6}$"
+  A : $3.1$
+  B ✓: $3.166\overline{6}$
+  C : $3.333\overline{3}$
+  D : $3.0$
+EXPLANATION: Linearization at $a=9$ is $L(x)=f(9)+f'(9)(x-9)$. Since $f(9)=3$ and $$f'(x)=\frac{1}{2\sqrt{x}}\;\Rightarrow\; f'(9)=\frac{1}{6},$$ we get $$\sqrt{10}=f(10)\approx L(10)=3+\frac{1}{6}(10-9)=3.166\overline{6}.$$
+MICRO:
+  A: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  B: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+  C: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  D: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+
+--- 4.6-P2 [3/3] [Both] ---
+PROMPT: The graph shows $f(x)=\sqrt{x+1}$ and the tangent line at $x=3$ (see image). Use the tangent line (linearization at $x=3$) to approximate $\sqrt{4.1}$.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$2.025$"
+  A : $2.05$
+  B : $2.00$
+  C : $2.10$
+  D ✓: $2.025$
+EXPLANATION: Write $\sqrt{4.1}=\sqrt{(3.1)+1}=f(3.1)$ for $f(x)=\sqrt{x+1}$. Linearization at $a=3$: $$L(x)=f(3)+f'(3)(x-3).$$ Compute $f(3)=2$ and $$f'(x)=\frac{1}{2\sqrt{x+1}}\;\Rightarrow\; f'(3)=\frac{1}{4}.$$ Then $$\sqrt{4.1}=f(3.1)\approx L(3.1)=2+\frac{1}{4}(0.1)=2.025.$$
+MICRO:
+  A: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  B: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  C: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  D: Correct. Linearization uses the tangent line equation L(x) = f(a) + f'(a)(x-a) to approximate function values near the point of tangency.
+
+--- 4.6-P3 [4/4] [Both] ---
+PROMPT: Use differentials to approximate $\sqrt[3]{65}$ by linearizing $g(x)=x^{\frac{1}{3}}$ at $x=64$.
+CORRECT: A = "$4.020833\ldots$"
+  A ✓: $4.020833\ldots$
+  B : $4.25$
+  C : $4.01$
+  D : $3.979167\ldots$
+EXPLANATION: Let $g(x)=x^{\frac{1}{3}}$. Then $g(64)=4$ and $$g'(x)=\frac{1}{3}x^{\frac{-2}{3}}.$$ Since $64^{2/3}=(\sqrt[3]{64})^2=16$, we have $g'(64)=\dfrac{1}{3\cdot 16}=\dfrac{1}{48}$. Thus $$\sqrt[3]{65}=g(65)\approx g(64)+g'(64)(65-64)=4+\frac{1}{48}=4.020833\ldots.$$
+MICRO:
+  A: Correct. Linearization uses the tangent line equation L(x) = f(a) + f'(a)(x-a) to approximate function values near the point of tangency.
+  B: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  C: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  D: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+
+--- 4.6-P4 [1/1] [Both] ---
+PROMPT: If $f(5)=12$ and $f'(5)=-0.8$, use local linearity to approximate $f(5.2)$.
+CORRECT: B = "$11.84$"
+  A : $12.16$
+  B ✓: $11.84$
+  C : $11.2$
+  D : $12.8$
+EXPLANATION: Local linearity at $x=5$ gives $$f(5.2)\approx f(5)+f'(5)(5.2-5)=12+(-0.8)(0.2)=11.84.$$
+MICRO:
+  A: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  B: Correct. This option aligns with the mathematical applications of related rates, motion models, or L'Hospital's Rule.
+  C: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+  D: Incorrect. This option contains an error in modeling, differentiating rates, or interpreting physical meaning.
+
+--- 4.6-P5 [5/4] [Both] ---
+PROMPT: Let $f(x)=\ln x$. Using the linearization at $x=1$, which estimate is closest to $\ln(1.05)$?
+CORRECT: C = "$0.05$"
+  A : $0.0513$
+  B : $-0.05$
+  C ✓: $0.05$
+  D : $0.025$
+EXPLANATION: For $f(x)=\ln x$, $f(1)=0$ and $f'(1)=1$. The linearization at $x=1$ is $$L(x)=f(1)+f'(1)(x-1)=x-1.$$ So $$\ln(1.05)\approx L(1.05)=1.05-1=0.05.$$
+MICRO:
+  A: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  B: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+  C: Correct. Linearization uses the tangent line equation L(x) = f(a) + f'(a)(x-a) to approximate function values near the point of tangency.
+  D: Incorrect. The accuracy of a linear approximation depends on the distance from the point of tangency; whether it is an over- or under-estimate depends
+
+--- 4.7-P1 [2/2] [Both] ---
+PROMPT: Evaluate $\displaystyle \lim_{x\to 0}\frac{\sin(3x)}{x}$.
+CORRECT: B = "$3$"
+  A : $0$
+  B ✓: $3$
+  C : $1$
+  D : $\infty$
+EXPLANATION: This is a $\frac{0}{0}$ form. Using the standard limit $\lim_{u\to 0}\frac{\sin u}{u}=1$ with $u=3x$, $$\lim_{x\to 0}\frac{\sin(3x)}{x}=3\lim_{u\to 0}\frac{\sin u}{u}=3.$$ Equivalently, by L’Hospital, $$\lim_{x\to 0}\frac{\sin(3x)}{x}=\lim_{x\to 0}\frac{3\cos(3x)}{1}=3.$$
+MICRO:
+  A: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  B: Correct. When a limit presents a 0/0 or infinity/infinity indeterminate form, L'Hospital's Rule allows you to differentiate the numerator and denomina
+  C: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  D: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+
+--- 4.7-P2 [3/3] [Both] ---
+PROMPT: The table in figure 4.7-P2 shows values of $\dfrac{e^x-1-x}{x^2}$ near $x=0$. Estimate $\displaystyle \lim_{x\to 0}\frac{e^x-1-x}{x^2}$.
+CORRECT: C = "$\frac{1}{2}$"
+  A : $0$
+  B : $1$
+  C ✓: $\frac{1}{2}$
+  D : $2$
+EXPLANATION: This is a $\frac{0}{0}$ form. Apply L’Hospital twice: $$\lim_{x\to 0}\frac{e^x-1-x}{x^2} =\lim_{x\to 0}\frac{e^x-1}{2x}\quad(\frac{0}{0}) =\lim_{x\to 0}\frac{e^x}{2} =\frac{1}{2}.$$ The table in figure 4.7-P2 is consistent with values approaching $0.500000\ldots$.
+MICRO:
+  A: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  B: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  C: Correct. When a limit presents a 0/0 or infinity/infinity indeterminate form, L'Hospital's Rule allows you to differentiate the numerator and denomina
+  D: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+
+--- 4.7-P3 [4/3] [Both] ---
+PROMPT: Evaluate $\displaystyle \lim_{x\to 0}\frac{\ln(1+5x)}{x}$.
+CORRECT: A = "$5$"
+  A ✓: $5$
+  B : $1$
+  C : $0$
+  D : $\frac{1}{5}$
+EXPLANATION: This is a $\frac{0}{0}$ form. Apply L’Hospital: $$\lim_{x\to 0}\frac{\ln(1+5x)}{x} =\lim_{x\to 0}\frac{\frac{5}{1+5x}}{1} =5.$$
+MICRO:
+  A: Correct. When a limit presents a 0/0 or infinity/infinity indeterminate form, L'Hospital's Rule allows you to differentiate the numerator and denomina
+  B: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  C: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  D: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+
+--- 4.7-P4 [1/1] [Both] ---
+PROMPT: Which limit is an indeterminate form appropriate for applying L’Hospital’s Rule (after checking differentiability conditions)?
+CORRECT: D = "$\displaystyle \lim_{x\to \infty}\frac{3x+1}{2x-5}$"
+  A : $\displaystyle \lim_{x\to 0}\frac{1}{x^2}$
+  B : $\displaystyle \lim_{x\to 2}\frac{x^2-4}{x-2}$
+  C : $\displaystyle \lim_{x\to 0}(1+\sin x)$
+  D ✓: $\displaystyle \lim_{x\to \infty}\frac{3x+1}{2x-5}$
+EXPLANATION: Direct substitution into $\frac{3x+1}{2x-5}$ as $x\to\infty$ produces $\frac{\infty}{\infty}$, an indeterminate ratio form where L’Hospital is appropriate after verifying conditions.
+MICRO:
+  A: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  B: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  C: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  D: Correct. When a limit presents a 0/0 or infinity/infinity indeterminate form, L'Hospital's Rule allows you to differentiate the numerator and denomina
+
+--- 4.7-P5 [5/4] [Both] ---
+PROMPT: Evaluate $\displaystyle \lim_{x\to 0}\frac{\sin x - x}{x^3}$.
+CORRECT: C = "$-\frac{1}{6}$"
+  A : $0$
+  B : $\frac{1}{6}$
+  C ✓: $-\frac{1}{6}$
+  D : Does not exist
+EXPLANATION: This is a $\frac{0}{0}$ form. Apply L’Hospital three times: $$\lim_{x\to 0}\frac{\sin x-x}{x^3} =\lim_{x\to 0}\frac{\cos x-1}{3x^2} =\lim_{x\to 0}\frac{-\sin x}{6x} =\lim_{x\to 0}\frac{-\cos x}{6} =-\frac{1}{6}.$$
+MICRO:
+  A: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  B: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity
+  C: Correct. When a limit presents a 0/0 or infinity/infinity indeterminate form, L'Hospital's Rule allows you to differentiate the numerator and denomina
+  D: Incorrect. L'Hospital's Rule can only be applied if the limit is confirmed to be one of the specific indeterminate forms like 0/0 or infinity/infinity

@@ -1,0 +1,989 @@
+UNIT 2 MATHEMATICAL REVIEW (70 questions)
+============================================================
+
+--- 2.0-UT-Q1 [2/2] [Both] ---
+PROMPT: A particle’s position is $s(t)=t^2-4t$ (meters). What is the average velocity on $[1,3]$?
+CORRECT: B = "$0\text{ m/s}$"
+  A : $-3\text{ m/s}$
+  B ✓: $0\text{ m/s}$
+  C : $-1\text{ m/s}$
+  D : $3\text{ m/s}$
+EXPLANATION: Average velocity on $[1,3]$ is the secant slope: $$\frac{s(3)-s(1)}{3-1}=0.$$
+MICRO:
+  A: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  B: Correct. Geometrically, the derivative represents the slope of the tangent line; physically, it represents the instantaneous rate of change.
+  C: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  D: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+
+--- 2.0-UT-Q2 [1/1] [Both] ---
+PROMPT: Let $f(x)=\sqrt{x}$. Which expression represents $f'(9)$ using the limit definition?
+CORRECT: C = "$\displaystyle \lim_{h\to 0}\frac{\sqrt{9+h}-\sqrt{9}}{h}$"
+  A : $\displaystyle \lim_{x\to 9}\frac{\sqrt{x}-\sqrt{9}}{x-9}$
+  B : $\displaystyle \lim_{h\to 0}\frac{\sqrt{h}-\sqrt{9}}{h}$
+  C ✓: $\displaystyle \lim_{h\to 0}\frac{\sqrt{9+h}-\sqrt{9}}{h}$
+  D : $\displaystyle \lim_{h\to 0}\frac{\sqrt{9}-\sqrt{9-h}}{h}$
+EXPLANATION: Use the limit definition: $$f'(9)=\lim_{h\to 0}\frac{f(9+h)-f(9)}{h}.$$ With $f(x)=\sqrt{x}$ this is option B.
+MICRO:
+  A: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  B: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  C: Correct. Geometrically, the derivative represents the slope of the tangent line; physically, it represents the instantaneous rate of change.
+  D: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+
+--- 2.0-UT-Q3 [3/2] [Both] ---
+PROMPT: Use the graph (with two marked points). What is the slope of the secant line through the two marked points?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$2$"
+  A ✓: $2$
+  B : $-2$
+  C : $4$
+  D : $1$
+EXPLANATION: From the graph, the marked points are $(1,1)$ and $(3,5)$. The secant slope is $$\frac{5-1}{3-1}=2.$$
+MICRO:
+  A: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.0-UT-Q4 [2/2] [Both] ---
+PROMPT: Which statement is always true if $f'(a)$ exists?
+CORRECT: D = "$f$ is continuous at $a$"
+  A : $f(a)=0$
+  B : $f$ has a local maximum at $a$
+  C : $f$ is not continuous at $a$
+  D ✓: $f$ is continuous at $a$
+EXPLANATION: If $f'(a)$ exists, then $f$ is differentiable at $a$, hence continuous at $a$.
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+
+--- 2.0-UT-Q5 [2/2] [Both] ---
+PROMPT: If $f(x)=3x^{5}-\dfrac{2}{x^{2}}$, what is $f'(x)$?
+CORRECT: D = "$15x^{4}+\dfrac{4}{x^{3}}$"
+  A : $15x^{5}+\dfrac{2}{x^{3}}$
+  B : $15x^{4}-\dfrac{4}{x^{3}}$
+  C : $15x^{4}+\dfrac{4}{x^{4}}$
+  D ✓: $15x^{4}+\dfrac{4}{x^{3}}$
+EXPLANATION: Differentiate term-by-term: $$(3x^5)'=15x^4,\quad \left(-2x^{-2}\right)'=4x^{-3}=\frac{4}{x^3}.$$
+MICRO:
+  A: Incorrect. Please verify the standard form of the derivative's definition, ensuring the increment h and the difference quotient are correctly structur
+  B: Incorrect. Please verify the standard form of the derivative's definition, ensuring the increment h and the difference quotient are correctly structur
+  C: Incorrect. Please verify the standard form of the derivative's definition, ensuring the increment h and the difference quotient are correctly structur
+  D: Correct. Based on the limit definition of a derivative, f'(a) = lim(h->0) [f(a+h)-f(a)]/h. This expression accurately reflects that definition.
+
+--- 2.0-UT-Q6 [3/3] [Both] ---
+PROMPT: Use the table to estimate $f'(2)$ using a symmetric difference.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$4$"
+  A : $0.2$
+  B : $2$
+  C ✓: $4$
+  D : $0$
+EXPLANATION: A symmetric difference around $2$ gives $$f'(2)\approx \frac{f(2.01)-f(1.99)}{2.01-1.99}=\frac{4.0401-3.9601}{0.02}=4.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.0-UT-Q7 [2/2] [Both] ---
+PROMPT: If $g(x)=5f(x)-2h(x)$, $f'(x)=3x$, and $h'(x)=x^2$, what is $g'(x)$?
+CORRECT: A = "$15x-2x^2$"
+  A ✓: $15x-2x^2$
+  B : $15x+2x^2$
+  C : $5(3x-2x^2)$
+  D : $15x^2-2x$
+EXPLANATION: By linearity, $$g'(x)=5f'(x)-2h'(x)=15x-2x^2.$$
+MICRO:
+  A: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.0-UT-Q8 [3/3] [Both] ---
+PROMPT: Use the graph of $y=|x|$. Which statement is true about the derivative at $x=0$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "The derivative does not exist at $x=0$."
+  A : The derivative exists and equals $0$.
+  B ✓: The derivative does not exist at $x=0$.
+  C : The derivative exists and equals $-1$.
+  D : The derivative exists and equals $1$.
+EXPLANATION: $|x|$ is continuous at $0$ but not differentiable there because the one-sided slopes differ ($-1$ vs $1$).
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.0-UT-Q9 [1/1] [Both] ---
+PROMPT: What is $\dfrac{d}{dx}(\cos x)$?
+CORRECT: D = "$-\sin x$"
+  A : $\sec^2 x$
+  B : $\sin x$
+  C : $-\cos x$
+  D ✓: $-\sin x$
+EXPLANATION: $(\cos x)'=-\sin x$.
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+
+--- 2.0-UT-Q10 [3/2] [Both] ---
+PROMPT: Find $\dfrac{d}{dx}\big(x^2\sin x\big)$.
+CORRECT: C = "$2x\sin x+x^2\cos x$"
+  A : $2x\sin x$
+  B : $x^2\cos x$
+  C ✓: $2x\sin x+x^2\cos x$
+  D : $2x\cos x+x^2\sin x$
+EXPLANATION: $\dfrac{d}{dx}(x^2\sin x)=2x\sin x+x^2\cos x$ by the product rule.
+MICRO:
+  A: Incorrect. Distinguish between continuity (no breaks) and differentiability (smoothness and a defined, finite slope).
+  B: Incorrect. Distinguish between continuity (no breaks) and differentiability (smoothness and a defined, finite slope).
+  C: Correct. Differentiability implies continuity, but continuity does not always imply differentiability (e.g., at sharp turns or vertical tangents).
+  D: Incorrect. Distinguish between continuity (no breaks) and differentiability (smoothness and a defined, finite slope).
+
+--- 2.0-UT-Q11 [4/3] [Both] ---
+PROMPT: Find $\dfrac{d}{dx}\left(\dfrac{x^2+1}{x}\right)$.
+CORRECT: D = "$\dfrac{2x\cdot x-(x^2+1)\cdot 1}{x^2}$"
+  A : $2$
+  B : $\dfrac{2x}{x^2}$
+  C : $\dfrac{2x\cdot x+(x^2+1)\cdot 1}{x^2}$
+  D ✓: $\dfrac{2x\cdot x-(x^2+1)\cdot 1}{x^2}$
+EXPLANATION: Quotient rule with $u=x^2+1$, $v=x$ gives $$\frac{u'v-uv'}{v^2}=\frac{(2x)(x)-(x^2+1)(1)}{x^2}.$$
+MICRO:
+  A: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  B: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  C: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  D: Correct. According to the Power Rule, the derivative of x^n is n * x^(n-1).
+
+--- 2.0-UT-Q12 [2/2] [Both] ---
+PROMPT: What is $\dfrac{d}{dx}(\sec x)$?
+CORRECT: A = "$\sec x\tan x$"
+  A ✓: $\sec x\tan x$
+  B : $\sec^2 x$
+  C : $-\sec x\tan x$
+  D : $\csc x\cot x$
+EXPLANATION: $(\sec x)'=\sec x\tan x$.
+MICRO:
+  A: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.0-UT-Q13 [4/4] [Both] ---
+PROMPT: Evaluate $\displaystyle \lim_{h\to 0}\frac{(2+h)^3-8}{h}$.
+CORRECT: B = "$12$"
+  A : $8$
+  B ✓: $12$
+  C : $6$
+  D : $0$
+EXPLANATION: Expand $(2+h)^3=8+12h+6h^2+h^3$: $$\frac{(2+h)^3-8}{h}=12+6h+h^2\to 12.$$
+MICRO:
+  A: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+  B: Correct. Standard trig derivatives: (sin x)' = cos x, (cos x)' = -sin x. This option follows the established formulas.
+  C: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+  D: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+
+--- 2.0-UT-Q14 [3/3] [Both] ---
+PROMPT: Use the graph of $y=\sin x$ with a dashed tangent line at $x=0$. What is $\sin'(0)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$1$"
+  A : $0$
+  B ✓: $1$
+  C : $-1$
+  D : $\pi$
+EXPLANATION: $(\sin x)'=\cos x$, so $\sin'(0)=\cos 0=1$.
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.0-UT-Q15 [2/2] [Both] ---
+PROMPT: If $p(x)=x^4+7$, what is $\dfrac{d}{dx}\big(3p(x)\big)$?
+CORRECT: B = "$12x^3$"
+  A : $12x^3+7$
+  B ✓: $12x^3$
+  C : $3x^4+21$
+  D : $4x^3$
+EXPLANATION: $p'(x)=4x^3$, so $(3p(x))'=3p'(x)=12x^3$.
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.0-UT-Q16 [3/2] [Both] ---
+PROMPT: What is $\dfrac{d}{dx}(\ln x)$ for $x>0$?
+CORRECT: A = "$\dfrac{1}{x}$"
+  A ✓: $\dfrac{1}{x}$
+  B : $x$
+  C : $\dfrac{1}{\ln x}$
+  D : $\ln x$
+EXPLANATION: For $x>0$, $(\ln x)'=\dfrac{1}{x}$.
+MICRO:
+  A: Correct. The Product Rule is (fg)' = f'g + fg'. this option correctly applies alternating derivatives and sums them.
+  B: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  C: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  D: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+
+--- 2.0-UT-Q17 [3/2] [Both] ---
+PROMPT: What is $\dfrac{d}{dx}(\csc x)$?
+CORRECT: D = "$-\csc x\cot x$"
+  A : $\csc^2 x$
+  B : $\csc x\cot x$
+  C : $-\sec x\tan x$
+  D ✓: $-\csc x\cot x$
+EXPLANATION: $(\csc x)'=-\csc x\cot x$.
+MICRO:
+  A: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  B: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  C: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  D: Correct. The Quotient Rule is (f/g)' = (f'g - fg')/g^2. Note the order of subtraction in the numerator and the squared denominator.
+
+--- 2.0-UT-Q18 [4/3] [Both] ---
+PROMPT: If $y=(x^3-1)(x^2+2)$, what is $y'$?
+CORRECT: C = "$3x^2(x^2+2)+(x^3-1)(2x)$"
+  A : $(3x^2)(2x)$
+  B : $3x^2(x^2+2)-(x^3-1)(2x)$
+  C ✓: $3x^2(x^2+2)+(x^3-1)(2x)$
+  D : $(x^3-1)(2x)$
+EXPLANATION: With $u=x^3-1$, $v=x^2+2$, product rule gives $y'=u'v+uv'$.
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.0-UT-Q19 [5/4] [Both] ---
+PROMPT: Find $\dfrac{d}{dx}\left(\dfrac{\sin x}{x}\right)$ for $x\ne 0$.
+CORRECT: C = "$\dfrac{x\cos x-\sin x}{x^2}$"
+  A : $\dfrac{\cos x}{x}$
+  B : $\dfrac{x\cos x+\sin x}{x^2}$
+  C ✓: $\dfrac{x\cos x-\sin x}{x^2}$
+  D : $\dfrac{\cos x}{x^2}$
+EXPLANATION: Quotient rule with $u=\sin x$, $v=x$ gives $$\frac{(\cos x)(x)-(\sin x)(1)}{x^2}=\frac{x\cos x-\sin x}{x^2}.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.0-UT-Q20 [3/3] [Both] ---
+PROMPT: If $f(x)=\dfrac{1}{\sqrt{x}}$ for $x>0$, what is $f'(x)$?
+CORRECT: A = "$-\dfrac{1}{2x\sqrt{x}}$"
+  A ✓: $-\dfrac{1}{2x\sqrt{x}}$
+  B : $\dfrac{1}{2\sqrt{x}}$
+  C : $-\dfrac{1}{2\sqrt{x}}$
+  D : $\dfrac{1}{x\sqrt{x}}$
+EXPLANATION: Write $f(x)=x^{\frac{-1}{2}}$. Then $$f'(x)=(-\tfrac12)x^{\frac{-3}{2}}=-\frac{1}{2x\sqrt{x}}.$$
+MICRO:
+  A: Correct. Geometrically, the derivative represents the slope of the tangent line; physically, it represents the instantaneous rate of change.
+  B: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  C: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  D: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+
+--- 2.1-P1 [2/2] [Both] ---
+PROMPT: Let $f$ be a function with $f(1)=3$ and $f(5)=-1$. What is the average rate of change of $f$ on the interval $[1,5]$?
+CORRECT: B = "$-1$"
+  A : $1$
+  B ✓: $-1$
+  C : $-4$
+  D : $4$
+EXPLANATION: Average rate of change on $[1,5]$ is $$\frac{f(5)-f(1)}{5-1}=\frac{-1-3}{4}=\frac{-4}{4}=-1.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.1-P2 [3/3] [Both] ---
+PROMPT: A car’s position (in meters) is given by $s(t)$. Which expression best represents the instantaneous velocity at $t=4$ (in m/s)?
+CORRECT: A = "$\lim_{h\to 0}\dfrac{s(4+h)-s(4)}{h}$"
+  A ✓: $\lim_{h\to 0}\dfrac{s(4+h)-s(4)}{h}$
+  B : $\dfrac{s(4)-s(0)}{4}$
+  C : $\dfrac{s(5)-s(3)}{2}$
+  D : $\dfrac{s(4+0)-s(4)}{0}$
+EXPLANATION: Instantaneous velocity is the derivative $s'(4)$, defined by $$s'(4)=\lim_{h\to 0}\frac{s(4+h)-s(4)}{h}.$$
+MICRO:
+  A: Correct. Geometrically, the derivative represents the slope of the tangent line; physically, it represents the instantaneous rate of change.
+  B: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  C: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  D: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+
+--- 2.1-P3 [4/4] [Both] ---
+PROMPT: Suppose $f$ is differentiable on $[2,6]$ and you know that $-3\le f'(x)\le 1$ for all $x$ in $(2,6)$. Which statement must be true about the average rate of change of $f$ on $[2,6]$?
+CORRECT: D = "The average rate of change on $[2,6]$ is between $-3$ and $1$, inclusive."
+  A : The average rate of change on $[2,6]$ is exactly $-1$.
+  B : The average rate of change on $[2,6]$ is less than $-3$.
+  C : The average rate of change on $[2,6]$ is greater than $1$.
+  D ✓: The average rate of change on $[2,6]$ is between $-3$ and $1$, inclusive.
+EXPLANATION: Since $f$ is differentiable and $-3\le f'(x)\le 1$ on $(2,6)$, the average rate of change $$\frac{f(6)-f(2)}{6-2}$$ must lie in the interval $[-3,1]$.
+MICRO:
+  A: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  B: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  C: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  D: Correct. Geometrically, the derivative represents the slope of the tangent line; physically, it represents the instantaneous rate of change.
+
+--- 2.1-P4 [1/1] [Both] ---
+PROMPT: The function $g$ is linear and passes through $(2,7)$ and $(6,1)$. What is the average rate of change of $g$ on $[2,6]$?
+CORRECT: C = "$-\dfrac{3}{2}$"
+  A : $\dfrac{3}{2}$
+  B : $-3$
+  C ✓: $-\dfrac{3}{2}$
+  D : $3$
+EXPLANATION: Average rate of change on $[2,6]$ is the secant slope: $$\frac{g(6)-g(2)}{6-2}=\frac{1-7}{4}=-\frac{3}{2}.$$
+MICRO:
+  A: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  B: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+  C: Correct. Geometrically, the derivative represents the slope of the tangent line; physically, it represents the instantaneous rate of change.
+  D: Incorrect. The derivative reflects the rate of change, not the function value itself or the average rate of change.
+
+--- 2.1-P5 [3/3] [Both] ---
+PROMPT: For a differentiable function $f$, which statement is always true?
+CORRECT: A = "If the limit $\lim_{h\to 0}\dfrac{f(a+h)-f(a)}{h}$ exists, it equals $f'(a)$."
+  A ✓: If the limit $\lim_{h\to 0}\dfrac{f(a+h)-f(a)}{h}$ exists, it equals $f'(a)$.
+  B : The average rate of change on $[a,a+h]$ equals $f'(a+h)$ for all small $h$.
+  C : The instantaneous rate of change at $x=a$ equals the average rate of change on every interval $[a,a+h]$.
+  D : If $f$ is differentiable at $a$, then $\dfrac{f(a+h)-f(a)}{h}=f'(a)$ for $h\ne 0$.
+EXPLANATION: By definition, the derivative at $x=a$ is $$f'(a)=\lim_{h\to 0}\frac{f(a+h)-f(a)}{h}$$ provided the limit exists.
+MICRO:
+  A: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.2-P1 [2/2] [Both] ---
+PROMPT: If $y=f(x)$, which notation correctly represents the derivative of $f$ with respect to $x$ evaluated at $x=3$?
+CORRECT: B = "$f'(3)$"
+  A : $f(3)'$
+  B ✓: $f'(3)$
+  C : $\dfrac{dy}{dx}=3$
+  D : $\dfrac{df}{d3}$
+EXPLANATION: The derivative of $f$ evaluated at $x=3$ is written $f'(3)$. An equivalent form is $\left.\dfrac{dy}{dx}\right|_{x=3}$ when $y=f(x)$.
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.2-P2 [3/3] [Both] ---
+PROMPT: Use the limit definition to find $f'(2)$ for $f(x)=x^2-4x$.
+CORRECT: D = "$0$"
+  A : Does not exist
+  B : $-4$
+  C : $4$
+  D ✓: $0$
+EXPLANATION: Compute using the limit definition: $$f(2)=2^2-4\cdot 2=4-8=-4,$$ $$f(2+h)=(2+h)^2-4(2+h)=4+4h+h^2-8-4h=h^2-4.$$ So $$\frac{f(2+h)-f(2)}{h}=\frac{(h^2-4)-(-4)}{h}=\frac{h^2}{h}=h,$$ and $$f'(2)=\lim_{h\to 0}h=0.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+
+--- 2.2-P3 [4/4] [Both] ---
+PROMPT: Let $f(x)=\sqrt{x}$. Which expression is equal to $f'(a)$ for $a>0$ using the limit definition, after simplifying to remove radicals from the denominator?
+CORRECT: B = "$\lim_{h\to 0}\dfrac{1}{\sqrt{a+h}+\sqrt{a}}$"
+  A : $\lim_{h\to 0}\dfrac{\sqrt{a+h}+\sqrt{a}}{h}$
+  B ✓: $\lim_{h\to 0}\dfrac{1}{\sqrt{a+h}+\sqrt{a}}$
+  C : $\lim_{h\to 0}\dfrac{1}{\sqrt{a+h}-\sqrt{a}}$
+  D : $\lim_{h\to 0}\dfrac{\sqrt{a+h}-\sqrt{a}}{\sqrt{a+h}+\sqrt{a}}$
+EXPLANATION: Start with $$f'(a)=\lim_{h\to 0}\frac{\sqrt{a+h}-\sqrt{a}}{h}.$$ Multiply by the conjugate: $$\frac{\sqrt{a+h}-\sqrt{a}}{h}\cdot\frac{\sqrt{a+h}+\sqrt{a}}{\sqrt{a+h}+\sqrt{a}} =\frac{(a+h)-a}{h(\sqrt{a+h}+\sqrt{a})} =\frac{1}{\sqrt{a+h}+\sqrt{a}}.$$ Thus $$f'(a)=\lim_{h\to 0}\frac{1}{\sqrt{a+h}+\sqrt{a}}.$$
+MICRO:
+  A: Incorrect. Please verify the standard form of the derivative's definition, ensuring the increment h and the difference quotient are correctly structur
+  B: Correct. Based on the limit definition of a derivative, f'(a) = lim(h->0) [f(a+h)-f(a)]/h. This expression accurately reflects that definition.
+  C: Incorrect. Please verify the standard form of the derivative's definition, ensuring the increment h and the difference quotient are correctly structur
+  D: Incorrect. Please verify the standard form of the derivative's definition, ensuring the increment h and the difference quotient are correctly structur
+
+--- 2.2-P4 [1/1] [Both] ---
+PROMPT: If $f'(5)=-2$, which statement is correct?
+CORRECT: C = "The tangent line to $y=f(x)$ at $x=5$ has slope $-2$."
+  A : The secant line from $x=0$ to $x=5$ has slope $-2$.
+  B : $f(5)=-2$.
+  C ✓: The tangent line to $y=f(x)$ at $x=5$ has slope $-2$.
+  D : The function is decreasing for all $x$.
+EXPLANATION: By definition, $f'(5)$ is the slope of the tangent line to $y=f(x)$ at $x=5$. Therefore $f'(5)=-2$ means that tangent slope is $-2$.
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.2-P5 [5/5] [Both] ---
+PROMPT: For $f(x)=\dfrac{1}{x}$, evaluate the simplified expression $$\frac{f(a+h)-f(a)}{h}$$ for $a\ne 0$ and $h\ne 0$, $a+h\ne 0$.
+CORRECT: A = "$-\dfrac{1}{a(a+h)}$"
+  A ✓: $-\dfrac{1}{a(a+h)}$
+  B : $\dfrac{1}{a(a+h)}$
+  C : $-\dfrac{h}{a(a+h)}$
+  D : $\dfrac{a+h-a}{h}$
+EXPLANATION: Compute the difference quotient: $$\frac{f(a+h)-f(a)}{h}=\frac{\frac{1}{a+h}-\frac{1}{a}}{h} =\frac{\frac{a-(a+h)}{a(a+h)}}{h} =\frac{\frac{-h}{a(a+h)}}{h} =-\frac{1}{a(a+h)}.$$
+MICRO:
+  A: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.3-P1 [2/2] [Both] ---
+PROMPT: Use the graph (see image) to best estimate $f'(2)$. The point $(2, f(2))$ is marked on the curve.
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "About $0.2$"
+  A : About $1.2$
+  B : About $2$
+  C ✓: About $0.2$
+  D : About $6$
+EXPLANATION: The derivative at a point is the slope of the tangent line. From the graph near $x=2$, the rise over run over a small interval (e.g., from $x=1.5$ to $x=2.5$) suggests an average slope close to $2$.
+MICRO:
+  A: Wrong sign; increasing means positive slope.
+  B: Too small; the graph rises more than /bin/zsh.2$ per $ unit of $ near $.
+  C: Correct: the tangent slope is a little above $.
+  D: Too steep for the visible tangent at =2$.
+
+--- 2.3-P2 [3/3] [Both] ---
+PROMPT: A function $f$ satisfies $f(3) = 10$, $f(3.1)=10.4$, and $f(2.9) = 9.7$. Using a symmetric difference quotient, estimate $f'(3)$.
+CORRECT: D = "$3.5$"
+  A : $4.0$
+  B : $3.0$
+  C : $7.0$
+  D ✓: $3.5$
+EXPLANATION: Use the symmetric difference quotient: $f'(3) \approx \frac{f(3+h)-f(3-h)}{2h}$. Here $h=0.1$, so $f'(3) \approx \frac{f(3.1)-f(2.9)}{0.2} = \frac{10.4-9.7}{0.2} = \frac{0.7}{0.2} = 3.5$.
+MICRO:
+  A: Uses /bin/zsh.6$ instead of the correct symmetric change /bin/zsh.7$.
+  B: Extra factor of $ error.
+  C: Divides by /bin/zsh.1$ rather than /bin/zsh.2$.
+  D: Correct symmetric quotient: /bin/zsh.7/0.2=3.5$.
+
+--- 2.3-P3 [2/2] [Both] ---
+PROMPT: Let $g(x)=\sqrt{x}$. Which expression best estimates $g'(9)$ using $h=0.01$?
+CORRECT: B = "$\frac{\sqrt{9.01}-\sqrt{9}}{0.01}$"
+  A : $\frac{\sqrt{9}-\sqrt{8.99}}{0.01}$
+  B ✓: $\frac{\sqrt{9.01}-\sqrt{9}}{0.01}$
+  C : $\frac{\sqrt{9.01}-\sqrt{8.99}}{0.01}$
+  D : $\frac{\sqrt{9.01}-\sqrt{9}}{9.01-9}$
+EXPLANATION: A standard estimate uses $g'(a)\approx \frac{g(a+h)-g(a)}{h}$. With $a=9$ and $h=0.01$, the correct setup is $\frac{\sqrt{9.01}-\sqrt{9}}{0.01}$.
+MICRO:
+  A: Backward difference uses -h$.
+  B: Correct forward difference at =9$.
+  C: Symmetric numerator requires h$ in the denominator.
+  D: Same as A; .01-9=0.01$.
+
+--- 2.3-P4 [4/4] [Both] ---
+PROMPT: A graph (see image) shows $y=f(x)$ and a symmetric secant line through the points at $x=1.0$ and $x=2.0$. Which value is the best estimate of $f'(1.5)$ using this symmetric secant?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "\frac{f(2.0) - f(1.0)}{2.0 - 1.0}"
+  A ✓: \frac{f(2.0) - f(1.0)}{2.0 - 1.0}
+  B : The slope of the secant from $x=1.0$ to $x=1.5$ only
+  C : \frac{f(2.0) - f(1.5)}{2.0 - 1.5}
+  D : \frac{f(1.5) - f(1.0)}{2.0 - 1.0}
+EXPLANATION: A symmetric secant about $x=a$ uses points $a-h$ and $a+h$: $$f'(a) \approx \frac{f(a+h)-f(a-h)}{2h}$$ Here $a=1.5$ and the points are $1.0$ and $2.0$ (so $h=0.5$). Thus, $$f'(1.5) \approx \frac{f(2.0)-f(1.0)}{2.0-1.0} = \frac{f(2.0)-f(1.0)}{1.0}$$
+MICRO:
+  A: Correct midpoint estimate: symmetric secant slope.
+  B: Not symmetric; uses only one side of =1.5$.
+  C: Right-side secant only.
+  D: Denominator should match the chosen numerator interval.
+
+--- 2.3-P5 [3/3] [Both] ---
+PROMPT: The position of a particle is (t)$ (meters). A table gives (4)=18.2$, (4.05)=18.7$, and (3.95)=17.6$. Estimate the instantaneous velocity '(4)$ (m/s) using a symmetric difference quotient.
+CORRECT: C = "$11\ \text{m/s}$"
+  A : $10\ \text{m/s}$
+  B : $5.5\ \text{m/s}$
+  C ✓: $11\ \text{m/s}$
+  D : $22\ \text{m/s}$
+EXPLANATION: Use 19967s'(4)\approx \frac{s(4+0.05)-s(4-0.05)}{2(0.05)}=\frac{s(4.05)-s(3.95)}{0.10}.19967 Then 19967\frac{18.7-17.6}{0.10}=11\text{ m/s}.19967
+MICRO:
+  A: Incorrect. $10$ comes from using only one side: $(18.7-18.2)/0.05=10$, which is a one-sided difference quotient, not symmetric.
+  B: Incorrect. $5.5$ likely comes from dividing the numerator by $0.2$ instead of $0.10$.
+  C: Correct. Symmetric difference quotient: $\frac{s(4.05)-s(3.95)}{2(0.05)}=\frac{18.7-17.6}{0.10}=11$ m/s.
+  D: Incorrect. $22$ comes from using $\frac{1.1}{0.05}$ instead of dividing by $2h=0.10$.
+
+--- 2.4-P1 [2/2] [Both] ---
+PROMPT: Which statement is always true for a function $f$ at $x=a$? I. If $f$ is differentiable at $x=a$, then $f$ is continuous at $x=a$. II. If $f$ is continuous at $x=a$, then $f$ is differentiable at $x=a$.
+CORRECT: D = "I only"
+  A : Neither I nor II
+  B : II only
+  C : Both I and II
+  D ✓: I only
+EXPLANATION: Differentiability at $x=a$ forces $\lim_{x\to a}f(x)=f(a)$, so $f$ must be continuous at $x=a$. But continuity can occur without differentiability (e.g., corners).
+MICRO:
+  A: I is true, so not neither.
+  B: Continuity alone does not ensure a derivative.
+  C: II is false at corners/cusps.
+  D: Correct implication: differentiable $\Rightarrow$ continuous.
+
+--- 2.4-P2 [3/3] [Both] ---
+PROMPT: Let $f(x)=|x-2|$. Which statement best describes $f$ at $x=2$?
+CORRECT: B = "Continuous but not differentiable at $x=2$."
+  A : Discontinuous at $x=2$.
+  B ✓: Continuous but not differentiable at $x=2$.
+  C : Continuous and differentiable at $x=2$.
+  D : Differentiable but not continuous at $x=2$.
+EXPLANATION: The graph of $f(x)=|x-2|$ has a sharp corner (cusp) at $x=2$. The function is continuous everywhere, but the one-sided derivatives differ at $x=2$: the left derivative is $-1$ and the right derivative is $1$. Since these are not equal, $f'(2)$ does not exist.
+MICRO:
+  A: No jump/hole: absolute value is continuous.
+  B: Correct: continuous, but left/right slopes differ.
+  C: Corner means not differentiable.
+  D: Impossible: differentiable implies continuous.
+
+--- 2.4-P3 [4/4] [Both] ---
+PROMPT: Define $f(x)=\begin{cases} \frac{x^2-1}{x-1}, & x\ne 1 \\ 3, & x=1 \end{cases}$. Which statement is true about $f$ at $x=1$?
+CORRECT: A = "Not continuous and not differentiable at $x=1$"
+  A ✓: Not continuous and not differentiable at $x=1$
+  B : Continuous at $x=1$, but not differentiable at $x=1$
+  C : Continuous and differentiable at $x=1$
+  D : Not continuous at $x=1$, but differentiable at $x=1$
+EXPLANATION: For $x\ne 1$, $\frac{x^2-1}{x-1} = x+1$. So $\lim_{x\to 1}f(x) = 1+1=2$. However, $f(1)=3$. Since $\lim_{x\to 1}f(x) \ne f(1)$, $f$ is not continuous at $x=1$, and thus not differentiable there.
+MICRO:
+  A: Correct: (1)$ does not equal the limit.
+  B: If continuous here, it would be a line and differentiable.
+  C: Continuity fails because (1)\ne 2$.
+  D: Differentiability cannot hold without continuity.
+
+--- 2.4-P4 [4/4] [Both] ---
+PROMPT: Let $h(x)=\begin{cases} x\sin\left(\frac{1}{x}\right) & x\ne 0 \\ 0 & x=0 \end{cases}$. Which statement is true about $h$ at $x=0$?
+CORRECT: D = "Continuous at $x=0$ but not differentiable at $x=0$"
+  A : Not continuous at $x=0$
+  B : Continuous and differentiable at $x=0$
+  C : Differentiable at $x=0$ but not continuous at $x=0$
+  D ✓: Continuous at $x=0$ but not differentiable at $x=0$
+EXPLANATION: Continuity: $|x \sin(\frac{1}{x})| \le |x| \to 0$, so $\lim_{x\to 0} h(x) = 0 = h(0)$. Differentiability: $h'(0)=\lim_{t\to 0} \sin(1/t)$ which does not exist. Hence continuous but not differentiable at $x=0$.
+MICRO:
+  A: Continuity actually holds by squeeze.
+  B: Derivative limit does not converge.
+  C: Cannot be differentiable without continuity.
+  D: Correct: derivative limit oscillates and fails to exist.
+
+--- 2.4-P5 [3/3] [Both] ---
+PROMPT: A function $f$ has the graph shown (see image), with $f(0) = 1$. Which statement is true about $f$ at $x=0$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$f$ is continuous but not differentiable at $x=0$"
+  A : $f$ is differentiable at $x=0$
+  B : $f$ is not continuous at $x=0$ but is differentiable at $x=0$
+  C ✓: $f$ is continuous but not differentiable at $x=0$
+  D : $f$ is neither continuous nor differentiable at $x=0$
+EXPLANATION: From the graph, the two pieces meet at $x=0$, so $\lim_{x\to 0} f(x) = f(0)$ and $f$ is continuous. The one-sided slopes at $x=0$ do not match, so $f$ is not differentiable at $x=0$.
+MICRO:
+  A: Corner implies derivative does not exist.
+  B: Impossible because differentiable implies continuous.
+  C: Correct: continuous meeting point, but different one-sided slopes.
+  D: Continuity holds at $.
+
+--- 2.5-P1 [2/2] [Both] ---
+PROMPT: Differentiate the function $f(x)=7x^4-3x^2+5$.
+CORRECT: C = "$f'(x)=28x^3-6x$"
+  A : $f'(x)=7\cdot4x^4-3\cdot2x^2$
+  B : $f'(x)=28x^3-6x+5$
+  C ✓: $f'(x)=28x^3-6x$
+  D : $f'(x)=28x^3-3x$
+EXPLANATION: Using linearity and the power rule, $$f'(x)= (7x^4)'-(3x^2)'+(5)'=28x^3-6x+0=28x^3-6x.$$
+MICRO:
+  A: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  B: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  C: Correct. According to the Power Rule, the derivative of x^n is n * x^(n-1).
+  D: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+
+--- 2.5-P2 [3/3] [Both] ---
+PROMPT: Let $g(x)=\dfrac{5}{x^3}-2\sqrt{x}$. What is $g'(x)$?
+CORRECT: A = "$g'(x)=-\dfrac{15}{x^4}-\dfrac{1}{\sqrt{x}}$"
+  A ✓: $g'(x)=-\dfrac{15}{x^4}-\dfrac{1}{\sqrt{x}}$
+  B : $g'(x)=\dfrac{15}{x^4}-\dfrac{1}{\sqrt{x}}$
+  C : $g'(x)=-\dfrac{15}{x^2}-\dfrac{1}{\sqrt{x}}$
+  D : $g'(x)=-\dfrac{15}{x^4}+\dfrac{1}{\sqrt{x}}$
+EXPLANATION: Convert to exponents: $$g(x)=5x^{-3}-2x^{\frac{1}{2}}.$$ Differentiate: $$g'(x)=-15x^{-4}-x^{\frac{-1}{2}}=-\frac{15}{x^4}-\frac{1}{\sqrt{x}}.$$
+MICRO:
+  A: Correct. According to the Power Rule, the derivative of x^n is n * x^(n-1).
+  B: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  C: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  D: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+
+--- 2.5-P3 [4/4] [Both] ---
+PROMPT: A function is defined by $h(x)=x^2(3x^3-4x+1)$. Using only the power rule and algebra (no product rule), find $h'(1)$.
+CORRECT: B = "$5$"
+  A : $11$
+  B ✓: $5$
+  C : $7$
+  D : $6$
+EXPLANATION: Because the instruction forbids the product rule, expand first: $$h(x)=x^2(3x^3-4x+1)=3x^5-4x^3+x^2.$$ Then $$h'(x)=15x^4-12x^2+2x,$$ so $$h'(1)=15-12+2=5.$$
+MICRO:
+  A: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  B: Correct. According to the Power Rule, the derivative of x^n is n * x^(n-1).
+  C: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  D: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+
+--- 2.5-P4 [1/1] [Both] ---
+PROMPT: Differentiate $p(x)=x^{\frac{1}{3}}$.
+CORRECT: D = "$p'(x)=\dfrac{1}{3}x^{\frac{-2}{3}}$"
+  A : $p'(x)=\dfrac{1}{3}x^{\frac{1}{3}}$
+  B : $p'(x)=\dfrac{1}{x^{\frac{2}{3}}}$
+  C : $p'(x)=3x^{\frac{-2}{3}}$
+  D ✓: $p'(x)=\dfrac{1}{3}x^{\frac{-2}{3}}$
+EXPLANATION: Use the power rule: $$p'(x)=\frac{1}{3}x^{\frac{-2}{3}}.$$
+MICRO:
+  A: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  B: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  C: Incorrect. When applying the Power Rule, the original exponent becomes the coefficient, and the new exponent is decreased by 1.
+  D: Correct. According to the Power Rule, the derivative of x^n is n * x^(n-1).
+
+--- 2.5-P5 [3/3] [Both] ---
+PROMPT: If $f(x)=\dfrac{2x^5-3x^2}{x}$ for $x\ne 0$, what is $f'(x)$?
+CORRECT: A = "$f'(x)=8x^3-3$"
+  A ✓: $f'(x)=8x^3-3$
+  B : $f'(x)=10x^3-6$
+  C : $f'(x)=8x^3-\dfrac{3}{x^2}$
+  D : $f'(x)=\dfrac{10x^4-6x}{x}$
+EXPLANATION: Simplify: $$f(x)=\frac{2x^5}{x}-\frac{3x^2}{x}=2x^4-3x.$$ Then $$f'(x)=8x^3-3.$$
+MICRO:
+  A: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.6-P1 [2/2] [Both] ---
+PROMPT: If $f'(x)=4x-1$ and $g'(x)=3x^2$, what is $\dfrac{d}{dx}\,[2f(x)-5g(x)]$?
+CORRECT: B = "$2(4x-1)-5(3x^2)=8x-2-15x^2$"
+  A : $2(4x-1)-5(3x)=8x-2-15x$
+  B ✓: $2(4x-1)-5(3x^2)=8x-2-15x^2$
+  C : $(2f(x)-5g(x))'=2f(x)-5g(x)$
+  D : $2(4x)-5(3x^2)=8x-15x^2$
+EXPLANATION: Linearity gives $$\frac{d}{dx}[2f(x)-5g(x)]=2f'(x)-5g'(x)=2(4x-1)-5(3x^2)=8x-2-15x^2.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.6-P2 [1/1] [Both] ---
+PROMPT: Let $F(x)=9-\pi x+\sqrt{2}$. What is $F'(x)$?
+CORRECT: D = "$F'(x)=-\pi$"
+  A : $F'(x)=\pi$
+  B : $F'(x)=9-\pi+\sqrt{2}$
+  C : $F'(x)=-\pi x$
+  D ✓: $F'(x)=-\pi$
+EXPLANATION: Use the constant rule and linearity: $$F'(x)=(9)'-(\pi x)'+(\sqrt2)'=0-\pi+0=-\pi.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+
+--- 2.6-P3 [3/3] [Both] ---
+PROMPT: If $f(x)=3x^4-2x^3+x$ and $g(x)=x^4+5$, what is $(f-g)'(x)$?
+CORRECT: C = "$8x^3-6x^2+1$"
+  A : $2x^3-6x^2+1$
+  B : $12x^3-6x^2+1$
+  C ✓: $8x^3-6x^2+1$
+  D : $16x^3-6x^2+1$
+EXPLANATION: Compute derivatives: $$f'(x)=12x^3-6x^2+1,\quad g'(x)=4x^3.$$ Then $$(f-g)'(x)=f'(x)-g'(x)=8x^3-6x^2+1.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.6-P4 [4/4] [Both] ---
+PROMPT: Suppose $f'(2)=3$ and $g'(2)=-2$. Let $H(x)=5f(x)+\dfrac{1}{2}g(x)$. What is $H'(2)$?
+CORRECT: B = "$14$"
+  A : $\dfrac{1}{2}$
+  B ✓: $14$
+  C : $15$
+  D : $13$
+EXPLANATION: Differentiate using linearity: $$H'(x)=5f'(x)+\frac12 g'(x).$$ Evaluate at $x=2$: $$H'(2)=5\cdot 3+\frac12(-2)=15-1=14.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.6-P5 [2/2] [Both] ---
+PROMPT: Let $y=(x^4-6x+9)-(2x^4+3x)$. What is $\dfrac{dy}{dx}$?
+CORRECT: A = "$\dfrac{dy}{dx}=-4x^3-9$"
+  A ✓: $\dfrac{dy}{dx}=-4x^3-9$
+  B : $\dfrac{dy}{dx}=4x^3-6-(8x^3+3)$
+  C : $\dfrac{dy}{dx}=4x^3-9$
+  D : $\dfrac{dy}{dx}=-x^3-9$
+EXPLANATION: Combine like terms: $$y=(x^4-6x+9)-(2x^4+3x)=-x^4-9x+9.$$ Then $$\frac{dy}{dx}=(-x^4)'+(-9x)'+(9)'=-4x^3-9.$$
+MICRO:
+  A: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.7-P1 [2/1] [Both] ---
+PROMPT: Let $f(x)=3\sin x-2\cos x+e^x-\ln x$ for $x>0$. What is $f'(x)$?
+CORRECT: A = "$3\cos x+2\sin x+e^x-\dfrac{1}{x}$"
+  A ✓: $3\cos x+2\sin x+e^x-\dfrac{1}{x}$
+  B : $3\cos x-2\sin x+e^x-\dfrac{1}{x}$
+  C : $3\cos x+2\sin x+e^x-\ln x$
+  D : $3\sin x-2\cos x+e^x-\dfrac{1}{x}$
+EXPLANATION: Differentiate term-by-term: $$f'(x)=3\cos x-2(-\sin x)+e^x-\dfrac{1}{x}=3\cos x+2\sin x+e^x-\dfrac{1}{x}.$$
+MICRO:
+  A: Correct. Standard trig derivatives: (sin x)' = cos x, (cos x)' = -sin x. This option follows the established formulas.
+  B: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+  C: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+  D: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+
+--- 2.7-P2 [3/2] [Both] ---
+PROMPT: For $g(x)=\dfrac{\sin x}{\cos x}$ (where defined), what is $g'(x)$ written in simplest form?
+CORRECT: C = "$\dfrac{1}{\cos^2 x}$"
+  A : $\dfrac{\cos x}{\sin x}$
+  B : $\dfrac{\cos^2 x-\sin^2 x}{\cos^2 x}$
+  C ✓: $\dfrac{1}{\cos^2 x}$
+  D : $\dfrac{\cos x+\sin x}{\cos^2 x}$
+EXPLANATION: Recognize $\dfrac{\sin x}{\cos x}=\tan x$. Then $$g'(x)=\frac{d}{dx}(\tan x)=\sec^2 x=\frac{1}{\cos^2 x}.$$
+MICRO:
+  A: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+  B: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+  C: Correct. Standard trig derivatives: (sin x)' = cos x, (cos x)' = -sin x. This option follows the established formulas.
+  D: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+
+--- 2.7-P3 [1/1] [Both] ---
+PROMPT: If $h(x)=5e^x$, what is $h'(x)$?
+CORRECT: C = "$5e^x$"
+  A : $e^x$
+  B : $5xe^{x-1}$
+  C ✓: $5e^x$
+  D : $5x e^x$
+EXPLANATION: Use the constant multiple rule: $$h'(x)=5\cdot (e^x)'=5e^x.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.7-P4 [4/2] [Both] ---
+PROMPT: Let $p(x)=\ln(x^2)$ for $x>0$. Which expression equals $p'(x)$?
+CORRECT: D = "$\dfrac{2}{x}$"
+  A : $\dfrac{1}{x^2}$
+  B : $2x$
+  C : $\dfrac{1}{x}$
+  D ✓: $\dfrac{2}{x}$
+EXPLANATION: Because $x>0$, $\ln(x^2)=2\ln x$. Then $$p'(x)=2\cdot \frac{1}{x}=\frac{2}{x}.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+
+--- 2.7-P5 [3/2] [Both] ---
+PROMPT: A particle's position is $s(t)=4\cos t+3\sin t$ (meters). What is its velocity $v(t)=s'(t)$?
+CORRECT: B = "$-4\sin t+3\cos t$"
+  A : $4\sin t+3\cos t$
+  B ✓: $-4\sin t+3\cos t$
+  C : $-4\cos t+3\sin t$
+  D : $4\cos t+3\sin t$
+EXPLANATION: Differentiate: $$(\cos t)'=-\sin t,\quad (\sin t)'=\cos t.$$ Thus $$v(t)=s'(t)=-4\sin t+3\cos t.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.8-P1 [2/1] [Both] ---
+PROMPT: Let $f(x)=(x^2+1)\sin x$. What is $f'(x)$?
+CORRECT: D = "$(2x)\sin x+(x^2+1)\cos x$"
+  A : $(2x)\sin x$
+  B : $(2x)\cos x+(x^2+1)\sin x$
+  C : $(x^2+1)\cos x$
+  D ✓: $(2x)\sin x+(x^2+1)\cos x$
+EXPLANATION: Use product rule $(uv)'=u'v+uv'$. Let $u=x^2+1$ and $v=\sin x$: $$f'(x)=2x\sin x+(x^2+1)\cos x.$$
+MICRO:
+  A: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  B: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  C: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  D: Correct. The Product Rule is (fg)' = f'g + fg'. this option correctly applies alternating derivatives and sums them.
+
+--- 2.8-P2 [3/2] [Both] ---
+PROMPT: Let $g(x)=x e^x$. What is $g'(x)$?
+CORRECT: D = "$e^x+x e^x$"
+  A : $e^x$
+  B : $x e^x$
+  C : $e^{x-1}+x e^x$
+  D ✓: $e^x+x e^x$
+EXPLANATION: Apply product rule with $u=x$ and $v=e^x$: $$g'(x)=u'v+uv'=1\cdot e^x+x\cdot e^x=e^x+x e^x.$$
+MICRO:
+  A: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  B: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  C: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  D: Correct. The Product Rule is (fg)' = f'g + fg'. this option correctly applies alternating derivatives and sums them.
+
+--- 2.8-P3 [4/3] [Both] ---
+PROMPT: Let $h(x)=(\ln x)(\cos x)$ for $x>0$. What is $h'(x)$?
+CORRECT: B = "$\dfrac{1}{x}\cos x+(\ln x)(-\sin x)$"
+  A : $\dfrac{1}{x}-\sin x$
+  B ✓: $\dfrac{1}{x}\cos x+(\ln x)(-\sin x)$
+  C : $\dfrac{\cos x}{x}-\dfrac{\sin x}{x}$
+  D : $\dfrac{1}{x}\cos x+(\ln x)\sin x$
+EXPLANATION: Let $u=\ln x$ and $v=\cos x$. Then $$h'(x)=u'v+uv'=\frac{1}{x}\cos x+(\ln x)(-\sin x).$$
+MICRO:
+  A: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  B: Correct. The Product Rule is (fg)' = f'g + fg'. this option correctly applies alternating derivatives and sums them.
+  C: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  D: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+
+--- 2.8-P4 [2/2] [Both] ---
+PROMPT: Let $q(x)=\sin x\cos x$. What is $q'(x)$?
+CORRECT: C = "$\cos x\cos x+\sin x(-\sin x)$"
+  A : $\sin^2 x+\cos^2 x$
+  B : $\cos x-\sin x$
+  C ✓: $\cos x\cos x+\sin x(-\sin x)$
+  D : $2\sin x\cos x$
+EXPLANATION: Use product rule: $$(\sin x\cos x)'=(\cos x)\cos x+\sin x(-\sin x)=\cos^2 x-\sin^2 x.$$
+MICRO:
+  A: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  B: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  C: Correct. The Product Rule is (fg)' = f'g + fg'. this option correctly applies alternating derivatives and sums them.
+  D: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+
+--- 2.8-P5 [5/3] [Both] ---
+PROMPT: Let $r(x)=(x^2\ln x)(\sin x)$ for $x>0$. Using only the product rule and basic derivatives, which expression equals $r'(x)$?
+CORRECT: A = "$(2x\ln x+ x)\sin x + x^2\ln x\cos x$"
+  A ✓: $(2x\ln x+ x)\sin x + x^2\ln x\cos x$
+  B : $(2x\ln x)\sin x + x^2\ln x\cos x$
+  C : $(2x\ln x+x)\cos x + x^2\ln x\sin x$
+  D : $2x\ln x\sin x + x^2\cos x$
+EXPLANATION: Let $u=x^2\ln x$ and $v=\sin x$. Then $r'(x)=u'v+uv'$. First, $$(x^2\ln x)'=(x^2)'\ln x+x^2(\ln x)'=2x\ln x+x^2\cdot \frac{1}{x}=2x\ln x+x.$$ Thus, $$r'(x)=(2x\ln x+x)\sin x+x^2\ln x\cos x.$$
+MICRO:
+  A: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.9-P1 [3/3] [Both] ---
+PROMPT: Let $f(x) = \dfrac{x^2+1}{3x-2}$. What is $f'(1)$?
+CORRECT: C = "$-4$"
+  A : $-7$
+  B : $5$
+  C ✓: $-4$
+  D : $2$
+EXPLANATION: Using the quotient rule for $\frac{u}{v}$: $$f'(x) = \frac{u'v - uv'}{v^2} = \frac{(2x)(3x-2) - (x^2+1)(3)}{(3x-2)^2}.$$ At $x=1$: $$f'(1) = \frac{2(1)(3(1)-2) - (1^2+1)(3)}{(3(1)-2)^2} = \frac{2(1) - 2(3)}{1^2} = \frac{2-6}{1} = -4.$$
+MICRO:
+  A: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  B: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  C: Correct. The Quotient Rule is (f/g)' = (f'g - fg')/g^2. Note the order of subtraction in the numerator and the squared denominator.
+  D: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+
+--- 2.9-P2 [3/3] [Both] ---
+PROMPT: The table below gives values for differentiable functions $f$ and $g$ and their derivatives at $x=2$.    | $x$ | $f(x)$ | $f'(x)$ | $g(x)$ | $g'(x)$ | |---|---|---|---|---| | 2 | 3 | -1 | 4 | 2 |    If $h(x) = \dfrac{f(x)}{g(x)}$, determining $h'(2)$.
+CORRECT: A = "$-\dfrac{5}{8}$"
+  A ✓: $-\dfrac{5}{8}$
+  B : $\dfrac{5}{8}$
+  C : $-\dfrac{1}{8}$
+  D : $-\dfrac{1}{2}$
+EXPLANATION: Apply quotient rule: $$h'(2) = \frac{f'(2)g(2) - f(2)g'(2)}{(g(2))^2}.$$ Substitute values: $$h'(2) = \frac{(-1)(4) - (3)(2)}{16} = \frac{-4 - 6}{16} = -\frac{10}{16} = -\frac{5}{8}.$$
+MICRO:
+  A: Correct. The Quotient Rule is (f/g)' = (f'g - fg')/g^2. Note the order of subtraction in the numerator and the squared denominator.
+  B: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  C: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  D: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+
+--- 2.9-P3 [4/4] [Both] ---
+PROMPT: For which value(s) of $x$ does the graph of $y = \dfrac{x}{x^2+1}$ have a horizontal tangent?
+CORRECT: B = "$x=1$ and $x=-1$"
+  A : $x=0$ only
+  B ✓: $x=1$ and $x=-1$
+  C : $x=1$ only
+  D : No values
+EXPLANATION: Set $y' = 0$. Using quotient rule: $$y' = \frac{(1)(x^2+1) - (x)(2x)}{(x^2+1)^2} = \frac{1-x^2}{(x^2+1)^2}.$$ The fraction is zero when the numerator is zero (and denominator is not). $$1-x^2 = 0 \implies x^2=1 \implies x=1, -1.$$
+MICRO:
+  A: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  B: Correct. The Quotient Rule is (f/g)' = (f'g - fg')/g^2. Note the order of subtraction in the numerator and the squared denominator.
+  C: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  D: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+
+--- 2.9-P4 [2/2] [Both] ---
+PROMPT: Differentiate $y = \dfrac{5x^3-2x}{x}$.
+CORRECT: A = "$10x$"
+  A ✓: $10x$
+  B : $\frac{15x^2-2}{1}$
+  C : $\frac{(15x^2-2)(x) - (5x^3-2x)(1)}{x^2}$
+  D : $15x^2-2$
+EXPLANATION: It is often faster to simplify first: $$y = \frac{5x^3}{x} - \frac{2x}{x} = 5x^2 - 2 \quad (x\neq 0).$$ Then $$y' = 10x.$$ Using the quotient rule yields the same result: $$y' = \frac{(15x^2-2)(x) - (5x^3-2x)(1)}{x^2} = \frac{10x^3}{x^2} = 10x.$$
+MICRO:
+  A: Correct. The Quotient Rule is (f/g)' = (f'g - fg')/g^2. Note the order of subtraction in the numerator and the squared denominator.
+  B: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  C: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  D: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+
+--- 2.9-P5 [3/3] [Both] ---
+PROMPT: Find the derivative of $f(x) = \dfrac{\sin x}{x}$.
+CORRECT: D = "$\dfrac{x\cos x - \sin x}{x^2}$"
+  A : $\dfrac{\cos x}{1}$
+  B : $\dfrac{x\cos x + \sin x}{x^2}$
+  C : $\dfrac{\sin x - x\cos x}{x^2}$
+  D ✓: $\dfrac{x\cos x - \sin x}{x^2}$
+EXPLANATION: Using quotient rule with $u=\sin x, v=x$: $$u'=\cos x, v'=1.$$ $$f'(x) = \frac{u'v - uv'}{v^2} = \frac{(\cos x)(x) - (\sin x)(1)}{x^2} = \frac{x\cos x - \sin x}{x^2}.$$
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+
+--- 2.10-P1 [2/2] [Both] ---
+PROMPT: If $y = 3\tan x$, what is $y'$?
+CORRECT: C = "$3\sec^2 x$"
+  A : $3\sec x$
+  B : $-3\sec^2 x$
+  C ✓: $3\sec^2 x$
+  D : $3\sec x \tan x$
+EXPLANATION: The derivative of $\tan x$ is $\sec^2 x$. So $y' = 3\sec^2 x$.
+MICRO:
+  A: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+  B: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+  C: Correct. Standard trig derivatives: (sin x)' = cos x, (cos x)' = -sin x. This option follows the established formulas.
+  D: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+
+--- 2.10-P2 [3/3] [Both] ---
+PROMPT: Find the derivative of $f(x) = x\sec x$.
+CORRECT: B = "$\sec x + x\sec x\tan x$"
+  A : $1\cdot \sec x$
+  B ✓: $\sec x + x\sec x\tan x$
+  C : $\sec^2 x$
+  D : $\sec x\tan x$
+EXPLANATION: Use product rule: $(uv)' = u'v + uv'$. $u=x, u'=1$. $v=\sec x, v'=\sec x\tan x$. $$f'(x) = 1(\sec x) + x(\sec x\tan x) = \sec x(1 + x\tan x).$$
+MICRO:
+  A: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+  B: Correct. Standard trig derivatives: (sin x)' = cos x, (cos x)' = -sin x. This option follows the established formulas.
+  C: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+  D: Incorrect. Please verify standard trigonometric differentiation formulas, paying special attention to the negative sign for the derivative of cosine.
+
+--- 2.10-P3 [3/2] [Both] ---
+PROMPT: What is $\dfrac{d}{dx}(\csc x + \cot x)$?
+CORRECT: B = "$-\csc x\cot x - \csc^2 x$"
+  A : $\csc x\cot x + \csc^2 x$
+  B ✓: $-\csc x\cot x - \csc^2 x$
+  C : $-\csc x - \sec^2 x$
+  D : $\sec x\tan x + \sec^2 x$
+EXPLANATION: Recall: $$\frac{d}{dx}(\csc x) = -\csc x\cot x$$ $$\frac{d}{dx}(\cot x) = -\csc^2 x$$ Sum: $-\csc x\cot x - \csc^2 x$.
+MICRO:
+  A: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  B: Correct. This option aligns with basic derivative rules, definitions, or geometric interpretations.
+  C: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+  D: Incorrect. This option does not follow differentiation rules or the mathematical definition of a derivative.
+
+--- 2.10-P4 [4/4] [Both] ---
+PROMPT: Find the slope of the tangent line to the curve $y = 2\sec x$ at $x = \dfrac{\pi}{3}$.
+CORRECT: D = "$4\sqrt{3}$"
+  A : $2\sqrt{3}$
+  B : $2$
+  C : $4$
+  D ✓: $4\sqrt{3}$
+EXPLANATION: Differentiate: $y' = 2\sec x\tan x$. Evaluate at $x=\frac{\pi}{3}$: $\sec(\frac{\pi}{3}) = 2$. $\tan(\frac{\pi}{3}) = \sqrt{3}$. $y'(\frac{\pi}{3}) = 2(2)(\sqrt{3}) = 4\sqrt{3}$.
+MICRO:
+  A: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  B: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  C: Incorrect. The Product Rule requires keeping one term constant while differentiating the other, then summing the cross-results.
+  D: Correct. The Product Rule is (fg)' = f'g + fg'. this option correctly applies alternating derivatives and sums them.
+
+--- 2.10-P5 [5/4] [Both] ---
+PROMPT: Let $y = \tan^2 x$. What is $y'$?
+CORRECT: A = "$2\tan x \sec^2 x$"
+  A ✓: $2\tan x \sec^2 x$
+  B : $\sec^4 x$
+  C : $2\tan x$
+  D : $2\sec^2 x$
+EXPLANATION: Treat as $y = (\tan x)^2$. Use chain rule: $$y' = 2(\tan x)^1 \cdot \frac{d}{dx}(\tan x)$$ $$y' = 2\tan x \sec^2 x.$$
+MICRO:
+  A: Correct. The Quotient Rule is (f/g)' = (f'g - fg')/g^2. Note the order of subtraction in the numerator and the squared denominator.
+  B: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  C: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.
+  D: Incorrect. The key to the Quotient Rule is: (Low dHigh - High dLow) / Low-squared. Please check the sign in the numerator.

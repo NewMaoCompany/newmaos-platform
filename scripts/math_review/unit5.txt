@@ -1,0 +1,1145 @@
+UNIT 5 MATHEMATICAL REVIEW (80 questions)
+============================================================
+
+--- 5.0-UT-Q1 [3/3] [Both] ---
+PROMPT: IMAGE: unit_test-P1.png  The secant line between $x=0.8$ and $x=3.8$ has slope $2$. Assume $f$ is continuous on $[0.8,3.8]$ and differentiable on $(0.8,3.8)$. Which statement must be true?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "There exists $c$ with $f'(c)=2$"
+  A : Both B and C must occur
+  B : There exists $c$ with $f'(c)>2$
+  C : There exists $c$ with $f'(c)<2$
+  D ✓: There exists $c$ with $f'(c)=2$
+EXPLANATION: By the Mean Value Theorem, there exists $c$ such that $$f'(c)=\frac{f(3.8)-f(0.8)}{3.8-0.8}=2.$$
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.0-UT-Q2 [2/2] [Both] ---
+PROMPT: Let $f(x)=\sqrt{4-x^2}$ on $[-2,2]$. Which statement is true?
+CORRECT: D = "$f$ has both an absolute maximum and minimum"
+  A : EVT does not apply
+  B : $f$ has no absolute minimum
+  C : $f$ has no absolute maximum
+  D ✓: $f$ has both an absolute maximum and minimum
+EXPLANATION: Since $f$ is continuous on a closed interval, EVT guarantees absolute extrema.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.0-UT-Q3 [3/2] [Both] ---
+PROMPT: A function is continuous on $[1,5]$. Where can absolute extrema occur?
+CORRECT: A = "At endpoints and critical points"
+  A ✓: At endpoints and critical points
+  B : Only at endpoints
+  C : Only where $f'(x)=0$
+  D : Only where $f'$ is undefined
+EXPLANATION: Absolute extrema occur at endpoints and interior critical points.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q4 [3/3] [Both] ---
+PROMPT: Let $f'(x)=\dfrac{(x-2)(x+1)}{(x-1)^2}$. On which set of intervals is $f$ increasing?
+CORRECT: D = "$(-\infty,-1)\cup(2,\infty)$"
+  A : $(-1,1)\cup(1,2)$
+  B : $(-\infty,-1)\cup(-1,1)$
+  C : $(1,2)$ only
+  D ✓: $(-\infty,-1)\cup(2,\infty)$
+EXPLANATION: Because $(x-1)^2>0$ for $x\ne 1$, the sign of $f'(x)$ matches the sign of $(x-2)(x+1)$. That product is positive on $(-\infty,-1)$ and $(2,\infty)$, so $f$ is increasing on $$(-\infty,-1)\cup(2,\infty).$$
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.0-UT-Q5 [1/1] [Both] ---
+PROMPT: Suppose $f$ is differentiable and $f'(x)$ changes sign from positive to negative at $x=5$. What can be concluded?
+CORRECT: A = "$f$ has a local maximum at $x=5$."
+  A ✓: $f$ has a local maximum at $x=5$.
+  B : $f$ has a local minimum at $x=5$.
+  C : $f$ has an inflection point at $x=5$.
+  D : No conclusion can be drawn without knowing $f''(5)$.
+EXPLANATION: When $f'(x)$ changes from positive to negative at $x=5$, $f$ changes from increasing to decreasing at $x=5$. Therefore, $f$ has a local maximum at $x=5$.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q6 [4/4] [Both] ---
+PROMPT: Let $f(x)=x\sqrt{9-x^2}$ on $[0,3]$. What is the maximum value of $f$ on $[0,3]$?
+CORRECT: B = "$\dfrac{9}{2}$"
+  A : $3\sqrt{3}$
+  B ✓: $\dfrac{9}{2}$
+  C : $6$
+  D : $9$
+EXPLANATION: Differentiate: $$f'(x)=\sqrt{9-x^2}-\frac{x^2}{\sqrt{9-x^2}}=\frac{9-2x^2}{\sqrt{9-x^2}}.$$ Set $9-2x^2=0\Rightarrow x=\frac{3}{\sqrt{2}}$ (in $[0,3]$). Candidates: $$f(0)=0,\quad f(3)=0,$$ $$f\!\left(\frac{3}{\sqrt{2}}\right)=\frac{3}{\sqrt{2}}\cdot\sqrt{9-\frac{9}{2}}=\frac{3}{\sqrt{2}}\cdot\frac{3}{\sqrt{2}}=\frac{9}{2}.$$ So the maximum value is $\dfrac{9}{2}$.
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+  C: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  D: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+
+--- 5.0-UT-Q7 [2/2] [Both] ---
+PROMPT: IMAGE: unit_test-P7.png  The graph shown is $f'(x)$. On which interval is $f$ decreasing?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$(-1,2)$"
+  A : $(-\infty,-1)$
+  B : $(2,\infty)$
+  C ✓: $(-1,2)$
+  D : None; $f$ is increasing for all $x$.
+EXPLANATION: $f$ is decreasing where $f'(x)<0$. From the graph, $f'(x)$ is negative on $(-1,2)$, so $f$ is decreasing on $(-1,2)$.
+MICRO:
+  A: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  B: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+  C: Correct. In related rates problems, you must establish a geometric or algebraic model, differentiate with respect to time t (using implicit differenti
+  D: Incorrect. To solve related rates, ensure you've established a correct equation relating the variables and applied the Chain Rule correctly when diffe
+
+--- 5.0-UT-Q8 [3/2] [Both] ---
+PROMPT: Let $f(x)=x^3-6x^2+9x+1$. On which interval is $f$ concave up?
+CORRECT: A = "$(2,\infty)$"
+  A ✓: $(2,\infty)$
+  B : $(-\infty,2)$
+  C : $(-\infty,0)$
+  D : $(0,2)$
+EXPLANATION: Compute $$f''(x)=6x-12=6(x-2).$$ $f$ is concave up where $f''(x)>0$, i.e. where $x>2$.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q9 [3/2] [Both] ---
+PROMPT: Suppose $f'(2)=0$ and $f''(2)<0$. Which conclusion is justified?
+CORRECT: A = "$f$ has a local maximum at $x=2$."
+  A ✓: $f$ has a local maximum at $x=2$.
+  B : $f$ has an inflection point at $x=2$.
+  C : No conclusion can be drawn.
+  D : $f$ has a local minimum at $x=2$.
+EXPLANATION: Second derivative test: if $f'(c)=0$ and $f''(c)<0$, then $f$ has a local maximum at $c$. With $c=2$, $f$ has a local maximum at $x=2$.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q10 [2/2] [Both] ---
+PROMPT: IMAGE: unit_test-P10.png  The graph shown is $f''(x)$. On which interval is $f$ concave down?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$(1,3)$"
+  A : All real $x$
+  B : $(-\infty,1)$
+  C : $(3,\infty)$
+  D ✓: $(1,3)$
+EXPLANATION: $f$ is concave down where $f''(x)<0$. From the graph, $f''(x)$ is negative on $(1,3)$, so $f$ is concave down on $(1,3)$.
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  C: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  D: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+
+--- 5.0-UT-Q11 [4/4] [Both] ---
+PROMPT: A differentiable function satisfies $f'(x)=3(x-1)(x-4)$ for all $x$, and $f(0)=2$. What is the absolute minimum value of $f$ on $[0,5]$?
+CORRECT: C = "$-6$"
+  A : 2
+  B : $-\dfrac{1}{2}$
+  C ✓: $-6$
+  D : $\dfrac{15}{2}$
+EXPLANATION: Integrate: $$f'(x)=3(x-1)(x-4)=3x^2-15x+12,$$ so $$f(x)=\int(3x^2-15x+12)\,dx=x^3-\frac{15}{2}x^2+12x+C.$$ Given $f(0)=2$, $C=2$. Candidates for absolute extrema on $[0,5]$ are $x=0,1,4,5$. $$f(0)=2,$$ $$f(1)=1-\frac{15}{2}+12+2=\frac{15}{2},$$ $$f(4)=64-120+48+2=-6,$$ $$f(5)=125-\frac{375}{2}+60+2=-\frac{1}{2}.$$ Thus the absolute minimum value is $-6$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q12 [5/4] [Both] ---
+PROMPT: A twice-differentiable function $f$ satisfies: (i) $f'(x)>0$ for $x<0$, (ii) $f'(x)<0$ for $0<x<2$, (iii) $f'(x)>0$ for $x>2$. Which statement must be true?
+CORRECT: A = "$f$ has a local maximum at $x=0$ and a local minimum at $x=2$."
+  A ✓: $f$ has a local maximum at $x=0$ and a local minimum at $x=2$.
+  B : $f$ is decreasing on $(2,\infty)$.
+  C : $f$ has a local minimum at $x=0$.
+  D : $f$ is increasing on $(0,2)$.
+EXPLANATION: Since $f'(x)>0$ for $x<0$ and $f'(x)<0$ for $0<x<2$, $f$ changes from increasing to decreasing at $x=0$, so $f$ has a local maximum at $x=0$. Also, $f'(x)<0$ for $0<x<2$ and $f'(x)>0$ for $x>2$, so $f$ changes from decreasing to increasing at $x=2$, giving a local minimum at $x=2$.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q13 [4/3] [Both] ---
+PROMPT: A differentiable function $f$ has exactly two critical points, at $x=-1$ and $x=2$. Also, $f'$ changes sign from positive to negative at $x=-1$ and from negative to positive at $x=2$. Which statement must be true?
+CORRECT: B = "$f$ has a local maximum at $x=-1$ and a local minimum at $x=2$."
+  A : $f$ has a local minimum at both $x=-1$ and $x=2$.
+  B ✓: $f$ has a local maximum at $x=-1$ and a local minimum at $x=2$.
+  C : $f$ is increasing for all $x>2$.
+  D : $f$ has an inflection point at $x=-1$.
+EXPLANATION: If $f'$ changes from positive to negative at $x=-1$, then $f$ changes from increasing to decreasing at $x=-1$, so $f$ has a local maximum there. If $f'$ changes from negative to positive at $x=2$, then $f$ changes from decreasing to increasing at $x=2$, so $f$ has a local minimum there.
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+  C: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  D: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+
+--- 5.0-UT-Q14 [2/2] [Both] ---
+PROMPT: A rectangle has perimeter $40$. If its length is $x$, what is its area $A(x)$ as a function of $x$?
+CORRECT: C = "$A(x)=x(20-x)$"
+  A : $A(x)=\dfrac{40}{x}$
+  B : $A(x)=x(40-x)$
+  C ✓: $A(x)=x(20-x)$
+  D : $A(x)=20x$
+EXPLANATION: Perimeter $2x+2w=40$ gives $w=20-x$. Therefore, $$A(x)=x(20-x).$$
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q15 [4/4] [Both] ---
+PROMPT: Find the maximum area of a rectangle inscribed under $y=9-x^2$ above the $x$-axis, with sides parallel to the axes.
+CORRECT: B = "$12\sqrt{3}$"
+  A : $9$
+  B ✓: $12\sqrt{3}$
+  C : $12$
+  D : $18$
+EXPLANATION: Using symmetry, corners are $(\pm x,9-x^2)$ for $0\le x\le 3$. Then width $=2x$ and height $=9-x^2$: $$A(x)=2x(9-x^2)=18x-2x^3.$$ Differentiate: $$A'(x)=18-6x^2=0\Rightarrow x=\sqrt{3}.$$ Then $$A(\sqrt{3})=2\sqrt{3}(9-3)=12\sqrt{3}.$$
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q16 [3/3] [Both] ---
+PROMPT: Consider the relation $x^2+y^2=4$. At which point(s) on the curve is $\dfrac{dy}{dx}$ undefined?
+CORRECT: C = "$(2,0)$ and $(-2,0)$"
+  A : $(0,2)$ and $(0,-2)$
+  B : $(2,0)$ only
+  C ✓: $(2,0)$ and $(-2,0)$
+  D : Nowhere
+EXPLANATION: Differentiate implicitly: $$2x+2y\,y'=0\Rightarrow y'=-\frac{x}{y}.$$ The slope is undefined when $y=0$. On $x^2+y^2=4$, $y=0$ occurs at $(2,0)$ and $(-2,0)$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q17 [2/2] [Both] ---
+PROMPT: Suppose $f$ is twice differentiable on $(a,b)$. If $f'(x)$ is increasing on $(a,b)$, what must be true about $f$ on $(a,b)$?
+CORRECT: C = "$f$ is concave up on $(a,b)$."
+  A : $f$ is increasing on $(a,b)$.
+  B : $f$ is concave down on $(a,b)$.
+  C ✓: $f$ is concave up on $(a,b)$.
+  D : $f$ must be linear on $(a,b)$.
+EXPLANATION: A function is concave up on an interval when its derivative is increasing. Since $f'(x)$ is increasing on $(a,b)$, $f$ is concave up on $(a,b)$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q18 [5/4] [Both] ---
+PROMPT: Let $y$ be defined implicitly by $x^2+xy+y^2=3$. At the point $(1,1)$, what is the value of $\dfrac{dy}{dx}$?
+CORRECT: B = "-1"
+  A : 0
+  B ✓: -1
+  C : Undefined
+  D : 1
+EXPLANATION: Differentiate: $$2x+(x\,y'+y)+2y\,y'=0\Rightarrow y'(x+2y)=-(2x+y).$$ Thus $$y'=-\frac{2x+y}{x+2y}.$$ At $(1,1)$: $$y'=-\frac{2(1)+1}{1+2(1)}=-\frac{3}{3}=-1.$$
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q19 [3/3] [Both] ---
+PROMPT: The derivative of a function is $f'(x)=\dfrac{x}{x^2+1}$. Which statement is true?
+CORRECT: B = "$f$ has a local minimum at $x=0$."
+  A : $f$ has a local maximum at $x=0$.
+  B ✓: $f$ has a local minimum at $x=0$.
+  C : $f$ has no local extrema.
+  D : $f$ has local maxima at $x=\pm1$.
+EXPLANATION: Since $x^2+1>0$ for all $x$, the sign of $f'(x)$ is the sign of $x$. Thus $f'(x)<0$ for $x<0$ and $f'(x)>0$ for $x>0$, so $f$ decreases then increases, giving a local minimum at $x=0$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.0-UT-Q20 [4/3] [Both] ---
+PROMPT: A company estimates profit (in thousands of dollars) from producing $x$ units is $P(x)=-0.5x^2+8x-10$ for $0\le x\le 20$. How many units should be produced to maximize profit?
+CORRECT: D = "8"
+  A : 4
+  B : 10
+  C : 20
+  D ✓: 8
+EXPLANATION: Since $P(x)$ is a downward-opening parabola, its maximum occurs at the vertex: $$x=-\frac{b}{2a}=-\frac{8}{2(-0.5)}=8.$$ So the company should produce $8$ units.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.1-P1 [3/2] [Both] ---
+PROMPT: Let $f(x)=x^3-3x$ on the interval $[0,2]$. By the Mean Value Theorem, there exists $c\in(0,2)$ such that $$f'(c)=\frac{f(2)-f(0)}{2-0}.$$ Which value of $c$ satisfies this conclusion?
+CORRECT: A = "$\dfrac{2}{\sqrt{3}}$"
+  A ✓: $\dfrac{2}{\sqrt{3}}$
+  B : $1$
+  C : $\sqrt{\dfrac{4}{3}}$
+  D : $\dfrac{4}{3}$
+EXPLANATION: MVT gives $f'(c)=\dfrac{f(2)-f(0)}{2}$. Here $f(2)=2$ and $f(0)=0$, so the average rate is $1$. Solve $3c^2-3=1$ to get $c=\dfrac{2}{\sqrt{3}}$ in $(0,2)$.
+MICRO:
+  A: Correct. EVT guarantees absolute extrema on a closed interval $[a, b]$.
+  B: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  C: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  D: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+
+--- 5.1-P2 [2/1] [Both] ---
+PROMPT: Consider $f(x)=|x|$ on the interval $[-1,2]$. Which statement is correct regarding the Mean Value Theorem on this interval?
+CORRECT: C = "MVT does not apply because $f$ is not differentiable at an interior point."
+  A : MVT applies because $f$ is continuous on $[-1,2]$.
+  B : MVT applies because $f$ is differentiable on $( -1,2 )$.
+  C ✓: MVT does not apply because $f$ is not differentiable at an interior point.
+  D : MVT does not apply because $f$ is not continuous on $[-1,2]$.
+EXPLANATION: The MVT requires $f$ continuous on $[a,b]$ and differentiable on $(a,b)$. Although $|x|$ is continuous on $[-1,2]$, it is not differentiable at $x=0\in(-1,2)$, so MVT does not apply.
+MICRO:
+  A: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  B: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  C: Correct. EVT guarantees absolute extrema on a closed interval $[a, b]$.
+  D: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+
+--- 5.1-P3 [2/1] [Both] ---
+PROMPT: Suppose $f$ is continuous on $[a,b]$, differentiable on $(a,b)$, and $f(a)=f(b)$. Which statement must be true?
+CORRECT: A = "There exists $c\in(a,b)$ such that $f'(c)=0$."
+  A ✓: There exists $c\in(a,b)$ such that $f'(c)=0$.
+  B : There exists $c\in(a,b)$ such that $f'(c)=\dfrac{f(b)-f(a)}{b-a}$.
+  C : There exists $c\in(a,b)$ such that $f'(c)=1$.
+  D : There exists $c\in(a,b)$ such that $f(c)=0$.
+EXPLANATION: Rolle’s Theorem applies under continuity on $[a,b]$, differentiability on $(a,b)$, and $f(a)=f(b)$, guaranteeing a point $c\in(a,b)$ with $f'(c)=0$.
+MICRO:
+  A: Correct. EVT guarantees absolute extrema on a closed interval $[a, b]$.
+  B: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  C: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  D: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+
+--- 5.1-P4 [4/3] [Both] ---
+PROMPT: Let $f(x)=\sqrt{x}$. Apply the Mean Value Theorem on $[4,4.1]$ to obtain a bound for $\sqrt{4.1}-2$. Which inequality is guaranteed?
+CORRECT: D = "$\dfrac{0.1}{2\sqrt{4.1}}<\sqrt{4.1}-2<\dfrac{0.1}{4}$"
+  A : $\dfrac{0.1}{4.1}<\sqrt{4.1}-2<\dfrac{0.1}{4}$
+  B : $\sqrt{4.1}-2=\dfrac{0.1}{2\sqrt{4.05}}$
+  C : $\dfrac{0.1}{4}<\sqrt{4.1}-2<\dfrac{0.1}{2\sqrt{4.1}}$
+  D ✓: $\dfrac{0.1}{2\sqrt{4.1}}<\sqrt{4.1}-2<\dfrac{0.1}{4}$
+EXPLANATION: By MVT, $\sqrt{4.1}-\sqrt{4}=f'(c)(4.1-4)=\dfrac{1}{2\sqrt{c}}\cdot 0.1$ for some $c\in(4,4.1)$. Because $\dfrac{1}{2\sqrt{x}}$ decreases, $\dfrac{1}{2\sqrt{4.1}}<\dfrac{1}{2\sqrt{c}}<\dfrac14$. Multiply by $0.1$ to bound $\sqrt{4.1}-2$.
+MICRO:
+  A: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  B: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  C: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  D: Correct. EVT guarantees absolute extrema on a closed interval $[a, b]$.
+
+--- 5.1-P5 [1/1] [Both] ---
+PROMPT: A function $f$ is continuous on $[1,5]$ and differentiable on $(1,5)$. If $f(1)=2$ and $f(5)=-6$, which statement must be true?
+CORRECT: B = "There exists $c\in(1,5)$ such that $f'(c)=-2$."
+  A : There exists $c\in(1,5)$ such that $f'(c)=2$.
+  B ✓: There exists $c\in(1,5)$ such that $f'(c)=-2$.
+  C : There exists $c\in(1,5)$ such that $f(c)=-2$.
+  D : The function must have a local minimum on $(1,5)$.
+EXPLANATION: Compute the secant slope: $\dfrac{f(5)-f(1)}{5-1}=\dfrac{-6-2}{4}=-2$. MVT guarantees a point $c\in(1,5)$ where $f'(c)=-2$.
+MICRO:
+  A: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  B: Correct. EVT guarantees absolute extrema on a closed interval $[a, b]$.
+  C: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+  D: Incorrect. Check if the function is continuous on the closed interval $[a, b]$.
+
+--- 5.2-P1 [1/1] [Both] ---
+PROMPT: Let $f(x)=\dfrac{x-1}{x^2+1}$ on the interval $[0,3]$. Which statement is guaranteed?
+CORRECT: C = "$f$ attains both an absolute maximum value and an absolute minimum value on $[0,3]$."
+  A : $f$ has a local maximum on $(0,3)$.
+  B : $f$ is differentiable on $[0,3]$.
+  C ✓: $f$ attains both an absolute maximum value and an absolute minimum value on $[0,3]$.
+  D : $f$ has exactly two critical points in $(0,3)$.
+EXPLANATION: Because $x^2+1\neq 0$ for all real $x$, $f$ is continuous on $[0,3]$. The Extreme Value Theorem guarantees $f$ attains an absolute maximum and an absolute minimum on a closed interval.
+MICRO:
+  A: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  B: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  C: Correct. MVT states there exists a c in $(a, b)$ where $f'(c)$ = [$f(b)$-$f(a)$]/(b-a).
+  D: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+
+--- 5.2-P2 [4/3] [Both] ---
+PROMPT: Let $h(x)=x^4-4x^2+1$ on the interval $[-2,1]$. What is the absolute minimum value of $h$ on this interval?
+CORRECT: A = "$-3$"
+  A ✓: $-3$
+  B : $1$
+  C : $0$
+  D : $-2$
+EXPLANATION: Use the Candidates Test: endpoints $x=-2,1$ and critical points where $h'(x)=0$. Since $h'(x)=4x(x^2-2)$, candidates in $[-2,1]$ are $x=-2,1,0,-\sqrt{2}$. The smallest function value among these is $h(-\sqrt{2})=-3$.
+MICRO:
+  A: Correct. MVT states there exists a c in $(a, b)$ where $f'(c)$ = [$f(b)$-$f(a)$]/(b-a).
+  B: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  C: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  D: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+
+--- 5.2-P3 [3/2] [Both] ---
+PROMPT: The graph of $f$ on $[-1,3]$ is shown in the provided image (5.2-P3.png). Which statement is supported by the graph?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "The absolute maximum occurs at an interior point near $x\approx 0.1$, and the absolute minimum occurs at an interior point near $x\approx 2.0$."
+  A : The absolute maximum occurs at $x=3$, and the absolute minimum occurs at $x=-1$.
+  B ✓: The absolute maximum occurs at an interior point near $x\approx 0.1$, and the absolute minimum occurs at an interior point near $x\approx 2.0$.
+  C : The absolute maximum occurs at $x=-1$, and the absolute minimum occurs at $x=3$.
+  D : The function has no absolute extrema on $[-1,3]$.
+EXPLANATION: Reading the graph on the closed interval $[-1,3]$, the highest point is a peak near $x\approx 0.1$ and the lowest point is a valley near $x\approx 2.0$. Thus the absolute maximum and absolute minimum are both attained at interior points.
+MICRO:
+  A: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  B: Correct. MVT states there exists a c in $(a, b)$ where $f'(c)$ = [$f(b)$-$f(a)$]/(b-a).
+  C: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  D: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+
+--- 5.2-P4 [2/2] [Both] ---
+PROMPT: A function $f$ is continuous on $[0,4]$ and differentiable on $(0,4)$. The only critical points in $(0,4)$ are $x=1$ and $x=3$. The function values are $$f(0)=2,\quad f(1)=5,\quad f(3)=1,\quad f(4)=4.$$ What is the absolute maximum value of $f$ on $[0,4]$?
+CORRECT: D = "$5$"
+  A : The absolute maximum cannot be determined from the information given.
+  B : $4$
+  C : $2$
+  D ✓: $5$
+EXPLANATION: Because $f$ is continuous on $[0,4]$, EVT guarantees an absolute maximum occurs at an endpoint or a critical point. Evaluate candidates $x=0,1,3,4$: values $2,5,1,4$. The greatest is $5$.
+MICRO:
+  A: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  B: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  C: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  D: Correct. MVT states there exists a c in $(a, b)$ where $f'(c)$ = [$f(b)$-$f(a)$]/(b-a).
+
+--- 5.2-P5 [5/3] [Both] ---
+PROMPT: Let $k(x)=|x-2|+x$ on the interval $(0,5)$. Which describes the set of critical points of $k$ in $(0,5)$?
+CORRECT: B = "All $x$ with $0<x\le 2$"
+  A : Only $x=2$
+  B ✓: All $x$ with $0<x\le 2$
+  C : Only $x=0$ and $x=5$
+  D : All $x$ with $2\le x<5$
+EXPLANATION: For $x<2$, $k(x)=|x-2|+x=(2-x)+x=2$, so $k'(x)=0$ for all $x\in(0,2)$. At $x=2$, $k$ is not differentiable, so $2$ is a critical point. For $x>2$, $k(x)=(x-2)+x=2x-2$ so $k'(x)=2$. Therefore, the set of critical points in $(0,5)$ is $(0,2]$.
+MICRO:
+  A: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  B: Correct. MVT states there exists a c in $(a, b)$ where $f'(c)$ = [$f(b)$-$f(a)$]/(b-a).
+  C: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+  D: Incorrect. Remember the function must be continuous on $[a, b]$ and differentiable on $(a, b)$.
+
+--- 5.3-P1 [3/3] [Both] ---
+PROMPT: Let $f$ be differentiable except possibly where $f'(x)$ is undefined. Suppose $$f'(x)=\dfrac{(x-2)(x+1)^2}{x-3}.$$ On which intervals is $f$ increasing?
+CORRECT: B = "$(-\infty,-1)\cup(-1,2)\cup(3,\infty)$"
+  A : $(-\infty,-1)\cup(2,3)$
+  B ✓: $(-\infty,-1)\cup(-1,2)\cup(3,\infty)$
+  C : $(-1,2)\cup(2,3)$
+  D : $(2,3)$ only
+EXPLANATION: Critical values come from $f'(x)=0$ or undefined: $x=-1,2$ (zeros) and $x=3$ (undefined). Since $(x+1)^2\ge 0$ and has even multiplicity at $x=-1$, it does not flip the sign. Thus the sign is the sign of $\frac{x-2}{x-3}$: positive for $x<2$ and $x>3$, negative for $2<x<3$. Therefore $f$ is increasing on $(-\infty,-1)\cup(-1,2)\cup(3,\infty)$.
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+  C: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  D: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+
+--- 5.3-P2 [2/2] [Both] ---
+PROMPT: A differentiable function $f$ has critical points only at $x=-1$ and $x=2$. If $f'(0)<0$ and $f'(3)>0$, which set of intervals must describe where $f$ is decreasing?
+CORRECT: A = "$(-1,2)$"
+  A ✓: $(-1,2)$
+  B : $(-\infty,-1)$
+  C : $(2,\infty)$
+  D : $(-\infty,-1)\cup(-1,2)$
+EXPLANATION: If the only critical points are $x=-1$ and $x=2$, then $f'(x)$ keeps a constant sign on each of $(-\infty,-1)$, $(-1,2)$, and $(2,\infty)$. Since $f'(0)<0$ and $0\in(-1,2)$, we must have $f'(x)<0$ for all $x\in(-1,2)$. Thus $f$ is decreasing on $(-1,2)$.
+MICRO:
+  A: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+  B: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  C: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  D: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+
+--- 5.3-P3 [4/4] [Both] ---
+PROMPT: See image (5.3-P3.png). The graph shown is $y=f'(x)$. On which intervals is $f$ increasing?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$(-3,1)\cup(2,\infty)$"
+  A : $(-\infty,-3)\cup(1,2)$
+  B : $(-3,2)$
+  C : $(-\infty,-3)\cup(2,\infty)$
+  D ✓: $(-3,1)\cup(2,\infty)$
+EXPLANATION: A function $f$ is increasing where $f'(x)>0$. Reading the derivative graph, the curve is above the $x$-axis on $(-3,1)$ and on $(2,\infty)$, and below the $x$-axis on $(-\infty,-3)$ and $(1,2)$. Therefore $f$ is increasing on $(-3,1)\cup(2,\infty)$.
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  C: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  D: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+
+--- 5.3-P4 [5/5] [Both] ---
+PROMPT: Let $f(x)=\ln(x^2-4x)$. On which interval(s) is $f$ increasing?
+CORRECT: C = "$(4,\infty)$"
+  A : $(-\infty,0)\cup(4,\infty)$
+  B : $(-\infty,0)$
+  C ✓: $(4,\infty)$
+  D : $(-\infty,2)\cup(4,\infty)$
+EXPLANATION: Domain: require $x^2-4x>0\Rightarrow x(x-4)>0\Rightarrow x<0$ or $x>4$. Derivative: $$f'(x)=\dfrac{2x-4}{x^2-4x}=\dfrac{2(x-2)}{x(x-4)}.$$ On $(-\infty,0)$, choose $x=-1$ to get $f'(x)<0$. On $(4,\infty)$, choose $x=5$ to get $f'(x)>0$. Therefore $f$ is increasing only on $(4,\infty)$.
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  C: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+  D: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+
+--- 5.3-P5 [3/3] [Both] ---
+PROMPT: Let $f$ be differentiable on $[0,2\pi]$ with $$f'(x)=\sin x-\dfrac12.$$ On which intervals in $[0,2\pi]$ is $f$ increasing?
+CORRECT: C = "$\left(\dfrac{\pi}{6},\dfrac{5\pi}{6}\right)$"
+  A : $\left(\dfrac{\pi}{6},\pi\right)$
+  B : $\left(0,\dfrac{\pi}{6}\right)\cup\left(\dfrac{5\pi}{6},2\pi\right)$
+  C ✓: $\left(\dfrac{\pi}{6},\dfrac{5\pi}{6}\right)$
+  D : $\left(\dfrac{7\pi}{6},\dfrac{11\pi}{6}\right)$
+EXPLANATION: Increasing where $f'(x)>0$: $\sin x-\tfrac12>0\iff \sin x>\tfrac12$. On $[0,2\pi]$, $\sin x=\tfrac12$ at $x=\tfrac{\pi}{6}$ and $x=\tfrac{5\pi}{6}$, and $\sin x>\tfrac12$ between them. So $f$ increases on $\left(\tfrac{\pi}{6},\tfrac{5\pi}{6}\right)$.
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  C: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+  D: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+
+--- 5.4-P1 [3/3] [Both] ---
+PROMPT: A differentiable function $f$ has $$f'(x)=\dfrac{(x-1)(x+2)}{x^2+1}.$$ At which $x$-values does $f$ have a relative extremum?
+CORRECT: D = "$x=-2$ and $x=1$"
+  A : $x=-2$ only
+  B : No relative extrema
+  C : $x=0$ only
+  D ✓: $x=-2$ and $x=1$
+EXPLANATION: Critical points occur where $f'(x)=0$: $x=-2$ and $x=1$. Because $x^2+1>0$ for all $x$, the sign of $f'(x)$ is the sign of $(x-1)(x+2)$. It changes from $+$ to $-$ at $x=-2$ (local maximum) and from $-$ to $+$ at $x=1$ (local minimum). Thus $f$ has relative extrema at $x=-2$ and $x=1$.
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  C: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  D: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+
+--- 5.4-P2 [4/4] [Both] ---
+PROMPT: See image (5.4-P2.png). The graph shown is $y=f'(x)$. Which statement about relative extrema of $f$ is true?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "Local maximum at $x=-1$ and local minimum at $x=2$"
+  A : Local minima at both $x=-1$ and $x=2$
+  B : Local minimum at $x=-1$ and local maximum at $x=2$
+  C ✓: Local maximum at $x=-1$ and local minimum at $x=2$
+  D : No local extrema because $f'(x)$ is defined everywhere
+EXPLANATION: By the First Derivative Test, $f$ has a local maximum where $f'(x)$ changes from $+$ to $-$, and a local minimum where $f'(x)$ changes from $-$ to $+$. From the graph: $f'(x)>0$ for $x<-1$, $f'(x)<0$ for $-1<x<2$, and $f'(x)>0$ for $x>2$. Therefore $f$ has a local maximum at $x=-1$ and a local minimum at $x=2$.
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  C: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+  D: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+
+--- 5.4-P3 [2/2] [Both] ---
+PROMPT: A differentiable function $f$ has critical points at $x=-4,-1,$ and $3$. The sign of $f'(x)$ is: $f'(x)>0$ on $(-\infty,-4)$, $f'(x)<0$ on $(-4,-1)$, $f'(x)<0$ on $(-1,3)$, and $f'(x)>0$ on $(3,\infty)$. Which statement is true?
+CORRECT: D = "$f$ has a local maximum at $x=-4$ and a local minimum at $x=3$"
+  A : $f$ has local maxima at $x=-4$ and $x=-1$
+  B : $f$ has local minima at all three critical points
+  C : $f$ has local minima at $x=-4$ and $x=3$
+  D ✓: $f$ has a local maximum at $x=-4$ and a local minimum at $x=3$
+EXPLANATION: A local maximum occurs where $f'(x)$ changes from positive to negative, and a local minimum occurs where it changes from negative to positive. At $x=-4$ the sign goes $+\to-$, so $f$ has a local maximum. At $x=-1$ the sign is negative on both sides, so there is no local extremum. At $x=3$ the sign goes $-\to+$, so $f$ has a local minimum.
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  C: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  D: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+
+--- 5.4-P4 [4/4] [Both] ---
+PROMPT: See image (5.4-P4.png). Based on the graph of $f(x)$, which statement about local extrema is correct?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "Local maximum at approximately $x=1$ and local minimum at approximately $x=3$"
+  A : Local maxima at approximately $x=1$ and $x=3$
+  B ✓: Local maximum at approximately $x=1$ and local minimum at approximately $x=3$
+  C : Local minimum at approximately $x=1$ and local maximum at approximately $x=3$
+  D : No local extrema are shown
+EXPLANATION: Local extrema occur at turning points: increasing to decreasing gives a local maximum, and decreasing to increasing gives a local minimum. From the graph, $f$ turns downward near $x\approx 1$ (local maximum) and turns upward near $x\approx 3$ (local minimum).
+MICRO:
+  A: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  B: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+  C: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  D: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+
+--- 5.4-P5 [3/3] [Both] ---
+PROMPT: Let $f(x)=x^3-3x^2-9x+1$. Which statement about relative extrema is true?
+CORRECT: A = "$f$ has a relative maximum at $x=-1$ and a relative minimum at $x=3$"
+  A ✓: $f$ has a relative maximum at $x=-1$ and a relative minimum at $x=3$
+  B : $f$ has relative minima at both $x=-1$ and $x=3$
+  C : $f$ has a relative maximum at $x=3$ and a relative minimum at $x=-1$
+  D : $f$ has no relative extrema because $f$ is a polynomial
+EXPLANATION: Compute $$f'(x)=3x^2-6x-9=3(x-3)(x+1).$$ Critical points are $x=-1$ and $x=3$. For $x<-1$, $f'(x)>0$; for $-1<x<3$, $f'(x)<0$; for $x>3$, $f'(x)>0$. Thus $f$ changes from increasing to decreasing at $x=-1$ (relative maximum) and from decreasing to increasing at $x=3$ (relative minimum).
+MICRO:
+  A: Correct. Use the sign changes of f' or f'' to determine relative extrema or points of inflection.
+  B: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  C: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+  D: Incorrect. Review the conditions for sign changes in f' or f'' to identify specific local features.
+
+--- 5.5-P1 [3/3] [Both] ---
+PROMPT: Let $f(x)=x^3-3x^2-9x+1$ on the closed interval $[-1,4]$. Which statement about the absolute extrema of $f$ on $[-1,4]$ is correct?
+CORRECT: B = "Absolute maximum is $f(-1)=6$ and absolute minimum is $f(3)=-26$."
+  A : Absolute maximum is $f(4)=-19$ and absolute minimum is $f(3)=-26$.
+  B ✓: Absolute maximum is $f(-1)=6$ and absolute minimum is $f(3)=-26$.
+  C : Absolute maximum is $f(3)=-26$ and absolute minimum is $f(-1)=6$.
+  D : The function has no absolute maximum on $[-1,4]$ because $f$ is not monotonic.
+EXPLANATION: Compute $f^{\prime}(x)=3x^2-6x-9=3(x-3)(x+1)$. Candidates on $[-1,4]$ are endpoints $x=-1,4$ and critical points $x=-1,3$. Evaluate: $f(-1)=6$, $f(3)=-26$, $f(4)=-19$. Thus absolute max is $6$ at $x=-1$ and absolute min is $-26$ at $x=3$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.5-P2 [2/2] [Both] ---
+PROMPT: Let $f(x)=|x-2|+x$ on $[0,5]$. Which statement is true?
+CORRECT: D = "The absolute minimum value is $2$, attained for every $x\in[0,2]$, and the absolute maximum occurs at $x=5$."
+  A : The absolute minimum occurs only at $x=2$.
+  B : The absolute maximum occurs at $x=2$ because $|x-2|$ is minimized there.
+  C : The absolute maximum occurs at $x=0$.
+  D ✓: The absolute minimum value is $2$, attained for every $x\in[0,2]$, and the absolute maximum occurs at $x=5$.
+EXPLANATION: Write $f(x)=\begin{cases}2 & (0\le x\le 2)\\\\ 2x-2 & (2\le x\le 5)\end{cases}$. Minimum value is $2$ on $[0,2]$. Since $2x-2$ increases for $x\ge 2$, the absolute maximum is at $x=5$ with value $8$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.5-P3 [4/3] [Both] ---
+PROMPT: The graph of $f$ on $[0,4]$ is shown (see image: 5.5-P3.png). At approximately which $x$-value does $f$ attain its absolute maximum on $[0,4]$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$x\approx 2.5$"
+  A : $x=0$
+  B : $x\approx 1.2$
+  C ✓: $x\approx 2.5$
+  D : $x=4$
+EXPLANATION: Absolute maximum on a closed interval occurs at the highest function value among endpoints and interior peaks/valleys. From the graph, the highest point is the interior peak near $x\approx 2.5$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.5-P4 [4/4] [Both] ---
+PROMPT: Let $g(x)=\dfrac{x^2-4}{x-2}$ with domain restricted to $[0,4]$ (so $x=2$ is not in the domain). Which statement is correct?
+CORRECT: A = "$g$ has an absolute maximum value $6$ attained at $x=4$ and an absolute minimum value $2$ attained at $x=0$."
+  A ✓: $g$ has an absolute maximum value $6$ attained at $x=4$ and an absolute minimum value $2$ attained at $x=0$.
+  B : $g$ has an absolute maximum value $4$ attained at $x=2$.
+  C : $g$ has an absolute minimum value $4$ attained at $x=2$.
+  D : $g$ has no absolute maximum on its domain because it is not continuous on $[0,4]$.
+EXPLANATION: Simplify: $g(x)=\dfrac{(x-2)(x+2)}{x-2}=x+2$ for $x\ne 2$. Even though $x=2$ is excluded, endpoint values exist: $g(0)=2$ and $g(4)=6$. Thus both absolute extrema exist on the given domain.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.5-P5 [5/4] [Both] ---
+PROMPT: Let $h(x)=\sin x+\dfrac{x}{4}$ on $[0,2\pi]$. At which $x$ does $h$ attain its absolute maximum on $[0,2\pi]$?
+CORRECT: A = "$x=2\pi$"
+  A ✓: $x=2\pi$
+  B : At the solution(s) to $\cos x=-\dfrac14$ in $[0,2\pi]$ only
+  C : $x=0$
+  D : $x=\pi$
+EXPLANATION: Compute $h^{\prime}(x)=\cos x+\tfrac14$. Critical points satisfy $\cos x=-\tfrac14$ (two solutions in $[0,2\pi]$). Compare $h$ at those points and at endpoints $0$ and $2\pi$. The largest value occurs at $x=2\pi$ (endpoint).
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.6-P1 [2/2] [Both] ---
+PROMPT: A twice-differentiable function $f$ satisfies $f^{\prime\prime}(x)=6x-12$. Which statement is correct?
+CORRECT: B = "$f$ is concave down on $(-\infty,2)$ and concave up on $(2,\infty)$, with an inflection point at $x=2$."
+  A : $f$ is concave up for $x<2$ and concave down for $x>2$, with an inflection point at $x=2$.
+  B ✓: $f$ is concave down on $(-\infty,2)$ and concave up on $(2,\infty)$, with an inflection point at $x=2$.
+  C : $f$ is concave up for all $x$ because $f^{\prime\prime}$ is linear.
+  D : $f$ has no inflection point because $f^{\prime\prime}(2)=0$.
+EXPLANATION: Solve $6x-12=0\Rightarrow x=2$. For $x<2$, $f^{\prime\prime}(x)<0$ so $f$ is concave down; for $x>2$, $f^{\prime\prime}(x)>0$ so $f$ is concave up. Because the sign changes, $x=2$ is an inflection point.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.6-P2 [3/3] [Both] ---
+PROMPT: The sign chart for $f^{\prime\prime}(x)$ is shown (see image: 5.6-P2.png). On the interval $(-3,6)$, how many inflection points does $f$ have?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "3"
+  A : 2
+  B ✓: 3
+  C : 1
+  D : 0
+EXPLANATION: Inflection points occur where $f^{\prime\prime}$ changes sign. From the chart, the sign changes at $x=-1$ (from $+$ to $-$), at $x=2$ (from $-$ to $+$), and at $x=5$ (from $+$ to $-$). All are inside $(-3,6)$, so there are 3 inflection points.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.6-P3 [4/4] [Both] ---
+PROMPT: A function $f$ has first derivative $f^{\prime}(x)=(x-1)^2(x+2)$. On which interval is $f$ concave down?
+CORRECT: A = "On $(-1,1)$"
+  A ✓: On $(-1,1)$
+  B : On $(1,\infty)$ only
+  C : On $(-\infty,-1)$ only
+  D : On $(-\infty,-1)\cup(1,\infty)$
+EXPLANATION: Expand $f^{\prime}(x)=(x+2)(x-1)^2=x^3-3x+2$. Then $f^{\prime\prime}(x)=3x^2-3=3(x-1)(x+1)$. Thus $f^{\prime\prime}(x)<0$ on $(-1,1)$, so $f$ is concave down on $(-1,1)$.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.6-P4 [5/5] [Both] ---
+PROMPT: The curve is given implicitly by $x^2+y^2=25$ with $y>0$. At the point $(3,4)$, is the curve (viewed as $y$ as a function of $x$ locally) concave up or concave down?
+CORRECT: D = "Concave down, because $\dfrac{d^2y}{dx^2}<0$ at $(3,4)$."
+  A : Concave up, because $\dfrac{dy}{dx}<0$ at $(3,4)$.
+  B : Neither concave up nor concave down, because the curve is not a function.
+  C : Concave up, because $\dfrac{d^2y}{dx^2}>0$ at $(3,4)$.
+  D ✓: Concave down, because $\dfrac{d^2y}{dx^2}<0$ at $(3,4)$.
+EXPLANATION: Differentiate: $2x+2y\,y^{\prime}=0\Rightarrow y^{\prime}=-\dfrac{x}{y}$. Differentiate again: $$y^{\prime\prime}=\frac{d}{dx}\left(-\frac{x}{y}\right)=-\frac{y-xy^{\prime}}{y^2}=-\frac{y-x\left(-\frac{x}{y}\right)}{y^2}=-\frac{y+\frac{x^2}{y}}{y^2}=-\frac{y^2+x^2}{y^3}=-\frac{25}{y^3}.$$\nAt $(3,4)$, $y^{\prime\prime}=-\dfrac{25}{64}<0$, so the curve is concave down there.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.6-P5 [3/3] [Both] ---
+PROMPT: The graph of $f^{\prime}(x)$ is shown for $-2\le x\le 6$ (see image: 5.6-P5.png). On which interval is $f$ concave up?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$(\tfrac{5}{2},6)$"
+  A : $(-2,\tfrac{5}{2})$
+  B : $(-2,1)\cup(4,6)$
+  C ✓: $(\tfrac{5}{2},6)$
+  D : $(1,4)$
+EXPLANATION: A function is concave up where $f^{\prime\prime}>0$, equivalently where $f^{\prime}$ is increasing. From the graph, $f^{\prime}(x)$ has its minimum at $x=\tfrac{5}{2}$ and increases for $x>\tfrac{5}{2}$. Thus $f$ is concave up on $(\tfrac{5}{2},6)$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.7-P1 [3/3] [Both] ---
+PROMPT: Let $f$ be a twice-differentiable function with $$f'(x)=(x-1)(x+2)^2.$$ Using the second derivative test, classify the critical point at $x=1$.
+CORRECT: C = "Local minimum at $x=1$"
+  A : Local maximum at $x=1$
+  B : Neither; $x=1$ is not a critical point
+  C ✓: Local minimum at $x=1$
+  D : Inconclusive by the second derivative test
+EXPLANATION: Differentiate $f'(x)$ to get $f''(x)=3x(x+2)$. Since $f'(1)=0$ and $f''(1)=9>0$, the second derivative test gives a local minimum at $x=1$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.7-P2 [2/2] [Both] ---
+PROMPT: A twice-differentiable function $f$ satisfies $f'(3)=0$ and $f''(3)<0$. What can you conclude about $f$ at $x=3$?
+CORRECT: C = "$f$ has a local maximum at $x=3$"
+  A : $f$ has a local minimum at $x=3$
+  B : $f$ has an inflection point at $x=3$
+  C ✓: $f$ has a local maximum at $x=3$
+  D : No conclusion can be made because $f'(3)=0$
+EXPLANATION: The second derivative test: if $f'(c)=0$ and $f''(c)<0$, then $f$ has a local maximum at $x=c$. Here $c=3$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.7-P3 [3/3] [Both] ---
+PROMPT: Consider $f(x)=x^4-4x^2+2$. Which statement is true?
+CORRECT: B = "$f$ has local minima at $x=\pm\sqrt{2}$ and a local maximum at $x=0$"
+  A : $f$ has local maxima at $x=\pm\sqrt{2}$ and a local minimum at $x=0$
+  B ✓: $f$ has local minima at $x=\pm\sqrt{2}$ and a local maximum at $x=0$
+  C : $f$ has only one critical point at $x=0$
+  D : The second derivative test is inconclusive at all critical points
+EXPLANATION: Find critical points from $f'(x)=0$ and classify using $f''(x)$. The signs show a local maximum at $x=0$ and local minima at $x=\pm\sqrt{2}$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.7-P4 [4/4] [Both] ---
+PROMPT: A function $f$ is twice differentiable and satisfies $f'(2)=0$ and $f''(2)=0$. Which conclusion must be true?
+CORRECT: A = "No conclusion about a local extremum can be drawn from the second derivative test"
+  A ✓: No conclusion about a local extremum can be drawn from the second derivative test
+  B : $f$ has a local minimum at $x=2$
+  C : $f$ has a local maximum at $x=2$
+  D : $f$ must have an inflection point at $x=2$
+EXPLANATION: The second derivative test requires $f''(c)\ne 0$. If $f''(c)=0$, it is inconclusive: examples exist with a local max, local min, or neither at $c$.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.7-P5 [5/5] [Both] ---
+PROMPT: Let $f(x)=\dfrac{x}{x^2+1}$. Use the second derivative test to classify the critical point at $x=1$.
+CORRECT: D = "Local maximum at $x=1$"
+  A : Local minimum at $x=1$
+  B : Inconclusive by the second derivative test
+  C : Neither; $x=1$ is not a critical point
+  D ✓: Local maximum at $x=1$
+EXPLANATION: Find $f'(x)=\dfrac{1-x^2}{(x^2+1)^2}$ so $x=1$ is critical. Then $f''(x)=\dfrac{2x(x^2-3)}{(x^2+1)^3}$ gives $f''(1)=-\tfrac12<0$. Therefore $f$ has a local maximum at $x=1$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.8-P1 [2/2] [Both] ---
+PROMPT: The image (5.8-P1.png) shows the graph of $f$. On which interval is $f'(x)>0$ for all $x$ in the interval?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$(-2,-1)$"
+  A ✓: $(-2,-1)$
+  B : $(0,1)$
+  C : $(2,3)$
+  D : $(-1,2)$
+EXPLANATION: Where a function is increasing, its derivative is positive. The graph has a local maximum near $x=-1$ and a local minimum near $x=2$. The function increases on $(-\\infty,-1)$ and $(2,\\infty)$, so $f'(x)>0$ on those intervals. Among the choices, $(-2,-1)$ lies entirely in the increasing region.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+⚠️ ISSUES:
+  CRITICAL: correct answer ME says "Incorrect"
+  CRITICAL: wrong option D ME says "Correct"
+
+--- 5.8-P2 [3/3] [Both] ---
+PROMPT: The image (5.8-P2.png) shows the graph of $f'(x)$. At which $x$-value does $f$ have a local maximum?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "$x=1$"
+  A : $x=3$
+  B : $x=-1$
+  C ✓: $x=1$
+  D : $x=0$
+EXPLANATION: A local maximum occurs where $f'(x)$ changes from $+$ to $-$. From the graph, this happens at $x=1$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.8-P3 [3/3] [Both] ---
+PROMPT: The image (5.8-P3.png) shows the graph of $f''(x)$. On which interval is $f$ concave down?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "$(0,2)$"
+  A ✓: $(0,2)$
+  B : $(2,\infty)$
+  C : $(-\infty,0)$
+  D : All real numbers
+EXPLANATION: A function is concave down where $f''(x)<0$. From the graph of $f''$, it is negative on $(0,2)$.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.8-P4 [4/4] [Both] ---
+PROMPT: Suppose $f(x)=x^3-3x^2+1$. The image (5.8-P4.png) shows four candidate graphs (A–D). Which candidate graph could represent $f'(x)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "A"
+  A : D
+  B : B
+  C : C
+  D ✓: A
+EXPLANATION: Differentiate: $f'(x)=3x^2-6x=3x(x-2)$. So $f'(x)$ is an upward-opening parabola crossing the $x$-axis at $0$ and $2$, which corresponds to option A.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.8-P5 [4/4] [Both] ---
+PROMPT: The image (5.8-P5.png) shows the graph of $f$ and the tangent line at $x=2$. Which value is closest to $f'(2)$?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$0.29$"
+  A : $-0.29$
+  B ✓: $0.29$
+  C : $0.58$
+  D : $1.73$
+EXPLANATION: The derivative at a point equals the slope of the tangent line there. Reading two convenient points on the tangent line from the graph gives a slope near $0.29$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.9-P1 [3/2] [Both] ---
+PROMPT: The graph of $f'(x)$ is shown. At which $x$-value does $f$ have a local maximum?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: D = "$x=-1$ only"
+  A : $x=\dfrac{5}{3}$ only
+  B : Neither $x=-1$ nor $x=\dfrac{5}{3}$
+  C : Both $x=-1$ and $x=\dfrac{5}{3}$
+  D ✓: $x=-1$ only
+EXPLANATION: A local maximum of $f$ occurs where $f'(x)=0$ and the sign of $f'(x)$ changes from positive to negative. From the graph, $f'(x)=0$ at $x=-1,\,\tfrac{5}{3},\,4$. Near $x=-1$, $f'(x)$ goes from $+$ to $-$, so $f$ has a local maximum at $x=-1$. Near $x=\tfrac{5}{3}$, $f'(x)$ goes from $-$ to $+$ (local minimum). The point $x=4$ is an endpoint of the shown interval and does not create a local maximum by itself.
+MICRO:
+  A: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  B: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  C: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  D: Correct. Apply L'Hopital's rule when the limit results in an indeterminate form 0/0 or inf/inf.
+
+--- 5.9-P2 [2/2] [Both] ---
+PROMPT: Suppose $f$ is twice differentiable and $f''(2)=0$ with $f''(x)>0$ for $x<2$ and $f''(x)<0$ for $x>2$. Which statement must be true about $f'(x)$ at $x=2$?
+CORRECT: B = "$f'(x)$ has a local maximum at $x=2$"
+  A : $f$ has a local maximum at $x=2$
+  B ✓: $f'(x)$ has a local maximum at $x=2$
+  C : $f'(x)$ has a local minimum at $x=2$
+  D : $f'(2)=0$
+EXPLANATION: Because $f''(x)=(f'(x))'$, the sign of $f''$ tells whether $f'$ is increasing or decreasing. With $f''(x)>0$ for $x<2$, $f'$ is increasing to the left of $2$. With $f''(x)<0$ for $x>2$, $f'$ is decreasing to the right of $2$. Therefore $f'(x)$ has a local maximum at $x=2$.
+MICRO:
+  A: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  B: Correct. Apply L'Hopital's rule when the limit results in an indeterminate form 0/0 or inf/inf.
+  C: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  D: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+
+--- 5.9-P3 [4/3] [Both] ---
+PROMPT: Three graphs (I, II, III) are shown. One is $f$, one is $f'$, and one is $f''$ for the same function $f$. Which matching is consistent?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "I is $f$, II is $f'$, III is $f''$"
+  A : I is $f''$, II is $f'$, III is $f$
+  B : I is $f'$, II is $f$, III is $f''$
+  C ✓: I is $f$, II is $f'$, III is $f''$
+  D : I is $f$, II is $f''$, III is $f'$
+EXPLANATION: Graph I has even-degree end behavior (both ends up) and multiple turning points, consistent with a quartic-like $f$. Graph II has odd-degree end behavior and an S-shape, consistent with a cubic-like $f'$. Graph III is U-shaped, consistent with a quadratic-like $f''$.
+MICRO:
+  A: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  B: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  C: Correct. Apply L'Hopital's rule when the limit results in an indeterminate form 0/0 or inf/inf.
+  D: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+
+--- 5.9-P4 [3/2] [Both] ---
+PROMPT: A function $f$ is differentiable on $(-\infty,\infty)$. Suppose $f'(x)=0$ at $x=1$ and $x=4$. Also, $f''(x)>0$ for $x<2$ and $f''(x)<0$ for $x>2$. Which statement is best supported by this information?
+CORRECT: A = "$f'(x)$ has a local maximum at $x=2$"
+  A ✓: $f'(x)$ has a local maximum at $x=2$
+  B : $f$ has inflection points at both $x=1$ and $x=4$
+  C : $f$ has a local maximum at $x=1$
+  D : $f$ must have a local minimum at $x=4$
+EXPLANATION: With $f''(x)>0$ for $x<2$, $f'$ is increasing on $(-\infty,2)$. With $f''(x)<0$ for $x>2$, $f'$ is decreasing on $(2,\infty)$. Therefore $f'(x)$ has a local maximum at $x=2$. The information does not determine whether $f$ has local extrema at $x=1$ or $x=4$.
+MICRO:
+  A: Correct. Apply L'Hopital's rule when the limit results in an indeterminate form 0/0 or inf/inf.
+  B: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  C: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  D: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+
+--- 5.9-P5 [1/1] [Both] ---
+PROMPT: Which statement is always true for a twice differentiable function $f$?
+CORRECT: A = "If $f''(x)>0$ on an interval, then $f'(x)$ is increasing on that interval"
+  A ✓: If $f''(x)>0$ on an interval, then $f'(x)$ is increasing on that interval
+  B : If $f''(a)=0$, then $f$ has an inflection point at $x=a$
+  C : If $f'(a)=0$, then $f$ has a local extremum at $x=a$
+  D : If $f''(x)<0$ on an interval, then $f(x)$ is decreasing on that interval
+EXPLANATION: Since $f''(x)$ is the derivative of $f'(x)$, if $f''(x)>0$ on an interval then $f'(x)$ is increasing on that interval.
+MICRO:
+  A: Correct. Apply L'Hopital's rule when the limit results in an indeterminate form 0/0 or inf/inf.
+  B: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  C: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+  D: Incorrect. Ensure you've verified the indeterminate form 0/0 or inf/inf before taking derivatives.
+
+--- 5.10-P1 [2/1] [Both] ---
+PROMPT: A rectangle has perimeter $100$. If one side length is $x$, which function $A(x)$ should be maximized to find the maximum area of the rectangle?
+CORRECT: C = "$A(x)=x(50-x)$"
+  A : $A(x)=x(100-x)$
+  B : $A(x)=2x(50-x)$
+  C ✓: $A(x)=x(50-x)$
+  D : $A(x)=x+(50-x)$
+EXPLANATION: Perimeter gives $2x+2y=100$, so $y=50-x$. The area is $A=xy$, hence $A(x)=x(50-x)$ (domain $0<x<50$).
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.10-P2 [3/2] [Both] ---
+PROMPT: An open-top box is made by cutting out squares of side length $x$ from each corner of a square sheet of side length $s$ and folding up the sides. Which expression gives the volume $V(x)$ of the box?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: B = "$V(x)=x(s-2x)^2$"
+  A : $V(x)=(s-x)^2x$
+  B ✓: $V(x)=x(s-2x)^2$
+  C : $V(x)=x^2(s-2x)$
+  D : $V(x)=(s-2x)^3$
+EXPLANATION: Cutting out squares of side $x$ makes the box height $x$. Each dimension of the base loses $x$ on both ends, so the base side length is $s-2x$. Base area is $(s-2x)^2$, so $V(x)=x(s-2x)^2$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.10-P3 [2/1] [Both] ---
+PROMPT: A farmer has $200$ meters of fencing to enclose a rectangular region adjacent to a straight river, so no fencing is needed along the river side. Let $x$ be the length of each side perpendicular to the river. Which area function $A(x)$ should be maximized?
+CORRECT: A = "$A(x)=x(200-2x)$"
+  A ✓: $A(x)=x(200-2x)$
+  B : $A(x)=x(200-x)$
+  C : $A(x)=2x(200-2x)$
+  D : $A(x)=(200-2x)^2$
+EXPLANATION: Only three sides are fenced: $2x+y=200$, so $y=200-2x$. Area is $A=xy=x(200-2x)$ with domain $0<x<100$.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.10-P4 [5/3] [Both] ---
+PROMPT: A closed right circular cylinder must have volume $500\pi\text{ cm}^3$. Let $r$ be the radius and $h$ the height. Which single-variable surface area function $S(r)$ should be minimized?
+CORRECT: B = "$S(r)=2\pi r^2+\dfrac{1000\pi}{r}$"
+  A : $S(r)=2\pi r^2+\dfrac{500\pi}{r^2}$
+  B ✓: $S(r)=2\pi r^2+\dfrac{1000\pi}{r}$
+  C : $S(r)=\pi r^2+\dfrac{1000\pi}{r}$
+  D : $S(r)=2\pi r^2+\dfrac{500\pi}{r}$
+EXPLANATION: Volume constraint: $\pi r^2h=500\pi$ so $h=\frac{500}{r^2}$. Closed-cylinder surface area is $S=2\pi r^2+2\pi rh$. Substitute to get $S(r)=2\pi r^2+\frac{1000\pi}{r}$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.10-P5 [1/1] [Both] ---
+PROMPT: Two positive numbers have sum $10$. If one number is $x$, which function $P(x)$ represents their product (to be maximized)?
+CORRECT: D = "$P(x)=x(10-x)$"
+  A : $P(x)=\dfrac{x}{10-x}$
+  B : $P(x)=10x-x$
+  C : $P(x)=x+(10-x)$
+  D ✓: $P(x)=x(10-x)$
+EXPLANATION: If the two positive numbers sum to $10$ and one is $x$, the other is $10-x$. Their product is $P(x)=x(10-x)$ with domain $0<x<10$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.11-P1 [2/2] [Both] ---
+PROMPT: A rectangle has perimeter $40$ units. What is the maximum possible area (in square units)?
+CORRECT: B = "100"
+  A : 80
+  B ✓: 100
+  C : 120
+  D : 160
+EXPLANATION: Let sides be $x$ and $y$. Then $2x+2y=40\Rightarrow y=20-x$. Area $$A(x)=x(20-x)=20x-x^2$$ is a downward-opening parabola with vertex at $x=10$, so $$A_{\max}=10\cdot 10=100.$$
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.11-P2 [4/4] [Both] ---
+PROMPT: A closed cylinder must have volume $32\pi$ cubic units. What radius $r$ minimizes the surface area?
+CORRECT: A = "2"
+  A ✓: 2
+  B : $2\sqrt{2}$
+  C : 4
+  D : 1
+EXPLANATION: From $\pi r^2h=32\pi$, we get $h=\dfrac{32}{r^2}$. Surface area $$S(r)=2\pi r^2+2\pi r\left(\frac{32}{r^2}\right)=2\pi r^2+\frac{64\pi}{r}.$$ Differentiate: $$S'(r)=4\pi r-\frac{64\pi}{r^2}=0\Rightarrow 4r^3=64\Rightarrow r=2.$$
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.11-P3 [3/3] [Both] ---
+PROMPT: A $10\times 16$ rectangle of cardboard is used to make an open-top box by cutting out squares of side $x$ from each corner and folding up the sides. (See image.) What value of $x$ maximizes the volume?
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: C = "2"
+  A : 5
+  B : 4
+  C ✓: 2
+  D : 8
+EXPLANATION: Volume is $$V(x)=x(10-2x)(16-2x),\quad 0<x<5.$$ Expanding: $$V(x)=4x^3-52x^2+160x,$$ so $$V'(x)=12x^2-104x+160=0\Rightarrow 3x^2-26x+40=0.$$ Thus $x=2$ or $x=\frac{20}{3}$, and only $x=2$ lies in $(0,5)$. Since endpoints give volume $0$, $x=2$ maximizes the volume.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.11-P4 [2/2] [Both] ---
+PROMPT: A farmer has $200$ meters of fencing to enclose a rectangular area along a straight river. No fencing is needed along the river. What is the maximum possible area?
+CORRECT: D = "5,000"
+  A : 2,500
+  B : 4,000
+  C : 10,000
+  D ✓: 5,000
+EXPLANATION: Let width be $w$ and length be $L$. Fencing covers three sides: $$2w+L=200\Rightarrow L=200-2w.$$ Area $$A(w)=w(200-2w)=200w-2w^2.$$ Then $$A'(w)=200-4w=0\Rightarrow w=50,$$ so $L=100$ and the maximum area is $50\cdot 100=5000$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.11-P5 [5/4] [Both] ---
+PROMPT: A company sells a product for $p$ dollars per unit and the weekly demand is $q(p)=600-20p$ for $0\le p\le 30$. Revenue is $R(p)=p\,q(p)$. What price $p$ maximizes revenue?
+CORRECT: C = "15"
+  A : 10
+  B : 20
+  C ✓: 15
+  D : 30
+EXPLANATION: Revenue is $$R(p)=p(600-20p)=600p-20p^2,$$ a downward-opening parabola on $[0,30]$. The maximum occurs at the vertex: $$p=-\frac{b}{2a}=-\frac{600}{2(-20)}=15.$$
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.12-P1 [3/3] [Both] ---
+PROMPT: For the curve $x^2+xy+y^2=7$, what is $\dfrac{dy}{dx}$ at the point $(2,1)$?
+CORRECT: C = "$-\dfrac{5}{4}$"
+  A : $\dfrac{5}{4}$
+  B : $-\dfrac{4}{5}$
+  C ✓: $-\dfrac{5}{4}$
+  D : $-\dfrac{4}{3}$
+EXPLANATION: Differentiate: $$2x+(x y'+y)+2y y'=0\Rightarrow 2x+y+x y'+2y y'=0.$$ So $$(x+2y)y'=-(2x+y)\Rightarrow y'=-\frac{2x+y}{x+2y}.$$ At $(2,1)$: $$y'=-\frac{4+1}{2+2}=-\frac{5}{4}.$$
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Correct. This follows the principles of analytical applications of differentiation.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.12-P2 [4/4] [Both] ---
+PROMPT: Consider the curve $x^2+y^2=4y$. At which points on the curve does it have horizontal tangents?
+CORRECT: B = "$(0,0)$ and $(0,4)$"
+  A : $(2,2)$ and $(-2,2)$
+  B ✓: $(0,0)$ and $(0,4)$
+  C : $(0,2)$ only
+  D : $(2,0)$ and $(-2,0)$
+EXPLANATION: Differentiate: $$2x+2y y'=4y'\Rightarrow y'=-\frac{2x}{2y-4}.$$ Horizontal tangents require $y'=0\Rightarrow x=0$ with $2y-4\ne 0$. Plugging $x=0$ into the curve: $$y^2=4y\Rightarrow y=0\text{ or }4,$$ so the points are $(0,0)$ and $(0,4)$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Correct. This follows the principles of analytical applications of differentiation.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+
+--- 5.12-P3 [3/3] [Both] ---
+PROMPT: For the curve $x^2+y^2=4y$, at which points does it have vertical tangents?
+CORRECT: D = "$(2,2)$ and $(-2,2)$"
+  A : All points with $y=2$
+  B : $(0,0)$ and $(0,4)$
+  C : $(0,2)$ only
+  D ✓: $(2,2)$ and $(-2,2)$
+EXPLANATION: Using $$y'=-\frac{2x}{2y-4},$$ vertical tangents occur when $2y-4=0$ and $2x\ne 0$. Thus $y=2$ and $x\ne 0$. On the curve: $$x^2+4=8\Rightarrow x=\pm 2,$$ so the points are $(2,2)$ and $(-2,2)$.
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.12-P4 [4/4] [Both] ---
+PROMPT: On the circle $x^2+y^2=1$ with $y>0$, what is $\dfrac{d^2y}{dx^2}$ at the point $\left(\dfrac{\sqrt{2}}{2},\dfrac{\sqrt{2}}{2}\right)$?
+CORRECT: D = "$-2\sqrt{2}$"
+  A : $-\sqrt{2}$
+  B : $-2$
+  C : $2\sqrt{2}$
+  D ✓: $-2\sqrt{2}$
+EXPLANATION: From $x^2+y^2=1$: $$2x+2y y'=0\Rightarrow y'=-\frac{x}{y}.$$ Differentiate: $$y''=-\frac{y-xy'}{y^2}.$$ Substitute $y'=-\frac{x}{y}$: $$y''=-\frac{y+x(\frac{x}{y})}{y^2}=-\frac{\frac{y^2+x^2}{y}}{y^2}=-\frac{1}{y^3}.$$ At $y=\frac{\sqrt{2}}{2}$: $$y''=-\frac{1}{(\frac{\sqrt{2}}{2})^3}=-2\sqrt{2}.$$
+MICRO:
+  A: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Correct. This follows the principles of analytical applications of differentiation.
+
+--- 5.12-P5 [2/2] [Both] ---
+PROMPT: The graph shows the curve $x^2+y^2=4y$ with labeled points A, B, C, and D. At which labeled point is the tangent line vertical? (See image.)
+IMAGE: https://xzpjlnkirboevkjzitcx.supabase.co/storage/v1/object/p...
+CORRECT: A = "A"
+  A ✓: A
+  B : B
+  C : C
+  D : D
+EXPLANATION: For $x^2+y^2=4y$, $$y'=-\frac{2x}{2y-4}.$$ A vertical tangent occurs when $2y-4=0$ and $x\ne 0$, i.e., at points with $y=2$ on the curve. The labeled point with $y=2$ and $x\ne 0$ is A.
+MICRO:
+  A: Correct. This follows the principles of analytical applications of differentiation.
+  B: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  C: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.
+  D: Incorrect. Re-evaluate the derivative properties or the specific theorem requirements.

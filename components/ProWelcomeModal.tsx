@@ -82,7 +82,7 @@ export const ProWelcomeModal = () => {
             setIsVisible(false);
             setIsClosing(false);
             setRedeemError(null);
-        }, 500);
+        }, 1200);
     };
 
     const handleRedeem = async (e: React.MouseEvent) => {

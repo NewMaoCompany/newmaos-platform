@@ -78,11 +78,17 @@ const AnimatedNumber: React.FC<{ value: number; duration?: number }> = ({ value,
         requestAnimationFrame(animate);
     }, [value]);
 
-    const formatted = displayValue >= 10000
-        ? `${(displayValue / 1000).toFixed(1)}k`
-        : displayValue.toLocaleString();
+    const formatPoints = (num: number): string => {
+        if (num >= 1e9) return (num / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+        if (num >= 1e6) return (num / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+        if (num >= 1e4) return (num / 1e3).toFixed(1).replace(/\.0$/, '') + 'k'; // E.g. 10.5k
+        if (num >= 1e3) return (num / 1e3).toFixed(1).replace(/\.0$/, '') + 'k'; // E.g. 1.2k
+        return num.toString();
+    };
 
-    return <span>{formatted}</span>;
+    const formatted = formatPoints(displayValue);
+
+    return <span className="tracking-tight">{formatted}</span>;
 }
 
 interface PointsBalanceBadgeProps {

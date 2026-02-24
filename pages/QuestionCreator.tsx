@@ -1201,12 +1201,16 @@ export const QuestionCreator = () => {
     };
 
     const handleSelectQuestion = async (q: Question) => {
-        // Derive correct label from ID or fallback to index
-        const correctOptIdx = q.options.findIndex(o => o.id === q.correctOptionId);
+        // Derive correct label from ID, label, or fallback to index
+        let correctOptIdx = q.options.findIndex(o => o.id === q.correctOptionId);
+        // Fallback: match by label if id match fails (DB may store 'C' as correctOptionId matching label)
+        if (correctOptIdx === -1) {
+            correctOptIdx = q.options.findIndex(o => o.label === q.correctOptionId);
+        }
         const correctOpt = correctOptIdx !== -1 ? q.options[correctOptIdx] : null;
         const derivedLabel = correctOpt
             ? (correctOpt.label || (['A', 'B', 'C', 'D'].includes(correctOpt.id) ? correctOpt.id : String.fromCharCode(65 + correctOptIdx)))
-            : 'A';
+            : (q.correctOptionId && ['A', 'B', 'C', 'D'].includes(q.correctOptionId) ? q.correctOptionId : 'A');
 
         // ROBUST MAPPING: Ensure skills and error tags are mapped even if relational fields are missing
         const skillTags = q.skillTags || [];
@@ -1354,8 +1358,10 @@ export const QuestionCreator = () => {
                 return {
                     ...o,
                     label,
+                    value: o.value || o.text || '', // DB stores as 'text', form expects 'value'
                     type: o.type || 'text',
-                    explanation: o.explanation || (q.microExplanations ? q.microExplanations[optId] : '')
+                    explanation: o.explanation || (q.microExplanations ? q.microExplanations[optId] : ''),
+                    explanationType: o.explanationType || 'text',
                 };
             })
         };
