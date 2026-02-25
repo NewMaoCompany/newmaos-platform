@@ -2588,7 +2588,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     streakDay: data.streak_day,
                     basePoints: data.base_points,
                     bonusPoints: data.bonus_points,
-                    totalPoints: data.total_points,
+                    totalPoints: data.total_points || ((data.base_points || 0) + (data.bonus_points || 0)),
                     isMilestone: data.is_milestone
                 };
             }
