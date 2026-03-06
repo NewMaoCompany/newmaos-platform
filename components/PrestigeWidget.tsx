@@ -37,9 +37,9 @@ export const PrestigeWidget = ({
         const combinedClasses = className || defaultScale;
 
         return (
-            <div className={`w-full overflow-x-auto overflow-y-hidden scroll-bounce pb-4 -mb-4 ${wide ? 'flex justify-center' : ''}`}>
+            <div className={`w-full overflow-x-auto scroll-bounce pb-8 pt-6 -mb-8 -mt-6 px-10 -mx-10 ${wide ? 'flex justify-center' : ''}`}>
                 <div
-                    className={`group relative flex flex-row items-center transition-all duration-300 origin-center ${combinedClasses} ${wide ? 'w-full max-w-2xl' : 'max-w-fit'}`}
+                    className={`group relative flex flex-row items-center transition-all duration-300 origin-center ${combinedClasses} ${wide ? 'w-full max-w-2xl' : 'max-w-fit'} shrink-0`}
                     style={{
                         background: 'rgba(255, 255, 255, 0.95)',
                         backdropFilter: 'blur(30px)',
