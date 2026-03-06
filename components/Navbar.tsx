@@ -260,7 +260,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
 
                 {/* Notification Dropdown */}
                 {showNotifications && (
-                  <div className="absolute left-0 mt-2 w-80 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-fade-in origin-top-left z-50">
+                  <div className="absolute right-[-60px] sm:right-0 sm:left-auto mt-2 w-[calc(100vw-40px)] max-w-sm sm:w-80 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-fade-in origin-top z-50">
                     <div className="p-3 border-b border-gray-100 dark:border-gray-800/50 flex justify-between items-center">
                       <span className="text-sm font-bold">Notifications</span>
                       {totalUnreadCount > 0 && (
@@ -275,7 +275,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
                         </button>
                       )}
                     </div>
-                    <div className="max-h-[300px] overflow-y-auto scroll-bounce">
+                    <div className="max-h-[60vh] sm:max-h-[400px] overflow-y-auto scroll-bounce">
                       {allDisplayed.length > 0 ? (
                         allDisplayed.map(notif => {
                           // Parse link for action

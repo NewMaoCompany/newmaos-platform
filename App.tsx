@@ -178,7 +178,7 @@ const AppRoutes = () => {
   const isPracticeSession = path.startsWith('/practice/session') || path.startsWith('/practice/unit/');
 
   return (
-    <div className={`h-screen w-full bg-background-light dark:bg-background-dark overflow-x-hidden overflow-y-hidden relative ${isPracticeSession ? '' : 'min-w-[360px]'}`}>
+    <div className={`h-[100dvh] w-full bg-background-light dark:bg-background-dark overflow-x-hidden overflow-y-hidden relative ${isPracticeSession ? '' : 'min-w-[360px]'}`}>
 
 
       {/* Persistent Page Layers (Main 5) */}
