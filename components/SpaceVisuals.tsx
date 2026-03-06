@@ -341,7 +341,8 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
 
     const mergedStyle: React.CSSProperties = {
         ...style,
-        position: 'relative'
+        position: 'relative',
+        overflow: 'visible'
     };
 
     return (
@@ -390,8 +391,8 @@ export const PlanetVisual: React.FC<PlanetVisualProps> = ({
 
 
 
-            <div className={`w-full h-full aspect-square relative z-10 rounded-full group flex-shrink-0 transition-all duration-1000 ${!isUnlocked ? 'grayscale brightness-[0.4] opacity-50' : 'grayscale-0 brightness-100 opacity-100'}`}>
-                <div className="absolute inset-0 rounded-full aspect-square transform-gpu transition-transform duration-700 group-hover:scale-[1.02]">
+            <div className={`w-full h-full aspect-square relative z-10 rounded-full group flex-shrink-0 transition-all duration-1000 ${!isUnlocked ? 'grayscale brightness-[0.4] opacity-50' : 'grayscale-0 brightness-100 opacity-100'}`} style={{ overflow: 'visible' }}>
+                <div className="absolute inset-0 rounded-full aspect-square transform-gpu transition-transform duration-700 group-hover:scale-[1.02]" style={{ overflow: 'visible' }}>
                     {renderPlanetContent()}
                 </div>
             </div>

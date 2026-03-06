@@ -84,6 +84,15 @@ export const PrestigePage = () => {
     const [prevTranslate, setPrevTranslate] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
 
+    // Responsive step size: use viewport width on mobile, 600px on desktop
+    const getStep = () => typeof window !== 'undefined' && window.innerWidth < 768 ? window.innerWidth : 600;
+    const [stepSize, setStepSize] = useState(getStep);
+    useEffect(() => {
+        const handleResize = () => setStepSize(getStep());
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     // Clamped Variables for Corrupted State Protection
     const rawLevel = userPrestige?.planet_level || 1;
     const level = Math.min(5, rawLevel);
@@ -220,8 +229,7 @@ export const PrestigePage = () => {
         const targetIndex = Math.min(4, Math.max(0, level - 1));
         setActiveIndex(targetIndex);
 
-        const step = 600;
-        const targetTranslate = -targetIndex * step;
+        const targetTranslate = -targetIndex * stepSize;
 
         // If level increased, animate
         if (level > lastLevelRef.current && containerRef.current) {
@@ -233,7 +241,7 @@ export const PrestigePage = () => {
         setCurrentTranslate(targetTranslate);
         setPrevTranslate(targetTranslate);
         lastLevelRef.current = level;
-    }, [level]);
+    }, [level, stepSize]);
 
     // Touch/Mouse Handlers for Ring Swipe
     const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
@@ -248,9 +256,8 @@ export const PrestigePage = () => {
         const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
         const diff = clientX - dragStartX;
         const nextTranslate = prevTranslate + diff * 0.85;
-        // Clamp to valid range [-2400, 0] (5 planets * 600px step)
-        // Allow tiny overscroll resistance? For now, strict clamp to fix "out of boundary" issue.
-        setCurrentTranslate(Math.max(-2400, Math.min(0, nextTranslate)));
+        // Clamp to valid range [-(4*stepSize), 0] (5 planets)
+        setCurrentTranslate(Math.max(-(4 * stepSize), Math.min(0, nextTranslate)));
     };
 
     const handleTouchEnd = () => {
@@ -258,15 +265,14 @@ export const PrestigePage = () => {
         setDragStartX(null);
 
         // Snap Logic
-        const step = 600; // Wide spacing
         // Calculate nearest index
-        let nextIndex = -Math.round(currentTranslate / step);
+        let nextIndex = -Math.round(currentTranslate / stepSize);
         // Clamp to valid range [0, 4]
         nextIndex = Math.max(0, Math.min(4, nextIndex));
 
         setActiveIndex(nextIndex);
 
-        const finalTranslate = -nextIndex * step;
+        const finalTranslate = -nextIndex * stepSize;
         setCurrentTranslate(finalTranslate);
         setPrevTranslate(finalTranslate);
 
@@ -284,11 +290,10 @@ export const PrestigePage = () => {
     useEffect(() => { currentTranslateRef.current = currentTranslate; }, [currentTranslate]);
 
     const performSnap = () => {
-        const step = 600;
-        let nextIndex = -Math.round(currentTranslateRef.current / step);
+        let nextIndex = -Math.round(currentTranslateRef.current / stepSize);
         nextIndex = Math.max(0, Math.min(4, nextIndex));
         setActiveIndex(nextIndex);
-        const finalTranslate = -nextIndex * step;
+        const finalTranslate = -nextIndex * stepSize;
         setCurrentTranslate(finalTranslate);
         setPrevTranslate(finalTranslate);
         if (containerRef.current) {
@@ -316,7 +321,7 @@ export const PrestigePage = () => {
 
             if (nextIndex !== activeIndex) {
                 setActiveIndex(nextIndex);
-                const finalTranslate = -nextIndex * 600;
+                const finalTranslate = -nextIndex * stepSize;
                 setCurrentTranslate(finalTranslate);
                 setPrevTranslate(finalTranslate);
 
@@ -430,8 +435,9 @@ export const PrestigePage = () => {
                     {/* Transforming Track */}
                     <div
                         ref={containerRef}
-                        className="absolute flex items-center h-full will-change-transform left-1/2 -ml-[300px] pointer-events-auto"
-                        style={{ transform: `translateX(${currentTranslate}px)` }}
+                        className="absolute flex items-center h-full will-change-transform left-1/2 pointer-events-auto"
+                        style={{ transform: `translateX(${currentTranslate}px)`, marginLeft: `${-stepSize / 2}px` }}
+
                     >
                         {Array.from({ length: 5 }).map((_, i) => {
                             const planetLevel = i + 1;
@@ -450,7 +456,7 @@ export const PrestigePage = () => {
                                     key={i}
                                     className="relative flex flex-col items-center justify-center transition-all duration-500 ease-out"
                                     style={{
-                                        width: '600px',
+                                        width: `${stepSize}px`,
                                         transform: `scale(${scale})`,
                                         opacity: opacity,
                                         zIndex: 10 - distance,
@@ -460,8 +466,7 @@ export const PrestigePage = () => {
                                     <div className="relative group cursor-pointer" onClick={(e) => {
                                         e.stopPropagation(); // Prevent drag interference
                                         if (distance !== 0) {
-                                            const step = 600;
-                                            const target = -i * step;
+                                            const target = -i * stepSize;
                                             setActiveIndex(i);
                                             setCurrentTranslate(target);
                                             setPrevTranslate(target);
@@ -588,8 +593,7 @@ export const PrestigePage = () => {
                                 onClick={() => {
                                     if (isViewedPlanetCompleted || isFuturePlanet) {
                                         const targetIndex = Math.min(4, level - 1);
-                                        const step = 600;
-                                        const finalTranslate = -targetIndex * step;
+                                        const finalTranslate = -targetIndex * stepSize;
                                         setActiveIndex(targetIndex);
                                         setCurrentTranslate(finalTranslate);
                                         setPrevTranslate(finalTranslate);

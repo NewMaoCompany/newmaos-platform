@@ -33,7 +33,7 @@ export const PrestigeWidget = ({
     const isInteractionAllowed = !isReadOnly;
 
     if (compact || wide) {
-        const defaultScale = "scale-[0.6] sm:scale-[0.75] md:scale-100";
+        const defaultScale = "scale-[0.85] sm:scale-[0.85] md:scale-100";
         const combinedClasses = className || defaultScale;
 
         return (
