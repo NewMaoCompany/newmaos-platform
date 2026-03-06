@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { supabaseAdmin } from '../config/supabase';
+import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin, supabaseUrl, supabaseAnonKey } from '../config/supabase';
 import { authMiddleware } from '../middleware/auth';
 import { getRelativeTime } from '../utils/time';
 
@@ -32,14 +33,37 @@ router.get('/me', authMiddleware, async (req: Request, res: Response): Promise<v
 router.put('/me', authMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = req.user!.id;
-        const { name, avatar_url, current_course } = req.body;
+        const token = req.token!;
+
+        // Accept broad profile fields matching AppContext updates
+        const {
+            name, avatar_url, current_course, bio, avatar_color,
+            show_name, show_email, show_bio,
+            selected_prestige_level, show_prestige, equipped_title_id
+        } = req.body;
 
         const updates: Record<string, any> = { updated_at: new Date().toISOString() };
         if (name !== undefined) updates.name = name;
         if (avatar_url !== undefined) updates.avatar_url = avatar_url;
         if (current_course !== undefined) updates.current_course = current_course;
+        if (bio !== undefined) updates.bio = bio;
+        if (avatar_color !== undefined) updates.avatar_color = avatar_color;
+        if (show_name !== undefined) updates.show_name = show_name;
+        if (show_email !== undefined) updates.show_email = show_email;
+        if (show_bio !== undefined) updates.show_bio = show_bio;
+        if (equipped_title_id !== undefined) updates.equipped_title_id = equipped_title_id;
 
-        const { data, error } = await supabaseAdmin
+        // Create a user-scoped client so RLS allows updates even if local env lacks Service Key
+        const userClient = createClient(supabaseUrl!, supabaseAnonKey!, {
+            global: {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        });
+
+        // 1. Update all guaranteed columns safely so critical profile fields save securely
+        const { data, error } = await userClient
             .from('user_profiles')
             .update(updates)
             .eq('id', userId)
@@ -47,8 +71,22 @@ router.put('/me', authMiddleware, async (req: Request, res: Response): Promise<v
             .single();
 
         if (error) {
+            console.error('Update profile Supabase error:', error);
             res.status(400).json({ error: error.message });
             return;
+        }
+
+        // 2. Safely attempt extending columns which might be missing from migrations
+        if (selected_prestige_level !== undefined || show_prestige !== undefined) {
+            try {
+                const prestigeUpdates: Record<string, any> = {};
+                if (selected_prestige_level !== undefined) prestigeUpdates.selected_prestige_level = selected_prestige_level;
+                if (show_prestige !== undefined) prestigeUpdates.show_prestige = show_prestige;
+
+                await userClient.from('user_profiles').update(prestigeUpdates).eq('id', userId);
+            } catch (fallbackError) {
+                console.warn('Graceful fallback string column missing:', fallbackError);
+            }
         }
 
         res.json(data);

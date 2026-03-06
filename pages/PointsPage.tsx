@@ -111,7 +111,7 @@ export const PointsPage = () => {
         fetchReferralCode();
     }, [user?.id]);
 
-    const referralLink = referralCode ? `https://newmaos.com/signup?ref=${referralCode}` : '';
+    const referralLink = referralCode ? `${window.location.origin}${window.location.pathname}#/signup?ref=${referralCode}` : '';
 
     const handleCopyLink = async () => {
         if (!referralLink) return;
@@ -269,7 +269,7 @@ export const PointsPage = () => {
                                 <div className="flex items-center gap-2 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10">
                                     <span className="material-symbols-outlined text-sm text-gray-400">link</span>
                                     <span className="flex-1 text-xs font-mono text-gray-500 dark:text-gray-400 truncate">
-                                        {referralCode ? `newmaos.com/signup?ref=${referralCode}` : 'Loading...'}
+                                        {referralCode ? `${window.location.host}/#/signup?ref=${referralCode}` : 'Loading...'}
                                     </span>
                                     <button
                                         onClick={(e) => {

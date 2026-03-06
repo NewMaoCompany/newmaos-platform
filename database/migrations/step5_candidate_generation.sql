@@ -57,26 +57,30 @@ BEGIN
     ) sub;
     v_due_review_ids := COALESCE(v_due_review_ids, '{}'::UUID[]);
 
-    -- 2. Exclude questions done in the last 30 minutes
-    SELECT array_agg(q_id) INTO v_recent_ids
-    FROM (
-        SELECT DISTINCT qa.question_id as q_id
-        FROM public.question_attempts qa
-        WHERE qa.user_id = p_user_id 
-          AND qa.created_at > NOW() - INTERVAL '30 minutes'
-    ) sub;
+    -- 2. Exclude questions done in the last 30 minutes (ONLY for broad topics, NOT specific sections)
+    IF p_section_id IS NULL THEN
+        SELECT array_agg(q_id) INTO v_recent_ids
+        FROM (
+            SELECT DISTINCT qa.question_id as q_id
+            FROM public.question_attempts qa
+            WHERE qa.user_id = p_user_id 
+              AND qa.created_at > NOW() - INTERVAL '30 minutes'
+        ) sub;
+    END IF;
     v_recent_ids := COALESCE(v_recent_ids, '{}'::UUID[]);
 
-    -- 3. Exclude questions repeated > 3 times (unless DUE)
-    SELECT array_agg(q_id) INTO v_over_attempted_ids
-    FROM (
-        SELECT qa.question_id as q_id
-        FROM public.question_attempts qa
-        WHERE qa.user_id = p_user_id
-        GROUP BY qa.question_id
-        HAVING COUNT(qa.id) > 3
-    ) sub
-    WHERE NOT (q_id = ANY(v_due_review_ids));
+    -- 3. Exclude questions repeated > 3 times (unless DUE) (ONLY for broad topics, NOT specific sections)
+    IF p_section_id IS NULL THEN
+        SELECT array_agg(q_id) INTO v_over_attempted_ids
+        FROM (
+            SELECT qa.question_id as q_id
+            FROM public.question_attempts qa
+            WHERE qa.user_id = p_user_id
+            GROUP BY qa.question_id
+            HAVING COUNT(qa.id) > 3
+        ) sub
+        WHERE NOT (q_id = ANY(v_due_review_ids));
+    END IF;
     v_over_attempted_ids := COALESCE(v_over_attempted_ids, '{}'::UUID[]);
 
     -- 4. Combine all exclusions

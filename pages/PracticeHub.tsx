@@ -310,10 +310,11 @@ const HistoryGroupCard = ({ sectionId, activities }: { sectionId: string, activi
 };
 
 export const PracticeHub = () => {
-    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, notifications, markLinkAsRead } = useApp();
+    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, notifications, markLinkAsRead, isAuthenticated, incorrectQuestionIds } = useApp();
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isUnitDropdownOpen, setIsUnitDropdownOpen] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const unitDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -679,6 +680,10 @@ export const PracticeHub = () => {
                                                 if (progressData?.currentIncorrectIds && progressData.currentIncorrectIds.length > 0) {
                                                     return progressData.currentIncorrectIds;
                                                 }
+                                                // Fallback to review.targetQuestionIds for pending_review state
+                                                if (review?.targetQuestionIds && review.targetQuestionIds.length > 0) {
+                                                    return review.targetQuestionIds;
+                                                }
                                                 return [];
                                             };
                                             actualIncorrectIds = computeActualIncorrectIds();
@@ -690,7 +695,7 @@ export const PracticeHub = () => {
                                                 } else if (firstAttempt.status === 'completed') {
                                                     if (review?.status === 'in_progress') {
                                                         buttonState = 'REVIEW_IN_PROGRESS';
-                                                    } else if (actualIncorrectCount > 0) {
+                                                    } else if (review?.status === 'pending_review' || actualIncorrectCount > 0) {
                                                         buttonState = 'STILL_HAS_ERRORS';
                                                     } else {
                                                         buttonState = 'COMPLETED';
@@ -709,6 +714,8 @@ export const PracticeHub = () => {
                                             }
 
                                             const handleSmartClick = (mode: SessionMode, isResuming: boolean, forceStartNew: boolean) => {
+                                                if (isProcessing) return;
+                                                setIsProcessing(true);
                                                 navigate('/practice/session', {
                                                     state: {
                                                         topic: recommendation.topic,
@@ -718,11 +725,13 @@ export const PracticeHub = () => {
                                                         forceStartNew
                                                     }
                                                 });
+                                                setTimeout(() => setIsProcessing(false), 500);
                                             };
 
-                                            const handleErrorReviewClick = (e: React.MouseEvent) => {
+                                            const handleErrorReviewClick = async (e: React.MouseEvent) => {
                                                 e.preventDefault();
-                                                if (!mainProgress) return;
+                                                if (!mainProgress || isProcessing) return;
+                                                setIsProcessing(true);
                                                 const reviewData = mainProgress.data?.review;
                                                 const currentRound = reviewData?.round || 0;
                                                 const newData = {
@@ -738,7 +747,7 @@ export const PracticeHub = () => {
                                                         currentQuestionIndex: 0
                                                     }
                                                 };
-                                                saveSectionProgress(mainProgress.section_id, newData, { completed: 0, total: 0, score: 0 }, 'algorithmic', true);
+                                                await saveSectionProgress(mainProgress.section_id, newData, { completed: 0, total: 0, score: 0 }, 'algorithmic', true);
 
                                                 navigate('/practice/session', {
                                                     state: {
@@ -750,6 +759,7 @@ export const PracticeHub = () => {
                                                         isErrorReviewAction: true
                                                     }
                                                 });
+                                                setTimeout(() => setIsProcessing(false), 500);
                                             };
 
                                             const viewSummaryBtn = buttonState !== 'NOT_STARTED' && buttonState !== 'FIRST_ATTEMPT_IN_PROGRESS' ? (
@@ -837,10 +847,10 @@ export const PracticeHub = () => {
                     )}
                 </section>
 
-                <div className="flex flex-col gap-6 sm:gap-10">
-
-                    <section className="flex flex-col gap-6">
-                        <h3 className="text-xl font-bold flex items-center gap-2">
+                <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 items-start">
+                    {/* LEFT: Units Grid */}
+                    <section className="flex flex-col gap-5 flex-1 min-w-0">
+                        <h3 className="text-xl font-bold flex items-center gap-2 h-8">
                             <span className="material-symbols-outlined text-primary">grid_view</span>
                             Units
                         </h3>
@@ -860,36 +870,66 @@ export const PracticeHub = () => {
                         </div>
                     </section>
 
-                    <aside className="flex flex-col gap-6">
-                        <div className="flex items-center justify-between">
-                            <h3 className="text-xl font-bold flex items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">history</span>
+                    {/* RIGHT: Sidebar — Error Notebook + Recent History */}
+                    <aside className="w-full lg:w-[340px] xl:w-[380px] shrink-0 flex flex-col gap-4 lg:sticky lg:top-6">
+
+                        {/* Sidebar Title — same height as Units title */}
+                        <h3 className="text-xl font-bold flex items-center gap-2 h-8">
+                            <span className="material-symbols-outlined text-primary">bookmark</span>
+                            Quick Access
+                        </h3>
+
+                        {/* Error Notebook Entry */}
+                        {isAuthenticated && (
+                            <div
+                                onClick={() => navigate('/wrong-answers')}
+                                className="group bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-5 cursor-pointer hover:shadow-md hover:border-red-200 dark:hover:border-red-800/50 transition-all duration-200"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                                        <span className="material-symbols-outlined text-[22px]">menu_book</span>
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2">
+                                            <h4 className="font-bold text-[15px] text-text-main dark:text-white">Error Notebook</h4>
+                                        </div>
+                                        <p className="text-xs text-gray-400 mt-0.5">Review all incorrect answers</p>
+                                    </div>
+                                    <span className="material-symbols-outlined text-gray-300 group-hover:text-red-400 group-hover:translate-x-0.5 transition-all text-[18px]">arrow_forward_ios</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Recent History */}
+                        <div className="flex flex-col gap-3">
+                            <h4 className="text-xs font-bold flex items-center gap-1.5 text-gray-400 uppercase tracking-wider px-1">
+                                <span className="material-symbols-outlined text-[14px]">history</span>
                                 Recent History
-                            </h3>
-                        </div>
+                            </h4>
 
-                        {(() => {
-                            const recentSessions = Object.values(sectionProgressMap || {})
-                                .filter(p => (p.status === 'completed' || (p.status === 'in_progress' && p.data?.summaryHistory?.length > 0)) && p.entity_type === 'algorithmic')
-                                .sort((a, b) => new Date(b.last_accessed_at || 0).getTime() - new Date(a.last_accessed_at || 0).getTime())
-                                .slice(0, 3);
+                            {(() => {
+                                const recentSessions = Object.values(sectionProgressMap || {})
+                                    .filter(p => (p.status === 'completed' || (p.status === 'in_progress' && p.data?.summaryHistory?.length > 0)) && p.entity_type === 'algorithmic')
+                                    .sort((a, b) => new Date(b.last_accessed_at || 0).getTime() - new Date(a.last_accessed_at || 0).getTime())
+                                    .slice(0, 5);
 
-                            if (recentSessions.length === 0) {
+                                if (recentSessions.length === 0) {
+                                    return (
+                                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl p-5 border border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-400 text-xs font-medium">
+                                            No recent history yet
+                                        </div>
+                                    );
+                                }
+
                                 return (
-                                    <div className="bg-white/40 dark:bg-black/20 rounded-2xl p-6 border border-black/5 dark:border-white/5 border-dashed flex items-center justify-center text-gray-500 h-32 text-sm">
-                                        No recent algorithmic history yet. Start your first session!
+                                    <div className="flex flex-col gap-3">
+                                        {recentSessions.map(session => (
+                                            <RecentSessionCard key={session.section_id} session={session} navigate={navigate} />
+                                        ))}
                                     </div>
                                 );
-                            }
-
-                            return (
-                                <div className="flex flex-col gap-4">
-                                    {recentSessions.map(session => (
-                                        <RecentSessionCard key={session.section_id} session={session} navigate={navigate} />
-                                    ))}
-                                </div>
-                            );
-                        })()}
+                            })()}
+                        </div>
                     </aside>
                 </div>
 

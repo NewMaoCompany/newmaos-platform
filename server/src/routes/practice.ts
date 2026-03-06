@@ -8,7 +8,7 @@ const router = Router();
 router.post('/complete', authMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = req.user!.id;
-        const { correct, total, topic } = req.body;
+        const { correct, total, topic, isReview, newlyCorrectFirstAttempts } = req.body;
 
         if (correct === undefined || total === undefined || !topic) {
             res.status(400).json({ error: 'correct, total, and topic are required' });
@@ -22,74 +22,87 @@ router.post('/complete', authMiddleware, async (req: Request, res: Response): Pr
             .eq('id', userId)
             .single();
 
+        let gain = 0;
+
         if (profile) {
-            const newSolved = (profile.problems_solved || 0) + total;
             const todayIndex = new Date().getDay();
             const studyHours = profile.study_hours || [0, 0, 0, 0, 0, 0, 0];
             studyHours[todayIndex] = parseFloat((studyHours[todayIndex] + 0.2).toFixed(1));
 
-            const performanceFactor = correct / total;
-            const newPercentile = profile.percentile === 0
-                ? 50
-                : Math.max(1, profile.percentile - (performanceFactor > 0.5 ? 1 : 0));
+            // If it's a review, we ONLY update study hours.
+            if (isReview) {
+                await supabaseAdmin
+                    .from('user_profiles')
+                    .update({
+                        study_hours: studyHours,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', userId);
+            } else {
+                const newFirstTimeCorrects = newlyCorrectFirstAttempts !== undefined ? newlyCorrectFirstAttempts : correct;
+                const newSolved = (profile.problems_solved || 0) + newFirstTimeCorrects;
 
-            await supabaseAdmin
-                .from('user_profiles')
-                .update({
-                    problems_solved: newSolved,
-                    study_hours: studyHours,
-                    percentile: newPercentile,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', userId);
-        }
+                // If they didn't get any new questions right perfectly, they don't get much mastery gain.
+                const performanceFactor = newFirstTimeCorrects / Math.max(1, total);
+                const newPercentile = profile.percentile === 0
+                    ? 50
+                    : Math.max(1, profile.percentile - (performanceFactor > 0.5 ? 1 : 0));
 
-        // 2. Add activity record
-        const cleanTopic = topic.includes('_') ? topic.split('_')[1] : topic;
-        await supabaseAdmin.from('activities').insert({
-            user_id: userId,
-            type: 'practice',
-            title: `Practice: ${cleanTopic}`,
-            description: `Solved ${correct}/${total} problems correctly.`,
-            score: Math.round((correct / total) * 100)
-        });
+                await supabaseAdmin
+                    .from('user_profiles')
+                    .update({
+                        problems_solved: newSolved,
+                        study_hours: studyHours,
+                        percentile: newPercentile,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', userId);
 
-        // 3. Update topic mastery
-        const accuracy = correct / total;
-        let gain = 0;
-        if (accuracy === 1) gain = 15;
-        else if (accuracy >= 0.8) gain = 10;
-        else if (accuracy >= 0.5) gain = 5;
+                // 2. Add activity record
+                const cleanTopic = topic.includes('_') ? topic.split('_')[1] : topic;
 
-        const { data: existingMastery } = await supabaseAdmin
-            .from('unit_mastery')
-            .select('*')
-            .eq('user_id', userId)
-            .eq('subject', cleanTopic)
-            .single();
+                // 3. Update topic mastery
+                const effectiveCorrect = newlyCorrectFirstAttempts !== undefined ? newlyCorrectFirstAttempts : correct;
+                const accuracy = effectiveCorrect / Math.max(1, total);
 
-        if (existingMastery) {
-            const newScore = Math.min(100, (existingMastery.mastery_score || 0) + gain);
-            await supabaseAdmin
-                .from('unit_mastery')
-                .update({ mastery_score: newScore, updated_at: new Date().toISOString() })
-                .eq('id', existingMastery.id);
-        } else {
-            await supabaseAdmin.from('unit_mastery').insert({
-                user_id: userId,
-                subject: cleanTopic,
-                mastery_score: gain,
-                full_mark: 100
-            });
-        }
+                if (effectiveCorrect > 0) {
+                    if (accuracy === 1) gain = 15;
+                    else if (accuracy >= 0.8) gain = 10;
+                    else if (accuracy >= 0.5) gain = 5;
+                    else gain = 2;
+                }
 
-        // 4. Update course progress status
-        if (profile?.current_course) {
-            await supabaseAdmin
-                .from('course_progress')
-                .update({ status: 'In Progress', updated_at: new Date().toISOString() })
-                .eq('user_id', userId)
-                .eq('course_id', profile.current_course);
+                const { data: existingMastery } = await supabaseAdmin
+                    .from('unit_mastery')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .eq('subject', cleanTopic)
+                    .single();
+
+                if (existingMastery) {
+                    const newScore = Math.min(100, (existingMastery.mastery_score || 0) + gain);
+                    await supabaseAdmin
+                        .from('unit_mastery')
+                        .update({ mastery_score: newScore, updated_at: new Date().toISOString() })
+                        .eq('id', existingMastery.id);
+                } else {
+                    await supabaseAdmin.from('unit_mastery').insert({
+                        user_id: userId,
+                        subject: cleanTopic,
+                        mastery_score: gain,
+                        full_mark: 100
+                    });
+                }
+            }
+
+            // 4. Update course progress status
+            if (profile?.current_course) {
+                await supabaseAdmin
+                    .from('course_progress')
+                    .update({ status: 'In Progress', updated_at: new Date().toISOString() })
+                    .eq('user_id', userId)
+                    .eq('course_id', profile.current_course);
+            }
         }
 
         res.json({

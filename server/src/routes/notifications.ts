@@ -11,7 +11,48 @@ router.get('/', authMiddleware, async (req: Request, res: Response): Promise<voi
         const userId = req.user!.id;
         const { limit = 50 } = req.query;
 
-        // 1. Fetch friend requests for current user to check statuses
+        // 1. Handle Check-in Notification Guarantee
+        try {
+            const todayStr = new Date().toISOString().split('T')[0];
+            const { data: checkinData } = await supabaseAdmin
+                .from('user_checkins')
+                .select('id')
+                .eq('user_id', userId)
+                .eq('checkin_date', todayStr);
+
+            const hasCheckedInToday = checkinData && checkinData.length > 0;
+
+            if (!hasCheckedInToday) {
+                // Check if any unread check-in reminder exists
+                const { data: existingReminder } = await supabaseAdmin
+                    .from('notifications')
+                    .select('id')
+                    .eq('user_id', userId)
+                    .like('text', '%Daily Check-in%')
+                    .eq('unread', true)
+                    .limit(1);
+
+                if (!existingReminder || existingReminder.length === 0) {
+                    await supabaseAdmin.from('notifications').insert({
+                        user_id: userId,
+                        text: '📅 Daily Check-in available! Maintain your streak & earn rewards.',
+                        link: '/checkin',
+                        unread: true
+                    });
+                }
+            } else {
+                // If they have checked in today, clear any lingering unread check-in reminders
+                await supabaseAdmin.from('notifications')
+                    .delete()
+                    .eq('user_id', userId)
+                    .like('text', '%Daily Check-in%')
+                    .eq('unread', true);
+            }
+        } catch (err) {
+            console.error('Error handling check-in guarantee:', err);
+        }
+
+        // 1.5 Fetch friend requests for current user to check statuses
         const { data: friendRequests } = await supabaseAdmin
             .from('friend_requests')
             .select('sender_id, status')

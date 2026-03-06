@@ -166,6 +166,7 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
     const [isReplying, setIsReplying] = useState(false);
     const [replyText, setReplyText] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const isSubmittingRef = useRef(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Like state
@@ -181,6 +182,8 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
 
     const handleToggleLike = async () => {
         if (!currentUserId || isLikeProcessing) return;
+        // Prevent liking messages with temp IDs (not yet persisted to DB)
+        if (typeof message.id === 'string' && message.id.startsWith('temp-')) return;
         setIsLikeProcessing(true);
 
         // Optimistic update
@@ -198,14 +201,24 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
                     .eq('user_id', currentUserId)
                     .eq('reaction_type', 'like');
             } else {
-                // Like
-                await supabase
+                // Like — use select-then-insert to avoid onConflict issues
+                const { data: existing } = await supabase
                     .from('message_reactions')
-                    .upsert({
-                        message_id: message.id,
-                        user_id: currentUserId,
-                        reaction_type: 'like'
-                    }, { onConflict: 'message_id,user_id,reaction_type' });
+                    .select('id')
+                    .eq('message_id', message.id)
+                    .eq('user_id', currentUserId)
+                    .eq('reaction_type', 'like')
+                    .maybeSingle();
+
+                if (!existing) {
+                    await supabase
+                        .from('message_reactions')
+                        .insert({
+                            message_id: message.id,
+                            user_id: currentUserId,
+                            reaction_type: 'like'
+                        });
+                }
             }
         } catch (err) {
             // Rollback on error
@@ -254,11 +267,7 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
         ? currentUser.equippedTitle
         : message.user?.equipped_title;
 
-    // If stored avatar is from ui-avatars, regenerate from current name to keep initials in sync
-    const isGeneratedAvatar = storedAvatar && storedAvatar.includes('ui-avatars.com');
-    const avatar = isGeneratedAvatar
-        ? `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=f9d406&color=1c1a0d&bold=true&size=80`
-        : storedAvatar;
+    const avatar = storedAvatar;
 
     const handleUserClick = (e?: React.MouseEvent) => {
         e?.stopPropagation(); // Prevent bubbling
@@ -273,7 +282,8 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
     };
 
     const handleSubmitReply = async () => {
-        if (!replyText.trim()) return;
+        if (!replyText.trim() || isSubmittingRef.current) return;
+        isSubmittingRef.current = true;
         setIsSubmitting(true);
         try {
             await onReplySubmit(message.id, replyText);
@@ -282,6 +292,7 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
         } catch (e) {
             console.error(e);
         } finally {
+            isSubmittingRef.current = false;
             setIsSubmitting(false);
         }
     };
@@ -477,19 +488,25 @@ const CreateChannelModal = ({ isOpen, onClose, category, onCreate }: { isOpen: b
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const isSubmittingRef = useRef(false);
 
     if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name.trim()) return;
+        if (!name.trim() || isSubmittingRef.current) return;
 
+        isSubmittingRef.current = true;
         setIsSubmitting(true);
-        await onCreate(name, description);
-        setIsSubmitting(false);
-        setName('');
-        setDescription('');
-        onClose();
+        try {
+            await onCreate(name, description);
+        } finally {
+            isSubmittingRef.current = false;
+            setIsSubmitting(false);
+            setName('');
+            setDescription('');
+            onClose();
+        }
     };
 
     return (
@@ -732,6 +749,8 @@ export const Forum = () => {
     const [pendingPoints, setPendingPoints] = useState<{ amount: number; count: number; details: any[] }>({ amount: 0, count: 0, details: [] });
     const [isClaimingPoints, setIsClaimingPoints] = useState(false);
     const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
+    const [isSending, setIsSending] = useState(false);
+    const isSendingRef = useRef(false);
 
 
     // Fetch pending points from database
@@ -772,9 +791,11 @@ export const Forum = () => {
             if (error) throw error;
 
             if (data && data[0]) {
+                const claimedAmount = data[0].claimed_amount || pendingPoints.amount;
+                // Trigger coin animation flying from click position to wallet
+                triggerCoinAnimation(claimedAmount, e.clientX, e.clientY, 'earn');
 
-
-                showToast(`+${data[0].claimed_amount} NMS Points claimed!`, 'success');
+                showToast(`+${claimedAmount} NMS Points claimed!`, 'success');
                 fetchPendingPoints();
                 if (fetchUserPoints) fetchUserPoints(); // Refresh balance
             }
@@ -845,7 +866,7 @@ export const Forum = () => {
         }
     });
     const [inputText, setInputText] = useState('');
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 768);
     const [selectedUserProfile, setSelectedUserProfile] = useState<{ id: string; name: string; avatarUrl?: string; is_official?: boolean } | null>(null);
     const [sidebarSearchQuery, setSidebarSearchQuery] = useState('');
 
@@ -2453,7 +2474,9 @@ export const Forum = () => {
     };
 
     const sendMessageInternal = async (content: string) => {
-        if (!content.trim() || (!activeChannelId && !activeChatId) || !user) return;
+        if (!content.trim() || (!activeChannelId && !activeChatId) || !user || isSendingRef.current) return;
+        isSendingRef.current = true;
+        setIsSending(true);
 
         const isChannel = viewMode === 'channel';
         const timestamp = new Date().toISOString();
@@ -2485,23 +2508,34 @@ export const Forum = () => {
 
         try {
             if (isChannel) {
-                const { error } = await supabase
+                const { data: inserted, error } = await supabase
                     .from('forum_messages')
                     .insert({
                         channel_id: activeChannelId,
                         user_id: user.id,
                         content: content
-                    });
+                    })
+                    .select('id')
+                    .single();
                 if (error) throw error;
+                // Replace temp ID with real UUID immediately
+                if (inserted?.id) {
+                    setMessages(prev => prev.map(m => m.id === tempId ? { ...m, id: inserted.id } : m));
+                }
             } else {
-                const { error } = await supabase
+                const { data: inserted, error } = await supabase
                     .from('direct_messages')
                     .insert({
                         chat_id: activeChatId,
                         user_id: user.id,
                         content: content
-                    });
+                    })
+                    .select('id')
+                    .single();
                 if (error) throw error;
+                if (inserted?.id) {
+                    setMessages(prev => prev.map(m => m.id === tempId ? { ...m, id: inserted.id } : m));
+                }
             }
         } catch (err: any) {
             console.error('Failed to send:', err);
@@ -2518,6 +2552,9 @@ export const Forum = () => {
             setMessages(prev => prev.filter(m => m.id !== tempId));
             // Restore text if it was a failed text message
             if (content === inputText) setInputText(content);
+        } finally {
+            isSendingRef.current = false;
+            setIsSending(false);
         }
     };
 
@@ -2691,16 +2728,13 @@ export const Forum = () => {
                     });
                 if (error) throw error;
             } else {
-                // Channel Reply
-                const { error } = await supabase
-                    .from('forum_messages') // Existing logic
-                    .insert({
-                        channel_id: activeChannelId,
-                        user_id: user.id,
-                        content: content,
-                        reply_to_id: parentId
-                    });
-                if (error) throw error;
+                // Channel Reply (Calls Node Backend to trigger Notification)
+                await api.forum.postForumMessage(
+                    '', // Empty questionId for Forum channels
+                    content,
+                    activeChannelId,
+                    parentId
+                );
             }
 
 
@@ -3041,11 +3075,11 @@ export const Forum = () => {
 
                 {/* 1. Sidebar (Channel List) */}
                 <div className={`
-                    md:relative z-20 h-full w-64 bg-surface-light dark:bg-surface-dark flex flex-col transition-transform duration-200 ease-in-out border-r border-gray-200 dark:border-gray-800
+                    absolute md:relative z-20 h-full w-full md:w-64 bg-surface-light dark:bg-surface-dark flex flex-col transition-transform duration-200 ease-in-out border-r border-gray-200 dark:border-gray-800
                     ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
                 `}>
                     {/* Channels Scroll Area */}
-                    <div className="flex-1 overflow-y-auto px-3 py-6 pb-6 custom-scrollbar scroll-bounce">
+                    <div className="flex-1 overflow-y-auto px-3 py-6 pb-6 md:pb-6 custom-scrollbar scroll-bounce">
 
                         {/* === 1. ANNOUNCEMENTS (always render, click activates channel when loaded) === */}
                         <div className="mb-4 px-2">
@@ -3346,10 +3380,6 @@ export const Forum = () => {
                                         <div className="group/btn relative">
                                             <button
                                                 onClick={(e) => {
-                                                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                                                    const x = rect.left + rect.width / 2;
-                                                    const y = rect.top + rect.height / 2;
-                                                    triggerCoinAnimation(pendingPoints.amount, x, y);
                                                     handleClaimPoints(e);
                                                 }}
                                                 disabled={isClaimingPoints}
@@ -3381,7 +3411,7 @@ export const Forum = () => {
                 </div>
 
                 {/* 2. Main Chat Area & Member Sidebar */}
-                <div className={`flex-1 flex min-h-0 bg-white/50 dark:bg-black/20 relative backdrop-blur-sm overflow-hidden ${isSidebarOpen ? 'ml-64 md:ml-0' : 'ml-0'}`}>
+                <div className={`flex-1 flex min-h-0 bg-white/50 dark:bg-black/20 relative backdrop-blur-sm overflow-hidden`}>
                     {/* Chat Column */}
                     <div className="flex-1 flex flex-col min-h-0 min-w-0 border-r border-gray-200/50 dark:border-gray-800/50 relative">
                         {/* Header */}
@@ -3511,7 +3541,7 @@ export const Forum = () => {
 
                                     {/* Root Input Area — Flex layout below chat */}
                                     {(activeChannelId || activeChatId) && (
-                                        <div className="px-4 md:px-6 pb-4 pt-2 z-10 sticky bottom-0 bg-white/50 dark:bg-black/20 backdrop-blur-md">
+                                        <div className="px-4 md:px-6 pb-4 md:pb-4 pt-2 z-10 sticky bottom-0 bg-white/50 dark:bg-black/20 backdrop-blur-md mb-16 md:mb-0">
                                             {activeChannel?.category === 'Information' && user?.email !== 'newmao6120@gmail.com' ? (
                                                 <div
                                                     className="relative bg-gray-50/50 dark:bg-white/5 rounded-xl px-4 py-3 border border-dashed border-gray-200 dark:border-gray-800 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center gap-3 group group-hover:bg-white/10"
@@ -3565,7 +3595,7 @@ export const Forum = () => {
                                                     {/* Send Button */}
                                                     <button
                                                         onClick={handleSendMessage}
-                                                        disabled={!inputText.trim() || isUploading}
+                                                        disabled={!inputText.trim() || isUploading || isSending}
                                                         className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-white px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-primary/20 hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:scale-100 disabled:shadow-none transition-all duration-300 flex items-center gap-2 group/send"
                                                     >
                                                         <span className="text-sm font-bold tracking-tight">Send</span>

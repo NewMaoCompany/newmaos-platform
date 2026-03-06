@@ -14,6 +14,8 @@ import contentRoutes from './routes/content';
 import notificationsRoutes from './routes/notifications';
 import sectionsRoutes from './routes/sections';
 import uploadRoutes from './routes/upload';
+import forumRoutes from './routes/forum';
+import wrongAnswersRoutes from './routes/wrongAnswers';
 import { initEmailScheduler } from './services/emailScheduler';
 import { initNotificationScheduler } from './services/notificationScheduler';
 
@@ -79,6 +81,8 @@ app.use('/api/content', contentRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/sections', sectionsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/forum', forumRoutes);
+app.use('/api/wrong-answers', wrongAnswersRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -91,9 +95,9 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Not found' });
 });
 
-app.listen(Number(PORT), '0.0.0.0', () => {
-    console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
-    console.log(`📋 API endpoints available at http://0.0.0.0:${PORT}/api`);
+app.listen(Number(PORT), 'localhost', () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📋 API endpoints available at http://localhost:${PORT}/api`);
 });
 
 export default app;

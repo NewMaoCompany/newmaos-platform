@@ -9,6 +9,7 @@ declare global {
                 id: string;
                 email?: string;
             };
+            token?: string;
         }
     }
 }
@@ -39,6 +40,7 @@ export const authMiddleware = async (
             id: user.id,
             email: user.email
         };
+        req.token = token;
 
         next();
     } catch (error) {

@@ -1,11 +1,20 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
-dotenv.config({ path: 'server/.env' });
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, 'server/.env') });
+
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const serviceKey = process.env.SUPABASE_ANON_KEY || ''; // FALLBACK TO ANON KEY FOR DB QUERY
+
+const supabase = createClient(supabaseUrl, serviceKey);
+
 async function run() {
-    const { data, error } = await supabase.from('attempt_errors').select('*').limit(1);
-    console.log("attempt_errors:", error ? error.message : "exists");
+    console.log("Checking user_profiles...");
+    const { data: profile } = await supabase.from('user_profiles').select('id, name, avatar_url, bio').eq('email', 'newmao6120@gmail.com');
+    console.log(profile);
 }
 run();

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useMe
 import { User, CourseType, Activity, TopicMastery, Title, CourseState, Recommendation, SessionMode, Question, AppNotification, UnitContent, SubTopic, UserInsights, SubmitAttemptParams, SubmitAttemptResult, ReviewQueueItem, SubTopicProgress, UserSectionProgress, UserPrestige } from './types';
 import { INITIAL_USER, INITIAL_ACTIVITIES, INITIAL_RADAR_DATA, INITIAL_LINE_DATA, INITIAL_COURSES, PRACTICE_QUESTIONS, INITIAL_NOTIFICATIONS, COURSE_CONTENT_DATA, COURSE_TOPICS } from './constants';
 import { supabase } from './src/services/supabaseClient';
-import { notificationsApi, contentApi, questionsApi, sectionsApi } from './src/services/api';
+import { notificationsApi, contentApi, questionsApi, sectionsApi, practiceApi, usersApi } from './src/services/api';
 
 interface AppContextType {
     user: User;
@@ -49,7 +49,7 @@ interface AppContextType {
     claimFreePro: () => Promise<boolean>;
     recentPointsTransaction: { amount: number; description: string } | null;
     markProIntroSeen: () => Promise<void>;
-    completePractice: (results: { correct: number; total: number; topic: string }) => void;
+    completePractice: (results: { correct: number; total: number; topic: string; isReview?: boolean; newlyCorrectFirstAttempts?: number }) => void;
     setSessionMode: (mode: SessionMode) => void;
     setRecommendationTopic: (topicId: string) => void;
     dismissLoginPrompt: () => void;
@@ -124,6 +124,9 @@ interface AppContextType {
     fetchUserPrestige: () => Promise<void>;
     purchaseStardust: (amountCoins: number) => Promise<{ success: boolean; message?: string }>;
     injectStardust: (amount: number) => Promise<{ success: boolean; message?: string }>;
+
+    wrongAnswersCache: { items: any[], lastFetched: number };
+    fetchWrongAnswersCache: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -200,6 +203,9 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
     // Lifted Topic Content State
     const [topicContent, setTopicContent] = useState<Record<string, UnitContent>>(COURSE_CONTENT_DATA);
+
+    // Lifted Error Notebook Cache for 0-latency loading
+    const [wrongAnswersCache, setWrongAnswersCache] = useState<{ items: any[], lastFetched: number }>({ items: [], lastFetched: 0 });
 
     // Lifted Notification State
     const [notifications, setNotifications] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS);
@@ -576,11 +582,15 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         if (!isAuthenticated || !user?.id) return;
 
         try {
-            const { data, error } = await supabase.rpc('get_recent_activities', { p_limit: 10 });
+            const { data, error } = await supabase
+                .from('activities')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false })
+                .limit(10);
 
             if (error) {
-                // Graceful fallback if RPC doesn't exist yet (during migration)
-                console.warn('get_recent_activities RPC missing or failed, using local activity state.');
+                console.error('fetchRecentActivities failed:', error);
                 return;
             };
 
@@ -596,7 +606,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     // See types.ts content... id is number.
                     // Workaround: Use timestamp as ID for frontend key, plus random to avoid duplicates
                     id: new Date(d.created_at).getTime() + Math.random(),
-                    type: d.type === 'practice' ? 'quiz' : 'assignment', // Map to frontend types
+                    type: d.type === 'practice' ? 'quiz' : 'practice', // Map to frontend types
                     title: d.title,
                     description: d.description,
                     timestamp: new Date(d.created_at).toLocaleDateString() === new Date().toLocaleDateString()
@@ -1638,35 +1648,92 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         if (!user?.id) return;
         try {
             // Get questions where the LATEST attempt is incorrect
-            const { data, error } = await supabase.rpc('get_current_incorrect_questions');
+            const { data: qData, error: qError } = await supabase
+                .from('question_attempts')
+                .select('question_id, is_correct, created_at')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false });
 
-            if (error) {
-                // Fallback to simple query if RPC missing
-                const { data: qData, error: qError } = await supabase
-                    .from('question_attempts')
-                    .select('question_id, is_correct, created_at')
-                    .eq('user_id', user.id)
-                    .order('created_at', { ascending: false });
+            if (qError) throw qError;
 
-                if (qError) throw qError;
-
-                const currentIncorrect = new Set<string>();
-                const seen = new Set<string>();
-                (qData as any[])?.forEach(attempt => {
-                    if (!seen.has(attempt.question_id)) {
-                        seen.add(attempt.question_id);
-                        if (!attempt.is_correct) {
-                            currentIncorrect.add(attempt.question_id);
-                        }
+            const currentIncorrect = new Set<string>();
+            const seen = new Set<string>();
+            (qData as any[])?.forEach(attempt => {
+                if (!seen.has(attempt.question_id)) {
+                    seen.add(attempt.question_id);
+                    if (!attempt.is_correct) {
+                        currentIncorrect.add(attempt.question_id);
                     }
-                });
-                setIncorrectQuestionIds(currentIncorrect);
-            } else if (data) {
-                const ids = new Set<string>((data as any[]).map((d: any) => d.question_id as string));
-                setIncorrectQuestionIds(ids);
-            }
+                }
+            });
+            setIncorrectQuestionIds(currentIncorrect);
         } catch (err) {
             console.error('Error fetching incorrect questions in AppContext:', err);
+        }
+    };
+
+    const fetchWrongAnswersCache = async () => {
+        if (!user?.id) return;
+        try {
+            const { data: wrongAttempts, error: attemptsError } = await supabase
+                .from('question_attempts')
+                .select('question_id, is_correct, created_at, selected_option_id')
+                .eq('user_id', user.id)
+                .eq('is_correct', false)
+                .order('created_at', { ascending: false });
+            if (attemptsError) throw attemptsError;
+
+            // Load dismissed map to filter client-side initially
+            let dismissedMap: Record<string, string> = {};
+            try {
+                const saved = localStorage.getItem(`wrong_answer_dismissed_map_${user.id}`);
+                if (saved) dismissedMap = JSON.parse(saved);
+            } catch { }
+
+            const uniqueQuestionIds = new Set<string>();
+            const wrongAnswerMap: Record<string, any> = {};
+            for (const attempt of (wrongAttempts || [])) {
+                const qid = attempt.question_id;
+                const dismissedAt = dismissedMap[qid];
+                if (dismissedAt && new Date(attempt.created_at).getTime() <= new Date(dismissedAt).getTime()) {
+                    continue; // Skipped dismissed
+                }
+
+                if (!uniqueQuestionIds.has(qid)) {
+                    uniqueQuestionIds.add(qid);
+                    wrongAnswerMap[qid] = {
+                        questionId: qid, wrongCount: 1, lastWrongAt: attempt.created_at,
+                        firstWrongAt: attempt.created_at, lastSelectedOptionId: attempt.selected_option_id,
+                    };
+                } else {
+                    wrongAnswerMap[qid].wrongCount++;
+                    wrongAnswerMap[qid].firstWrongAt = attempt.created_at;
+                }
+            }
+            const questionIds = Array.from(uniqueQuestionIds);
+            if (questionIds.length === 0) {
+                setWrongAnswersCache({ items: [], lastFetched: Date.now() });
+                return;
+            }
+
+            const { data: questionDetails, error: qError } = await supabase
+                .from('questions')
+                .select('id, title, topic, sub_topic_id, type, difficulty, prompt, prompt_type, options, correct_option_id, explanation, calculator_allowed, latex')
+                .in('id', questionIds);
+
+            if (qError) throw qError;
+
+            const detailsMap: Record<string, any> = {};
+            (questionDetails || []).forEach((q: any) => { detailsMap[q.id] = q; });
+
+            const result = questionIds
+                .map(qid => ({ ...wrongAnswerMap[qid], question: detailsMap[qid] || null }))
+                .filter(w => w.question !== null)
+                .sort((a, b) => new Date(b.lastWrongAt).getTime() - new Date(a.lastWrongAt).getTime());
+
+            setWrongAnswersCache({ items: result, lastFetched: Date.now() });
+        } catch (err) {
+            console.error('Failed to pre-fetch wrong answers cache:', err);
         }
     };
 
@@ -1721,7 +1788,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     getUserInsights(),
                     fetchFriends(),
                     fetchUserPoints(),
-                    fetchQuestions()
+                    fetchQuestions(),
+                    fetchWrongAnswersCache()
                 ]);
             };
             loadData();
@@ -2296,10 +2364,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         const isSuperAdmin = email === 'newmao6120@gmail.com';
 
         setUser(prev => {
-            const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(formattedName || 'Student')}&background=f9d406&color=1c1a0d&bold=true`;
-            // Priority: explicit avatarUrl param > existing custom avatar > fallback
-            const hasCustomAvatar = prev.avatarUrl && !prev.avatarUrl.includes('ui-avatars.com');
-            const finalAvatar = avatarUrl || (hasCustomAvatar ? prev.avatarUrl : fallbackAvatar);
+            const finalAvatar = avatarUrl || prev.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(formattedName || 'Student')}&background=f9d406&color=1c1a0d&bold=true`;
 
             const updatedUser = {
                 ...prev,
@@ -2631,7 +2696,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         try {
             const localToday = new Date().toLocaleDateString('en-CA');
             const { data, error } = await supabase.rpc('get_checkin_status', {
-                p_user_id: user.id
+                p_user_id: user.id,
+                p_client_date: localToday
             });
             if (error) {
                 console.error('getCheckinStatus RPC error:', error);
@@ -2640,7 +2706,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
             // Client-side timezone-safe check: does today's LOCAL date exist in the calendar?
             const calendar = data?.month_calendar || [];
-            const todayRecord = calendar.find((d: any) => d.date === localToday);
+            const todayRecord = calendar.find((d: any) => d.date?.startsWith(localToday));
             const checkedInToday = !!todayRecord || (data?.checked_in_today || false);
 
             // Display streak: prefer server's dynamically-calculated current_streak
@@ -2655,7 +2721,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 const yesterday = new Date();
                 yesterday.setDate(yesterday.getDate() - 1);
                 const yStr = yesterday.toLocaleDateString('en-CA');
-                const yRecord = calendar.find((d: any) => d.date === yStr);
+                const yRecord = calendar.find((d: any) => d.date?.startsWith(yStr));
                 if (yRecord) {
                     displayStreak = yRecord.streak_day;
                 }
@@ -2772,20 +2838,13 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         setUser(prev => {
             const newState = { ...prev, ...updates };
 
-            // If name is being updated AND no avatarUrl is provided in this update, 
-            // AND the user doesn't already have a custom avatar, regenerate default.
-            if (updates.name && !updates.avatarUrl) {
-                const hasCustomAvatar = prev.avatarUrl && !prev.avatarUrl.includes('ui-avatars.com');
-                if (!hasCustomAvatar) {
-                    const displayName = updates.name;
-                    const newAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=f9d406&color=1c1a0d&bold=true`;
-                    newState.avatarUrl = newAvatarUrl;
-                }
-            }
+            // Check if name is being updated, we do NOT regenerate avatar here anymore 
+            // as it was destructively overwriting custom user-uploaded avatars whenever 
+            // the settings page was saved.
 
             // Sync to DB if authenticated
             if (prev.id) {
-                // Prepare sync object with all profile fields
+                // Prepare sync object with all profile fields for the new Node.js backend API
                 const syncData: any = {
                     name: newState.name,
                     avatar_url: newState.avatarUrl,
@@ -2797,39 +2856,17 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     show_name: newState.showName,
                     show_email: newState.showEmail,
                     show_bio: newState.showBio,
-                    show_prestige: newState.showPrestige,
                     equipped_title_id: newState.equippedTitleId,
                     email_notifications: newState.preferences?.emailNotifications,
-                    sound_effects: newState.preferences?.soundEffects
+                    sound_effects: newState.preferences?.soundEffects,
+                    // Prestige and titles
+                    selected_prestige_level: newState.selectedPrestigeLevel,
+                    show_prestige: newState.showPrestige
                 };
 
-                supabase.from('user_profiles')
-                    .upsert({
-                        id: prev.id,
-                        ...syncData
-                    })
-                    .then(async ({ error }) => {
-                        if (error) {
-                            console.error('Failed to sync profile to user_profiles:', error);
-                        } else {
-                            // Try to sync selected_prestige_level separately (graceful fallback if column missing)
-                            if (newState.selectedPrestigeLevel !== undefined) {
-                                try {
-                                    const { error: newColError } = await supabase
-                                        .from('user_profiles')
-                                        .update({ selected_prestige_level: newState.selectedPrestigeLevel })
-                                        .eq('id', prev.id);
-
-                                    if (newColError) {
-                                        // Silent warning locally, don't alerts user
-                                        console.warn('Failed to sync selected_prestige_level (migration might be missing)', newColError);
-                                    }
-                                } catch (e) {
-                                    console.warn('Exception sinking selected_prestige_level', e);
-                                }
-                            }
-                        }
-                    });
+                // Use the backend API to securely update profile (bypassing Client RLS)
+                usersApi.updateProfile(syncData)
+                    .catch(error => console.error('Failed to sync profile via Backend API:', error));
             }
 
             localStorage.setItem('user_profile_cache', JSON.stringify(newState));
@@ -3123,20 +3160,24 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     // Notification Methods moved to top
 
 
-    const completePractice = ({ correct, total, topic }: { correct: number; total: number; topic: string }) => {
+    const completePractice = ({ correct, total, topic, isReview, newlyCorrectFirstAttempts }: { correct: number; total: number; topic: string; isReview?: boolean; newlyCorrectFirstAttempts?: number }) => {
+        // 5. Send to backend APIs (includes unit_mastery logic from route)
+        practiceApi.completePractice({ correct, total, topic, isReview, newlyCorrectFirstAttempts })
+            .catch(console.error);
         // 1. Update User Stats
         setUser(prev => {
-            const newSolved = prev.problemsSolved + total;
+            const newFirstTimeCorrects = newlyCorrectFirstAttempts !== undefined ? newlyCorrectFirstAttempts : correct;
+            const newSolved = isReview ? prev.problemsSolved : prev.problemsSolved + newFirstTimeCorrects;
             // Simple mock mastery calculation logic (starts aggressive for new users)
-            const performanceFactor = correct / total;
+            const performanceFactor = newFirstTimeCorrects / Math.max(1, total);
 
             // Add study time to "Today" dynamically (Sun=0, Sat=6)
             const todayIndex = new Date().getDay();
             const newStudyHours = [...prev.studyHours];
             newStudyHours[todayIndex] = parseFloat((newStudyHours[todayIndex] + 0.2).toFixed(1)); // Add 0.2 hours per session
 
-            // Improve percentile from 0 if new
-            const newPercentile = prev.percentile === 0 ? 50 : Math.max(1, prev.percentile - (performanceFactor > 0.5 ? 1 : 0));
+            // Improve percentile from 0 if new (do not improve if review)
+            const newPercentile = isReview ? prev.percentile : (prev.percentile === 0 ? 50 : Math.max(1, prev.percentile - (performanceFactor > 0.5 ? 1 : 0)));
 
             return {
                 ...prev,
@@ -3149,15 +3190,17 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         });
 
         // 2. Add Activity
-        const newActivity: Activity = {
-            id: Date.now(),
-            type: 'practice',
-            title: `Practice: ${topic.includes('_') ? topic.split('_')[1] : topic}`, // Clean title for display
-            description: `Solved ${correct}/${total} problems correctly.`,
-            timestamp: 'Just now',
-            score: Math.round((correct / total) * 100)
-        };
-        setActivities(prev => [newActivity, ...prev]);
+        if (!isReview) {
+            const newActivity: Activity = {
+                id: Date.now(),
+                type: 'practice',
+                title: `Practice: ${topic.includes('_') ? topic.split('_')[1] : topic}`, // Clean title for display
+                description: `Solved ${correct}/${total} problems correctly.`,
+                timestamp: 'Just now',
+                score: Math.round((correct / total) * 100)
+            };
+            setActivities(prev => [newActivity, ...prev]);
+        }
 
         // 3. Update Radar Data for Topic
         // Note: The 'topic' string passed here must match 'subject' in radarData (e.g., 'Limits', not 'AB_Limits')
@@ -3313,7 +3356,9 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             userPrestige,
             fetchUserPrestige,
             purchaseStardust,
-            injectStardust
+            injectStardust,
+            wrongAnswersCache,
+            fetchWrongAnswersCache
         }}>
             {children}
         </AppContext.Provider>

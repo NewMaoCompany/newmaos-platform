@@ -379,13 +379,29 @@ export const Signup = () => {
                     // Process referral if ref code exists
                     if (refCode) {
                         try {
-                            const { data: refResult, error: refError } = await supabase.rpc('process_referral', {
-                                p_referral_code: refCode
-                            });
-                            if (refError) {
-                                console.error('Referral RPC error:', refError);
+                            // Wait briefly for session to fully propagate to Supabase
+                            await new Promise(resolve => setTimeout(resolve, 500));
+
+                            // Verify session is active before calling RPC
+                            const { data: sessionData } = await supabase.auth.getSession();
+                            console.log('Referral: Session active:', !!sessionData?.session, 'RefCode:', refCode);
+
+                            if (sessionData?.session) {
+                                const { data: refResult, error: refError } = await supabase.rpc('process_referral', {
+                                    p_referral_code: refCode
+                                });
+                                if (refError) {
+                                    console.error('Referral RPC error:', refError);
+                                } else {
+                                    console.log('Referral result:', refResult);
+                                    if (refResult?.success) {
+                                        console.log('✅ Referral processed successfully! Referrer will receive 100 NMS Points.');
+                                    } else {
+                                        console.warn('Referral not processed:', refResult?.error);
+                                    }
+                                }
                             } else {
-                                console.log('Referral result:', refResult);
+                                console.error('Referral: No active session after setSession');
                             }
                         } catch (refErr) {
                             console.error('Referral processing error:', refErr);

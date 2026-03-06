@@ -192,7 +192,7 @@ export function useDataSync() {
  * Hook for practice operations with backend sync
  */
 export function usePracticeSync() {
-    const completePractice = useCallback(async (data: { correct: number; total: number; topic: string }) => {
+    const completePractice = useCallback(async (data: { correct: number; total: number; topic: string; isReview?: boolean }) => {
         if (!isApiConfigured()) {
             return { success: true, offline: true };
         }

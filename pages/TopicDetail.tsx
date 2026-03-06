@@ -76,6 +76,7 @@ export const TopicDetail = () => {
 
 
     const [unitProgress, setUnitProgress] = useState<any>(null);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
         if (effectiveUnitId && user?.id) {
@@ -84,7 +85,9 @@ export const TopicDetail = () => {
     }, [effectiveUnitId, user?.id, sectionProgressMap]);
 
 
-    const handleSubTopicClick = (subTopicId: string, customMode?: SessionMode, forceStartNew?: boolean) => {
+    const handleSubTopicClick = async (subTopicId: string, customMode?: SessionMode, forceStartNew?: boolean) => {
+        if (isProcessing) return;
+        setIsProcessing(true);
         // Robust progress check for both regular sections and unit tests
         const effectiveId = subTopicId === 'unit_test' ? `${unitId}_unit_test` : subTopicId;
 
@@ -130,7 +133,7 @@ export const TopicDetail = () => {
                 };
 
                 // Foreground save to ensure it finishes before navigation
-                saveSectionProgress(effectiveId, newData, { completed: 0, total: 0, score: 0 }, 'section', true);
+                await saveSectionProgress(effectiveId, newData, { completed: 0, total: 0, score: 0 }, 'section', true);
             }
         }
 
@@ -158,6 +161,9 @@ export const TopicDetail = () => {
                 forceStartNew: forceStartNew
             }
         });
+
+        // Minor delay to prevent rapid clicking while router navigates
+        setTimeout(() => setIsProcessing(false), 500);
     };
 
     // Scroll to specific subtopic if returning from practice, otherwise top

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../AppContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
@@ -89,6 +89,7 @@ export const ProfileSettings = () => {
 
   // UI States
   const [isSaving, setIsSaving] = useState(false);
+  const isSavingRef = useRef(false);
   const [activeTab, setActiveTab] = useState<'seniority' | 'streak' | 'mastery' | 'social' | 'influence' | 'questions' | 'posts'>('seniority');
   const [isLoadingDetails, setIsLoadingDetails] = useState(true); // Renamed, used only for specific UI hints if needed
 
@@ -101,6 +102,7 @@ export const ProfileSettings = () => {
   const [pendingEmail, setPendingEmail] = useState('');
   const [verifyCode, setVerifyCode] = useState(['', '', '', '', '', '']);
   const [isVerifying, setIsVerifying] = useState(false);
+  const isVerifyingRef = useRef(false);
 
   // Prestige Preview State
   // Initialize from saved selection OR current actual level
@@ -186,6 +188,8 @@ export const ProfileSettings = () => {
 
   // 3. Save Logic
   const handleSave = async () => {
+    if (isSavingRef.current) return;
+    isSavingRef.current = true;
     setIsSaving(true);
     let hasUpdates = false;
 
@@ -247,6 +251,7 @@ export const ProfileSettings = () => {
         await authApi.initiateChangeEmail(email);
         setShowVerifyModal(true);
         // We stop here to wait for verification
+        isSavingRef.current = false;
         setIsSaving(false);
         return;
       }
@@ -257,6 +262,7 @@ export const ProfileSettings = () => {
       console.error('Update error:', error);
       showToast(error.message || 'Failed to update profile', 'error');
     } finally {
+      isSavingRef.current = false;
       setIsSaving(false);
     }
   };
@@ -282,6 +288,8 @@ export const ProfileSettings = () => {
   const handleVerify = async () => {
     const code = verifyCode.join('');
     if (code.length !== 6) return showToast('Please enter the complete 6-digit code', 'error');
+    if (isVerifyingRef.current) return;
+    isVerifyingRef.current = true;
     setIsVerifying(true);
     try {
       const res = await authApi.verifyChangeEmail(pendingEmail, code, user.id);
@@ -294,6 +302,7 @@ export const ProfileSettings = () => {
     } catch (error: any) {
       showToast(error.message || 'Verification failed', 'error');
     } finally {
+      isVerifyingRef.current = false;
       setIsVerifying(false);
     }
   };
@@ -973,13 +982,16 @@ export const SecuritySettings = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
+  const isUpdatingRef = useRef(false);
 
   const [resetStep, setResetStep] = useState<'send' | 'verify'>('send');
   const [resetCode, setResetCode] = useState(['', '', '', '', '', '']);
   const [resetNewPassword, setResetNewPassword] = useState('');
   const [resetConfirmPassword, setResetConfirmPassword] = useState('');
   const [isSendingCode, setIsSendingCode] = useState(false);
+  const isSendingCodeRef = useRef(false);
   const [isResetting, setIsResetting] = useState(false);
+  const isResettingRef = useRef(false);
   const [timer, setTimer] = useState(0);
 
   useEffect(() => {
@@ -994,7 +1006,8 @@ export const SecuritySettings = () => {
       showToast("New passwords do not match", 'error');
       return;
     }
-    if (!user?.id) return;
+    if (!user?.id || isUpdatingRef.current) return;
+    isUpdatingRef.current = true;
     setIsUpdating(true);
     try {
       const res = await authApi.changePassword(user.id, currentPassword, newPassword);
@@ -1006,11 +1019,14 @@ export const SecuritySettings = () => {
     } catch (error: any) {
       showToast(error.message || "Update failed", 'error');
     } finally {
+      isUpdatingRef.current = false;
       setIsUpdating(false);
     }
   };
 
   const handleSendCode = async () => {
+    if (isSendingCodeRef.current) return;
+    isSendingCodeRef.current = true;
     setIsSendingCode(true);
     try {
       if (!user?.email) throw new Error("No email found");
@@ -1021,6 +1037,7 @@ export const SecuritySettings = () => {
     } catch (error: any) {
       showToast(error.message || "Failed to send code", 'error');
     } finally {
+      isSendingCodeRef.current = false;
       setIsSendingCode(false);
     }
   };
@@ -1030,6 +1047,8 @@ export const SecuritySettings = () => {
       showToast("Passwords do not match", 'error');
       return;
     }
+    if (isResettingRef.current) return;
+    isResettingRef.current = true;
     setIsResetting(true);
     try {
       if (!user?.email) throw new Error("No email found");
@@ -1050,6 +1069,7 @@ export const SecuritySettings = () => {
     } catch (error: any) {
       showToast(error.message || "Reset failed", 'error');
     } finally {
+      isResettingRef.current = false;
       setIsResetting(false);
     }
   };
@@ -1249,6 +1269,7 @@ export const SubscriptionSettings = () => {
     dismissProUpgrade, proUpgradeDismissed
   } = useApp();
   const [isRedeeming, setIsRedeeming] = useState(false);
+  const isRedeemingRef = useRef(false);
   const [selectedPreview, setSelectedPreview] = useState<'basic' | 'pro'>(isPro ? 'pro' : 'basic');
   const [redeemError, setRedeemError] = useState<string | null>(null);
   const needsProUpgrade = !isPro && userPoints.balance >= 199 && !proUpgradeDismissed;
@@ -1284,6 +1305,8 @@ export const SubscriptionSettings = () => {
   }, [user.id, userPoints.balance]);
 
   const handleRedeemPro = async () => {
+    if (isRedeemingRef.current) return;
+    isRedeemingRef.current = true;
     setIsRedeeming(true);
     setRedeemError(null);
     const result = await redeemProWithPoints();
@@ -1297,6 +1320,7 @@ export const SubscriptionSettings = () => {
     } else {
       setRedeemError('Redemption failed. Please try again.');
     }
+    isRedeemingRef.current = false;
     setIsRedeeming(false);
   };
 

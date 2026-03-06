@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../AppContext';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
@@ -22,6 +22,7 @@ export const Settings = () => {
     // Local state for toggles
     const [preferences, setPreferences] = useState(user.preferences);
     const [isSaving, setIsSaving] = useState(false);
+    const isSavingRef = useRef(false);
     const [saveMessage, setSaveMessage] = useState('Save Changes');
 
     // Creator Area State
@@ -47,6 +48,8 @@ export const Settings = () => {
     };
 
     const handleSave = async () => {
+        if (isSavingRef.current) return;
+        isSavingRef.current = true;
         setIsSaving(true);
         setSaveMessage('Saving...');
 
@@ -65,6 +68,7 @@ export const Settings = () => {
         } catch (error) {
             console.error('Failed to save settings:', error);
             setSaveMessage('Error Saving');
+            isSavingRef.current = false;
             setIsSaving(false);
         } finally {
             // Reset message after a delay

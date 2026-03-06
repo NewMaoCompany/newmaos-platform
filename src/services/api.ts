@@ -95,6 +95,15 @@ export const authApi = {
         });
     },
 
+    // Upload API
+    getUploadToken: (type: 'avatar' | 'document' | 'other' = 'other', originalFilename: string) =>
+        apiRequest<{ url: string; filepath: string }>('/upload/token', {
+            method: 'POST',
+            body: JSON.stringify({ type, originalFilename })
+        }),
+
+
+
     async forgotPassword(email: string) {
         return apiRequest<{ message: string }>('/auth/forgot-password', {
             method: 'POST',
@@ -168,8 +177,8 @@ export const usersApi = {
         return apiRequest<any>('/users/me');
     },
 
-    async updateProfile(updates: { name?: string; avatar_url?: string; current_course?: string }) {
-        return apiRequest<any>('/users/me', {
+    async updateProfile(updates: Record<string, any>) {
+        return apiRequest<{ message: string }>('/users/me', {
             method: 'PUT',
             body: JSON.stringify(updates),
         });
@@ -257,7 +266,7 @@ export const questionsApi = {
 // =====================================
 
 export const practiceApi = {
-    async completePractice(data: { correct: number; total: number; topic: string }) {
+    async completePractice(data: { correct: number; total: number; topic: string; isReview?: boolean; newlyCorrectFirstAttempts?: number }) {
         return apiRequest<{ message: string; stats: any }>('/practice/complete', {
             method: 'POST',
             body: JSON.stringify(data),
@@ -401,6 +410,14 @@ export async function checkApiHealth(): Promise<boolean> {
     }
 }
 
+export const forumApi = {
+    postForumMessage: (questionId: string, content: string, channelId?: string | null, replyToId?: string | null) =>
+        apiRequest<{ message: string; data: any }>('/forum/messages', {
+            method: 'POST',
+            body: JSON.stringify({ questionId, content, channelId, replyToId })
+        }),
+};
+
 export default {
     auth: authApi,
     users: usersApi,
@@ -441,4 +458,5 @@ export default {
         }
     },
     checkHealth: checkApiHealth,
+    forum: forumApi,
 };

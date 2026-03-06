@@ -381,6 +381,7 @@ export const Analysis = () => {
                 .recharts-cartesian-grid-horizontal line, .recharts-cartesian-grid-vertical line { stroke-opacity: 0.1; }
                 .recharts-xAxis .recharts-cartesian-axis-tick-value { font-size: 11px; fill: #9CA3AF; }
                 .recharts-yAxis .recharts-cartesian-axis-tick-value { font-size: 11px; fill: #9CA3AF; }
+                .recharts-wrapper *:focus { outline: none; }
             `}</style>
 
             <Navbar />

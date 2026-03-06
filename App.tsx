@@ -26,6 +26,7 @@ const PrestigePage = React.lazy(() => import('./pages/PrestigePage').then(m => (
 const StardustPage = React.lazy(() => import('./pages/StardustPage').then(m => ({ default: m.StardustPage })));
 const QuestionCreator = React.lazy(() => import('./pages/QuestionCreator').then(m => ({ default: m.QuestionCreator })));
 const DebugQA = React.lazy(() => import('./pages/DebugQA').then(m => ({ default: m.DebugQA })));
+const WrongAnswerBook = React.lazy(() => import('./pages/WrongAnswerBook').then(m => ({ default: m.WrongAnswerBook })));
 const ProfileSettings = React.lazy(() => import('./pages/SettingsSubpages').then(m => ({ default: m.ProfileSettings })));
 const SecuritySettings = React.lazy(() => import('./pages/SettingsSubpages').then(m => ({ default: m.SecuritySettings })));
 const SubscriptionSettings = React.lazy(() => import('./pages/SettingsSubpages').then(m => ({ default: m.SubscriptionSettings })));
@@ -233,6 +234,7 @@ const AppRoutes = () => {
             <Route path="/profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/points" element={<ProtectedRoute><PointsPage /></ProtectedRoute>} />
             <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
+            <Route path="/wrong-answers" element={<ProtectedRoute><WrongAnswerBook /></ProtectedRoute>} />
 
             {/* Settings Subpages */}
             <Route path="/settings/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />

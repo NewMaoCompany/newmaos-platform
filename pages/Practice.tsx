@@ -402,6 +402,7 @@ export const Practice = () => {
                             if (review.targetQuestionIds?.length > 0) {
                                 setFrozenReviewQuestionIds(new Set(review.targetQuestionIds));
                             }
+                            setNewlyCorrectFirstAttempts(0); // Reset coins counter for resumed review session
                             setShowResumePrompt(false);
                             setIsInitializing(false);
                             return;
@@ -412,11 +413,16 @@ export const Practice = () => {
                             setMarkedQuestions(new Set());
                             setCurrentQuestionIndex(0);
                             setShowSummary(false);
+                            setNewlyCorrectFirstAttempts(0); // Reset coins counter for new review session
 
-                            // Use currentIncorrectIds from saved data, or fall back to global incorrectQuestionIds
-                            const targetIds = data?.currentIncorrectIds?.length > 0
-                                ? new Set(data.currentIncorrectIds as string[])
-                                : incorrectQuestionIds;
+                            // Priority 1: Use review.targetQuestionIds (set by handleErrorReviewClick in PracticeHub)
+                            // Priority 2: Use currentIncorrectIds from saved data
+                            // Priority 3: Fall back to global incorrectQuestionIds
+                            const targetIds = (review?.targetQuestionIds?.length > 0)
+                                ? new Set(review.targetQuestionIds as string[])
+                                : (data?.currentIncorrectIds?.length > 0
+                                    ? new Set(data.currentIncorrectIds as string[])
+                                    : incorrectQuestionIds);
                             setFrozenReviewQuestionIds(targetIds);
 
                             setShowResumePrompt(false);
@@ -457,7 +463,7 @@ export const Practice = () => {
                     if (hasFirstAttemptProgress) {
                         setPendingResumeData(savedSession.data);
                         // Special Case: In Error Review or Start Over, we ignore the old session's answers
-                        if (isErrorReviewState || effectiveState?.forceStartNew) {
+                        if (currentIsError || effectiveState?.forceStartNew) {
                             // Continue to init new session logic
                             // CRITICAL: Clear locally frozen IDs so we don't carry over old questions
                             if (effectiveState?.forceStartNew) {
@@ -560,6 +566,15 @@ export const Practice = () => {
     const [submitMode, setSubmitMode] = useState<'immediate' | 'batch'>('immediate');
     const [userAnswers, setUserAnswers] = useState<Record<string, string>>({}); // qId -> selectedOptionId for batch mode
     const [showSummary, setShowSummary] = useState(effectiveState?.showSummary === true);
+    const [newlyCorrectFirstAttempts, setNewlyCorrectFirstAttempts] = useState(0);
+
+    // Sync showSummary with location state changes (fixes infinite review loop)
+    useEffect(() => {
+        if (effectiveState) {
+            setShowSummary(effectiveState.showSummary === true);
+        }
+    }, [effectiveState]);
+
     const [justCompletedSessionLabel, setJustCompletedSessionLabel] = useState<string | null>(null);
     const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
 
@@ -651,7 +666,8 @@ export const Practice = () => {
 
     // Debounce empty state to prevent flash of "No Questions" during rapid transitions
     const [showEmptyState, setShowEmptyState] = useState(false);
-    const [isInitializing, setIsInitializing] = useState(false);
+    // Initialize to true when entering Summary mode to prevent screen flicker
+    const [isInitializing, setIsInitializing] = useState(sessionMode === 'Summary' || initialIsErrorReview);
 
     // Helper to determine display title
     const getTopicDisplayTitle = () => {
@@ -755,12 +771,12 @@ export const Practice = () => {
             }
 
             // Scenario 1: Resuming an active session OR loading Summary OR loading an Error Review slice
-            const isErrorReviewTargetedFetch = effectiveState?.isErrorReviewAction || savedData?.review?.status === 'in_progress';
+            const isErrorReviewTargetedFetch = effectiveState?.isErrorReviewAction || savedData?.review?.status === 'in_progress' || savedData?.review?.status === 'pending_review';
             if ((effectiveState?.isResuming || (isSummary && !subTopicId) || isErrorReviewTargetedFetch) && savedData) {
                 let targetIds: string[] = [];
                 if (isErrorReviewTargetedFetch && !isSummary) {
-                    // Priority 1: ONLY use targetQuestionIds if we are actively in a review (prevents stale state reading corrupted 10-length arrays from old sessions)
-                    if (savedData.review?.status === 'in_progress' && savedData.review?.targetQuestionIds && savedData.review.targetQuestionIds.length > 0) {
+                    // Priority 1: Use targetQuestionIds if we are actively in a review or pending review
+                    if ((savedData.review?.status === 'in_progress' || savedData.review?.status === 'pending_review') && savedData.review?.targetQuestionIds && savedData.review.targetQuestionIds.length > 0) {
                         targetIds = savedData.review.targetQuestionIds;
                     }
                     // Priority 2: Use currentIncorrectIds snapshot if available
@@ -928,6 +944,7 @@ export const Practice = () => {
     const [viewingOptionId, setViewingOptionId] = useState<string | null>(null);
     const [sessionHistory, setSessionHistory] = useState<any[]>([]); // NEW: Store history of attempts
     const [showProLimitModal, setShowProLimitModal] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     // Fetch and sync session history when summary is shown
     // IMPORTANT: Skip this when we JUST completed a session (justCompletedSessionLabel is set),
@@ -1176,6 +1193,8 @@ export const Practice = () => {
     };
 
     const handleShowAnswer = async () => {
+        if (isProcessing) return;
+        setIsProcessing(true);
         setIsSubmitted(true);
         setFeedback('incorrect');
         // Clear selection to indicate "no answer given"
@@ -1200,12 +1219,15 @@ export const Practice = () => {
             });
         } catch (error) {
             console.error('Failed to submit "show answer" attempt:', error);
+        } finally {
+            setIsProcessing(false);
         }
     };
 
     // Immediate mode: submit and show feedback right away
     const handleSubmit = async (e?: React.MouseEvent) => {
-        if (!selectedAnswer) return;
+        if (!selectedAnswer || isProcessing) return;
+        setIsProcessing(true);
 
         setIsSubmitted(true);
         const isCorrect = selectedAnswer === question.correctOptionId;
@@ -1222,6 +1244,8 @@ export const Practice = () => {
         // Submit to Agent Insight system
         const startTime = questionStartTimeRef.current || Date.now();
         const timeSpent = Math.round((Date.now() - startTime) / 1000);
+
+        let attemptNo = 0;
 
         try {
             const selectedOpt = question.options.find(o => o.id === selectedAnswer);
@@ -1242,7 +1266,7 @@ export const Practice = () => {
                 console.error(`Submission failed. Error: ${result.error || 'Unknown'}`);
             } else {
                 console.log('Submission successful:', result);
-                // alert('Debug: Submission successful! Attempt logged.'); // Optional: Uncomment if needed
+                attemptNo = result.attemptNo || 0;
             }
         } catch (error: any) {
             console.error('Failed to submit attempt:', error);
@@ -1253,21 +1277,34 @@ export const Practice = () => {
             setFeedback('correct');
             setSessionResults(prev => ({ ...prev, correct: prev.correct + 1 }));
 
-            // Award 5 points
-            awardPoints(5, 'practice_correct', question.id).then(() => {
+            // Award 5 points ONLY on the absolute FIRST attempt ever for this question
+            // Never award coins during Review Error or Start Over sessions
+            const isStartOver = effectiveState?.forceStartNew === true;
+            if (attemptNo === 1 && !isErrorReviewState && !isStartOver) {
+                setNewlyCorrectFirstAttempts(prev => prev + 1);
+                // Pre-unlock audio context on user gesture before async
+                try { const ac = new (window.AudioContext || (window as any).webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); ac.close(); } catch (_) { }
                 const x = e ? e.clientX : window.innerWidth / 2;
                 const y = e ? e.clientY : window.innerHeight / 2;
-                triggerCoinAnimation(5, x, y);
-                playCoinSound();
+                // Pass x,y to awardPoints so it triggers coin animation at the correct position
+                // awardPoints internally calls triggerCoinAnimation, so we do NOT call it again in .then()
+                awardPoints(5, 'practice_correct', question.id, 'Correct Answer +5', undefined, x, y).then(() => {
+                    playCoinSound();
+                    playCorrectSound();
+                });
+            } else {
+                // If they got it right but it's a retry/review/start-over, just play correct sound
                 playCorrectSound();
-            });
+            }
         } else {
             setFeedback('incorrect');
         }
+        setIsProcessing(false);
     };
 
     // Batch mode: save answer and go to next question without immediate feedback
     const handleSkipToNext = () => {
+        if (isProcessing) return;
         if (selectedAnswer) {
             setUserAnswers(prev => ({ ...prev, [question.id]: selectedAnswer }));
         }
@@ -1286,6 +1323,8 @@ export const Practice = () => {
 
     // Batch submit all answers at once
     const handleBatchSubmit = async () => {
+        if (isProcessing) return;
+        setIsProcessing(true);
         // Include current selection if exists
         const allAnswers = selectedAnswer
             ? { ...userAnswers, [question.id]: selectedAnswer }
@@ -1330,7 +1369,14 @@ export const Practice = () => {
                         selectedOptionId: userAnswer,
                         timeSpentSeconds: timePerQuestion,
                         errorTags: isCorrect ? [] : finalErrorTags
+                    }).then(res => {
+                        // Return true if it was the FIRST attempt and it is CORRECT
+                        if (res && res.success && res.isCorrect && res.attemptNo === 1) {
+                            return true;
+                        }
+                        return false;
                     });
+
                     submissionPromises.push(promise);
                 } else {
                     // Already submitted individually, preserve existing result
@@ -1352,7 +1398,7 @@ export const Practice = () => {
                         selectedOptionId: null,
                         timeSpentSeconds: timePerQuestion,
                         errorTags: q.errorTags || []
-                    });
+                    }).then(() => false);
                     submissionPromises.push(promise);
                 }
             }
@@ -1360,22 +1406,6 @@ export const Practice = () => {
 
         // Recalculate correctCount from final localResults (includes both batch and individually submitted)
         correctCount = Object.values(localResults).filter(r => r === 'correct').length;
-
-        // Award points for newly correct answers
-        let newlyCorrectCount = 0;
-        Object.entries(localResults).forEach(([qid, status]) => {
-            if (status === 'correct' && questionResults[qid] !== 'correct') {
-                newlyCorrectCount++;
-            }
-        });
-
-        if (newlyCorrectCount > 0) {
-            const totalPoints = newlyCorrectCount * 5;
-            awardPoints(totalPoints, 'practice_batch', `session_${Date.now()}`).then(() => {
-                triggerCoinAnimation(totalPoints);
-                playCoinSound();
-            });
-        }
 
         // 1. Instantly update all local session states to avoid intermediate flashes
         console.log('🚀 [handleBatchSubmit] Processing', questions.length, 'questions');
@@ -1390,8 +1420,31 @@ export const Practice = () => {
 
         // 2. Wait for all to finish before finalizing session (Sequencing is critical for history reliability)
         try {
-            await Promise.allSettled(submissionPromises);
+            const settledPromises = await Promise.allSettled(submissionPromises);
             console.log('✅ Batch attempts settled');
+
+            // Calculate how many were newly correct first attempts by reading the boolean returns
+            // Never award coins during Review Error or Start Over sessions
+            const isStartOverBatch = effectiveState?.forceStartNew === true;
+            let newlyCorrectFirstAttempts = 0;
+            if (!isErrorReviewState && !isStartOverBatch) {
+                settledPromises.forEach(result => {
+                    if (result.status === 'fulfilled' && result.value === true) {
+                        newlyCorrectFirstAttempts++;
+                    }
+                });
+            }
+
+            if (newlyCorrectFirstAttempts > 0) {
+                setNewlyCorrectFirstAttempts(prev => prev + newlyCorrectFirstAttempts);
+                const totalPoints = newlyCorrectFirstAttempts * 5;
+                // Pre-unlock audio context
+                try { const ac = new (window.AudioContext || (window as any).webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); ac.close(); } catch (_) { }
+                // awardPoints internally triggers coin animation, no need to call triggerCoinAnimation again
+                awardPoints(totalPoints, 'practice_batch', `session_${Date.now()}`, `Batch Submit: ${newlyCorrectFirstAttempts} correct`).then(() => {
+                    playCoinSound();
+                });
+            }
 
             // 3. Finalize Session (Activity Log) AFTER attempts are secured
             await finishSession(correctCount, allAnswers, localResults);
@@ -1399,11 +1452,14 @@ export const Practice = () => {
             console.error('❌ Critical error in batch submit:', err);
             // Still try to finish session even if some attempts failed
             finishSession(correctCount, allAnswers, localResults);
+        } finally {
+            setIsProcessing(false);
         }
     };
 
     // NEW: Handle explicit "Submit All" click from UI
     const handleSubmitAll = () => {
+        if (isProcessing) return;
         const currentAnsweredCount = Object.keys(userAnswers).length + (selectedAnswer && !userAnswers[question.id] ? 1 : 0);
         if (currentAnsweredCount < questions.length) {
             setShowSubmitConfirm(true);
@@ -1414,6 +1470,7 @@ export const Practice = () => {
 
     // Next after immediate submission
     const handleNext = () => {
+        if (isProcessing) return;
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1);
             setSelectedAnswer(null);
@@ -1552,22 +1609,32 @@ export const Practice = () => {
             // CRITICAL: Only consider questions that were part of THIS review's target set,
             // not all loaded questions. Otherwise, questions the user already got correct
             // in previous rounds would be re-added as "still incorrect".
-            const reviewTargetIds = existingData.review?.targetQuestionIds || questions.map(q => q.id);
+            // CRITICAL FIX: handle case where targetQuestionIds is an empty array by using length > 0
+            const dbTargetIds = existingData.review?.targetQuestionIds;
+            const reviewTargetIds = (dbTargetIds && dbTargetIds.length > 0) ? dbTargetIds : questions.map(q => q.id);
             const stillIncorrectIds: string[] = [];
+
+            // We need to look at both the new finalResults AND the existing mainQuestionResults.
+            // A question might be correct in finalResults (this round) OR already correct in mainQuestionResults (previous rounds).
+            const mainQuestionResults = { ...(existingData.questionResults || {}) };
+
             reviewTargetIds.forEach((qid: string) => {
-                if (finalResults[qid] !== 'correct') {
+                if (finalResults[qid] === 'correct') {
+                    // It was corrected in this round!
+                    mainQuestionResults[qid] = 'correct';
+                } else if (mainQuestionResults[qid] !== 'correct') {
+                    // It's still wrong
                     stillIncorrectIds.push(qid);
+                    mainQuestionResults[qid] = 'incorrect'; // Ensure it's marked incorrect in main results if it was skipped/unanswered
                 }
             });
 
-            // 2. Update main userAnswers and questionResults with fixes
+            // 2. Update main userAnswers with fixes
             const mainUserAnswers = { ...(existingData.userAnswers || {}) };
-            const mainQuestionResults = { ...(existingData.questionResults || {}) };
 
             Object.keys(finalResults).forEach(qid => {
                 if (finalResults[qid] === 'correct') {
                     mainUserAnswers[qid] = finalAnswers[qid];
-                    mainQuestionResults[qid] = 'correct';
                 }
             });
 
@@ -1657,9 +1724,9 @@ export const Practice = () => {
                     completedAt: existingData.timestamp || new Date().toISOString()
                 },
 
-                // NEW: review (mark as completed only if ALL errors fixed, otherwise reset for next round)
+                // Review state: 'completed' if ALL errors fixed, 'pending_review' if still has errors (ready for next round)
                 review: existingData.review?.status === 'in_progress' ? {
-                    status: (stillIncorrectIds.length === 0 ? 'completed' : 'not_started') as 'completed' | 'not_started',
+                    status: (stillIncorrectIds.length === 0 ? 'completed' : 'pending_review') as string,
                     round: reviewRound,
                     targetQuestionIds: stillIncorrectIds, // Next review targets remaining errors
                     userAnswers: finalAnswers,
@@ -1849,7 +1916,9 @@ export const Practice = () => {
         completePractice({
             correct: finalCorrectCount,
             total: questions.length,
-            topic: question?.topic || cleanTopic
+            topic: question?.topic || cleanTopic,
+            isReview: isErrorReviewState,
+            newlyCorrectFirstAttempts: newlyCorrectFirstAttempts
         });
         setShowSummary(true);
     };
@@ -2092,7 +2161,8 @@ export const Practice = () => {
     // If viewState is 'lesson', we allow rendering immediately (using sync subTopicData) even if session check is pending.
     // We only block for loading if we are in 'practice' mode (where questions/progress are critical).
     const isQuestionMissing = questions.length > 0 && !question; // Safety check for out-of-bounds
-    if (viewState === 'practice' && (isLoadingQuestions || (questions.length === 0 && !showEmptyState) || isQuestionMissing)) {
+    // Show loading spinner during initialization (prevents summary flicker) or when questions are loading
+    if ((isInitializing && !showSummary) || (viewState === 'practice' && !showSummary && (isLoadingQuestions || (questions.length === 0 && !showEmptyState) || isQuestionMissing))) {
         return (
             <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
@@ -2296,6 +2366,7 @@ export const Practice = () => {
                             handleStartNewSession();
                         }}
                         onReviewErrors={() => {
+                            setNewlyCorrectFirstAttempts(0); // Reset coins counter before starting review
                             navigate('/practice/session', {
                                 state: {
                                     topic: topicParam,
@@ -2311,6 +2382,7 @@ export const Practice = () => {
                         summaryHistory={sessionHistory}
                         justCompletedSessionLabel={justCompletedSessionLabel}
                         discussSlug={discussSlug}
+                        coinsEarned={newlyCorrectFirstAttempts * 5}
                     />
                 </div>
             </div>
@@ -2404,7 +2476,8 @@ export const Practice = () => {
                                     <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
                                     <button
                                         onClick={handleSubmitAll}
-                                        className="flex items-center gap-1 px-2 py-0.5 rounded text-gray-400 hover:text-gray-600 transition-colors lowercase font-bold whitespace-nowrap"
+                                        disabled={isProcessing}
+                                        className="flex items-center gap-1 px-2 py-0.5 rounded text-gray-400 hover:text-gray-600 transition-colors lowercase font-bold whitespace-nowrap disabled:opacity-50"
                                     >
                                         submit all
                                         <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
@@ -2521,7 +2594,8 @@ export const Practice = () => {
                                             {!isSubmitted && (
                                                 <button
                                                     onClick={handleShowAnswer}
-                                                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-500 border border-amber-200 dark:border-amber-900/30 hover:bg-amber-100 dark:hover:bg-amber-900/40 whitespace-nowrap"
+                                                    disabled={isProcessing}
+                                                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-500 border border-amber-200 dark:border-amber-900/30 hover:bg-amber-100 dark:hover:bg-amber-900/40 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                                                     title="Give up and show solution"
                                                 >
                                                     <span>Show Answer</span>
@@ -2676,7 +2750,7 @@ export const Practice = () => {
 
                                                 <button
                                                     onClick={handleSubmit}
-                                                    disabled={!selectedAnswer}
+                                                    disabled={!selectedAnswer || isProcessing}
                                                     className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover py-3.5 px-4 text-text-main font-bold shadow-sm transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     <span>Submit Answer</span>
@@ -2684,7 +2758,8 @@ export const Practice = () => {
                                                 </button>
                                                 <button
                                                     onClick={handleSkipToNext}
-                                                    className={`flex items-center justify-center gap-1 rounded-xl border-2 py-3.5 px-5 font-bold transition-all active:scale-[0.98] ${currentQuestionIndex === questions.length - 1
+                                                    disabled={isProcessing}
+                                                    className={`flex items-center justify-center gap-1 rounded-xl border-2 py-3.5 px-5 font-bold transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed ${currentQuestionIndex === questions.length - 1
                                                         ? 'bg-black dark:bg-white text-white dark:text-black border-transparent hover:opacity-90 shadow-sm'
                                                         : 'border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-600 dark:text-gray-300'
                                                         }`}
@@ -2707,7 +2782,8 @@ export const Practice = () => {
                                                 )}
                                                 <button
                                                     onClick={handleNext}
-                                                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 py-4 px-6 text-white dark:text-black font-bold shadow-sm transition-all active:scale-[0.98] h-full"
+                                                    disabled={isProcessing}
+                                                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 py-4 px-6 text-white dark:text-black font-bold shadow-sm transition-all active:scale-[0.98] h-full disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     <span>{currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Practice'}</span>
                                                     <span className="material-symbols-outlined text-xl">arrow_forward</span>
@@ -2868,10 +2944,12 @@ export const Practice = () => {
                                 </button>
                                 <button
                                     onClick={async () => {
+                                        if (isProcessing) return;
                                         setShowSubmitConfirm(false);
                                         await handleBatchSubmit();
                                     }}
-                                    className="flex-1 py-3 rounded-xl font-bold bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-all shadow-sm"
+                                    disabled={isProcessing}
+                                    className="flex-1 py-3 rounded-xl font-bold bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-all shadow-sm disabled:opacity-50"
                                 >
                                     Submit All
                                 </button>

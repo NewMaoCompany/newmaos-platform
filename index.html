@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>NewMaoS - AP Calculus Mastery | Intelligent AP Calculus Learning Platform</title>
 
   <!-- SEO Meta Tags -->
@@ -417,6 +417,27 @@
 
     .animate-modal-entry {
       animation: modal-entry 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Mobile Bottom Navigation Bar - safe area + content padding */
+    .safe-area-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    @media (max-width: 767px) {
+
+      /* Add bottom padding to ALL content containers so nothing hides behind bottom nav */
+      #root>div,
+      main,
+      .main-content {
+        padding-bottom: 80px !important;
+      }
+
+      /* Scrollable containers inside full-height layouts (e.g. Forum sidebar) */
+      .scroll-bounce,
+      .custom-scrollbar {
+        padding-bottom: 80px !important;
+      }
     }
   </style>
   <script type="importmap">

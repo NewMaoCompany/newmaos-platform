@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Question } from '../types';
 import { MathRenderer } from '../components/MathRenderer';
@@ -26,6 +26,7 @@ interface SessionSummaryProps {
     }[];
     justCompletedSessionLabel?: string | null;
     discussSlug?: string | null;
+    coinsEarned?: number;
 }
 
 export const SessionSummary = ({
@@ -37,8 +38,11 @@ export const SessionSummary = ({
     onReviewErrors,
     summaryHistory = [],
     justCompletedSessionLabel = null,
-    discussSlug = null
+    discussSlug = null,
+    coinsEarned = 0
 }: SessionSummaryProps) => {
+    const { triggerCoinAnimation } = useApp();
+    const hasFiredCoinAnimation = useRef(false);
     // Determine default selection:
     // Use justCompletedSessionLabel to find and auto-select the session that was just completed
     const getDefaultIndex = () => {
@@ -104,6 +108,18 @@ export const SessionSummary = ({
             }
         }
     }, [justCompletedSessionLabel, summaryHistory, initialQuestionResults]);
+
+    // Auto-trigger coin animation when Summary page loads with earned coins
+    useEffect(() => {
+        if (coinsEarned > 0 && !hasFiredCoinAnimation.current) {
+            hasFiredCoinAnimation.current = true;
+            // Delay to let DOM fully render (pointsBalanceRef needs to be available)
+            const timer = setTimeout(() => {
+                triggerCoinAnimation(coinsEarned);
+            }, 800);
+            return () => clearTimeout(timer);
+        }
+    }, [coinsEarned, triggerCoinAnimation]);
 
     // Derived Data based on selection
     const activeUserAnswers = selectedHistoryIndex === -1
@@ -188,38 +204,9 @@ export const SessionSummary = ({
 
     const renderContent = (content: string, type?: 'text' | 'image', options: { noBorder?: boolean } = {}) => {
         if (!content) return null;
-
-        let isImage = false;
-        if (type) {
-            isImage = type === 'image';
-        } else {
-            isImage = content.trim().startsWith('http') ||
-                content.trim().startsWith('data:image') ||
-                content.trim().startsWith('/');
-        }
-
-        if (isImage) {
-            // Try to parse array for multiple images
-            let imageUrls: string[] = [];
-            try {
-                const parsed = JSON.parse(content);
-                if (Array.isArray(parsed)) imageUrls = parsed;
-                else imageUrls = [content];
-            } catch (e) {
-                imageUrls = [content];
-            }
-
-            return (
-                <div className={`flex flex-wrap gap-4 ${options.noBorder ? '' : 'p-4 rounded-xl bg-gray-50 dark:bg-zinc-800'}`}>
-                    {imageUrls.map((url, i) => (
-                        <img key={i} src={url} alt="Content" className="max-w-full h-auto rounded-lg shadow-sm" />
-                    ))}
-                </div>
-            );
-        }
-
-        // Text content - use MathRenderer
-        return <MathRenderer content={content} />;
+        // Delegate all rendering (Mixed Arrays, Single Images, LaTeX/Text) to the smart MathRenderer
+        // This matches Practice.tsx behavior and correctly handles mixed image+text prompts
+        return <MathRenderer content={content} className={options.noBorder ? '' : ''} />;
     };
 
     if (viewMode === 'review') {
@@ -521,7 +508,7 @@ export const SessionSummary = ({
                             </div>
                             <div className="text-left">
                                 <div className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Coins</div>
-                                <div className="text-lg font-black text-gray-900 dark:text-white leading-tight">+{correctCount * 5}</div>
+                                <div className="text-lg font-black text-gray-900 dark:text-white leading-tight">+{coinsEarned}</div>
                             </div>
                         </div>
                     </div>

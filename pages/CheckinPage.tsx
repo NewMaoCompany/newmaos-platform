@@ -19,15 +19,83 @@ export const CheckinPage = () => {
     const [isRepairing, setIsRepairing] = useState(false);
 
     const today = new Date();
-    const currentMonth = today.toLocaleString('en-US', { month: 'long' });
-    const currentYear = today.getFullYear();
-    const daysInMonth = new Date(currentYear, today.getMonth() + 1, 0).getDate();
-    const firstDayOfMonth = new Date(currentYear, today.getMonth(), 1).getDay();
+
+    // Month navigation state
+    const [viewYear, setViewYear] = useState(today.getFullYear());
+    const [viewMonth, setViewMonth] = useState(today.getMonth()); // 0-indexed
+    const [monthHistory, setMonthHistory] = useState<any[]>([]); // history for the viewed month
+    const [loadingMonth, setLoadingMonth] = useState(false);
+
+    const isCurrentMonth = viewYear === today.getFullYear() && viewMonth === today.getMonth();
+    const viewMonthName = new Date(viewYear, viewMonth, 1).toLocaleString('en-US', { month: 'long' });
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay();
     const calendarDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
     const paddingDays = Array.from({ length: firstDayOfMonth }, (_, i) => i);
 
     const [selectedDay, setSelectedDay] = useState<number>(today.getDate());
     const [checkinReward, setCheckinReward] = useState<{ base: number; bonus: number; total: number; streak: number; isMilestone: boolean } | null>(null);
+
+    // Fetch history for a specific month from user_checkins table
+    const fetchMonthHistory = async (year: number, month: number) => {
+        if (!user?.id) return;
+        setLoadingMonth(true);
+        try {
+            const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+            const endDate = `${year}-${String(month + 1).padStart(2, '0')}-${new Date(year, month + 1, 0).getDate()}`;
+            const { data, error } = await supabase
+                .from('user_checkins')
+                .select('checkin_date, streak_day, points_awarded, bonus_points')
+                .eq('user_id', user.id)
+                .gte('checkin_date', startDate)
+                .lte('checkin_date', endDate)
+                .order('checkin_date', { ascending: true });
+            if (error) {
+                console.error('fetchMonthHistory error:', error);
+                setMonthHistory([]);
+            } else {
+                // Normalize to match the format from get_checkin_status RPC (date, streak_day, points, is_milestone)
+                setMonthHistory((data || []).map((d: any) => ({
+                    date: d.checkin_date,
+                    streak_day: d.streak_day,
+                    points: (d.points_awarded || 0) + (d.bonus_points || 0),
+                    is_milestone: (d.bonus_points || 0) > 0
+                })));
+            }
+        } catch (err) {
+            console.error('fetchMonthHistory exception:', err);
+            setMonthHistory([]);
+        } finally {
+            setLoadingMonth(false);
+        }
+    };
+
+    const goToPrevMonth = () => {
+        let newMonth = viewMonth - 1;
+        let newYear = viewYear;
+        if (newMonth < 0) { newMonth = 11; newYear -= 1; }
+        setViewYear(newYear);
+        setViewMonth(newMonth);
+        setSelectedDay(1);
+    };
+
+    const goToNextMonth = () => {
+        // Don't allow going past the current month
+        if (viewYear === today.getFullYear() && viewMonth >= today.getMonth()) return;
+        let newMonth = viewMonth + 1;
+        let newYear = viewYear;
+        if (newMonth > 11) { newMonth = 0; newYear += 1; }
+        setViewYear(newYear);
+        setViewMonth(newMonth);
+        setSelectedDay(1);
+    };
+
+    // When month changes, fetch history for non-current months
+    useEffect(() => {
+        if (!isCurrentMonth && user?.id) {
+            fetchMonthHistory(viewYear, viewMonth);
+        }
+    }, [viewYear, viewMonth, user?.id, isCurrentMonth]);
 
     const refreshStatus = async () => {
         if (!isAuthenticated) return;
@@ -66,7 +134,7 @@ export const CheckinPage = () => {
         const targetX = window.innerWidth / 4;
         const targetY = window.innerHeight / 2;
 
-        const targetDateStr = `${currentYear}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(dayToRepair).padStart(2, '0')}`;
+        const targetDateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(dayToRepair).padStart(2, '0')}`;
 
         try {
             const { data, error } = await supabase.rpc('repair_specific_day', { user_uuid: user?.id, target_date: targetDateStr });
@@ -145,14 +213,15 @@ export const CheckinPage = () => {
         );
     }
 
-    const history = checkinData?.history || [];
+    // Use current month's checkinData history OR fetched monthHistory for other months
+    const activeHistory = isCurrentMonth ? (checkinData?.history || []) : monthHistory;
     const getCheckedData = (day: number) => {
-        const dateStr = `${currentYear}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        return history.find((h: any) => h.date === dateStr);
+        const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        return activeHistory.find((h: any) => h.date?.startsWith(dateStr));
     };
 
     const getDayState = (day: number): DayState => {
-        const targetDate = new Date(currentYear, today.getMonth(), day);
+        const targetDate = new Date(viewYear, viewMonth, day);
         targetDate.setHours(0, 0, 0, 0);
 
         const currentToday = new Date();
@@ -166,7 +235,7 @@ export const CheckinPage = () => {
         if (targetDate.getTime() > currentToday.getTime()) return 'future';
         if (targetDate.getTime() < createdDate.getTime()) return 'before_registration';
         if (targetDate.getTime() === currentToday.getTime()) {
-            return isChecked ? 'checked' : 'today_missed';
+            return checkinData?.hasCheckedToday ? 'checked' : 'today_missed';
         }
         return isChecked ? 'checked' : 'missed';
     };
@@ -184,17 +253,15 @@ export const CheckinPage = () => {
         activeStreakForCalc = 1;
     }
 
-    // 30-Day Blueprint — matches backend perform_daily_checkin exactly
+    // 30-Day Blueprint — +5 every day up to 60. Milestone every 7 days (+10 * streak).
     const get30DayReward = (streak: number) => {
-        let base = 10, bonus = 0;
-        if (streak >= 1 && streak <= 6) { base = 10; }
-        else if (streak === 7) { base = 10; bonus = 50; }
-        else if (streak >= 8 && streak <= 13) { base = 15; }
-        else if (streak === 14) { base = 15; bonus = 80; }
-        else if (streak >= 15 && streak <= 20) { base = 20; }
-        else if (streak === 21) { base = 20; bonus = 120; }
-        else if (streak >= 22 && streak <= 29) { base = 25; }
-        else if (streak === 30) { base = 25; bonus = 300; }
+        const base = Math.min(60, 5 + streak * 5);
+        let bonus = 0;
+
+        if (streak > 0 && streak % 7 === 0) {
+            bonus = streak * 10;
+        }
+
         return { base, bonus, total: base + bonus };
     };
 
@@ -202,8 +269,25 @@ export const CheckinPage = () => {
     const todayStreak = checkinData?.hasCheckedToday
         ? (checkinData?.streak || 1)  // Already checked in today — show current streak
         : (checkinData?.streak || 0) + 1;  // Not yet — show what they WOULD get
-    const todayRewardInfo = get30DayReward(todayStreak);
+
+    let todayRewardInfo = get30DayReward(todayStreak);
+
+    // Bind to actual DB record if already checked in to guarantee exact UI match
+    if (checkinData?.hasCheckedToday) {
+        const todayData = getCheckedData(today.getDate());
+        if (todayData && todayData.points) {
+            todayRewardInfo.total = todayData.points;
+            todayRewardInfo.base = todayData.is_milestone ? (todayData.points - (todayStreak * 10)) : todayData.points;
+            todayRewardInfo.bonus = todayData.is_milestone ? (todayStreak * 10) : 0;
+        }
+    }
+
     const repairCost = checkinData?.repairCost || 100;
+
+    // Milestone Calculation for Top Card
+    const nextMilestoneDay = Math.ceil(todayStreak / 7) * 7;
+    const isMilestoneToday = todayStreak === nextMilestoneDay;
+    const milestoneBonusAmount = nextMilestoneDay * 10;
 
     return (
         <div className="h-screen bg-surface-light dark:bg-surface-dark text-text-main dark:text-gray-100 flex flex-col overflow-hidden">
@@ -258,6 +342,14 @@ export const CheckinPage = () => {
                                                 <span className="text-9xl font-black tracking-tighter">{activeStreakForCalc}</span>
                                                 <span className="text-2xl font-bold uppercase italic">Days</span>
                                             </div>
+
+                                            <div className="mt-4 flex items-center gap-2 bg-black/10 px-4 py-2 rounded-full border border-black/10">
+                                                <span className="material-symbols-outlined text-sm">stars</span>
+                                                <span className="text-xs font-black uppercase tracking-widest text-black/80">
+                                                    {isMilestoneToday ? `Milestone: +${milestoneBonusAmount} Coins` : `Next Milestone: Day ${nextMilestoneDay}`}
+                                                </span>
+                                            </div>
+
                                             <button
                                                 onClick={(e) => handleCheckin(e)}
                                                 disabled={performingCheckin}
@@ -323,15 +415,19 @@ export const CheckinPage = () => {
                                         <span className="text-base font-bold">Streak Day</span>
                                         <span className="text-lg font-black text-amber-500 font-mono">Day {todayStreak}</span>
                                     </div>
+
                                     <div className="flex items-center justify-between">
-                                        <span className="text-base font-bold">Base Reward</span>
+                                        <span className="text-base font-bold">Reward</span>
                                         <span className="text-lg font-black text-primary flex items-center gap-2">
                                             <PointsCoin size="md" /> {todayRewardInfo.base}
                                         </span>
                                     </div>
                                     {todayRewardInfo.bonus > 0 && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-base font-bold">Milestone Bonus</span>
+                                            <div className="flex flex-col">
+                                                <span className="text-base font-bold text-emerald-500">Milestone Bonus</span>
+                                                <span className="text-xs text-emerald-500/80 font-medium tracking-wide">Day {todayStreak} Reward</span>
+                                            </div>
                                             <span className="text-lg font-black text-emerald-500 flex items-center gap-2">
                                                 <PointsCoin size="md" /> +{todayRewardInfo.bonus}
                                             </span>
@@ -351,9 +447,25 @@ export const CheckinPage = () => {
                         <div className="lg:col-span-2 flex flex-col gap-10">
                             <div className="p-12 rounded-[3.5rem] bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 shadow-2xl min-h-[700px] flex flex-col">
                                 <div className="flex items-center justify-between mb-12">
-                                    <div>
-                                        <h2 className="text-4xl font-black tracking-tighter">{currentMonth}</h2>
-                                        <p className="text-lg font-bold text-gray-400 mt-1">{currentYear}</p>
+                                    <div className="flex items-center gap-4">
+                                        <button
+                                            onClick={goToPrevMonth}
+                                            className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/10 transition-all active:scale-90"
+                                        >
+                                            <span className="material-symbols-outlined text-2xl text-gray-500">chevron_left</span>
+                                        </button>
+                                        <div className="text-center min-w-[160px]">
+                                            <h2 className="text-4xl font-black tracking-tighter">{viewMonthName}</h2>
+                                            <p className="text-lg font-bold text-gray-400 mt-1">{viewYear}</p>
+                                        </div>
+                                        <button
+                                            onClick={goToNextMonth}
+                                            disabled={isCurrentMonth}
+                                            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-90 ${isCurrentMonth ? 'opacity-30 cursor-not-allowed' : 'hover:bg-gray-100 dark:hover:bg-white/10'
+                                                }`}
+                                        >
+                                            <span className="material-symbols-outlined text-2xl text-gray-500">chevron_right</span>
+                                        </button>
                                     </div>
                                     <div className="flex gap-4">
                                         <div className="px-5 py-2.5 rounded-2xl bg-gray-50 dark:bg-white/5 text-xs font-black uppercase tracking-widest text-gray-400 flex items-center gap-3 border border-gray-100 dark:border-white/5">
