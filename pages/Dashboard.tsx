@@ -407,14 +407,13 @@ export const Dashboard = () => {
           {/* Prominent Daily Check-in Button */}
           <div
             onClick={() => {
-              if (checkinStatus === 'checked_in') return;
               // Mark all check-in notifications as read (clears all red dots)
               notifications.filter(n => n.unread && n.link === '/checkin').forEach(n => markNotificationRead(n.id));
               navigate('/checkin');
             }}
             className={`w-full rounded-[28px] p-5 sm:p-6 border shadow-sm transition-[box-shadow,transform,colors] flex items-center justify-between group animate-fade-in relative ${checkinStatus === 'checked_in'
-                ? 'bg-green-50/50 dark:bg-green-900/10 border-green-100 dark:border-green-900/30 cursor-default'
-                : 'bg-white dark:bg-surface-dark border-white dark:border-white/5 hover:shadow-md cursor-pointer'
+              ? 'bg-green-50/50 dark:bg-green-900/10 border-green-100 dark:border-green-900/30 cursor-default'
+              : 'bg-white dark:bg-surface-dark border-white dark:border-white/5 hover:shadow-md cursor-pointer'
               }`}
           >
             {needsCheckin && checkinStatus !== 'checked_in' && (
@@ -425,8 +424,8 @@ export const Dashboard = () => {
             )}
             <div className="flex items-center gap-4 sm:gap-6">
               <div className={`p-3 sm:p-4 rounded-2xl shadow-glow-sm transition-transform ${checkinStatus === 'checked_in'
-                  ? 'bg-green-500 text-white shadow-none'
-                  : 'bg-primary text-text-main group-hover:scale-110 rotate-3 group-hover:rotate-0'
+                ? 'bg-green-500 text-white shadow-none'
+                : 'bg-primary text-text-main group-hover:scale-110 rotate-3 group-hover:rotate-0'
                 }`}>
                 <span className="material-symbols-outlined text-2xl sm:text-3xl block">
                   {checkinStatus === 'checked_in' ? 'check_circle' : 'calendar_today'}
@@ -443,14 +442,14 @@ export const Dashboard = () => {
             </div>
             <div className="flex items-center gap-2">
               <span className={`hidden sm:block text-[10px] font-bold uppercase tracking-widest transition-opacity ${checkinStatus === 'checked_in'
-                  ? 'text-green-600 dark:text-green-500 opacity-100'
-                  : 'text-primary opacity-0 group-hover:opacity-100'
+                ? 'text-green-600 dark:text-green-500 opacity-100'
+                : 'text-primary opacity-0 group-hover:opacity-100'
                 }`}>
                 {checkinStatus === 'checked_in' ? 'Completed' : 'Go Now'}
               </span>
               <span className={`material-symbols-outlined transition-all ${checkinStatus === 'checked_in'
-                  ? 'text-green-500 dark:text-green-400'
-                  : 'text-gray-300 group-hover:translate-x-1 group-hover:text-primary'
+                ? 'text-green-500 dark:text-green-400'
+                : 'text-gray-300 group-hover:translate-x-1 group-hover:text-primary'
                 }`}>
                 {checkinStatus === 'checked_in' ? 'done' : 'arrow_forward'}
               </span>
