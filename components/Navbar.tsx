@@ -567,8 +567,11 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
 
       {/* Mobile Bottom Navigation Tab Bar — OUTSIDE nav to avoid backdrop-filter breaking fixed positioning */}
       {isAuthenticated && !minimal && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-[999] bg-white/95 dark:bg-surface-dark/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-700 safe-area-bottom">
-          <div className="flex items-center justify-around h-14 px-1">
+        <div
+          className="md:hidden fixed bottom-0 left-0 right-0 z-[999] bg-white/95 dark:bg-surface-dark/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-700 w-full"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 20px)' }}
+        >
+          <div className="flex items-center justify-around h-[60px] px-1">
             {/* Dashboard */}
             <Link
               to="/dashboard"
