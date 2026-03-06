@@ -260,7 +260,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
 
                 {/* Notification Dropdown */}
                 {showNotifications && (
-                  <div className="absolute right-[-60px] sm:right-0 sm:left-auto mt-2 w-[calc(100vw-40px)] max-w-sm sm:w-80 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-fade-in origin-top z-50">
+                  <div className="absolute right-0 mt-2 w-[calc(100vw-40px)] max-w-sm sm:w-80 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-fade-in origin-top-right z-50">
                     <div className="p-3 border-b border-gray-100 dark:border-gray-800/50 flex justify-between items-center">
                       <span className="text-sm font-bold">Notifications</span>
                       {totalUnreadCount > 0 && (
@@ -524,16 +524,16 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
               </>
             ) : (
               /* Guest Actions */
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                 <Link
                   to="/login"
-                  className="hidden sm:block text-sm font-bold text-text-secondary hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors"
+                  className="text-sm font-bold text-text-secondary hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/signup"
-                  className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg text-sm font-bold shadow-sm hover:opacity-80 transition-all"
+                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg text-sm font-bold shadow-sm hover:opacity-80 transition-all"
                 >
                   Sign Up
                 </Link>
