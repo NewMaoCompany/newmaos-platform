@@ -37,26 +37,17 @@ export const PrestigeWidget = ({
         const combinedClasses = className || defaultScale;
 
         return (
-            <div className={`w-full overflow-x-auto scroll-bounce pb-4 -mb-4 ${wide ? 'flex justify-center' : ''}`}>
-                {/* Outer relative wrapper — glow lives here OUTSIDE the pill */}
+            <div className={`w-full py-8 -my-4 px-4 ${wide ? 'flex justify-center' : ''}`} style={{ overflow: 'visible' }}>
                 <div className={`relative ${combinedClasses} ${wide ? 'w-full max-w-2xl' : 'max-w-fit'} shrink-0`}>
-                    {/* Glow layer — SIBLING to the pill, not inside it. Cannot be clipped. */}
-                    <div className="absolute left-[30px] sm:left-[50px] top-1/2 -translate-y-1/2 w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] pointer-events-none" style={{ zIndex: 0 }}>
-                        <div className="absolute inset-[-60%] bg-[radial-gradient(circle,rgba(249,212,6,0.18)_0%,rgba(249,212,6,0.06)_40%,transparent_70%)] animate-pulse rounded-full" />
-                    </div>
-
-                    {/* The Pill Container — has backdrop-filter, clips its own children, but glow is outside */}
+                    {/* The Pill Container — NO backdrop-filter to avoid implicit overflow clipping of AvatarAura effects */}
                     <div
                         className="group relative flex flex-row items-center transition-all duration-300 origin-center"
                         style={{
                             background: 'rgba(255, 255, 255, 0.95)',
-                            backdropFilter: 'blur(30px)',
-                            WebkitBackdropFilter: 'blur(30px)',
                             borderRadius: '999px',
                             border: '1.5px solid rgba(255, 255, 255, 0.8)',
                             boxShadow: '0 12px 40px -10px rgba(0,0,0,0.08), 0 0 20px rgba(255,255,255,1) inset',
-                            position: 'relative',
-                            zIndex: 1
+                            overflow: 'visible'
                         }}
                     >
                         {/* 1. Prestige Area (Left) */}
