@@ -69,7 +69,7 @@ export const AvatarAura: React.FC<AvatarAuraProps> = ({ level }) => {
     );
 
     return (
-        <div className="absolute inset-0 w-full h-full rounded-full overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 w-full h-full rounded-full pointer-events-none">
             {planetTheme === 1 && renderCelestiaAura()}
             {planetTheme === 2 && renderIgnisAura()}
             {planetTheme === 3 && renderTerraAura()}

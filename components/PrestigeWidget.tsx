@@ -55,8 +55,8 @@ export const PrestigeWidget = ({
                         className={`flex-1 flex flex-row items-center gap-6 sm:gap-8 pl-10 sm:pl-16 ${!showStardust ? 'pr-10 sm:pr-16' : 'pr-4 sm:pr-8'} min-h-[110px] sm:min-h-[130px] rounded-l-[999px] ${!showStardust ? 'rounded-r-[999px]' : ''} ${isInteractionAllowed ? 'cursor-pointer active:scale-[0.99]' : 'cursor-default'} transition-all duration-300 group/left`}
                     >
                         <div className="relative shrink-0 flex items-center justify-center">
-                            {/* Smooth, soft circular glow contained tightly to prevent square clipping */}
-                            <div className="absolute inset-0 scale-[1.3] bg-[radial-gradient(circle,rgba(249,212,6,0.2)_0%,rgba(249,212,6,0.05)_50%,transparent_70%)] animate-pulse rounded-full pointer-events-none" />
+                            {/* Smooth, soft circular glow without harsh square clipping */}
+                            <div className="absolute inset-[-50%] bg-[radial-gradient(circle,rgba(249,212,6,0.15)_0%,rgba(249,212,6,0.05)_40%,transparent_70%)] animate-pulse rounded-full pointer-events-none" />
                             <div className="relative z-10 scale-[1.3] group-hover/left:scale-[1.35] transition-transform duration-700">
                                 <PlanetVisual level={level} size="md" />
                             </div>
