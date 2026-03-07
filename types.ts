@@ -39,6 +39,8 @@ export interface User {
   showPrestige?: boolean;
   selectedPrestigeLevel?: number; // Added for prestige selection sync
   createdAt?: string;
+  lockedPracticeMode?: 'Adaptive' | 'Review' | 'Random' | null;
+  practiceModLockedAt?: string | null;
 }
 
 export interface Title {

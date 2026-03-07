@@ -4,6 +4,7 @@ import { useApp } from '../AppContext';
 import { Navbar } from '../components/Navbar';
 import { COURSE_TOPICS, COURSE_CONTENT_DATA } from '../constants';
 import { SessionMode, Question } from '../types';
+import { ModeSelectionModal } from '../components/ModeSelectionModal';
 
 // Sub-component for Unit Card to handle its own async progress fetching
 const UnitCard = ({ topic, idx, onClick, hasNotification }: { topic: any, idx: number, onClick: () => void, hasNotification?: boolean }) => {
@@ -310,7 +311,7 @@ const HistoryGroupCard = ({ sectionId, activities }: { sectionId: string, activi
 };
 
 export const PracticeHub = () => {
-    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, notifications, markLinkAsRead, isAuthenticated, incorrectQuestionIds } = useApp();
+    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, notifications, markLinkAsRead, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry } = useApp();
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isUnitDropdownOpen, setIsUnitDropdownOpen] = useState(false);
@@ -399,6 +400,7 @@ export const PracticeHub = () => {
     };
 
     const handleModeSelect = (mode: SessionMode) => {
+        if (isModeLocked && user.lockedPracticeMode && mode !== user.lockedPracticeMode) return;
         setSessionMode(mode);
         setIsDropdownOpen(false);
     }
@@ -444,6 +446,11 @@ export const PracticeHub = () => {
     return (
         <div className="h-full w-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-x-hidden overflow-y-auto">
             <Navbar />
+
+            {/* Mode Selection Modal (for new users without locked mode) */}
+            {isAuthenticated && !user.lockedPracticeMode && (
+                <ModeSelectionModal onSelect={lockPracticeMode} />
+            )}
 
             <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-6 sm:gap-10 overflow-y-auto scroll-bounce">
 
@@ -623,15 +630,26 @@ export const PracticeHub = () => {
                                         {/* Custom Dropdown */}
                                         <div className="relative z-20 shrink-0" ref={dropdownRef}>
                                             <button
-                                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                className="relative bg-white/20 hover:bg-white/30 border border-black/10 rounded-xl pl-4 pr-10 py-3 text-sm font-bold flex items-center gap-2 transition-all shadow-sm outline-none focus:ring-2 focus:ring-black/20 text-left min-w-[160px]"
+                                                onClick={() => !isModeLocked && setIsDropdownOpen(!isDropdownOpen)}
+                                                className={`relative bg-white/20 hover:bg-white/30 border border-black/10 rounded-xl pl-4 pr-10 py-3 text-sm font-bold flex items-center gap-2 transition-all shadow-sm outline-none focus:ring-2 focus:ring-black/20 text-left min-w-[160px] ${isModeLocked ? 'cursor-default opacity-90' : ''}`}
                                             >
-                                                <span className="material-symbols-outlined text-[18px]">{getModeIcon(recommendation.mode)}</span>
+                                                <span className="material-symbols-outlined text-[18px]">{isModeLocked ? 'lock' : getModeIcon(recommendation.mode)}</span>
                                                 <span>{recommendation.mode} Mode</span>
-                                                <span className={`material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-lg opacity-70 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                                                {isModeLocked ? (
+                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-bold opacity-50 uppercase tracking-wider">Locked</span>
+                                                ) : (
+                                                    <span className={`material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-lg opacity-70 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                                                )}
                                             </button>
 
-                                            {isDropdownOpen && (
+                                            {isModeLocked && (
+                                                <div className="mt-1 text-[9px] text-black/40 font-bold tracking-wide flex items-center gap-1">
+                                                    <span className="material-symbols-outlined text-[11px]">schedule</span>
+                                                    Locked until {lockedModeExpiry}
+                                                </div>
+                                            )}
+
+                                            {isDropdownOpen && !isModeLocked && (
                                                 <div className="absolute bottom-full left-0 mb-2 w-full sm:w-64 bg-white/95 dark:bg-[#2c2c2e]/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in origin-bottom-left flex flex-col z-[100]">
                                                     <div className="p-2 border-b border-gray-100 dark:border-white/10 text-[10px] font-bold uppercase tracking-wider text-gray-500 px-3">
                                                         Select Mode

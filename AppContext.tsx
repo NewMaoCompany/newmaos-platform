@@ -52,6 +52,9 @@ interface AppContextType {
     completePractice: (results: { correct: number; total: number; topic: string; isReview?: boolean; newlyCorrectFirstAttempts?: number }) => void;
     setSessionMode: (mode: SessionMode) => void;
     setRecommendationTopic: (topicId: string) => void;
+    lockPracticeMode: (mode: 'Adaptive' | 'Review' | 'Random') => Promise<void>;
+    isModeLocked: boolean;
+    lockedModeExpiry: string | null;
     dismissLoginPrompt: () => void;
 
     // Creator Area Methods
@@ -2003,7 +2006,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     // Fetch full profile to get is_creator status AND latest name AND subscription data
                     const { data: profile } = await supabase
                         .from('user_profiles')
-                        .select('is_creator, name, avatar_url, subscription_tier, subscription_period_end, has_seen_pro_intro, bio, avatar_color, show_name, show_email, show_bio, streak_days, equipped_title_id, equipped_title:titles(*)')
+                        .select('is_creator, name, avatar_url, subscription_tier, subscription_period_end, has_seen_pro_intro, bio, avatar_color, show_name, show_email, show_bio, streak_days, equipped_title_id, equipped_title:titles(*), locked_practice_mode, practice_mode_locked_at')
                         .eq('id', session.user.id)
                         .single();
 
@@ -2066,7 +2069,9 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                                 emailNotifications: (profile as any)?.email_notifications ?? true,
                                 soundEffects: (profile as any)?.sound_effects ?? true
                             },
-                            createdAt: session.user.created_at
+                            createdAt: session.user.created_at,
+                            lockedPracticeMode: (profile as any)?.locked_practice_mode || null,
+                            practiceModLockedAt: (profile as any)?.practice_mode_locked_at || null
                         };
                         localStorage.setItem('user_profile_cache', JSON.stringify(updatedUser));
                         return updatedUser;
@@ -2288,8 +2293,19 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
         // ── Phase 5: Mode selection (based on mastery level) ─────────
         let mode: SessionMode;
-        if (best.mastery >= 70) mode = 'Review';
-        else mode = 'Adaptive';
+        // Override with locked mode if applicable
+        if (user.lockedPracticeMode && user.practiceModLockedAt) {
+            const lockedAt = new Date(user.practiceModLockedAt);
+            const sixMonthsLater = new Date(lockedAt);
+            sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
+            if (new Date() < sixMonthsLater) {
+                mode = user.lockedPracticeMode;
+            } else {
+                mode = best.mastery >= 70 ? 'Review' : 'Adaptive';
+            }
+        } else {
+            mode = best.mastery >= 70 ? 'Review' : 'Adaptive';
+        }
 
         // ── Phase 6: Explainable reason generation ──────────────────
         // Identify the dominant factor(s) that drove this recommendation
@@ -2861,7 +2877,10 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     sound_effects: newState.preferences?.soundEffects,
                     // Prestige and titles
                     selected_prestige_level: newState.selectedPrestigeLevel,
-                    show_prestige: newState.showPrestige
+                    show_prestige: newState.showPrestige,
+                    // Practice mode lock
+                    locked_practice_mode: newState.lockedPracticeMode,
+                    practice_mode_locked_at: newState.practiceModLockedAt
                 };
 
                 // Use the backend API to securely update profile (bypassing Client RLS)
@@ -2874,8 +2893,53 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         });
     };
 
+    // Helper: check if practice mode is currently locked
+    const isModeLocked = useMemo(() => {
+        if (!user.lockedPracticeMode || !user.practiceModLockedAt) return false;
+        const lockedAt = new Date(user.practiceModLockedAt);
+        const sixMonthsLater = new Date(lockedAt);
+        sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
+        return new Date() < sixMonthsLater;
+    }, [user.lockedPracticeMode, user.practiceModLockedAt]);
+
+    const lockedModeExpiry = useMemo(() => {
+        if (!user.practiceModLockedAt) return null;
+        const lockedAt = new Date(user.practiceModLockedAt);
+        const sixMonthsLater = new Date(lockedAt);
+        sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
+        return sixMonthsLater.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }, [user.practiceModLockedAt]);
+
+    // Lock practice mode for 6 months (called from onboarding modal)
+    const lockPracticeMode = async (mode: 'Adaptive' | 'Review' | 'Random') => {
+        const now = new Date().toISOString();
+        setUser(prev => {
+            const updated = { ...prev, lockedPracticeMode: mode, practiceModLockedAt: now };
+            localStorage.setItem('user_profile_cache', JSON.stringify(updated));
+            return updated;
+        });
+        // Set the recommendation mode immediately
+        setRecommendation(prev => ({ ...prev, mode }));
+        // Persist to DB
+        if (user.id) {
+            try {
+                await usersApi.updateProfile({
+                    locked_practice_mode: mode,
+                    practice_mode_locked_at: now
+                });
+            } catch (e) {
+                console.error('Failed to lock practice mode:', e);
+            }
+        }
+    };
+
     // Bug1 fix: setSessionMode recalculates weightedScore with mode-dependent weights
     const setSessionMode = (mode: SessionMode) => {
+        // If mode is locked, reject the switch
+        if (isModeLocked && user.lockedPracticeMode && mode !== user.lockedPracticeMode) {
+            console.warn(`[Mode Lock] Cannot switch to ${mode} — locked to ${user.lockedPracticeMode}`);
+            return;
+        }
         setRecommendation(prev => {
             if (!prev.scoringFactors) return { ...prev, mode };
             const W = getModeWeights(mode);
@@ -3283,6 +3347,9 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             completePractice,
             setSessionMode,
             setRecommendationTopic,
+            lockPracticeMode,
+            isModeLocked,
+            lockedModeExpiry,
             dismissLoginPrompt,
             availableTitles,
             addQuestion,

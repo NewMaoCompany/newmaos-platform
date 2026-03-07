@@ -39,7 +39,8 @@ router.put('/me', authMiddleware, async (req: Request, res: Response): Promise<v
         const {
             name, avatar_url, current_course, bio, avatar_color,
             show_name, show_email, show_bio,
-            selected_prestige_level, show_prestige, equipped_title_id
+            selected_prestige_level, show_prestige, equipped_title_id,
+            locked_practice_mode, practice_mode_locked_at
         } = req.body;
 
         const updates: Record<string, any> = { updated_at: new Date().toISOString() };
@@ -52,6 +53,8 @@ router.put('/me', authMiddleware, async (req: Request, res: Response): Promise<v
         if (show_email !== undefined) updates.show_email = show_email;
         if (show_bio !== undefined) updates.show_bio = show_bio;
         if (equipped_title_id !== undefined) updates.equipped_title_id = equipped_title_id;
+        if (locked_practice_mode !== undefined) updates.locked_practice_mode = locked_practice_mode;
+        if (practice_mode_locked_at !== undefined) updates.practice_mode_locked_at = practice_mode_locked_at;
 
         // Create a user-scoped client so RLS allows updates even if local env lacks Service Key
         const userClient = createClient(supabaseUrl!, supabaseAnonKey!, {

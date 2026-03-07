@@ -12,7 +12,7 @@ export const TopicDetail = () => {
     const { unitId } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const { topicContent, user, isAuthenticated, getTopicProgress, getSectionStatus, getSectionProgressData, questions: allQuestions, sections, sectionTimes, fetchAllUserProgress, sectionProgressMap, incorrectQuestionIds, getUnitProgress, saveSectionProgress } = useApp();
+    const { topicContent, user, isAuthenticated, getTopicProgress, getSectionStatus, getSectionProgressData, questions: allQuestions, sections, sectionTimes, fetchAllUserProgress, sectionProgressMap, incorrectQuestionIds, getUnitProgress, saveSectionProgress, isModeLocked } = useApp();
 
 
     // Custom UI Modal State
@@ -88,6 +88,8 @@ export const TopicDetail = () => {
     const handleSubTopicClick = async (subTopicId: string, customMode?: SessionMode, forceStartNew?: boolean) => {
         if (isProcessing) return;
         setIsProcessing(true);
+        // Force locked mode if applicable
+        const effectiveMode = (isModeLocked && user.lockedPracticeMode) ? user.lockedPracticeMode : (customMode || 'Adaptive');
         // Robust progress check for both regular sections and unit tests
         const effectiveId = subTopicId === 'unit_test' ? `${unitId}_unit_test` : subTopicId;
 
@@ -99,9 +101,9 @@ export const TopicDetail = () => {
         // Determine isResuming accurately by looking explicitly at the relevant mode
         let isResuming = false;
         if (!forceStartNew) {
-            if (customMode === 'Review') {
+            if (effectiveMode === 'Review') {
                 isResuming = progressData?.review?.status === 'in_progress';
-            } else if (customMode === 'Adaptive' || !customMode) {
+            } else if (effectiveMode === 'Adaptive' || !effectiveMode) {
                 // If it's adaptive, we resume if firstAttempt is in progress. 
                 // Legacy fallback: if firstAttempt doesn't exist, we resume if global status is in_progress
                 isResuming = progressData?.firstAttempt?.status === 'in_progress' ||
@@ -110,7 +112,7 @@ export const TopicDetail = () => {
         }
 
         // --- NEW: Review Round Management ---
-        if (customMode === 'Review') {
+        if (effectiveMode === 'Review') {
             // If starting a BRAND NEW review session, increment the round number immediately
             // to lock it in and avoid double-incrementing during multiple saves/reloads.
             if (!isResuming) {
@@ -143,7 +145,7 @@ export const TopicDetail = () => {
                 sessionStorage.setItem('last_practice_session', JSON.stringify({
                     topic: effectiveUnitId || unitId,
                     subTopicId: subTopicId,
-                    mode: customMode || 'Adaptive',
+                    mode: effectiveMode,
                     isResuming: isResuming,
                     forceStartNew: forceStartNew
                 }));
@@ -156,7 +158,7 @@ export const TopicDetail = () => {
             state: {
                 topic: effectiveUnitId || unitId, // Use standardized ID
                 subTopicId: subTopicId,
-                mode: customMode || 'Adaptive',
+                mode: effectiveMode,
                 isResuming: isResuming,
                 forceStartNew: forceStartNew
             }

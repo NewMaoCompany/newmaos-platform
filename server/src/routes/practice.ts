@@ -172,6 +172,16 @@ router.get('/recommendation', authMiddleware, async (req: Request, res: Response
             };
         }
 
+        // Override mode if user has a locked practice mode within 6 months
+        if (profile?.locked_practice_mode && profile?.practice_mode_locked_at) {
+            const lockedAt = new Date(profile.practice_mode_locked_at);
+            const sixMonthsLater = new Date(lockedAt);
+            sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
+            if (new Date() < sixMonthsLater) {
+                recommendation.mode = profile.locked_practice_mode;
+            }
+        }
+
         res.json(recommendation);
     } catch (error) {
         console.error('Get recommendation error:', error);
