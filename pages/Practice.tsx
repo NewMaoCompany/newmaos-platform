@@ -2009,8 +2009,20 @@ export const Practice = () => {
                         markedQuestionIds: Array.from(markedQuestions)
                     };
 
+                    // Re-calculate the actual cumulative total and completed for accurate save
+                    let mainTotalQuestions = questions.length;
+                    if (existingData.firstAttempt?.questionIds?.length > 0) {
+                        mainTotalQuestions = existingData.firstAttempt.questionIds.length;
+                    } else if (existingData.questionIds?.length > 0) {
+                        mainTotalQuestions = existingData.questionIds.length;
+                    } // Removed mainP fallback here because existingData usually has it, and mainP is out of scope
+
+                    const cumCorrect = Object.values(newData.questionResults || {}).filter(r => r === 'correct').length;
+                    const cumTotal = mainTotalQuestions;
+                    const cumScore = cumTotal > 0 ? (cumCorrect / cumTotal) * 100 : 0;
+
                     await saveSectionProgress(effectiveSectionId, newData,
-                        { completed: 0, total: 0, score: 0 }, subTopicId ? 'section' : 'algorithmic', true);
+                        { completed: cumCorrect, total: cumTotal, score: cumScore }, subTopicId ? 'section' : 'algorithmic', true);
                 } else {
                     // === FIRST ATTEMPT MODE: Save to firstAttempt field ===
                     const firstAttemptState = {
@@ -2382,7 +2394,11 @@ export const Practice = () => {
                                 const existingData = mainP?.data || {};
                                 const reviewData = existingData.review || {};
 
-                                const incorrectIds = Object.keys(existingData.questionResults || {}).filter(id => existingData.questionResults[id] === 'incorrect' || existingData.questionResults[id] === false);
+                                // Ground truth: determine remaining errors from the merged questionResults
+                                const mergedResults = { ...(existingData.questionResults || {}), ...questionResults };
+                                const incorrectIds = Object.keys(mergedResults).filter(id => mergedResults[id] === 'incorrect' || mergedResults[id] === false);
+
+                                // Only fallback to currentIncorrectIds if absolutely needed, but rely on merged results primarily
                                 const actualIncorrectIds = incorrectIds.length > 0 ? incorrectIds : (existingData.currentIncorrectIds || []);
 
                                 const newData = {
@@ -2398,7 +2414,20 @@ export const Practice = () => {
                                         currentQuestionIndex: 0
                                     }
                                 };
-                                await saveSectionProgress(effectiveSectionId, newData, { completed: 0, total: 0, score: 0 }, subTopicId ? 'section' : 'algorithmic', true);
+
+                                // Preserve main stats
+                                let mainTotalQuestions = questions.length;
+                                if (existingData.firstAttempt?.questionIds?.length > 0) {
+                                    mainTotalQuestions = existingData.firstAttempt.questionIds.length;
+                                } else if (existingData.questionIds?.length > 0) {
+                                    mainTotalQuestions = existingData.questionIds.length;
+                                } else if (mainP?.total_questions && mainP.total_questions > 0) {
+                                    mainTotalQuestions = mainP.total_questions;
+                                }
+                                const cumCorrect = Object.values(newData.questionResults || {}).filter(r => r === 'correct').length;
+                                const cumScore = mainTotalQuestions > 0 ? (cumCorrect / mainTotalQuestions) * 100 : 0;
+
+                                await saveSectionProgress(effectiveSectionId, newData, { completed: cumCorrect, total: mainTotalQuestions, score: cumScore }, subTopicId ? 'section' : 'algorithmic', true);
                             } catch (e) { console.error('Failed to prep review data', e); }
 
                             navigate('/practice/session', {
