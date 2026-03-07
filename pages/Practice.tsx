@@ -2430,6 +2430,7 @@ export const Practice = () => {
                                 await saveSectionProgress(effectiveSectionId, newData, { completed: cumCorrect, total: mainTotalQuestions, score: cumScore }, subTopicId ? 'section' : 'algorithmic', true);
                             } catch (e) { console.error('Failed to prep review data', e); }
 
+                            setShowSummary(false); // CRITICAL: Reset showSummary to trigger correct targetIds generation instead of ALL questions fallback
                             navigate('/practice/session', {
                                 state: {
                                     topic: topicParam,
