@@ -774,7 +774,10 @@ export const Practice = () => {
             const isErrorReviewTargetedFetch = effectiveState?.isErrorReviewAction || savedData?.review?.status === 'in_progress' || savedData?.review?.status === 'pending_review';
             if ((effectiveState?.isResuming || (isSummary && !subTopicId) || isErrorReviewTargetedFetch) && savedData) {
                 let targetIds: string[] = [];
-                if (isErrorReviewTargetedFetch && !isSummary) {
+                if (effectiveState?.targetIds && effectiveState.targetIds.length > 0) {
+                    // Highest Priority: Use immediately passed targetIds from router state to bypass possible local context latency
+                    targetIds = effectiveState.targetIds;
+                } else if (isErrorReviewTargetedFetch && !isSummary) {
                     // Priority 1: Use targetQuestionIds if we are actively in a review or pending review
                     if ((savedData.review?.status === 'in_progress' || savedData.review?.status === 'pending_review') && savedData.review?.targetQuestionIds && savedData.review.targetQuestionIds.length > 0) {
                         targetIds = savedData.review.targetQuestionIds;
@@ -2388,6 +2391,7 @@ export const Practice = () => {
                         onReviewErrors={async () => {
                             setNewlyCorrectFirstAttempts(0); // Reset coins counter before starting review
 
+                            let navTargetIds: string[] = [];
                             // Initialize review state in DB before navigating
                             try {
                                 const mainP = await getSectionProgress(effectiveSectionId);
@@ -2400,6 +2404,7 @@ export const Practice = () => {
 
                                 // Only fallback to currentIncorrectIds if absolutely needed, but rely on merged results primarily
                                 const actualIncorrectIds = incorrectIds.length > 0 ? incorrectIds : (existingData.currentIncorrectIds || []);
+                                navTargetIds = actualIncorrectIds;
 
                                 const newData = {
                                     ...existingData,
@@ -2438,7 +2443,8 @@ export const Practice = () => {
                                     mode: sessionMode,
                                     isResuming: true,
                                     forceStartNew: false,
-                                    isErrorReviewAction: true
+                                    isErrorReviewAction: true,
+                                    targetIds: navTargetIds
                                 },
                                 replace: true
                             });

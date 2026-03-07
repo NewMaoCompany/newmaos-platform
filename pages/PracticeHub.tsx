@@ -774,7 +774,8 @@ export const PracticeHub = () => {
                                                         sessionId: mainProgress.section_id,
                                                         isResuming: true,
                                                         forceStartNew: false,
-                                                        isErrorReviewAction: true
+                                                        isErrorReviewAction: true,
+                                                        targetIds: actualIncorrectIds
                                                     }
                                                 });
                                                 setTimeout(() => setIsProcessing(false), 500);
