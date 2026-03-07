@@ -631,12 +631,12 @@ export const PracticeHub = () => {
                                         <div className="relative z-20 shrink-0" ref={dropdownRef}>
                                             <button
                                                 onClick={() => !isModeLocked && setIsDropdownOpen(!isDropdownOpen)}
-                                                className={`relative bg-white/20 hover:bg-white/30 border border-black/10 rounded-xl pl-4 pr-10 py-3 text-sm font-bold flex items-center gap-2 transition-all shadow-sm outline-none focus:ring-2 focus:ring-black/20 text-left min-w-[160px] ${isModeLocked ? 'cursor-default opacity-90' : ''}`}
+                                                className={`relative bg-white/20 hover:bg-white/30 border border-black/10 rounded-xl px-4 py-3 text-sm font-bold flex items-center gap-2 transition-all shadow-sm outline-none focus:ring-2 focus:ring-black/20 text-left ${isModeLocked ? 'cursor-default opacity-90' : 'pr-10'}`}
                                             >
                                                 <span className="material-symbols-outlined text-[18px]">{isModeLocked ? 'lock' : getModeIcon(recommendation.mode)}</span>
                                                 <span>{recommendation.mode} Mode</span>
                                                 {isModeLocked ? (
-                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-bold opacity-50 uppercase tracking-wider">Locked</span>
+                                                    <span className="ml-1 text-[9px] font-bold opacity-60 uppercase tracking-wider bg-black/10 rounded px-1.5 py-0.5">Locked</span>
                                                 ) : (
                                                     <span className={`material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-lg opacity-70 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}>expand_more</span>
                                                 )}
