@@ -260,7 +260,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
 
                 {/* Notification Dropdown */}
                 {showNotifications && (
-                  <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-[calc(100vw-32px)] max-w-[320px] sm:w-80 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-fade-in origin-top-left z-50">
+                  <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-[calc(100vw-32px)] max-w-[260px] sm:w-[260px] bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-fade-in origin-top-left z-50">
                     <div className="p-3 border-b border-gray-100 dark:border-gray-800/50 flex justify-between items-center">
                       <span className="text-sm font-bold">Notifications</span>
                       {totalUnreadCount > 0 && (

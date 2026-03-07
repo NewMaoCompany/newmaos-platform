@@ -255,19 +255,18 @@ export const PrestigePage = () => {
         if (!isDragging || dragStartX === null) return;
         const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
         const diff = clientX - dragStartX;
-        const nextTranslate = prevTranslate + diff * 0.85;
-        // Clamp to valid range [-(4*stepSize), 0] (5 planets)
-        setCurrentTranslate(Math.max(-(4 * stepSize), Math.min(0, nextTranslate)));
+        const nextTranslate = prevTranslate + diff;
+        // Clamp to valid range [-(4*stepSize), 0] (5 planets) with rubber-band at edges
+        const clamped = Math.max(-(4 * stepSize), Math.min(0, nextTranslate));
+        setCurrentTranslate(clamped);
     };
 
     const handleTouchEnd = () => {
         setIsDragging(false);
         setDragStartX(null);
 
-        // Snap Logic
-        // Calculate nearest index
+        // Snap Logic - use velocity-aware snapping
         let nextIndex = -Math.round(currentTranslate / stepSize);
-        // Clamp to valid range [0, 4]
         nextIndex = Math.max(0, Math.min(4, nextIndex));
 
         setActiveIndex(nextIndex);
@@ -277,7 +276,7 @@ export const PrestigePage = () => {
         setPrevTranslate(finalTranslate);
 
         if (containerRef.current) {
-            containerRef.current.style.transition = 'transform 2.0s cubic-bezier(0.16, 1, 0.3, 1)';
+            containerRef.current.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
         }
     };
 
@@ -297,7 +296,7 @@ export const PrestigePage = () => {
         setCurrentTranslate(finalTranslate);
         setPrevTranslate(finalTranslate);
         if (containerRef.current) {
-            containerRef.current.style.transition = 'transform 2.0s cubic-bezier(0.16, 1, 0.3, 1)';
+            containerRef.current.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
         }
     };
 
@@ -327,7 +326,7 @@ export const PrestigePage = () => {
 
                 // Animate
                 if (containerRef.current) {
-                    containerRef.current.style.transition = 'transform 2.5s cubic-bezier(0.16, 1, 0.3, 1)';
+                    containerRef.current.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
                 }
 
                 // Set cooldown
@@ -420,7 +419,7 @@ export const PrestigePage = () => {
             {/* GALAXY RING SWIPER */}
             <main
                 className="absolute inset-0 z-10 flex flex-col justify-center items-center overflow-hidden"
-                style={{ touchAction: 'none' }}
+                style={{ touchAction: 'pan-y', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
                 onMouseDown={handleTouchStart}
                 onMouseMove={handleTouchMove}
                 onMouseUp={handleTouchEnd}
@@ -430,13 +429,13 @@ export const PrestigePage = () => {
                 onTouchEnd={handleTouchEnd}
             >
                 {/* Track Container - Adjusted Height to avoid text overlap */}
-                <div className="relative w-full h-[60vh] max-h-[800px] flex items-center justify-center perspective-[2000px] pointer-events-none">
+                <div className="relative w-full h-[50vh] sm:h-[60vh] max-h-[800px] flex items-center justify-center perspective-[2000px] pointer-events-none">
 
                     {/* Transforming Track */}
                     <div
                         ref={containerRef}
-                        className="absolute flex items-center h-full will-change-transform left-1/2 pointer-events-auto"
-                        style={{ transform: `translateX(${currentTranslate}px)`, marginLeft: `${-stepSize / 2}px` }}
+                        className="absolute flex items-center h-full left-1/2 pointer-events-auto"
+                        style={{ transform: `translateX(${currentTranslate}px)`, marginLeft: `${-stepSize / 2}px`, willChange: 'transform', WebkitTransform: `translateX(${currentTranslate}px)` } as React.CSSProperties}
 
                     >
                         {Array.from({ length: 5 }).map((_, i) => {
@@ -485,13 +484,13 @@ export const PrestigePage = () => {
                                     </div>
 
                                     {/* PLANET NAME - Visually Centered (Compensating for letter spacing) */}
-                                    <div className={`text-center transition-all duration-700 ${distance === 0 ? 'opacity-100 translate-y-[20%] scale-100' : 'opacity-0 translate-y-4 scale-95'} ${!isUnlocked ? 'grayscale brightness-75' : ''} pointer-events-none absolute -top-24 w-full flex flex-col items-center justify-center pl-[0.2em]`}>
-                                        <div className="relative">
-                                            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/70 to-white/10 drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] font-mono leading-none mr-[-0.4em]">
+                                    <div className={`text-center transition-all duration-700 ${distance === 0 ? 'opacity-100 translate-y-[20%] scale-100' : 'opacity-0 translate-y-4 scale-95'} ${!isUnlocked ? 'grayscale brightness-75' : ''} pointer-events-none absolute -top-16 sm:-top-24 w-full flex flex-col items-center justify-center pl-[0.2em]`}>
+                                        <div className="relative w-full overflow-hidden">
+                                            <h2 className="text-3xl sm:text-5xl md:text-8xl font-black uppercase tracking-[0.25em] sm:tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/70 to-white/10 drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] font-mono leading-none mr-[-0.25em] sm:mr-[-0.4em] whitespace-nowrap">
                                                 {name}
                                             </h2>
                                         </div>
-                                        <div className="h-1 w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent mt-4 mr-[0.2em]" />
+                                        <div className="h-1 w-16 sm:w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent mt-2 sm:mt-4 mr-[0.2em]" />
                                     </div>
                                 </div>
                             );
@@ -510,10 +509,10 @@ export const PrestigePage = () => {
                     {/* Current Level Info - Redesigned with 4-Vertex Progress Bar */}
                     <div className="flex flex-col items-center w-full max-w-xl px-12">
                         {/* Status Badge - Floating Above */}
-                        <div className="flex items-center justify-center w-full mb-16">
-                            <span className={`px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-[11px] uppercase tracking-[0.4em] font-black shadow-2xl backdrop-blur-2xl transition-all duration-500
+                        <div className="flex items-center justify-center w-full mb-6 sm:mb-12">
+                            <span className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-2xl bg-white/5 border border-white/10 text-[9px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] font-black shadow-2xl backdrop-blur-2xl transition-all duration-500
                                 ${isFuturePlanet ? 'text-white/20' : isViewedPlanetCompleted ? 'text-amber-400 border-amber-500/30' : 'text-white/40'}`}>
-                                {isViewedPlanetCompleted ? 'Planet Mastery Attained' : isFuturePlanet ? 'Coordinates Locked' : `System Status: Level ${level}`}
+                                {isViewedPlanetCompleted ? 'Mastery Attained' : isFuturePlanet ? 'Locked' : `Level ${level}`}
                             </span>
                         </div>
 
