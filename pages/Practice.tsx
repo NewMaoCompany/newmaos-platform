@@ -1593,7 +1593,15 @@ export const Practice = () => {
         try {
             const mainP = await getSectionProgress(mainSectionId);
             existingData = mainP?.data || {};
-            if (mainP?.total_questions) mainTotalQuestions = mainP.total_questions;
+
+            // Prefer tracking total from first attempt ids or main dataset instead of fallback zeros
+            if (existingData.firstAttempt?.questionIds?.length > 0) {
+                mainTotalQuestions = existingData.firstAttempt.questionIds.length;
+            } else if (existingData.questionIds?.length > 0) {
+                mainTotalQuestions = existingData.questionIds.length;
+            } else if (mainP?.total_questions && mainP.total_questions > 0) {
+                mainTotalQuestions = mainP.total_questions;
+            }
 
             // DEBUG: Check what summaryHistory is being loaded
             console.log('🔍 [finishSession] existingData.summaryHistory:', existingData.summaryHistory);
@@ -2365,8 +2373,34 @@ export const Practice = () => {
                             setShowSummary(false);
                             handleStartNewSession();
                         }}
-                        onReviewErrors={() => {
+                        onReviewErrors={async () => {
                             setNewlyCorrectFirstAttempts(0); // Reset coins counter before starting review
+
+                            // Initialize review state in DB before navigating
+                            try {
+                                const mainP = await getSectionProgress(effectiveSectionId);
+                                const existingData = mainP?.data || {};
+                                const reviewData = existingData.review || {};
+
+                                const incorrectIds = Object.keys(existingData.questionResults || {}).filter(id => existingData.questionResults[id] === 'incorrect' || existingData.questionResults[id] === false);
+                                const actualIncorrectIds = incorrectIds.length > 0 ? incorrectIds : (existingData.currentIncorrectIds || []);
+
+                                const newData = {
+                                    ...existingData,
+                                    currentIncorrectIds: actualIncorrectIds,
+                                    review: {
+                                        ...reviewData,
+                                        status: 'in_progress',
+                                        round: (reviewData.round || 0) + 1,
+                                        targetQuestionIds: actualIncorrectIds,
+                                        userAnswers: {},
+                                        questionResults: {},
+                                        currentQuestionIndex: 0
+                                    }
+                                };
+                                await saveSectionProgress(effectiveSectionId, newData, { completed: 0, total: 0, score: 0 }, subTopicId ? 'section' : 'algorithmic', true);
+                            } catch (e) { console.error('Failed to prep review data', e); }
+
                             navigate('/practice/session', {
                                 state: {
                                     topic: topicParam,

@@ -67,14 +67,13 @@ export const SessionSummary = ({
 
     // Calculate initial index to avoid button delay
     const getInitialIndex = () => {
+        // FIXED: ALWAYS prefer showing the cumulative results immediately (-1)
+        if (initialQuestionResults && Object.keys(initialQuestionResults).length > 0) {
+            return -1;
+        }
         if (justCompletedSessionLabel && summaryHistory.length > 0) {
             const index = summaryHistory.findIndex(h => h.label === justCompletedSessionLabel);
             if (index !== -1) return index;
-        }
-        // FIX: If we have current results (props), prefer showing them immediately (index -1)
-        // instead of falling back to old history (index 0) which causes a "flash" of old scores.
-        if (initialQuestionResults && Object.keys(initialQuestionResults).length > 0) {
-            return -1;
         }
         return summaryHistory.length > 0 ? 0 : -1;
     };
@@ -83,11 +82,19 @@ export const SessionSummary = ({
     const [historyExpanded, setHistoryExpanded] = useState(false); // Controls history dropdown
     const navigate = useNavigate();
 
-    // useEffect to auto-select the just-completed session when props update
+    // useEffect to auto-select the current session when props update
     useEffect(() => {
         console.log('🔍 [SessionSummary useEffect] triggered');
         console.log('  justCompletedSessionLabel:', justCompletedSessionLabel);
         console.log('  summaryHistory length:', summaryHistory.length);
+
+        const hasCurrentResults = initialQuestionResults && Object.keys(initialQuestionResults).length > 0;
+
+        // FIXED: ALWAYS pre-select Current Session to show the user's CUMULATIVE progress
+        if (hasCurrentResults) {
+            setSelectedHistoryIndex(-1);
+            return;
+        }
 
         if (justCompletedSessionLabel && summaryHistory.length > 0) {
             const index = summaryHistory.findIndex(h => h.label === justCompletedSessionLabel);
@@ -98,14 +105,9 @@ export const SessionSummary = ({
             }
         }
 
-        // Fallback Logic:
-        // Only switch to history[0] if we DON'T have a valid current session to show.
-        // If we have current session results, stay on -1.
-        if (summaryHistory.length > 0) {
-            const hasCurrentResults = initialQuestionResults && Object.keys(initialQuestionResults).length > 0;
-            if (!hasCurrentResults && !justCompletedSessionLabel) {
-                setSelectedHistoryIndex(0);
-            }
+        // Fallback Logic
+        if (summaryHistory.length > 0 && !hasCurrentResults && !justCompletedSessionLabel) {
+            setSelectedHistoryIndex(0);
         }
     }, [justCompletedSessionLabel, summaryHistory, initialQuestionResults]);
 

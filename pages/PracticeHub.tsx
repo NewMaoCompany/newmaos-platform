@@ -836,7 +836,7 @@ export const PracticeHub = () => {
                                                                 className="bg-red-50 hover:bg-red-100 text-red-600 font-bold px-4 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shrink-0 shadow-sm h-full whitespace-nowrap"
                                                             >
                                                                 <span className="material-symbols-outlined text-[18px]">history_edu</span>
-                                                                Review Errors
+                                                                Review Errors ({actualIncorrectCount})
                                                             </button>
                                                             {viewSummaryBtn}
                                                         </>
