@@ -52,6 +52,7 @@ const CourseCard = ({
 
   // Use Synchronous lookup from Cache (no async flickering)
   const courseStatus = getSectionStatus(type);
+  const derivedCourseStatus = progress === 100 ? 'completed' : ((progress > 0 || courseStatus === 'in_progress') ? 'in_progress' : 'not_started');
 
   useEffect(() => {
     if (user?.id) {
@@ -116,13 +117,13 @@ const CourseCard = ({
 
       <div className="relative z-10 flex flex-col items-start">
         <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-6
-                  ${courseStatus === 'in_progress'
+                  ${derivedCourseStatus === 'in_progress'
             ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-            : courseStatus === 'completed'
+            : derivedCourseStatus === 'completed'
               ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
               : 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400'}`}>
-          <span>{courseStatus === 'in_progress' ? 'In Progress' : courseStatus === 'completed' ? 'Completed' : 'Not Started'}</span>
-          {(courseStatus === 'in_progress' || courseStatus === 'completed') && (
+          <span>{derivedCourseStatus === 'in_progress' ? 'In Progress' : derivedCourseStatus === 'completed' ? 'Completed' : 'Not Started'}</span>
+          {(derivedCourseStatus === 'in_progress' || derivedCourseStatus === 'completed') && (
             <span className="opacity-70">• {Math.round(progress)}%</span>
           )}
         </div>
@@ -151,7 +152,7 @@ const CourseCard = ({
               : 'bg-gray-50 dark:bg-white/5 text-text-main dark:text-white hover:bg-gray-100 dark:hover:bg-white/10'
             }`}
         >
-          <span className="truncate">{course.status === 'Not Started' ? 'Start Course' : 'Continue Learning'}</span>
+          <span className="truncate">{derivedCourseStatus === 'not_started' ? 'Start Course' : 'Continue Learning'}</span>
           <span className="material-symbols-outlined shrink-0">arrow_forward</span>
         </button>
       </div>
