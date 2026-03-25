@@ -32,17 +32,15 @@ router.get('/', authMiddleware, async (req: Request, res: Response): Promise<voi
     try {
         const userId = req.user!.id;
 
-        // Get ALL questions ever answered incorrectly by this user
-        // including review errors
-        const { data: wrongAttempts, error: attemptsError } = await supabaseAdmin
+        // Get ALL question attempts by this user to determine current state
+        const { data: allAttempts, error: attemptsError } = await supabaseAdmin
             .from('question_attempts')
             .select('question_id, is_correct, created_at, selected_option_id, time_spent_seconds')
             .eq('user_id', userId)
-            .eq('is_correct', false)
             .order('created_at', { ascending: false });
 
         if (attemptsError) {
-            console.error('Error fetching wrong attempts:', attemptsError);
+            console.error('Error fetching question attempts:', attemptsError);
             res.status(500).json({ error: 'Failed to fetch wrong answers' });
             return;
         }
@@ -65,26 +63,37 @@ router.get('/', authMiddleware, async (req: Request, res: Response): Promise<voi
             }
         }
 
-        // Get unique question IDs (not dismissed)
+        // Process attempts to keep only questions where the LATEST attempt is wrong
         const uniqueQuestionIds = new Set<string>();
         const wrongAnswerMap: Record<string, any> = {};
+        const seenQuestionIds = new Set<string>();
 
-        for (const attempt of (wrongAttempts || [])) {
+        for (const attempt of (allAttempts || [])) {
             const qid = attempt.question_id;
             if (dismissedIds.has(qid)) continue;
 
-            if (!uniqueQuestionIds.has(qid)) {
-                uniqueQuestionIds.add(qid);
-                wrongAnswerMap[qid] = {
-                    questionId: qid,
-                    wrongCount: 1,
-                    lastWrongAt: attempt.created_at,
-                    firstWrongAt: attempt.created_at,
-                    lastSelectedOptionId: attempt.selected_option_id,
-                };
+            if (!seenQuestionIds.has(qid)) {
+                seenQuestionIds.add(qid);
+                // This is the FIRST TIME we see this question ID (so it's the LATEST attempt)
+                if (attempt.is_correct === false) {
+                    uniqueQuestionIds.add(qid);
+                    wrongAnswerMap[qid] = {
+                        questionId: qid,
+                        wrongCount: 1,
+                        lastWrongAt: attempt.created_at,
+                        firstWrongAt: attempt.created_at,
+                        lastSelectedOptionId: attempt.selected_option_id,
+                    };
+                }
             } else {
-                wrongAnswerMap[qid].wrongCount++;
-                wrongAnswerMap[qid].firstWrongAt = attempt.created_at;
+                // We've seen a newer attempt for this question.
+                // If the newer attempt was wrong, it is in uniqueQuestionIds.
+                // We can update the start time and wrong count from older wrong attempts.
+                if (uniqueQuestionIds.has(qid) && attempt.is_correct === false) {
+                    wrongAnswerMap[qid].wrongCount++;
+                    // Since attempts are ordered by created_at DESC, the older it is, the further back we go
+                    wrongAnswerMap[qid].firstWrongAt = attempt.created_at;
+                }
             }
         }
 

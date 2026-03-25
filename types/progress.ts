@@ -1,5 +1,5 @@
 // Practice Session Progress Data Structure
-// Used for tracking first attempt and review states
+// SIMPLIFIED: No more review loops. Session is either in_progress or completed.
 
 export interface FirstAttemptData {
     status: 'not_started' | 'in_progress' | 'completed';
@@ -10,19 +10,10 @@ export interface FirstAttemptData {
     completedAt?: string;                     // Completion timestamp
 }
 
-export interface ReviewData {
-    status: 'not_started' | 'in_progress' | 'completed';
-    round: number;                            // Current review round number
-    targetQuestionIds: string[];              // Snapshot of incorrect question IDs for this round
-    userAnswers: Record<string, string>;
-    questionResults: Record<string, 'correct' | 'incorrect'>;
-    currentQuestionIndex: number;
-}
-
 export interface SummaryHistoryEntry {
-    type: 'first_attempt' | 'review';
-    round?: number;                           // Review round number
-    label: string;                            // Display label e.g. "Initial Attempt", "Review #1"
+    type: 'first_attempt';
+    attemptNumber?: number;
+    label: string;                            // Display label e.g. "First Attempt", "Second Attempt"
     timestamp: string;
     score: number;                            // Percentage 0-100
     userAnswers: Record<string, string>;
@@ -33,23 +24,17 @@ export interface SectionProgressData {
     // First Attempt State
     firstAttempt: FirstAttemptData;
 
-    // Review State
-    review: ReviewData;
-
-    // History Records
+    // History Records (each Start Over creates a new entry)
     summaryHistory: SummaryHistoryEntry[];
 
-    // Current Incorrect Question IDs (tracks remaining errors)
+    // Incorrect Question IDs from this session (for display only, NOT for re-doing)
     currentIncorrectIds: string[];
 }
 
-// Button state enum for TopicDetail
+// Simplified Button state: only 3 states
 export type PracticeButtonState =
     | 'NOT_STARTED'           // Show: Start
-    | 'FIRST_ATTEMPT_IN_PROGRESS'  // Show: Resume
-    | 'FIRST_ATTEMPT_COMPLETED'    // Show: Review Errors + View Summary
-    | 'REVIEW_IN_PROGRESS'    // Show: Resume Review + View Summary
-    | 'STILL_HAS_ERRORS'      // Show: Review Errors + View Summary
+    | 'IN_PROGRESS'           // Show: Resume
     | 'COMPLETED';            // Show: Start Over + View Summary
 
 // Helper to get button state from progress data
@@ -58,26 +43,13 @@ export function getButtonState(data: SectionProgressData | null | undefined): Pr
         return 'NOT_STARTED';
     }
 
-    const { firstAttempt, review, currentIncorrectIds } = data;
+    const { firstAttempt } = data;
 
-    // 1. First attempt not completed
     if (firstAttempt.status === 'in_progress') {
-        return 'FIRST_ATTEMPT_IN_PROGRESS';
+        return 'IN_PROGRESS';
     }
 
-    // 2. First attempt completed
     if (firstAttempt.status === 'completed') {
-        // 2a. Review in progress
-        if (review?.status === 'in_progress') {
-            return 'REVIEW_IN_PROGRESS';
-        }
-
-        // 2b. Still has errors
-        if (currentIncorrectIds && currentIncorrectIds.length > 0) {
-            return 'STILL_HAS_ERRORS';
-        }
-
-        // 2c. No errors - completed
         return 'COMPLETED';
     }
 
@@ -98,14 +70,6 @@ export function createInitialProgressData(questionIds: string[]): SectionProgres
             questionResults: {},
             currentQuestionIndex: 0,
             questionIds,
-        },
-        review: {
-            status: 'not_started',
-            round: 0,
-            targetQuestionIds: [],
-            userAnswers: {},
-            questionResults: {},
-            currentQuestionIndex: 0,
         },
         summaryHistory: [],
         currentIncorrectIds: [],

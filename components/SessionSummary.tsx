@@ -13,11 +13,9 @@ interface SessionSummaryProps {
     questionResults: Record<string, 'correct' | 'incorrect' | boolean>;
     onExit: () => void;
     onRetake: () => void;
-    onReviewErrors?: () => void;
     summaryHistory?: {
-        type?: 'first_attempt' | 'review';
+        type?: 'first_attempt';
         attemptNumber?: number;
-        round?: number;
         label: string;
         timestamp: string;
         score?: number;
@@ -35,7 +33,6 @@ export const SessionSummary = ({
     questionResults: initialQuestionResults,
     onExit,
     onRetake,
-    onReviewErrors,
     summaryHistory = [],
     justCompletedSessionLabel = null,
     discussSlug = null,
@@ -461,7 +458,7 @@ export const SessionSummary = ({
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <span className="material-symbols-outlined text-[18px]">
-                                                        {hist.type === 'review' ? 'history_edu' : 'first_page'}
+                                                        first_page
                                                     </span>
                                                     <div className="flex flex-col">
                                                         <span className="font-bold text-sm">{hist.label}</span>
@@ -530,49 +527,43 @@ export const SessionSummary = ({
 
                 {/* Actions */}
                 <div className="space-y-2.5 min-h-[160px] flex flex-col justify-end">
-                    {/* 1. Review Errors (Priority if mistakes exist) - Show for Current Session AND Review entries */}
-                    {incorrectCount > 0 && onReviewErrors && (
-                        <button
-                            onClick={onReviewErrors}
-                            className="w-full py-3.5 rounded-xl font-bold bg-red-500 text-white hover:brightness-110 hover:shadow-lg hover:shadow-red-500/30 transition-all flex items-center justify-center gap-2"
-                        >
-                            <span className="material-symbols-outlined text-[20px]">replay_circle_filled</span>
-                            Review Errors ({incorrectCount})
-                        </button>
-                    )}
-
-
-
-                    {/* 3. Review Questions (Internal View) */}
+                    {/* 1. Review Answers (Read-only view of answers + explanations) */}
                     <button
                         onClick={() => {
                             setReviewFilter('all');
                             setViewMode('review');
                         }}
-                        className="w-full py-3 rounded-xl font-bold border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-gray-400 dark:hover:border-gray-500 transition-all flex items-center justify-center gap-2 group text-sm"
+                        className="w-full py-3.5 rounded-xl font-bold bg-gray-900 dark:bg-white text-white dark:text-black hover:brightness-110 transition-all flex items-center justify-center gap-2"
                     >
-                        <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">history_edu</span>
-                        View Summary Details
+                        <span className="material-symbols-outlined text-[20px]">history_edu</span>
+                        Review Answers
                     </button>
 
-                    {/* Forum Shortcut (Only if NO pending errors to review) */}
-                    {(selectedHistoryIndex !== -1 || incorrectCount === 0) && (
-                        <button
-                            onClick={() => navigate('/forum')}
-                            className="w-full py-3 rounded-xl font-bold border-2 border-indigo-100 dark:border-indigo-900/30 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/10 hover:bg-indigo-100 dark:hover:bg-indigo-900/20 transition-all flex items-center justify-center gap-2 group text-sm"
-                        >
-                            <span className="material-symbols-outlined text-[20px]">forum</span>
-                            Discuss in Forum
-                        </button>
-                    )}
+                    {/* 2. Start Over (Creates a new session) */}
+                    <button
+                        onClick={onRetake}
+                        className="w-full py-3 rounded-xl font-bold border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-all flex items-center justify-center gap-2 group text-sm"
+                    >
+                        <span className="material-symbols-outlined text-[20px] group-hover:rotate-180 transition-transform duration-500">refresh</span>
+                        Start Over
+                    </button>
 
-                    {/* 4. Complete / Back */}
+                    {/* 3. Forum Shortcut */}
+                    <button
+                        onClick={() => navigate('/forum')}
+                        className="w-full py-3 rounded-xl font-bold border-2 border-indigo-100 dark:border-indigo-900/30 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/10 hover:bg-indigo-100 dark:hover:bg-indigo-900/20 transition-all flex items-center justify-center gap-2 group text-sm"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">forum</span>
+                        Discuss in Forum
+                    </button>
+
+                    {/* 4. Back to Chapter / Dashboard */}
                     <button
                         onClick={onExit}
-                        className={`w-full py-3.5 rounded-xl font-bold ${selectedHistoryIndex === -1 && incorrectCount === 0 ? 'bg-primary text-black' : 'bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white'} hover:brightness-105 transition-all flex items-center justify-center gap-2 text-sm`}
+                        className="w-full py-3.5 rounded-xl font-bold bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white hover:brightness-105 transition-all flex items-center justify-center gap-2 text-sm"
                     >
                         <span className="material-symbols-outlined text-[20px]">done_all</span>
-                        {selectedHistoryIndex === -1 && incorrectCount === 0 ? 'Finish Practice' : 'Back to List'}
+                        Back to Chapter
                     </button>
                 </div>
             </div>

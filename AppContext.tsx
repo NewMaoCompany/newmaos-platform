@@ -1384,13 +1384,18 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
 
         try {
+            // Because the backend RPC blindly overwrites status with p_status (defaulting to 'in_progress' if null/undefined),
+            // we MUST explicitly send the existing status when skipStatusUpdate is true, otherwise it downgrades to in_progress!
+            const existingCache = sectionProgressMap[sectionId];
+            const safeFallbackStatus = skipStatusUpdate ? (existingCache?.status || 'in_progress') : 'in_progress';
+
             const payload: any = {
                 p_section_id: sectionId,
                 p_user_id: user.id,
                 p_data: data,
                 p_completed_items: stats.completed,
                 p_total_items: stats.total,
-                p_status: skipStatusUpdate ? undefined : 'in_progress',
+                p_status: skipStatusUpdate ? safeFallbackStatus : 'in_progress',
                 p_score: stats.score,
                 p_entity_type: entityType
             };

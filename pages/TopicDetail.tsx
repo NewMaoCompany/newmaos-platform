@@ -446,50 +446,19 @@ export const TopicDetail = () => {
 
                             <div className="relative z-10 shrink-0 flex flex-col sm:flex-row gap-2">
                                 {(() => {
-                                    // NEW STATE MACHINE LOGIC
+                                    // SIMPLIFIED STATE MACHINE: NOT_STARTED | IN_PROGRESS | COMPLETED
                                     const mainProgress = getSectionProgressData(sub.id);
                                     const progressData = mainProgress?.data;
-
-                                    // Determine button state using new logic
                                     const firstAttempt = progressData?.firstAttempt;
-                                    const review = progressData?.review;
-                                    const currentIncorrectIds = progressData?.currentIncorrectIds || [];
 
                                     // Calculate state
-                                    let buttonState: 'NOT_STARTED' | 'FIRST_ATTEMPT_IN_PROGRESS' | 'FIRST_ATTEMPT_COMPLETED' | 'REVIEW_IN_PROGRESS' | 'STILL_HAS_ERRORS' | 'COMPLETED' = 'NOT_STARTED';
-
-                                    // Compute actual incorrect count with absolute priority to questionResults (ground truth)
-                                    const computeActualIncorrectCount = (): number => {
-                                        // 1. Ground truth: compute from merged questionResults (includes first attempt + review corrections)
-                                        if (progressData?.questionResults) {
-                                            return Object.values(progressData.questionResults).filter((r: any) => r === false || r === 'incorrect').length;
-                                        }
-
-                                        // 2. Fallback: compute from firstAttempt.questionResults
-                                        if (firstAttempt?.questionResults) {
-                                            return Object.values(firstAttempt.questionResults).filter((r: any) => r === false || r === 'incorrect').length;
-                                        }
-
-                                        // 3. Last fallback: stored array only if no questionResults available
-                                        if (progressData?.currentIncorrectIds && progressData.currentIncorrectIds.length > 0) {
-                                            return progressData.currentIncorrectIds.length;
-                                        }
-
-                                        return 0;
-                                    };
-                                    const actualIncorrectCount = computeActualIncorrectCount();
+                                    let buttonState: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' = 'NOT_STARTED';
 
                                     if (firstAttempt && firstAttempt.status !== 'not_started') {
                                         if (firstAttempt.status === 'in_progress') {
-                                            buttonState = 'FIRST_ATTEMPT_IN_PROGRESS';
+                                            buttonState = 'IN_PROGRESS';
                                         } else if (firstAttempt.status === 'completed') {
-                                            if (review?.status === 'in_progress') {
-                                                buttonState = 'REVIEW_IN_PROGRESS';
-                                            } else if (actualIncorrectCount > 0) {
-                                                buttonState = 'STILL_HAS_ERRORS';
-                                            } else {
-                                                buttonState = 'COMPLETED';
-                                            }
+                                            buttonState = 'COMPLETED';
                                         }
                                     }
 
@@ -500,15 +469,14 @@ export const TopicDetail = () => {
                                         const status = getSectionStatus(sub.id);
 
                                         if (status === 'completed') {
-                                            buttonState = checkHasErrors(sub.id) ? 'STILL_HAS_ERRORS' : 'COMPLETED';
+                                            buttonState = 'COMPLETED';
                                         } else if (hasLegacyData || status === 'in_progress') {
-                                            buttonState = 'FIRST_ATTEMPT_IN_PROGRESS';
+                                            buttonState = 'IN_PROGRESS';
                                         }
                                     }
 
-                                    // View Summary button (shown when first attempt is completed)
-                                    const showViewSummary = buttonState !== 'NOT_STARTED' && buttonState !== 'FIRST_ATTEMPT_IN_PROGRESS';
-                                    const viewSummaryBtn = showViewSummary ? (
+                                    // View Summary button (shown when completed)
+                                    const viewSummaryBtn = buttonState === 'COMPLETED' ? (
                                         <button
                                             onClick={(e) => { e.stopPropagation(); navigate('/practice/session', { state: { topic: effectiveUnitId || unitId, subTopicId: sub.id, mode: 'Summary' } }); }}
                                             className="px-3 py-2 bg-gray-100 dark:bg-white/5 text-text-main dark:text-white rounded-xl font-bold hover:bg-primary hover:text-black transition-all flex items-center justify-center gap-2 text-xs border border-transparent hover:border-primary/20"
@@ -531,7 +499,7 @@ export const TopicDetail = () => {
                                                 </button>
                                             );
 
-                                        case 'FIRST_ATTEMPT_IN_PROGRESS':
+                                        case 'IN_PROGRESS':
                                             return (
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); handleSubTopicClick(sub.id, 'Adaptive'); }}
@@ -542,34 +510,6 @@ export const TopicDetail = () => {
                                                 </button>
                                             );
 
-                                        case 'REVIEW_IN_PROGRESS':
-                                            return (
-                                                <div className="flex gap-2">
-                                                    <button
-                                                        onClick={(e) => { e.stopPropagation(); handleSubTopicClick(sub.id, 'Review'); }}
-                                                        className="px-4 py-2.5 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 rounded-xl font-bold hover:bg-red-100 dark:hover:bg-red-900/20 transition-all flex items-center justify-center gap-2 text-sm border border-red-100 dark:border-red-900/20"
-                                                    >
-                                                        <span className="material-symbols-outlined text-[18px]">history</span>
-                                                        Resume Review
-                                                    </button>
-                                                    {viewSummaryBtn}
-                                                </div>
-                                            );
-
-                                        case 'STILL_HAS_ERRORS':
-                                            return (
-                                                <div className="flex gap-2">
-                                                    <button
-                                                        onClick={(e) => { e.stopPropagation(); handleSubTopicClick(sub.id, 'Review', true); }}
-                                                        className="px-4 py-2.5 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 rounded-xl font-bold hover:bg-red-100 dark:hover:bg-red-900/20 transition-all flex items-center justify-center gap-2 text-sm border border-red-100 dark:border-red-900/20"
-                                                    >
-                                                        <span className="material-symbols-outlined text-[18px]">history_edu</span>
-                                                        Review Errors
-                                                    </button>
-                                                    {viewSummaryBtn}
-                                                </div>
-                                            );
-
                                         case 'COMPLETED':
                                             return (
                                                 <div className="flex gap-2">
@@ -578,7 +518,7 @@ export const TopicDetail = () => {
                                                             e.stopPropagation();
                                                             triggerConfirm(
                                                                 'Start Over?',
-                                                                'You have mastered this topic! Do you want to practice again?',
+                                                                'Do you want to practice this section again with a fresh session?',
                                                                 () => handleSubTopicClick(sub.id, 'Adaptive', true)
                                                             );
                                                         }}

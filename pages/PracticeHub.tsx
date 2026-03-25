@@ -679,45 +679,16 @@ export const PracticeHub = () => {
                                         {(() => {
                                             const mainProgress = currentModeAlgorithmicSession;
                                             const progressData = mainProgress?.data;
-
                                             const firstAttempt = progressData?.firstAttempt;
-                                            const review = progressData?.review;
 
-                                            let buttonState: 'NOT_STARTED' | 'FIRST_ATTEMPT_IN_PROGRESS' | 'FIRST_ATTEMPT_COMPLETED' | 'REVIEW_IN_PROGRESS' | 'STILL_HAS_ERRORS' | 'COMPLETED' = 'NOT_STARTED';
-
-                                            let actualIncorrectIds: string[] = [];
-                                            const computeActualIncorrectIds = (): string[] => {
-                                                // Ground truth: compute from merged questionResults (includes first attempt + review corrections)
-                                                if (progressData?.questionResults) {
-                                                    return Object.keys(progressData.questionResults).filter((id: string) => progressData.questionResults[id] === false || progressData.questionResults[id] === 'incorrect');
-                                                }
-                                                if (firstAttempt?.questionResults) {
-                                                    return Object.keys(firstAttempt.questionResults).filter((id: string) => firstAttempt.questionResults[id] === false || firstAttempt.questionResults[id] === 'incorrect');
-                                                }
-                                                // Fallback to stored array only if no questionResults available
-                                                if (progressData?.currentIncorrectIds && progressData.currentIncorrectIds.length > 0) {
-                                                    return progressData.currentIncorrectIds;
-                                                }
-                                                // Fallback to review.targetQuestionIds for pending_review state
-                                                if (review?.targetQuestionIds && review.targetQuestionIds.length > 0) {
-                                                    return review.targetQuestionIds;
-                                                }
-                                                return [];
-                                            };
-                                            actualIncorrectIds = computeActualIncorrectIds();
-                                            const actualIncorrectCount = actualIncorrectIds.length;
+                                            // SIMPLIFIED: Only 3 states
+                                            let buttonState: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' = 'NOT_STARTED';
 
                                             if (firstAttempt && firstAttempt.status !== 'not_started') {
                                                 if (firstAttempt.status === 'in_progress') {
-                                                    buttonState = 'FIRST_ATTEMPT_IN_PROGRESS';
+                                                    buttonState = 'IN_PROGRESS';
                                                 } else if (firstAttempt.status === 'completed') {
-                                                    if (review?.status === 'in_progress') {
-                                                        buttonState = 'REVIEW_IN_PROGRESS';
-                                                    } else if (review?.status === 'pending_review' || actualIncorrectCount > 0) {
-                                                        buttonState = 'STILL_HAS_ERRORS';
-                                                    } else {
-                                                        buttonState = 'COMPLETED';
-                                                    }
+                                                    buttonState = 'COMPLETED';
                                                 }
                                             }
 
@@ -725,9 +696,9 @@ export const PracticeHub = () => {
                                             if (buttonState === 'NOT_STARTED' && mainProgress) {
                                                 const hasLegacyData = mainProgress.correct_questions > 0 || (progressData?.userAnswers && Object.keys(progressData.userAnswers).length > 0);
                                                 if (mainProgress.status === 'completed' || (mainProgress.status === 'in_progress' && mainProgress.data?.summaryHistory?.length > 0)) {
-                                                    buttonState = actualIncorrectCount > 0 ? 'STILL_HAS_ERRORS' : 'COMPLETED';
+                                                    buttonState = 'COMPLETED';
                                                 } else if (hasLegacyData || mainProgress.status === 'in_progress') {
-                                                    buttonState = 'FIRST_ATTEMPT_IN_PROGRESS';
+                                                    buttonState = 'IN_PROGRESS';
                                                 }
                                             }
 
@@ -746,42 +717,7 @@ export const PracticeHub = () => {
                                                 setTimeout(() => setIsProcessing(false), 500);
                                             };
 
-                                            const handleErrorReviewClick = async (e: React.MouseEvent) => {
-                                                e.preventDefault();
-                                                if (!mainProgress || isProcessing) return;
-                                                setIsProcessing(true);
-                                                const reviewData = mainProgress.data?.review;
-                                                const currentRound = reviewData?.round || 0;
-                                                const newData = {
-                                                    ...(mainProgress.data || {}),
-                                                    currentIncorrectIds: actualIncorrectIds,
-                                                    review: {
-                                                        ...(reviewData || {}),
-                                                        status: 'in_progress',
-                                                        round: currentRound + 1,
-                                                        targetQuestionIds: actualIncorrectIds,
-                                                        userAnswers: {},
-                                                        questionResults: {},
-                                                        currentQuestionIndex: 0
-                                                    }
-                                                };
-                                                await saveSectionProgress(mainProgress.section_id, newData, { completed: 0, total: 0, score: 0 }, 'algorithmic', true);
-
-                                                navigate('/practice/session', {
-                                                    state: {
-                                                        topic: recommendation.topic,
-                                                        mode: recommendation.mode,
-                                                        sessionId: mainProgress.section_id,
-                                                        isResuming: true,
-                                                        forceStartNew: false,
-                                                        isErrorReviewAction: true,
-                                                        targetIds: actualIncorrectIds
-                                                    }
-                                                });
-                                                setTimeout(() => setIsProcessing(false), 500);
-                                            };
-
-                                            const viewSummaryBtn = buttonState !== 'NOT_STARTED' && buttonState !== 'FIRST_ATTEMPT_IN_PROGRESS' ? (
+                                            const viewSummaryBtn = buttonState === 'COMPLETED' ? (
                                                 <button
                                                     onClick={(e) => {
                                                         e.preventDefault();
@@ -805,42 +741,13 @@ export const PracticeHub = () => {
                                                         </button>
                                                     )}
 
-                                                    {buttonState === 'FIRST_ATTEMPT_IN_PROGRESS' && (
+                                                    {buttonState === 'IN_PROGRESS' && (
                                                         <button
                                                             onClick={(e) => { e.preventDefault(); handleSmartClick(progressData?.mode || recommendation.mode, true, false); }}
                                                             className="bg-black hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-xl transition-all flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                                                         >
                                                             Resume <span className="material-symbols-outlined text-[20px]">history</span>
                                                         </button>
-                                                    )}
-
-                                                    {buttonState === 'REVIEW_IN_PROGRESS' && (
-                                                        <>
-                                                            <button
-                                                                onClick={(e) => {
-                                                                    e.preventDefault();
-                                                                    navigate('/practice/session', { state: { topic: recommendation.topic, mode: recommendation.mode, sessionId: mainProgress?.section_id, isResuming: true, isErrorReviewAction: true } });
-                                                                }}
-                                                                className="bg-red-50 hover:bg-red-100 text-red-600 font-bold px-4 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shrink-0 shadow-sm h-full whitespace-nowrap"
-                                                            >
-                                                                <span className="material-symbols-outlined text-[18px]">history</span>
-                                                                Resume Review
-                                                            </button>
-                                                            {viewSummaryBtn}
-                                                        </>
-                                                    )}
-
-                                                    {buttonState === 'STILL_HAS_ERRORS' && (
-                                                        <>
-                                                            <button
-                                                                onClick={handleErrorReviewClick}
-                                                                className="bg-red-50 hover:bg-red-100 text-red-600 font-bold px-4 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shrink-0 shadow-sm h-full whitespace-nowrap"
-                                                            >
-                                                                <span className="material-symbols-outlined text-[18px]">history_edu</span>
-                                                                Review Errors ({actualIncorrectCount})
-                                                            </button>
-                                                            {viewSummaryBtn}
-                                                        </>
                                                     )}
 
                                                     {buttonState === 'COMPLETED' && (

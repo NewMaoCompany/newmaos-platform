@@ -95,21 +95,17 @@ export const Practice = () => {
 
     const subTopicId = effectiveState?.subTopicId;
     const sessionMode: SessionMode = effectiveState?.mode || 'Adaptive';
-    const initialIsErrorReview = effectiveState?.isErrorReviewAction || false;
 
     // Derived Clean Topic - available to all functions in component
     const cleanTopic = topicParam.includes('_') ? topicParam.split('_')[1] : topicParam;
 
     // If subTopicId exists AND it is NOT 'unit_test', we start in 'Lesson' view, otherwise 'Practice'
-    // Exception: If error review, Resuming, or Force Start, skip lesson
+    // Exception: If Resuming or Force Start, skip lesson
     const [viewState, setViewState] = useState<'lesson' | 'practice'>(
-        sessionMode === 'Review' || initialIsErrorReview || effectiveState?.isResuming === true || effectiveState?.forceStartNew === true || !subTopicId
+        sessionMode === 'Review' || effectiveState?.isResuming === true || effectiveState?.forceStartNew === true || !subTopicId
             ? 'practice'
             : 'lesson'
     );
-
-    // Track Error Review State globally so finishSession knows which DB branch to save to
-    const [isErrorReviewState, setIsErrorReviewState] = useState<boolean>(initialIsErrorReview);
 
     // Track session start time for accurate duration logging
     const sessionStartTimeRef = useRef<number>(Date.now());
@@ -198,7 +194,7 @@ export const Practice = () => {
 
     // NEW: Frozen snapshot of incorrect question IDs for Review mode
     // This prevents questions from disappearing when user answers correctly during review
-    const [frozenReviewQuestionIds, setFrozenReviewQuestionIds] = useState<Set<string>>(new Set());
+
 
     // UI States
     const [showComments, setShowComments] = useState(false);
@@ -366,70 +362,7 @@ export const Practice = () => {
                         setMarkedQuestions(new Set(data.markedQuestionIds));
                     }
 
-                    const hasReviewProgress = review?.status === 'in_progress';
-
-                    // Determine if we are actively in an Error Review loop based on passed action or DB state
-                    const currentIsError = initialIsErrorReview || (hasFirstAttemptProgress && data?.review?.status === 'in_progress');
-                    setIsErrorReviewState(currentIsError);
-
-                    if (currentIsError) {
-                        // --- ERROR REVIEW SUB-SESSION ---
-                        if (hasReviewProgress && effectiveState?.isResuming) {
-                            // Resume existing review
-                            setUserAnswers(review.userAnswers || {});
-                            setQuestionResults(review.questionResults || {});
-                            setCurrentQuestionIndex(review.currentQuestionIndex || 0);
-                            // Accuracy Fix: Count correct answers ONLY within this review round
-                            const reviewCorrect = Object.values(review.questionResults || {}).filter(r => r === 'correct').length;
-                            setSessionResults({
-                                correct: reviewCorrect,
-                                total: review.targetQuestionIds?.length || questions.length || 0
-                            });
-                            // NEW: Ensure isSubmitted is synced immediately for the resumed review question
-                            const reviewTargetIds = review.targetQuestionIds || [];
-                            const resumeIdx = review.currentQuestionIndex || 0;
-                            const currentQId = reviewTargetIds[resumeIdx];
-                            const reviewResults = review.questionResults || {};
-                            if (currentQId && (reviewResults[currentQId] === 'correct' || reviewResults[currentQId] === 'incorrect')) {
-                                setIsSubmitted(true);
-                                setFeedback(reviewResults[currentQId]);
-                            } else {
-                                setIsSubmitted(false);
-                                setFeedback(null);
-                            }
-
-                            // Use saved target question IDs as frozen set
-                            if (review.targetQuestionIds?.length > 0) {
-                                setFrozenReviewQuestionIds(new Set(review.targetQuestionIds));
-                            }
-                            setNewlyCorrectFirstAttempts(0); // Reset coins counter for resumed review session
-                            setShowResumePrompt(false);
-                            setIsInitializing(false);
-                            return;
-                        } else {
-                            // --- FRESH REVIEW ---
-                            setUserAnswers({});
-                            setQuestionResults({});
-                            setMarkedQuestions(new Set());
-                            setCurrentQuestionIndex(0);
-                            setShowSummary(false);
-                            setNewlyCorrectFirstAttempts(0); // Reset coins counter for new review session
-
-                            // Priority 1: Use review.targetQuestionIds (set by handleErrorReviewClick in PracticeHub)
-                            // Priority 2: Use currentIncorrectIds from saved data
-                            // Priority 3: Fall back to global incorrectQuestionIds
-                            const targetIds = (review?.targetQuestionIds?.length > 0)
-                                ? new Set(review.targetQuestionIds as string[])
-                                : (data?.currentIncorrectIds?.length > 0
-                                    ? new Set(data.currentIncorrectIds as string[])
-                                    : incorrectQuestionIds);
-                            setFrozenReviewQuestionIds(targetIds);
-
-                            setShowResumePrompt(false);
-                            setIsInitializing(false);
-                            return; // CRITICAL: Prevent fall-through into NORMAL/ADAPTIVE RESTORATION
-                        }
-                    }
+                    const hasReviewProgress = false; // No more review sub-sessions
 
                     // --- NORMAL/ADAPTIVE RESTORATION (Explicit Resume) ---
                     if (hasFirstAttemptProgress && effectiveState?.isResuming) {
@@ -443,7 +376,7 @@ export const Practice = () => {
                         setCurrentQuestionIndex(resumeIndex);
                         setQuestionResults(resumeResults);
 
-                        // NEW: Ensure isSubmitted is synced immediately for the resumed question
+                        // Ensure isSubmitted is synced immediately for the resumed question
                         const currentQuestionId = firstAttempt?.questionIds?.[resumeIndex] || data?.questionIds?.[resumeIndex];
                         if (currentQuestionId && (resumeResults[currentQuestionId] === 'correct' || resumeResults[currentQuestionId] === 'incorrect')) {
                             setIsSubmitted(true);
@@ -458,19 +391,14 @@ export const Practice = () => {
                         return;
                     }
 
-                    // If we have progress but we are NOT resuming (e.g. Start Over or Review mode), 
+                    // If we have progress but we are NOT resuming (e.g. Start Over), 
                     // we show the data in pending but don't return, allowing a new session to init if needed
                     if (hasFirstAttemptProgress) {
                         setPendingResumeData(savedSession.data);
-                        // Special Case: In Error Review or Start Over, we ignore the old session's answers
-                        if (currentIsError || effectiveState?.forceStartNew) {
+                        if (effectiveState?.forceStartNew) {
                             // Continue to init new session logic
-                            // CRITICAL: Clear locally frozen IDs so we don't carry over old questions
-                            if (effectiveState?.forceStartNew) {
-                                console.log('🔄 [checkProgress] Force Start New: Clearing frozen IDs');
-                                setFrozenReviewQuestionIds(new Set());
-                                setMarkedQuestions(new Set());
-                            }
+                            console.log('🔄 [checkProgress] Force Start New: Clearing marks');
+                            setMarkedQuestions(new Set());
                         } else {
                             setIsInitializing(false); // Fix: Ensure loading state is cleared
                             return; // Show prompt (since isResuming is false)
@@ -478,53 +406,9 @@ export const Practice = () => {
                     }
 
                     // 2. Initialize new session if NOT resuming
-                    // Refined Logic warning: if hasFirstAttemptProgress is true, we returned above.
-                    // Wipe database if force Start New, UNLESS it's an error review sub-session where we want to keep the frame
-                    if (effectiveState?.forceStartNew && effectiveSectionId && !isErrorReviewState) {
+                    // Wipe database if force Start New
+                    if (effectiveState?.forceStartNew && effectiveSectionId) {
                         await resetSectionProgress(effectiveSectionId);
-                    }
-
-                    // 3. If NO session exists or we just reset, initialize as 'in_progress' immediately
-                    // But don't do this for 'Summary' mode which should only READ.
-                    // CRITICAL CHANGE: Only initialize if we are actually in PRACTICE mode (user clicked Start)
-                    if (viewState === 'practice' && sessionMode !== 'Summary' && (!savedSession || effectiveState?.forceStartNew)) {
-                        const initData = {
-                            ...(savedSession?.data || {}),
-                            userAnswers: {},
-                            currentQuestionIndex: 0,
-                            sessionTopic: topicParam,
-                            sessionMode: sessionMode,
-                            questionIds: savedSession?.data?.questionIds || questions.map(q => q.id)
-                        };
-
-                        // If starting fresh Review, preserve history but reset review object
-                        if (sessionMode === 'Review') {
-                            // Use empty set if we just cleared, otherwise use current incorrect
-                            // Note: frozenReviewQuestionIds might be empty here due to async set above.
-                            // We should recalculate targets here or let the useEffect handle it.
-                            console.log('🔄 [checkProgress] Init Review. Frozen Size:', frozenReviewQuestionIds.size);
-
-                            initData.review = {
-                                status: 'in_progress' as const,
-                                round: (savedSession?.data?.review?.round || 0) + 1,
-                                targetQuestionIds: [], // Start empty, let useEffect populate from incorrect
-                                userAnswers: {},
-                                questionResults: {},
-                                currentQuestionIndex: 0
-                            };
-                        }
-
-                        await saveSectionProgress(effectiveSectionId, initData, { completed: 0, total: 0, score: 0 }, subTopicId ? 'section' : 'algorithmic', (sessionMode as SessionMode) === 'Review');
-
-                        // Save UNIT progress (bubbling up) - Only if not Review
-                        if (topicParam && (sessionMode as SessionMode) !== 'Review') {
-                            await saveSectionProgress(topicParam, {}, { completed: 0, total: 0, score: 0 }, 'unit');
-                        }
-
-                        // Save COURSE progress (bubbling up)
-                        if (user.currentCourse) {
-                            await saveSectionProgress(user.currentCourse, {}, { completed: 0, total: 0, score: 0 }, 'course');
-                        }
                     }
                 }
             } catch (err) {
@@ -605,9 +489,29 @@ export const Practice = () => {
     };
 
     const handleStartNewSession = () => {
-        // Start fresh
+        // Start fresh: Reset ALL practice state
         setPendingResumeData(null);
-        setViewState('practice');
+        setUserAnswers({});
+        setQuestionResults({});
+        setCurrentQuestionIndex(0);
+        setMarkedQuestions(new Set());
+        setEliminatedOptions({});
+        setIsSubmitted(false);
+        setFeedback(null);
+        setShowSummary(false);
+        setSessionResults({ correct: 0, total: 0 });
+        setQuestions([]);
+
+        // Navigate with forceStartNew to trigger DB reset in checkProgress
+        navigate('/practice/session', {
+            state: {
+                topic: topicParam,
+                subTopicId: subTopicId,
+                mode: sessionMode === 'Summary' ? 'Adaptive' : sessionMode,
+                forceStartNew: true
+            },
+            replace: true
+        });
     };
 
     // Fix flicker by enforcing loading state during transition
@@ -667,7 +571,7 @@ export const Practice = () => {
     // Debounce empty state to prevent flash of "No Questions" during rapid transitions
     const [showEmptyState, setShowEmptyState] = useState(false);
     // Initialize to true when entering Summary mode to prevent screen flicker
-    const [isInitializing, setIsInitializing] = useState(sessionMode === 'Summary' || initialIsErrorReview);
+    const [isInitializing, setIsInitializing] = useState(sessionMode === 'Summary');
 
     // Helper to determine display title
     const getTopicDisplayTitle = () => {
@@ -770,27 +674,12 @@ export const Practice = () => {
                 // If algorithmic summary, fall through to load the specific saved question IDs
             }
 
-            // Scenario 1: Resuming an active session OR loading Summary OR loading an Error Review slice
-            const isErrorReviewTargetedFetch = effectiveState?.isErrorReviewAction || savedData?.review?.status === 'in_progress' || savedData?.review?.status === 'pending_review';
-            if ((effectiveState?.isResuming || (isSummary && !subTopicId) || isErrorReviewTargetedFetch) && savedData) {
+            // Scenario 1: Resuming an active session OR loading Summary
+            if ((effectiveState?.isResuming || (isSummary && !subTopicId)) && savedData) {
                 let targetIds: string[] = [];
                 if (effectiveState?.targetIds && effectiveState.targetIds.length > 0) {
-                    // Highest Priority: Use immediately passed targetIds from router state to bypass possible local context latency
+                    // Highest Priority: Use immediately passed targetIds from router state
                     targetIds = effectiveState.targetIds;
-                } else if (isErrorReviewTargetedFetch && !isSummary) {
-                    // Priority 1: Use targetQuestionIds if we are actively in a review or pending review
-                    if ((savedData.review?.status === 'in_progress' || savedData.review?.status === 'pending_review') && savedData.review?.targetQuestionIds && savedData.review.targetQuestionIds.length > 0) {
-                        targetIds = savedData.review.targetQuestionIds;
-                    }
-                    // Priority 2: Use currentIncorrectIds snapshot if available
-                    else if (savedData.currentIncorrectIds && savedData.currentIncorrectIds.length > 0) {
-                        targetIds = savedData.currentIncorrectIds;
-                    }
-                    // Priority 3: Compute manually from previous attempt's results
-                    else {
-                        const previousResults = savedData.firstAttempt?.questionResults || savedData.questionResults || {};
-                        targetIds = Object.keys(previousResults).filter(id => previousResults[id] === false || previousResults[id] === 'incorrect');
-                    }
                 } else {
                     targetIds = savedData.firstAttempt?.questionIds || savedData.questionIds || Object.keys(savedData.questionResults || {});
                 }
@@ -1278,12 +1167,12 @@ export const Practice = () => {
 
         if (isCorrect) {
             setFeedback('correct');
-            setSessionResults(prev => ({ ...prev, correct: prev.correct + 1 }));
+            setSessionResults(prev => ({ correct: (prev?.correct || 0) + 1, total: prev?.total || 0 }));
 
             // Award 5 points ONLY on the absolute FIRST attempt ever for this question
-            // Never award coins during Review Error or Start Over sessions
+            // Never award coins during Start Over sessions
             const isStartOver = effectiveState?.forceStartNew === true;
-            if (attemptNo === 1 && !isErrorReviewState && !isStartOver) {
+            if (attemptNo === 1 && !isStartOver) {
                 setNewlyCorrectFirstAttempts(prev => prev + 1);
                 // Pre-unlock audio context on user gesture before async
                 try { const ac = new (window.AudioContext || (window as any).webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); ac.close(); } catch (_) { }
@@ -1427,10 +1316,10 @@ export const Practice = () => {
             console.log('✅ Batch attempts settled');
 
             // Calculate how many were newly correct first attempts by reading the boolean returns
-            // Never award coins during Review Error or Start Over sessions
+            // Never award coins during Start Over sessions
             const isStartOverBatch = effectiveState?.forceStartNew === true;
             let newlyCorrectFirstAttempts = 0;
-            if (!isErrorReviewState && !isStartOverBatch) {
+            if (!isStartOverBatch) {
                 settledPromises.forEach(result => {
                     if (result.status === 'fulfilled' && result.value === true) {
                         newlyCorrectFirstAttempts++;
@@ -1582,7 +1471,7 @@ export const Practice = () => {
             return;
         }
 
-        const finalCorrectCount = overrideCorrect !== undefined ? overrideCorrect : sessionResults.correct;
+        const finalCorrectCount = overrideCorrect !== undefined ? overrideCorrect : (sessionResults?.correct || 0);
         const finalAnswers = overrideAnswers || userAnswers;
         const finalResults = overrideResults || questionResults;
         const parsedSubTopicId = subTopicId?.endsWith('_review') ? subTopicId.replace('_review', '') : subTopicId;
@@ -1613,313 +1502,102 @@ export const Practice = () => {
 
         // === NEW STATE MACHINE DATA STRUCTURE ===
 
-        if (isErrorReviewState) {
-            // --- ERROR REVIEW SUB-SESSION COMPLETION ---
+        // === SESSION COMPLETION — Always mark as completed ===
 
-            // 1. Calculate which questions are still incorrect after this review round
-            // CRITICAL: Only consider questions that were part of THIS review's target set,
-            // not all loaded questions. Otherwise, questions the user already got correct
-            // in previous rounds would be re-added as "still incorrect".
-            // CRITICAL FIX: handle case where targetQuestionIds is an empty array by using length > 0
-            const dbTargetIds = existingData.review?.targetQuestionIds;
-            const reviewTargetIds = (dbTargetIds && dbTargetIds.length > 0) ? dbTargetIds : questions.map(q => q.id);
-            const stillIncorrectIds: string[] = [];
-
-            // We need to look at both the new finalResults AND the existing mainQuestionResults.
-            // A question might be correct in finalResults (this round) OR already correct in mainQuestionResults (previous rounds).
-            const mainQuestionResults = { ...(existingData.questionResults || {}) };
-
-            reviewTargetIds.forEach((qid: string) => {
-                if (finalResults[qid] === 'correct') {
-                    // It was corrected in this round!
-                    mainQuestionResults[qid] = 'correct';
-                } else if (mainQuestionResults[qid] !== 'correct') {
-                    // It's still wrong
-                    stillIncorrectIds.push(qid);
-                    mainQuestionResults[qid] = 'incorrect'; // Ensure it's marked incorrect in main results if it was skipped/unanswered
-                }
-            });
-
-            // 2. Update main userAnswers with fixes
-            const mainUserAnswers = { ...(existingData.userAnswers || {}) };
-
-            Object.keys(finalResults).forEach(qid => {
-                if (finalResults[qid] === 'correct') {
-                    mainUserAnswers[qid] = finalAnswers[qid];
-                }
-            });
-
-            // 3. Create summary history entry (label will be set after attemptLabel calculation)
-            const reviewRound = existingData.review?.round || 1;
-
-            // Get existing history, with backward compatibility
-            let existingHistory = existingData.summaryHistory || [];
-            console.log('🔍 [Review finishSession] existingHistory from DB:', existingHistory);
-
-            // Backward compatibility: If no history but firstAttempt exists, rebuild first entry
-            if (existingHistory.length === 0 && existingData.firstAttempt?.status === 'completed') {
-                console.log('🔄 [Review finishSession] Rebuilding First Attempt from firstAttempt data');
-                const fa = existingData.firstAttempt;
-                const faResults = fa.questionResults || existingData.questionResults || {};
-                const faAnswers = fa.userAnswers || existingData.userAnswers || {};
-                const faCorrect = Object.values(faResults).filter(r => r === 'correct').length;
-                const faTotal = fa.questionIds?.length || Object.keys(faResults).length || 5;
-
-                existingHistory = [{
-                    type: 'first_attempt' as const,
-                    attemptNumber: 1,
-                    label: 'First Attempt',
-                    timestamp: fa.completedAt || existingData.timestamp || new Date().toISOString(),
-                    score: faTotal > 0 ? Math.round((faCorrect / faTotal) * 100) : 0,
-                    userAnswers: faAnswers,
-                    questionResults: faResults
-                }];
-                console.log('✅ [Review finishSession] Rebuilt existingHistory:', existingHistory);
+        // 1. Find incorrect questions
+        const incorrectIds: string[] = [];
+        questions.forEach(q => {
+            if (finalResults[q.id] !== 'correct') {
+                incorrectIds.push(q.id);
             }
+        });
 
-            // Determine current attempt number and generate label
-            const attemptCount = existingHistory.filter((h: any) => h.type === 'first_attempt').length;
-            const currentAttemptNumber = attemptCount > 0 ? attemptCount : 1;
-            const reviewsForCurrentAttempt = existingHistory.filter((h: any) => h.type === 'review' && h.attemptNumber === currentAttemptNumber).length;
-            const attemptLabel = currentAttemptNumber === 1 ? 'First Attempt' : `${getOrdinal(currentAttemptNumber)} Attempt`;
+        // 2. Create summary history entry
+        const existingHistory = existingData.summaryHistory || [];
+        const attemptCount = existingHistory.filter((h: any) => h.type === 'first_attempt').length;
+        const ordinal = attemptCount === 0 ? 'First'
+            : attemptCount === 1 ? 'Second'
+                : attemptCount === 2 ? 'Third'
+                    : `${attemptCount + 1}th`;
+        console.log(`📊 [finishSession] Found ${attemptCount} past first_attempts in summaryHistory. Label: ${ordinal} Attempt`);
 
-            // Now create current snapshot with correct label
-            const currentSnapshot = {
-                type: 'review' as const,
-                attemptNumber: currentAttemptNumber,
-                round: reviewRound,
-                label: `Review ${attemptLabel} #${reviewsForCurrentAttempt + 1}`,
-                timestamp: new Date().toISOString(),
-                // Clamp score to 100% and ensure it's based on the questions in THIS session
-                score: questions.length > 0 ? Math.min(100, Math.round((finalCorrectCount / questions.length) * 100)) : 0,
-                userAnswers: finalAnswers,
-                questionResults: finalResults
-            };
+        const currentSnapshot = {
+            type: 'first_attempt' as const,
+            label: `${ordinal} Attempt`,
+            timestamp: new Date().toISOString(),
+            score: questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0,
+            userAnswers: finalAnswers,
+            questionResults: finalResults
+        };
 
-            // Deduplicate history by label/timestamp to prevent duplicates during rapid clicks/saves
-            const newHistory = [...existingHistory];
-            const isDuplicate = newHistory.some(h => h.label === currentSnapshot.label && Math.abs(new Date(h.timestamp).getTime() - new Date(currentSnapshot.timestamp).getTime()) < 1000);
-            if (!isDuplicate) {
-                newHistory.push(currentSnapshot);
-            }
+        const newHistory = [...existingHistory, currentSnapshot];
+        console.log('📝 [finishSession] newHistory to save:', newHistory.map(h => ({ type: h.type, label: h.label })));
+        setSessionHistory(newHistory);
+        setJustCompletedSessionLabel(currentSnapshot.label);
 
-            console.log('📝 [Review finishSession] newHistory to save:', newHistory.map(h => ({ type: h.type, label: h.label, round: h.round })));
-            setSessionHistory(newHistory);
-            setJustCompletedSessionLabel(currentSnapshot.label); // Mark which session was just completed
+        // 3. Build new data structure — ALWAYS mark as completed
+        const newData = {
+            ...existingData,
+            sessionTopic: topicParam,
+            sessionMode: sessionMode,
+            mode: sessionMode,
+            userAnswers: finalAnswers,
+            questionResults: finalResults,
+            questionIds: questions.map(q => q.id),
+            timestamp: new Date().toISOString(),
+            summaryHistory: newHistory,
 
-            // 4. Calculate new stats for main record
-            const mainTotal = mainTotalQuestions;
-            const mainCorrect = Object.values(mainQuestionResults).filter(r => r === 'correct').length;
-            const mainScore = mainTotal > 0 ? (mainCorrect / mainTotal) * 100 : 0;
-
-            // 5. Build new data structure
-            const newData = {
-                ...existingData,
-                sessionTopic: topicParam,
-                sessionMode: sessionMode,
-                mode: sessionMode, // NEW: Explicit mode tracking for robust slot filtering in PracticeHub
-                // Legacy fields (for backward compatibility)
-                userAnswers: mainUserAnswers,
-                questionResults: mainQuestionResults,
-                questionIds: existingData.questionIds || existingData.firstAttempt?.questionIds || questions.map(q => q.id),
-                summaryHistory: newHistory,
-
-                // NEW: firstAttempt (preserve existing or create from legacy)
-                firstAttempt: existingData.firstAttempt || {
-                    status: 'completed' as const,
-                    mode: sessionMode,
-                    userAnswers: existingData.userAnswers || mainUserAnswers,
-                    questionResults: existingData.questionResults || mainQuestionResults,
-                    currentQuestionIndex: existingData.currentQuestionIndex || 0,
-                    questionIds: existingData.questionIds || questions.map(q => q.id),
-                    completedAt: existingData.timestamp || new Date().toISOString()
-                },
-
-                // Review state: 'completed' if ALL errors fixed, 'pending_review' if still has errors (ready for next round)
-                review: existingData.review?.status === 'in_progress' ? {
-                    status: (stillIncorrectIds.length === 0 ? 'completed' : 'pending_review') as string,
-                    round: reviewRound,
-                    targetQuestionIds: stillIncorrectIds, // Next review targets remaining errors
-                    userAnswers: finalAnswers,
-                    questionResults: finalResults,
-                    currentQuestionIndex: questions.length
-                } : (existingData.review || {
-                    status: 'not_started' as const,
-                    round: 0,
-                    targetQuestionIds: [],
-                    userAnswers: {},
-                    questionResults: {},
-                    currentQuestionIndex: 0
-                }),
-
-                // NEW: currentIncorrectIds (the remaining errors)
-                currentIncorrectIds: stillIncorrectIds,
-                markedQuestionIds: [] // Marks 'die' after submission
-            };
-
-            // If ALL questions across all attempts are now correct, mark as completed
-            const allCorrect = mainCorrect === mainTotal && mainTotal > 0;
-            if (allCorrect) {
-                await completeSectionSession(
-                    mainSectionId as string,
-                    mainCorrect,
-                    mainTotal,
-                    mainCorrect,
-                    newData,
-                    entityType,
-                    false
-                );
-            } else {
-                await saveSectionProgress(mainSectionId as string, newData, {
-                    completed: mainCorrect,
-                    total: mainTotal,
-                    score: mainScore
-                }, entityType, true);
-            }
-
-            // 6. Explicit Activity Logging
-            await logUserActivity({
-                sectionId: mainSectionId,
-                attemptType: 'review',
-                score: questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0,
-                correctCount: finalCorrectCount,
-                totalQuestions: questions.length,
-                data: { userAnswers: finalAnswers, questionResults: finalResults }
-            });
-
-            await fetchAllUserProgress();
-
-            // Update state to show cumulative results in Current Session
-            setQuestionResults(mainQuestionResults);
-            setUserAnswers(mainUserAnswers);
-
-            // Play correct sound if the review was successful (simplified: just if score > 0 or 100%)
-            if (questions.length > 0 && finalCorrectCount === questions.length) {
-                playCorrectSound();
-            }
-
-        } else {
-            // --- FIRST ATTEMPT COMPLETION ---
-
-            // 1. Find incorrect questions
-            const incorrectIds: string[] = [];
-            questions.forEach(q => {
-                if (finalResults[q.id] !== 'correct') {
-                    incorrectIds.push(q.id);
-                }
-            });
-
-            // 2. Create summary history entry
-            // Calculate ordinal label based on existing summaryHistory (more reliable than fetching activities)
-            const existingHistory = existingData.summaryHistory || [];
-            const attemptCount = existingHistory.filter((h: any) => h.type === 'first_attempt').length;
-            const ordinal = attemptCount === 0 ? 'First'
-                : attemptCount === 1 ? 'Second'
-                    : attemptCount === 2 ? 'Third'
-                        : `${attemptCount + 1}th`;
-            console.log(`📊 [finishSession] Found ${attemptCount} past first_attempts in summaryHistory. Label: ${ordinal} Attempt`);
-
-            const currentSnapshot = {
-                type: 'first_attempt' as const,
-                label: `${ordinal} Attempt`,
-                timestamp: new Date().toISOString(),
-                score: questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0,
-                userAnswers: finalAnswers,
-                questionResults: finalResults
-            };
-
-            console.log('🔍 [First Attempt finishSession] existingHistory:', existingHistory);
-            const newHistory = [...existingHistory, currentSnapshot];
-            console.log('📝 [First Attempt finishSession] newHistory to save:', newHistory.map(h => ({ type: h.type, label: h.label })));
-            setSessionHistory(newHistory);
-            setJustCompletedSessionLabel(currentSnapshot.label); // Mark which session was just completed
-
-            // 3. Build new data structure
-            const newData = {
-                ...existingData,
-                sessionTopic: topicParam,
-                sessionMode: sessionMode,
-                // Legacy fields (for backward compatibility)
+            firstAttempt: {
+                status: 'completed' as const,
                 userAnswers: finalAnswers,
                 questionResults: finalResults,
+                currentQuestionIndex: questions.length,
                 questionIds: questions.map(q => q.id),
-                timestamp: new Date().toISOString(),
-                summaryHistory: newHistory,
+                completedAt: new Date().toISOString()
+            },
 
-                // NEW: firstAttempt
-                firstAttempt: {
-                    status: 'completed' as const,
-                    userAnswers: finalAnswers,
-                    questionResults: finalResults,
-                    currentQuestionIndex: questions.length,
-                    questionIds: questions.map(q => q.id),
-                    completedAt: new Date().toISOString()
-                },
+            currentIncorrectIds: incorrectIds,
+            markedQuestionIds: []
+        };
 
-                // NEW: review (not started yet)
-                review: {
-                    status: 'not_started' as const,
-                    round: 0,
-                    targetQuestionIds: [],
-                    userAnswers: {},
-                    questionResults: {},
-                    currentQuestionIndex: 0
-                },
+        // ALWAYS mark session as completed (regardless of score)
+        await completeSectionSession(
+            effectiveSectionId,
+            finalCorrectCount,
+            questions.length,
+            finalCorrectCount,
+            newData,
+            entityType,
+            false
+        );
 
-                // NEW: currentIncorrectIds
-                currentIncorrectIds: incorrectIds,
-                markedQuestionIds: [] // Marks 'die' after submission
-            };
-
-            // Only mark as 'completed' if user got ALL questions correct
-            const allCorrectFirstAttempt = finalCorrectCount === questions.length && questions.length > 0;
-            if (allCorrectFirstAttempt) {
-                await completeSectionSession(
-                    effectiveSectionId,
-                    finalCorrectCount,
-                    questions.length,
-                    finalCorrectCount,
-                    newData,
-                    entityType,
-                    false
-                );
-            } else {
-                // Save as in_progress — user still needs to Review Errors to complete
-                await saveSectionProgress(effectiveSectionId, newData, {
-                    completed: finalCorrectCount,
-                    total: questions.length,
-                    score: questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0
-                }, entityType);
+        // 4. Activity Logging
+        await logUserActivity({
+            sectionId: effectiveSectionId,
+            attemptType: 'first_attempt',
+            score: questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0,
+            correctCount: finalCorrectCount,
+            totalQuestions: questions.length,
+            data: {
+                userAnswers: finalAnswers,
+                questionResults: finalResults,
+                label: `${ordinal} Attempt`
             }
+        });
 
-            // 4. Explicit Activity Logging
-            await logUserActivity({
-                sectionId: effectiveSectionId,
-                attemptType: 'first_attempt',
-                score: questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0,
-                correctCount: finalCorrectCount,
-                totalQuestions: questions.length,
-                data: {
-                    userAnswers: finalAnswers,
-                    questionResults: finalResults,
-                    label: `${ordinal} Attempt`
-                }
-            });
+        await fetchAllUserProgress();
 
-            await fetchAllUserProgress();
-
-            // Unit completion check
-            if (topicParam) {
-                const unitSections = sections[topicParam] || [];
-                if (unitSections.length > 0) {
-                    const progressChecks = await Promise.all(unitSections.map(async (sec: any) => {
-                        if (sec.id === subTopicId) return true;
-                        const p = await getSectionProgress(sec.id);
-                        return p && p.status === 'completed';
-                    }));
-                    if (progressChecks.every(isComplete => isComplete)) {
-                        // Unit complete
-                    }
+        // Unit completion check
+        if (topicParam) {
+            const unitSections = sections[topicParam] || [];
+            if (unitSections.length > 0) {
+                const progressChecks = await Promise.all(unitSections.map(async (sec: any) => {
+                    if (sec.id === subTopicId) return true;
+                    const p = await getSectionProgress(sec.id);
+                    return p && p.status === 'completed';
+                }));
+                if (progressChecks.every(isComplete => isComplete)) {
+                    // Unit complete
                 }
             }
         }
@@ -1928,7 +1606,7 @@ export const Practice = () => {
             correct: finalCorrectCount,
             total: questions.length,
             topic: question?.topic || cleanTopic,
-            isReview: isErrorReviewState,
+            isReview: false,
             newlyCorrectFirstAttempts: newlyCorrectFirstAttempts
         });
         setShowSummary(true);
@@ -1976,99 +1654,36 @@ export const Practice = () => {
                     existingData = mainP?.data || {};
                 } catch (e) { console.error('Failed to fetch existing data', e); }
 
-                if (isErrorReviewState) {
-                    // === ERROR REVIEW SUB-SESSION MODE: Save to review field ===
-                    const reviewState = {
-                        status: 'in_progress' as const,
-                        round: existingData.review?.round || 1,
-                        targetQuestionIds: questions.map(q => q.id),
-                        userAnswers,
-                        questionResults,
-                        currentQuestionIndex
-                    };
+                // === FIRST ATTEMPT MODE: Save to firstAttempt field ===
+                const firstAttemptState = {
+                    status: 'in_progress' as const,
+                    userAnswers,
+                    questionResults,
+                    currentQuestionIndex,
+                    questionIds: questions.map(q => q.id)
+                };
 
-                    const newData = {
-                        ...existingData,
-                        sessionTopic: topicParam,
-                        sessionMode: sessionMode,
-                        // Preserve firstAttempt
-                        firstAttempt: existingData.firstAttempt || {
-                            status: 'completed' as const,
-                            userAnswers: existingData.userAnswers || {},
-                            questionResults: existingData.questionResults || {},
-                            currentQuestionIndex: 0,
-                            questionIds: existingData.questionIds || questions.map(q => q.id),
-                            completedAt: existingData.timestamp || new Date().toISOString()
-                        },
-                        // Update review
-                        review: reviewState,
-                        // MERGE into top-level questionResults for cumulative progress
-                        questionResults: {
-                            ...(existingData.questionResults || {}),
-                            ...questionResults
-                        },
-                        // Preserve currentIncorrectIds
-                        currentIncorrectIds: existingData.currentIncorrectIds || [],
-                        markedQuestionIds: Array.from(markedQuestions)
-                    };
+                const currentCompleted = Object.keys(userAnswers).length;
+                const currentScore = questions.length > 0 ? ((sessionResults?.correct || 0) / questions.length) * 100 : 0;
 
-                    // Re-calculate the actual cumulative total and completed for accurate save
-                    let mainTotalQuestions = questions.length;
-                    if (existingData.firstAttempt?.questionIds?.length > 0) {
-                        mainTotalQuestions = existingData.firstAttempt.questionIds.length;
-                    } else if (existingData.questionIds?.length > 0) {
-                        mainTotalQuestions = existingData.questionIds.length;
-                    } // Removed mainP fallback here because existingData usually has it, and mainP is out of scope
+                const newData = {
+                    // Legacy fields for backward compatibility
+                    userAnswers,
+                    currentQuestionIndex,
+                    questionResults,
+                    sessionTopic: topicParam,
+                    sessionMode: sessionMode,
+                    firstAttempt: firstAttemptState,
+                    summaryHistory: existingData.summaryHistory || [],
+                    currentIncorrectIds: existingData.currentIncorrectIds || [],
+                    markedQuestionIds: Array.from(markedQuestions)
+                };
 
-                    const cumCorrect = Object.values(newData.questionResults || {}).filter(r => r === 'correct').length;
-                    const cumTotal = mainTotalQuestions;
-                    const cumScore = cumTotal > 0 ? (cumCorrect / cumTotal) * 100 : 0;
-
-                    await saveSectionProgress(effectiveSectionId, newData,
-                        { completed: cumCorrect, total: cumTotal, score: cumScore }, subTopicId ? 'section' : 'algorithmic', true);
-                } else {
-                    // === FIRST ATTEMPT MODE: Save to firstAttempt field ===
-                    const firstAttemptState = {
-                        status: 'in_progress' as const,
-                        userAnswers,
-                        questionResults,
-                        currentQuestionIndex,
-                        questionIds: questions.map(q => q.id)
-                    };
-
-                    const currentCompleted = Object.keys(userAnswers).length;
-                    const currentScore = questions.length > 0 ? (sessionResults.correct / questions.length) * 100 : 0;
-
-                    const newData = {
-                        // Legacy fields for backward compatibility
-                        userAnswers,
-                        currentQuestionIndex,
-                        questionResults,
-                        sessionTopic: topicParam,
-                        sessionMode: sessionMode,
-                        // NEW: firstAttempt
-                        firstAttempt: firstAttemptState,
-                        // Preserve review if exists
-                        review: existingData.review || {
-                            status: 'not_started' as const,
-                            round: 0,
-                            targetQuestionIds: [],
-                            userAnswers: {},
-                            questionResults: {},
-                            currentQuestionIndex: 0
-                        },
-                        // Preserve other fields
-                        summaryHistory: existingData.summaryHistory || [],
-                        currentIncorrectIds: existingData.currentIncorrectIds || [],
-                        markedQuestionIds: Array.from(markedQuestions)
-                    };
-
-                    await saveSectionProgress(effectiveSectionId, newData, {
-                        completed: currentCompleted,
-                        total: questions.length,
-                        score: currentScore
-                    }, subTopicId ? 'section' : 'algorithmic');
-                }
+                await saveSectionProgress(effectiveSectionId, newData, {
+                    completed: currentCompleted,
+                    total: questions.length,
+                    score: currentScore
+                }, subTopicId ? 'section' : 'algorithmic');
 
                 showToast('Progress saved successfully', 'success');
             }
@@ -2388,67 +2003,6 @@ export const Practice = () => {
                             setShowSummary(false);
                             handleStartNewSession();
                         }}
-                        onReviewErrors={async () => {
-                            setNewlyCorrectFirstAttempts(0); // Reset coins counter before starting review
-
-                            let navTargetIds: string[] = [];
-                            // Initialize review state in DB before navigating
-                            try {
-                                const mainP = await getSectionProgress(effectiveSectionId);
-                                const existingData = mainP?.data || {};
-                                const reviewData = existingData.review || {};
-
-                                // Ground truth: determine remaining errors from the merged questionResults
-                                const mergedResults = { ...(existingData.questionResults || {}), ...questionResults };
-                                const incorrectIds = Object.keys(mergedResults).filter(id => mergedResults[id] === 'incorrect' || mergedResults[id] === false);
-
-                                // Only fallback to currentIncorrectIds if absolutely needed, but rely on merged results primarily
-                                const actualIncorrectIds = incorrectIds.length > 0 ? incorrectIds : (existingData.currentIncorrectIds || []);
-                                navTargetIds = actualIncorrectIds;
-
-                                const newData = {
-                                    ...existingData,
-                                    currentIncorrectIds: actualIncorrectIds,
-                                    review: {
-                                        ...reviewData,
-                                        status: 'in_progress',
-                                        round: (reviewData.round || 0) + 1,
-                                        targetQuestionIds: actualIncorrectIds,
-                                        userAnswers: {},
-                                        questionResults: {},
-                                        currentQuestionIndex: 0
-                                    }
-                                };
-
-                                // Preserve main stats
-                                let mainTotalQuestions = questions.length;
-                                if (existingData.firstAttempt?.questionIds?.length > 0) {
-                                    mainTotalQuestions = existingData.firstAttempt.questionIds.length;
-                                } else if (existingData.questionIds?.length > 0) {
-                                    mainTotalQuestions = existingData.questionIds.length;
-                                } else if (mainP?.total_questions && mainP.total_questions > 0) {
-                                    mainTotalQuestions = mainP.total_questions;
-                                }
-                                const cumCorrect = Object.values(newData.questionResults || {}).filter(r => r === 'correct').length;
-                                const cumScore = mainTotalQuestions > 0 ? (cumCorrect / mainTotalQuestions) * 100 : 0;
-
-                                await saveSectionProgress(effectiveSectionId, newData, { completed: cumCorrect, total: mainTotalQuestions, score: cumScore }, subTopicId ? 'section' : 'algorithmic', true);
-                            } catch (e) { console.error('Failed to prep review data', e); }
-
-                            setShowSummary(false); // CRITICAL: Reset showSummary to trigger correct targetIds generation instead of ALL questions fallback
-                            navigate('/practice/session', {
-                                state: {
-                                    topic: topicParam,
-                                    subTopicId: subTopicId,
-                                    mode: sessionMode,
-                                    isResuming: true,
-                                    forceStartNew: false,
-                                    isErrorReviewAction: true,
-                                    targetIds: navTargetIds
-                                },
-                                replace: true
-                            });
-                        }}
                         summaryHistory={sessionHistory}
                         justCompletedSessionLabel={justCompletedSessionLabel}
                         discussSlug={discussSlug}
@@ -2592,28 +2146,66 @@ export const Practice = () => {
                                             <span className="material-symbols-outlined">close</span>
                                         </button>
                                     </div>
-                                    <div className="p-6 overflow-y-auto scroll-bounce max-h-[500px]">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+                                <div className="p-5 overflow-y-auto scroll-bounce max-h-[500px]">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                                            {/* Derivatives */}
                                             <div>
                                                 <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Derivatives</h4>
-                                                <ul className="space-y-2 text-gray-600 dark:text-gray-300 font-math">
-                                                    <li className="flex justify-between"><span>d/dx(xⁿ)</span> <span>nxⁿ⁻¹</span></li>
-                                                    <li className="flex justify-between"><span>d/dx(sin x)</span> <span>cos x</span></li>
-                                                    <li className="flex justify-between"><span>d/dx(cos x)</span> <span>-sin x</span></li>
-                                                    <li className="flex justify-between"><span>d/dx(eˣ)</span> <span>eˣ</span></li>
-                                                    <li className="flex justify-between"><span>d/dx(ln x)</span> <span>1/x</span></li>
-                                                    <li className="flex justify-between"><span>d/dx(uv)</span> <span>u'v + uv'</span></li>
-                                                </ul>
+                                                <div className="space-y-1.5 text-gray-700 dark:text-gray-300">
+                                                    <MathRenderer content="$$\frac{d}{dx}(x^n) = nx^{n-1}$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}(\sin x) = \cos x$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}(\cos x) = -\sin x$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}(\tan x) = \sec^2 x$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}(e^x) = e^x$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}(\ln x) = \frac{1}{x}$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}(\arcsin x) = \frac{1}{\sqrt{1-x^2}}$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}(\arctan x) = \frac{1}{1+x^2}$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}(a^x) = a^x \ln a$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}(\log_a x) = \frac{1}{x \ln a}$$" />
+                                                </div>
                                             </div>
+                                            {/* Product / Quotient / Chain */}
                                             <div>
-                                                <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Integrals</h4>
-                                                <ul className="space-y-2 text-gray-600 dark:text-gray-300 font-math">
-                                                    <li className="flex justify-between"><span>∫ xⁿ dx</span> <span>xⁿ⁺¹/(n+1)</span></li>
-                                                    <li className="flex justify-between"><span>∫ 1/x dx</span> <span>ln|x|</span></li>
-                                                    <li className="flex justify-between"><span>∫ eˣ dx</span> <span>eˣ</span></li>
-                                                    <li className="flex justify-between"><span>∫ sin x dx</span> <span>-cos x</span></li>
-                                                    <li className="flex justify-between"><span>∫ cos x dx</span> <span>sin x</span></li>
-                                                </ul>
+                                                <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Differentiation Rules</h4>
+                                                <div className="space-y-1.5 text-gray-700 dark:text-gray-300">
+                                                    <MathRenderer content="$$\frac{d}{dx}[f(x) \cdot g(x)] = f'(x)g(x) + f(x)g'(x)$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}\left[\frac{f(x)}{g(x)}\right] = \frac{f'(x)g(x) - f(x)g'(x)}{[g(x)]^2}$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}[f(g(x))] = f'(g(x)) \cdot g'(x)$$" />
+                                                </div>
+                                                <h4 className="font-bold mb-3 mt-4 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Integrals</h4>
+                                                <div className="space-y-1.5 text-gray-700 dark:text-gray-300">
+                                                    <MathRenderer content="$$\int x^n\,dx = \frac{x^{n+1}}{n+1} + C,\; n \neq -1$$" />
+                                                    <MathRenderer content="$$\int \frac{1}{x}\,dx = \ln|x| + C$$" />
+                                                    <MathRenderer content="$$\int e^x\,dx = e^x + C$$" />
+                                                    <MathRenderer content="$$\int \sin x\,dx = -\cos x + C$$" />
+                                                    <MathRenderer content="$$\int \cos x\,dx = \sin x + C$$" />
+                                                    <MathRenderer content="$$\int \sec^2 x\,dx = \tan x + C$$" />
+                                                    <MathRenderer content="$$\int \frac{1}{\sqrt{1-x^2}}\,dx = \arcsin x + C$$" />
+                                                    <MathRenderer content="$$\int \frac{1}{1+x^2}\,dx = \arctan x + C$$" />
+                                                    <MathRenderer content="$$\int a^x\,dx = \frac{a^x}{\ln a} + C$$" />
+                                                </div>
+                                            </div>
+                                            {/* Theorems & Identities */}
+                                            <div>
+                                                <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Fundamental Theorems</h4>
+                                                <div className="space-y-1.5 text-gray-700 dark:text-gray-300">
+                                                    <MathRenderer content="$$\int_a^b f(x)\,dx = F(b) - F(a)$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}\int_a^x f(t)\,dt = f(x)$$" />
+                                                    <MathRenderer content="$$\frac{d}{dx}\int_a^{g(x)} f(t)\,dt = f(g(x)) \cdot g'(x)$$" />
+                                                    <MathRenderer content="$$f_{\text{avg}} = \frac{1}{b-a}\int_a^b f(x)\,dx$$" />
+                                                </div>
+                                            </div>
+                                            {/* Limits & Series (BC) */}
+                                            <div>
+                                                <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Limits & Series (BC)</h4>
+                                                <div className="space-y-1.5 text-gray-700 dark:text-gray-300">
+                                                    <MathRenderer content="$$\lim_{x \to 0}\frac{\sin x}{x} = 1$$" />
+                                                    <MathRenderer content="$$e^x = \sum_{n=0}^{\infty}\frac{x^n}{n!}$$" />
+                                                    <MathRenderer content="$$\sin x = \sum_{n=0}^{\infty}\frac{(-1)^n x^{2n+1}}{(2n+1)!}$$" />
+                                                    <MathRenderer content="$$\cos x = \sum_{n=0}^{\infty}\frac{(-1)^n x^{2n}}{(2n)!}$$" />
+                                                    <MathRenderer content="$$\frac{1}{1-x} = \sum_{n=0}^{\infty} x^n,\; |x| < 1$$" />
+                                                    <MathRenderer content="$$\text{Integration by Parts: } \int u\,dv = uv - \int v\,du$$" />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -2690,8 +2282,8 @@ export const Practice = () => {
                             </div>
 
                             {/* Options Section */}
-                            <div className={`lg:col-span-6 flex flex-col gap-4 ${isSubmitted ? 'min-h-[150px] max-h-[300px]' : 'lg:h-[calc(100vh-280px)] lg:min-h-[450px]'}`}>
-                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-4' : 'p-6'}`}>
+                            <div className={`lg:col-span-6 flex flex-col gap-4 ${isSubmitted ? 'min-h-[100px]' : 'lg:h-[calc(100vh-280px)] lg:min-h-[450px]'}`}>
+                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-2.5' : 'p-6'}`}>
                                     {/* Hide Header on Submit to save space as requested */}
                                     {!isSubmitted && (
                                         <div>
@@ -2704,7 +2296,7 @@ export const Practice = () => {
                                         </div>
                                     )}
 
-                                    <div className="flex-grow flex flex-col gap-3 overflow-y-auto scroll-bounce p-1 -m-1">
+                                    <div className={`flex-grow flex flex-col ${isSubmitted ? 'gap-1' : 'gap-3'} ${isSubmitted ? '' : 'overflow-y-auto scroll-bounce'} p-1 -m-1`}>
                                         {question.options.map((opt, idx) => {
                                             const isSelected = selectedAnswer === opt.id;
                                             const isCorrect = question.correctOptionId === opt.id;
@@ -2721,15 +2313,20 @@ export const Practice = () => {
                                                 textClass = 'text-gray-400 line-through decoration-2 decoration-gray-400';
                                             } else if (isSubmitted) {
                                                 if (isCorrect) {
-                                                    // ALWAYS explicitly highlight the correct answer in green
-                                                    borderClass = 'border-green-500';
-                                                    bgClass = 'bg-green-100 dark:bg-green-900/40 text-black';
-                                                    textClass = 'text-green-900 dark:text-green-100';
+                                                    // Correct answer: green base, yellow override when viewing
+                                                    borderClass = isViewing ? 'border-yellow-400 ring-2 ring-yellow-300/50' : 'border-green-500';
+                                                    bgClass = isViewing ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'bg-green-50 dark:bg-green-900/30';
+                                                    textClass = 'text-green-800 dark:text-green-200';
                                                 } else if (isSelected && !isCorrect) {
-                                                    // The one the user selected, but it was wrong
-                                                    borderClass = 'border-red-500';
-                                                    bgClass = 'bg-red-100 dark:bg-red-900/20 text-black';
-                                                    textClass = 'text-red-900 dark:text-red-100';
+                                                    // User's wrong answer: red base, yellow override when viewing
+                                                    borderClass = isViewing ? 'border-yellow-400 ring-2 ring-yellow-300/50' : 'border-red-400';
+                                                    bgClass = isViewing ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'bg-red-50 dark:bg-red-900/15';
+                                                    textClass = 'text-red-800 dark:text-red-200';
+                                                } else if (isViewing) {
+                                                    // Other option being viewed
+                                                    borderClass = 'border-yellow-400 ring-2 ring-yellow-300/50';
+                                                    bgClass = 'bg-yellow-50 dark:bg-yellow-900/20';
+                                                    textClass = 'text-text-main dark:text-gray-100';
                                                 }
                                             } else if (isSelected) {
                                                 borderClass = 'border-primary';
@@ -2774,10 +2371,10 @@ export const Practice = () => {
                                                         }
                                                         if (isSubmitted) setViewingOptionId(opt.id);
                                                     }}
-                                                    className={`group relative flex cursor-pointer rounded-xl border ${borderClass} ${bgClass} transition-all duration-200 ${isSubmitted ? 'p-2' : 'p-4'} ${!isSubmitted && !isEliminated && 'hover:border-primary/50'}`}
+                                                    className={`group relative flex cursor-pointer rounded-xl border ${borderClass} ${bgClass} transition-all duration-200 ${isSubmitted ? 'p-1 px-2' : 'p-4'} ${!isSubmitted && !isEliminated && 'hover:border-primary/50'}`}
                                                 >
                                                     <div className="peer sr-only"></div>
-                                                    <div className="flex items-center gap-4 relative z-10 w-full sm:pr-8 pr-2 py-1">
+                                                    <div className={`flex items-center gap-4 relative z-10 w-full sm:pr-8 pr-2 ${isSubmitted ? 'py-0' : 'py-1'}`}>
                                                         {/* Eliminate Button - Right Side */}
                                                         {!isSubmitted && (
                                                             <button
@@ -2789,10 +2386,10 @@ export const Practice = () => {
                                                             </button>
                                                         )}
 
-                                                        <div className={`flex items-center justify-center rounded-full border font-bold transition-all shrink-0 ${circleClass} ${isSubmitted ? 'h-5 w-5 text-xs' : 'h-8 w-8 text-sm'}`}>
+                                                        <div className={`flex items-center justify-center rounded-full border font-bold transition-all shrink-0 ${circleClass} ${isSubmitted ? 'h-4 w-4 text-[10px]' : 'h-8 w-8 text-sm'}`}>
                                                             {opt.label || opt.id || String.fromCharCode(65 + idx)}
                                                         </div>
-                                                        <div className={`font-math py-4 px-1 w-full transition-all duration-500 overflow-x-auto overflow-y-visible ${textClass} ${isSubmitted ? 'text-sm' : 'text-lg'}`}>
+                                                        <div className={`font-math px-1 w-full transition-all duration-500 overflow-x-auto overflow-y-visible ${textClass} ${isSubmitted ? 'text-xs py-0.5 leading-tight' : 'text-lg py-4'}`}>
                                                             {renderContent(opt.value || (opt as any).text || '', opt.type, { noBorder: true })}
                                                         </div>
                                                         {isSubmitted && isCorrect && <span className="material-symbols-outlined ml-auto text-green-600">check_circle</span>}
