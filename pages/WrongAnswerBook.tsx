@@ -30,57 +30,6 @@ interface WrongAnswerItem {
     } | null;
 }
 
-// Custom Dropdown Component
-const CustomDropdown = ({ value, options, onChange, placeholder }: {
-    value: string;
-    options: { value: string; label: string }[];
-    onChange: (val: string) => void;
-    placeholder?: string;
-}) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
-    const selectedLabel = options.find(o => o.value === value)?.label || placeholder || 'Select';
-
-    useEffect(() => {
-        const handler = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node)) setIsOpen(false);
-        };
-        document.addEventListener('mousedown', handler);
-        return () => document.removeEventListener('mousedown', handler);
-    }, []);
-
-    return (
-        <div ref={ref} className="relative">
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className={`flex items-center justify-between w-[190px] px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border ${isOpen
-                    ? 'border-primary bg-primary/5 text-text-main dark:text-white shadow-sm'
-                    : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-white/5 text-text-main dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
-                    }`}
-            >
-                <span className="truncate flex-1 text-left mr-2">{selectedLabel}</span>
-                <span className={`material-symbols-outlined text-[16px] shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}>expand_more</span>
-            </button>
-            {isOpen && (
-                <div className="absolute top-full left-0 mt-1.5 w-[220px] bg-white dark:bg-[#1e1e2a] border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 py-1.5 max-h-[320px] overflow-y-auto animate-fade-in custom-scrollbar">
-                    {options.map(opt => (
-                        <button
-                            key={opt.value}
-                            onClick={() => { onChange(opt.value); setIsOpen(false); }}
-                            className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${value === opt.value
-                                ? 'bg-primary/10 text-primary font-bold'
-                                : 'text-text-main dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5'
-                                }`}
-                        >
-                            {opt.label}
-                        </button>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-};
-
 // helpers
 const getTopicDisplayName = (topic: string): string => {
     const clean = topic?.includes('_') ? topic.split('_').slice(1).join('_') : topic;
@@ -109,36 +58,27 @@ const getTopicIcon = (id: string) => {
     if (id?.includes('AppIntegration')) return 'view_in_ar';
     if (id?.includes('Unit9') || id?.includes('Parametric')) return 'radar';
     if (id?.includes('Series')) return 'all_inclusive';
-    if (id?.includes('Series')) return 'all_inclusive';
     return 'calculate';
 };
 
 const UNIT_NAME_MAP: Record<string, string> = {
-    'Limits': 'Unit 1: Limits & Continuity (AB/BC)',
-    'Derivatives': 'Unit 2: Differentiation (AB/BC)',
-    'Composite': 'Unit 3: Composite Rules (AB/BC)',
-    'Applications': 'Unit 4: Contextual Apps (AB/BC)',
-    'Analytical': 'Unit 5: Analytical Apps (AB/BC)',
-    'Integration': 'Unit 6: Integration (AB/BC)',
-    'DiffEq': 'Unit 7: Differential Equations (AB/BC)',
-    'AppIntegration': 'Unit 8: Apps of Integration (AB/BC)',
-    'Unit9': 'Unit 9: Parametric & Polar (BC Only)',
-    'Parametric': 'Unit 9: Parametric & Polar (BC Only)',
-    'Series': 'Unit 10: Sequences & Series (BC Only)'
+    'Limits': 'Unit 1: Limits & Continuity',
+    'Derivatives': 'Unit 2: Differentiation',
+    'Composite': 'Unit 3: Composite Rules',
+    'Applications': 'Unit 4: Contextual Apps',
+    'Analytical': 'Unit 5: Analytical Apps',
+    'Integration': 'Unit 6: Integration',
+    'DiffEq': 'Unit 7: Differential Equations',
+    'AppIntegration': 'Unit 8: Apps of Integration',
+    'Unit9': 'Unit 9: Parametric & Polar',
+    'Parametric': 'Unit 9: Parametric & Polar',
+    'Series': 'Unit 10: Sequences & Series'
 };
 
 const UNIT_ORDER: Record<string, number> = {
-    'Limits': 1,
-    'Derivatives': 2,
-    'Composite': 3,
-    'Applications': 4,
-    'Analytical': 5,
-    'Integration': 6,
-    'DiffEq': 7,
-    'AppIntegration': 8,
-    'Unit9': 9,
-    'Parametric': 9,
-    'Series': 10
+    'Limits': 1, 'Derivatives': 2, 'Composite': 3, 'Applications': 4,
+    'Analytical': 5, 'Integration': 6, 'DiffEq': 7, 'AppIntegration': 8,
+    'Unit9': 9, 'Parametric': 9, 'Series': 10
 };
 
 const getUnitLabel = (topicStr: string) => UNIT_NAME_MAP[topicStr] || topicStr;
@@ -157,14 +97,13 @@ const extractSearchableText = (content: any): string => {
             }
         }
     } catch { }
-    // Remove basic HTML tags to prevent matching them
     return text.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').toLowerCase();
 };
 
 // ═══════════════════════════════════════════
-// Single wrong answer card (screenshot 2 style)
+// Compact wrong answer row within a Unit Block
 // ═══════════════════════════════════════════
-const WrongAnswerCard = ({ item, onDismiss, onExpand, isExpanded }: {
+const WrongAnswerRow = ({ item, onDismiss, onExpand, isExpanded }: {
     item: WrongAnswerItem;
     onDismiss: (id: string) => void;
     onExpand: (id: string) => void;
@@ -172,8 +111,6 @@ const WrongAnswerCard = ({ item, onDismiss, onExpand, isExpanded }: {
 }) => {
     const q = item.question!;
     const diffLabel = getDifficultyLabel(q.difficulty);
-    const topicName = getTopicDisplayName(q.topic);
-    const topicIcon = getTopicIcon(q.topic);
 
     const options = Array.isArray(q.options) ? q.options :
         (typeof q.options === 'string' ? JSON.parse(q.options) : []);
@@ -181,44 +118,21 @@ const WrongAnswerCard = ({ item, onDismiss, onExpand, isExpanded }: {
     const correctOption = options.find((o: any) => o.id === q.correct_option_id);
     const userWrongOption = options.find((o: any) => o.id === item.lastSelectedOptionId && o.id !== q.correct_option_id);
 
-    const timeAgo = (dateStr: string) => {
-        const date = new Date(dateStr);
-        const now = new Date();
-        // Use calendar days (midnight boundary) not raw 24h diff
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const dateStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        const daysDiff = Math.round((todayStart.getTime() - dateStart.getTime()) / (1000 * 60 * 60 * 24));
-        if (daysDiff === 0) return 'Today';
-        if (daysDiff === 1) return 'Yesterday';
-        if (daysDiff < 7) return `${daysDiff}d ago`;
-        if (daysDiff < 30) return `${Math.floor(daysDiff / 7)}w ago`;
-        return `${Math.floor(daysDiff / 30)}mo ago`;
-    };
-
     return (
-        <div className={`bg-white dark:bg-[#1a1a24] rounded-2xl overflow-hidden transition-all duration-300 ${isExpanded
-            ? 'shadow-lg ring-1 ring-primary/20'
-            : 'shadow-sm hover:shadow-md border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700'
-            }`}>
-
-            {/* Collapsed Header */}
+        <div className={`transition-all duration-200 ${isExpanded ? 'bg-white dark:bg-[#1a1a24] rounded-xl shadow-md ring-1 ring-primary/20' : ''}`}>
+            {/* Row */}
             <div
-                className="px-5 py-4 cursor-pointer flex items-center gap-4"
+                className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${isExpanded ? '' : 'hover:bg-gray-50 dark:hover:bg-white/[0.03] rounded-lg'}`}
                 onClick={() => onExpand(item.questionId)}
             >
-                {/* Number badge */}
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${isExpanded
-                    ? 'bg-primary text-black'
-                    : 'bg-red-50 dark:bg-red-900/20 text-red-500'
-                    }`}>
-                    <span className="material-symbols-outlined text-[20px]">{topicIcon}</span>
-                </div>
-
-                <div className="flex-1 min-w-0 flex flex-col justify-center pr-2 sm:pr-4">
-                    <h3 className="font-bold text-[15px] text-text-main dark:text-white truncate">
-                        {q.title || `${topicName} — Q${q.sub_topic_id}`}
-                    </h3>
-                    <div className="text-[13px] text-gray-500 dark:text-gray-400 mt-0.5 opacity-90 max-w-[200px] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl overflow-hidden whitespace-nowrap text-ellipsis">
+                {/* Title + Preview */}
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-text-main dark:text-white whitespace-nowrap">{q.title || `§${q.sub_topic_id}`}</span>
+                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${diffLabel.color}`}>{diffLabel.text}</span>
+                        <span className="text-[10px] font-semibold text-red-500">× {item.wrongCount}</span>
+                    </div>
+                    <div className="text-[12px] text-gray-400 mt-0.5 truncate max-w-md">
                         {(() => {
                             if (!q.prompt) return 'View question...';
                             try {
@@ -230,122 +144,90 @@ const WrongAnswerCard = ({ item, onDismiss, onExpand, isExpanded }: {
                                     }
                                 }
                                 text = text.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
-                                return <MathRenderer content={text} />;
+                                return text.slice(0, 80) + (text.length > 80 ? '...' : '');
                             } catch {
-                                const fallback = typeof q.prompt === 'string' ? q.prompt.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim() : '';
-                                return fallback ? <MathRenderer content={fallback} /> : 'View question...';
+                                return 'View question...';
                             }
                         })()}
                     </div>
-                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                        <span className="text-[11px] text-gray-400 uppercase tracking-wide font-medium">{topicName}</span>
-                        <span className="text-gray-300 dark:text-gray-600">·</span>
-                        <span className="text-[11px] text-gray-400">§ {q.sub_topic_id}</span>
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${diffLabel.color}`}>
-                            {diffLabel.text}
-                        </span>
-                        <span className="text-[11px] font-semibold text-red-500 flex items-center gap-0.5">
-                            × {item.wrongCount}
-                        </span>
-                    </div>
                 </div>
 
-                <div className="flex items-center gap-2 sm:gap-4 shrink-0 pl-2">
-                    <div className="hidden sm:flex flex-col items-end justify-center">
-                        <span className="text-[11px] text-gray-400 font-medium whitespace-nowrap">
-                            {new Date(item.lastWrongAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                        </span>
-                        <span className="text-[10px] text-gray-300 dark:text-gray-500 whitespace-nowrap">
-                            {new Date(item.lastWrongAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
-                        </span>
-                    </div>
-
+                {/* Date + Actions */}
+                <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] text-gray-400 hidden sm:block whitespace-nowrap">
+                        {new Date(item.lastWrongAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </span>
                     <button
                         onClick={(e) => { e.stopPropagation(); onDismiss(item.questionId); }}
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
-                        title="Remove from Notebook"
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                        title="Remove"
                     >
-                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                        <span className="material-symbols-outlined text-[16px]">delete</span>
                     </button>
-
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-gray-50 dark:bg-white/5 text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180 bg-primary/10 text-primary dark:bg-primary/20' : ''}`}>
-                        <span className="material-symbols-outlined text-[20px]">expand_more</span>
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-transform duration-200 ${isExpanded ? 'rotate-180 text-primary' : 'text-gray-400'}`}>
+                        <span className="material-symbols-outlined text-[18px]">expand_more</span>
                     </div>
                 </div>
             </div>
 
-            {/* Expanded Content — Screenshot 2 style */}
+            {/* Expanded Detail */}
             {isExpanded && (
-                <div className="animate-fade-in">
-                    {/* Question prompt */}
-                    <div className="px-5 pb-4 border-t border-gray-100 dark:border-white/5 pt-4">
-                        <div className="flex items-center gap-3 mb-3">
-                            <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center text-sm font-black shrink-0">
-                                {item.wrongCount}
-                            </div>
-                            <div className="text-[15px] text-text-main dark:text-gray-200 leading-relaxed flex-1">
-                                <MathRenderer content={q.prompt || ''} />
-                            </div>
-                        </div>
+                <div className="px-4 pb-4 animate-fade-in">
+                    {/* Prompt */}
+                    <div className="mb-3 text-sm text-text-main dark:text-gray-200 leading-relaxed border-t border-gray-100 dark:border-white/5 pt-3">
+                        <MathRenderer content={q.prompt || ''} />
                     </div>
 
-                    {/* YOUR ANSWER / CORRECT ANSWER side by side — matching screenshot 2 */}
-                    <div className="px-5 pb-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {/* Your (Wrong) Answer */}
-                        <div className="rounded-xl border border-red-200 dark:border-red-800/40 bg-red-50/50 dark:bg-red-900/10 p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                                <span className="material-symbols-outlined text-red-500 text-[16px]">close</span>
-                                <span className="text-[11px] font-bold uppercase tracking-wider text-red-500">Your Answer</span>
+                    {/* Your Answer / Correct Answer */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                        <div className="rounded-lg border border-red-200 dark:border-red-800/40 bg-red-50/50 dark:bg-red-900/10 p-3">
+                            <div className="flex items-center gap-1.5 mb-1">
+                                <span className="material-symbols-outlined text-red-500 text-[14px]">close</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-red-500">Your Answer</span>
                             </div>
                             <div className="text-sm text-text-main dark:text-gray-300">
                                 {userWrongOption ? (
                                     <MathRenderer content={userWrongOption.value || userWrongOption.text || ''} />
                                 ) : (
-                                    <span className="text-gray-400 italic">No answer selected</span>
+                                    <span className="text-gray-400 italic text-xs">No answer recorded</span>
                                 )}
                             </div>
                         </div>
-
-                        {/* Correct Answer */}
-                        <div className="rounded-xl border border-green-200 dark:border-green-800/40 bg-green-50/50 dark:bg-green-900/10 p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                                <span className="material-symbols-outlined text-green-600 text-[16px]">check</span>
-                                <span className="text-[11px] font-bold uppercase tracking-wider text-green-600">
-                                    Correct Answer {correctOption?.label ? `(${correctOption.label})` : ''}
+                        <div className="rounded-lg border border-green-200 dark:border-green-800/40 bg-green-50/50 dark:bg-green-900/10 p-3">
+                            <div className="flex items-center gap-1.5 mb-1">
+                                <span className="material-symbols-outlined text-green-600 text-[14px]">check</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-green-600">
+                                    Correct {correctOption?.label ? `(${correctOption.label})` : ''}
                                 </span>
                             </div>
                             <div className="text-sm text-text-main dark:text-gray-300 font-medium">
                                 {correctOption ? (
                                     <MathRenderer content={correctOption.value || correctOption.text || ''} />
-                                ) : (
-                                    <span className="text-gray-400 italic">—</span>
-                                )}
+                                ) : <span className="text-gray-400 italic">—</span>}
                             </div>
                         </div>
                     </div>
 
                     {/* Explanation */}
                     {q.explanation && (
-                        <div className="px-5 pb-4">
-                            <div className="rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] p-4">
-                                <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Explanation</div>
-                                <div className="text-sm text-text-main dark:text-gray-300 leading-relaxed">
-                                    <MathRenderer content={q.explanation || ''} />
-                                </div>
+                        <div className="rounded-lg border border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] p-3 mb-3">
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Explanation</div>
+                            <div className="text-sm text-text-main dark:text-gray-300 leading-relaxed">
+                                <MathRenderer content={q.explanation} />
                             </div>
                         </div>
                     )}
 
-                    {/* Footer actions */}
-                    <div className="px-5 py-3 border-t border-gray-100 dark:border-white/5 bg-gray-50/30 dark:bg-black/10 flex items-center justify-between gap-3">
-                        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                            Wrong {item.wrongCount}× · First: {new Date(item.firstWrongAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                        </div>
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-white/5">
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                            Wrong {item.wrongCount}× · Since {new Date(item.firstWrongAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
                         <button
                             onClick={(e) => { e.stopPropagation(); onDismiss(item.questionId); }}
-                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/40 text-green-700 dark:text-green-400 text-xs font-bold transition-all"
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/40 text-green-700 dark:text-green-400 text-xs font-bold transition-all"
                         >
-                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            <span className="material-symbols-outlined text-[13px]">check_circle</span>
                             Mastered
                         </button>
                     </div>
@@ -356,8 +238,62 @@ const WrongAnswerCard = ({ item, onDismiss, onExpand, isExpanded }: {
 };
 
 
+// ═══════════════════════════════════════════
+// Unit Block — groups items by topic
+// ═══════════════════════════════════════════
+const UnitBlock = ({ topicKey, items, expandedId, onExpand, onDismiss }: {
+    topicKey: string;
+    items: WrongAnswerItem[];
+    expandedId: string | null;
+    onExpand: (id: string) => void;
+    onDismiss: (id: string) => void;
+}) => {
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const icon = getTopicIcon(topicKey);
+    const label = getUnitLabel(topicKey);
+
+    return (
+        <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+            {/* Block Header */}
+            <div
+                className="flex items-center gap-3 px-5 py-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors select-none"
+                onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+                <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[20px]">{icon}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-[15px] text-text-main dark:text-white truncate">{label}</h3>
+                </div>
+                <span className="text-xs font-black text-red-500 bg-red-50 dark:bg-red-900/20 px-2.5 py-1 rounded-full shrink-0">
+                    {items.length}
+                </span>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-gray-400 transition-transform duration-200 ${isCollapsed ? '' : 'rotate-180'}`}>
+                    <span className="material-symbols-outlined text-[18px]">expand_more</span>
+                </div>
+            </div>
+
+            {/* Items */}
+            {!isCollapsed && (
+                <div className="border-t border-gray-100 dark:border-white/5">
+                    {items.map(item => (
+                        <WrongAnswerRow
+                            key={item.questionId}
+                            item={item}
+                            onDismiss={onDismiss}
+                            onExpand={onExpand}
+                            isExpanded={expandedId === item.questionId}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
+
 export const WrongAnswerBook = () => {
-    const { user, incorrectQuestionIds, wrongAnswersCache, fetchWrongAnswersCache } = useApp();
+    const { user, wrongAnswersCache, fetchWrongAnswersCache } = useApp();
     const navigate = useNavigate();
 
     const wrongAnswers = wrongAnswersCache.items;
@@ -372,7 +308,6 @@ export const WrongAnswerBook = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [confirmDismissId, setConfirmDismissId] = useState<string | null>(null);
     const [stats, setStats] = useState({ total: 0, todayNew: 0, thisWeekNew: 0 });
-    const [visibleCount, setVisibleCount] = useState(20);
 
     const [dismissedMap, setDismissedMap] = useState<Record<string, string>>(() => {
         try {
@@ -382,14 +317,11 @@ export const WrongAnswerBook = () => {
     });
 
     const fetchAndSync = useCallback(async () => {
-        // If we already have items in cache, we assume loading is instant
         if (wrongAnswersCache.items.length > 0) {
             setIsLoading(false);
         }
-
         try {
             await fetchWrongAnswersCache();
-            // Recalculate stats based on latest cache
             const result = wrongAnswersCache.items;
             const now = Date.now();
             const todayStart = new Date().setHours(0, 0, 0, 0);
@@ -400,8 +332,7 @@ export const WrongAnswerBook = () => {
                 thisWeekNew: result.filter(w => new Date(w.lastWrongAt).getTime() > weekStart).length
             });
         } catch (err: any) {
-            console.error('Failed to sync wrong answers in background:', err);
-            // Only set error if we have nothing to show at all
+            console.error('Failed to sync wrong answers:', err);
             if (wrongAnswersCache.items.length === 0) {
                 setError(err.message || 'Failed to load');
             }
@@ -411,16 +342,28 @@ export const WrongAnswerBook = () => {
     }, [user?.id, dismissedMap, fetchWrongAnswersCache, wrongAnswersCache.items.length]);
 
     useEffect(() => {
-        // Always run sync on mount to ensure freshness, but it won't block UI if cache exists
         fetchAndSync();
     }, [fetchAndSync]);
+
+    // Update stats when cache changes
+    useEffect(() => {
+        if (wrongAnswers.length > 0) {
+            const now = Date.now();
+            const todayStart = new Date().setHours(0, 0, 0, 0);
+            const weekStart = now - 7 * 24 * 60 * 60 * 1000;
+            setStats({
+                total: wrongAnswers.length,
+                todayNew: wrongAnswers.filter(w => new Date(w.lastWrongAt).getTime() > todayStart).length,
+                thisWeekNew: wrongAnswers.filter(w => new Date(w.lastWrongAt).getTime() > weekStart).length
+            });
+        }
+    }, [wrongAnswers]);
 
     const handleDismiss = async (questionId: string) => {
         const newDismissedMap = { ...dismissedMap, [questionId]: new Date().toISOString() };
         setDismissedMap(newDismissedMap);
         localStorage.setItem(`wrong_answer_dismissed_map_${user?.id}`, JSON.stringify(newDismissedMap));
 
-        // Also try standard API, but we depend on the timestamp logic locally to ensure it works
         try {
             const isProd = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
             const API_BASE = isProd ? 'https://newmaos-api.vercel.app/api' : '/api';
@@ -434,14 +377,9 @@ export const WrongAnswerBook = () => {
             }
         } catch { }
 
-        // Updating cache immediately for immediate UI response, server handles actual deletion asynchronously
-        const newItems = wrongAnswers.filter(w => w.questionId !== questionId);
-        // We use the same stats update logic safely since cache will mirror this fast
         setStats(prev => ({ ...prev, total: prev.total - 1 }));
         setConfirmDismissId(null);
         setExpandedId(null);
-        // Notice: `wrongAnswers` is derived from cache, actual sync relies on the refetch or hard refresh
-        // For 0-latency perceived speed, we just trigger refetch in background:
         fetchWrongAnswersCache();
     };
 
@@ -461,20 +399,12 @@ export const WrongAnswerBook = () => {
             result = result.filter(w => {
                 const titleMatch = (w.question?.title || '').toLowerCase().includes(q);
                 const subTopicMatch = (w.question?.sub_topic_id || '').toLowerCase().includes(q);
-
                 const promptText = extractSearchableText(w.question?.prompt);
                 const explanationText = extractSearchableText(w.question?.explanation);
                 const optionsText = extractSearchableText(
-                    typeof w.question?.options === 'string'
-                        ? w.question.options
-                        : JSON.stringify(w.question?.options || [])
+                    typeof w.question?.options === 'string' ? w.question.options : JSON.stringify(w.question?.options || [])
                 );
-
-                return titleMatch ||
-                    subTopicMatch ||
-                    promptText.includes(q) ||
-                    explanationText.includes(q) ||
-                    optionsText.includes(q);
+                return titleMatch || subTopicMatch || promptText.includes(q) || explanationText.includes(q) || optionsText.includes(q);
             });
         }
         switch (sortBy) {
@@ -485,11 +415,19 @@ export const WrongAnswerBook = () => {
         return result;
     }, [wrongAnswers, filterTopic, filterDifficulty, sortBy, searchQuery]);
 
-    // Only reset visible count when user explicitly changes a filter/sort, 
-    // NOT when background data (wrongAnswers) refetches
-    useEffect(() => {
-        setVisibleCount(20);
-    }, [filterTopic, filterDifficulty, sortBy, searchQuery]);
+    // Group by topic (Unit)
+    const groupedByUnit = useMemo(() => {
+        const groups: Record<string, WrongAnswerItem[]> = {};
+        filteredAnswers.forEach(item => {
+            const raw = item.question?.topic || 'Unknown';
+            const clean = raw.includes('_') ? raw.split('_').slice(1).join('_') : raw;
+            if (!groups[clean]) groups[clean] = [];
+            groups[clean].push(item);
+        });
+        // Sort groups by unit order
+        return Object.entries(groups)
+            .sort(([a], [b]) => (UNIT_ORDER[a] || 99) - (UNIT_ORDER[b] || 99));
+    }, [filteredAnswers]);
 
     const availableTopics = useMemo(() => {
         const topicSet = new Set<string>();
@@ -497,32 +435,21 @@ export const WrongAnswerBook = () => {
             const clean = w.question?.topic?.includes('_') ? w.question.topic.split('_').slice(1).join('_') : w.question?.topic;
             if (clean) topicSet.add(clean);
         });
-        // Convert to array and sort numerically by Unit Order
-        return Array.from(topicSet).sort((a, b) => {
-            const orderA = UNIT_ORDER[a] || 99;
-            const orderB = UNIT_ORDER[b] || 99;
-            return orderA - orderB;
-        });
+        return Array.from(topicSet).sort((a, b) => (UNIT_ORDER[a] || 99) - (UNIT_ORDER[b] || 99));
     }, [wrongAnswers]);
 
-    // Dropdown options mapped to unit names
-    const topicOptions = [{ value: 'all', label: 'All Units' }, ...availableTopics.map(t => ({ value: t, label: getUnitLabel(t) }))];
+    // Simple inline filter pills instead of custom dropdowns (化繁为简)
     const difficultyOptions = [
-        { value: '0', label: 'All Difficulty' },
-        { value: '1', label: 'Easy' }, { value: '2', label: 'Medium' },
-        { value: '3', label: 'Hard' }, { value: '4', label: 'Expert' }, { value: '5', label: 'Master' }
-    ];
-    const sortOptions = [
-        { value: 'recent', label: 'Most Recent' },
-        { value: 'count', label: 'Most Wrong' },
-        { value: 'difficulty', label: 'Hardest First' }
+        { value: 0, label: 'All' },
+        { value: 1, label: 'Easy' }, { value: 2, label: 'Med' },
+        { value: 3, label: 'Hard' }, { value: 4, label: 'Expert' }
     ];
 
     return (
         <div className="h-full w-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-hidden">
             <Navbar />
 
-            <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-5 overflow-y-auto scroll-bounce">
+            <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-4 overflow-y-auto scroll-bounce">
 
                 {/* Header */}
                 <header className="flex items-center gap-3">
@@ -557,21 +484,58 @@ export const WrongAnswerBook = () => {
                     </div>
                 </div>
 
-                {/* Filters — custom dropdowns */}
+                {/* Filters — compact row */}
                 <div className="flex items-center gap-2 flex-wrap">
-                    <div className="relative flex-1 min-w-[180px]">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-[18px]">search</span>
+                    {/* Search */}
+                    <div className="relative flex-1 min-w-[160px]">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-[16px]">search</span>
                         <input
                             type="text"
-                            placeholder="Search questions..."
+                            placeholder="Search..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-white/5 rounded-xl text-sm border border-gray-200 dark:border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none transition-all font-medium"
+                            className="w-full pl-8 pr-3 py-2 bg-white dark:bg-white/5 rounded-lg text-sm border border-gray-200 dark:border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none transition-all font-medium"
                         />
                     </div>
-                    <CustomDropdown value={filterTopic} options={topicOptions} onChange={setFilterTopic} />
-                    <CustomDropdown value={String(filterDifficulty)} options={difficultyOptions} onChange={(v) => setFilterDifficulty(Number(v))} />
-                    <CustomDropdown value={sortBy} options={sortOptions} onChange={(v) => setSortBy(v as any)} />
+
+                    {/* Unit Filter */}
+                    <select
+                        value={filterTopic}
+                        onChange={e => setFilterTopic(e.target.value)}
+                        className="px-3 py-2 rounded-lg text-sm font-semibold border border-gray-200 dark:border-gray-700 bg-white dark:bg-white/5 text-text-main dark:text-gray-300 outline-none focus:border-primary cursor-pointer"
+                    >
+                        <option value="all">All Units</option>
+                        {availableTopics.map(t => (
+                            <option key={t} value={t}>{getUnitLabel(t)}</option>
+                        ))}
+                    </select>
+
+                    {/* Difficulty pills */}
+                    <div className="flex items-center gap-1">
+                        {difficultyOptions.map(d => (
+                            <button
+                                key={d.value}
+                                onClick={() => setFilterDifficulty(d.value)}
+                                className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all ${filterDifficulty === d.value
+                                    ? 'bg-primary text-black shadow-sm'
+                                    : 'bg-gray-100 dark:bg-white/5 text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10'
+                                    }`}
+                            >
+                                {d.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Sort */}
+                    <select
+                        value={sortBy}
+                        onChange={e => setSortBy(e.target.value as any)}
+                        className="px-3 py-2 rounded-lg text-sm font-semibold border border-gray-200 dark:border-gray-700 bg-white dark:bg-white/5 text-text-main dark:text-gray-300 outline-none focus:border-primary cursor-pointer"
+                    >
+                        <option value="recent">Recent</option>
+                        <option value="count">Most Wrong</option>
+                        <option value="difficulty">Hardest</option>
+                    </select>
                 </div>
 
                 {/* Loading */}
@@ -618,34 +582,22 @@ export const WrongAnswerBook = () => {
                     </div>
                 )}
 
-                {/* List */}
-                {!isLoading && !error && filteredAnswers.length > 0 && (
-                    <div className="flex flex-col gap-2.5 pb-6">
+                {/* Grouped Blocks */}
+                {!isLoading && !error && groupedByUnit.length > 0 && (
+                    <div className="flex flex-col gap-4 pb-6">
                         <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
-                            Showing {Math.min(visibleCount, filteredAnswers.length)} of {filteredAnswers.length} questions
+                            {filteredAnswers.length} questions across {groupedByUnit.length} unit{groupedByUnit.length > 1 ? 's' : ''}
                         </div>
-                        {filteredAnswers.slice(0, visibleCount).map(item => (
-                            <WrongAnswerCard
-                                key={item.questionId}
-                                item={item}
-                                onDismiss={(id) => setConfirmDismissId(id)}
+                        {groupedByUnit.map(([topicKey, items]) => (
+                            <UnitBlock
+                                key={topicKey}
+                                topicKey={topicKey}
+                                items={items}
+                                expandedId={expandedId}
                                 onExpand={(id) => setExpandedId(expandedId === id ? null : id)}
-                                isExpanded={expandedId === item.questionId}
+                                onDismiss={(id) => setConfirmDismissId(id)}
                             />
                         ))}
-                        {visibleCount < filteredAnswers.length && (
-                            <button
-                                onClick={() => setVisibleCount(v => v + 20)}
-                                className="mt-6 w-full py-4 rounded-2xl text-sm font-black text-white relative group overflow-hidden transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl shadow-lg shadow-primary/20"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary via-yellow-400 to-orange-400 opacity-90 group-hover:opacity-100 transition-opacity"></div>
-                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
-                                <div className="relative z-10 flex items-center justify-center gap-2">
-                                    <span className="material-symbols-outlined text-[20px] animate-bounce">keyboard_double_arrow_down</span>
-                                    UNVEIL MORE MISSING CONCEPTS
-                                </div>
-                            </button>
-                        )}
                     </div>
                 )}
             </main>
@@ -653,9 +605,9 @@ export const WrongAnswerBook = () => {
             <ConfirmModal
                 isOpen={!!confirmDismissId}
                 title="Remove from Error Notebook?"
-                message="Are you sure you've mastered this question? This will remove it from your error notebook. You can always add it back if you get it wrong again."
-                confirmText="Yes, I've Mastered It"
-                cancelText="Keep Reviewing"
+                message="Are you sure you've mastered this question? This will remove it from your error notebook."
+                confirmText="Yes, Mastered"
+                cancelText="Keep"
                 onConfirm={() => confirmDismissId && handleDismiss(confirmDismissId)}
                 onCancel={() => setConfirmDismissId(null)}
             />

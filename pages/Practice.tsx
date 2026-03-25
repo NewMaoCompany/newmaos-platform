@@ -130,6 +130,11 @@ export const Practice = () => {
     // -------------------------------------------------------------------------
     const currentStaticData = useMemo(() => {
         if (topicParam && COURSE_CONTENT_DATA[topicParam]) {
+            if (subTopicId === 'unit_test') {
+                // unit_test lives in unitTest property, not subTopics array
+                const ut = COURSE_CONTENT_DATA[topicParam].unitTest;
+                return ut ? { id: 'unit_test', ...ut } : { id: 'unit_test', title: 'Unit Test' };
+            }
             return COURSE_CONTENT_DATA[topicParam].subTopics.find(s => s.id === subTopicId) || null;
         }
         return null;
@@ -144,7 +149,7 @@ export const Practice = () => {
     // Only store DB overrides in state, not the full data
     // --- Separated Effect for Metadata Sync (Lesson Content) ---
     const dbSubTopicData = React.useMemo(() => {
-        if (!subTopicId || subTopicId === 'unit_test' || !topicParam) return null;
+        if (!subTopicId || !topicParam) return null;
 
         // SMART LOOKUP: Handle prefix mismatches (e.g. usage of 'Series' vs 'BC_Series')
         let resolvedTopicKey = cleanTopic;
@@ -158,6 +163,27 @@ export const Practice = () => {
         }
 
         const dbUnit = topicContent[resolvedTopicKey];
+
+        // UNIT TEST: Fetch description_2 from unitTest config or raw sections
+        if (subTopicId === 'unit_test') {
+            let result: any = { id: 'unit_test', title: 'Unit Test' };
+            // 1. Try topicContent.unitTest
+            if (dbUnit?.unitTest) {
+                result = { ...result, ...dbUnit.unitTest };
+            }
+            // 2. Try raw sections for description_2
+            if (!result.description_2 && sections) {
+                const rawKey = Object.keys(sections).find(k => k.includes(cleanTopic));
+                if (rawKey && sections[rawKey]) {
+                    const rawSection = sections[rawKey].find((s: any) => String(s.id) === 'unit_test');
+                    if (rawSection?.description_2) {
+                        result.description_2 = rawSection.description_2;
+                    }
+                }
+            }
+            return result;
+        }
+
         if (dbUnit) {
             const dbSubTopic = dbUnit.subTopics?.find((s: any) => s.id === subTopicId);
             if (dbSubTopic) {

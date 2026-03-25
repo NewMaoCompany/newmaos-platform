@@ -398,6 +398,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                             unitTest: {
                                 title: unitTestSection.title || 'Unit Test',
                                 description: unitTestSection.description || '',
+                                description_2: unitTestSection.description_2 || null,
                                 estimatedMinutes: unitTestSection.estimated_minutes || 45
                             }
                         };

@@ -141,6 +141,7 @@ export interface SubTopic {
 export interface UnitTestConfig {
   title: string;
   description: string;
+  description_2?: string; // Detailed description for lesson view
   estimatedMinutes: number;
 }
 
