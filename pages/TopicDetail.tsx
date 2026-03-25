@@ -462,8 +462,8 @@ export const TopicDetail = () => {
                                         }
                                     }
 
-                                    // Fallback: Check legacy data structure
-                                    if (buttonState === 'NOT_STARTED' && mainProgress) {
+                                    // Fallback: Check legacy data structure (only if firstAttempt field doesn't exist at all)
+                                    if (buttonState === 'NOT_STARTED' && mainProgress && !firstAttempt) {
                                         const hasLegacyData = mainProgress.correct_questions > 0 ||
                                             (progressData?.userAnswers && Object.keys(progressData.userAnswers).length > 0);
                                         const status = getSectionStatus(sub.id);
@@ -589,7 +589,10 @@ export const TopicDetail = () => {
                                     const data = progress?.data;
                                     const firstAttempt = data?.firstAttempt;
 
-                                    const hasActualProgress = progress && (
+                                    // If soft reset happened, firstAttempt exists as not_started — treat as no progress
+                                    const isSoftReset = firstAttempt && firstAttempt.status === 'not_started';
+
+                                    const hasActualProgress = !isSoftReset && progress && (
                                         progress.status === 'in_progress' ||
                                         progress.correct_questions > 0 ||
                                         // Check answers
@@ -664,7 +667,10 @@ export const TopicDetail = () => {
                                 const data = progress?.data;
                                 const firstAttempt = data?.firstAttempt;
 
-                                const hasActualProgress = progress && (
+                                // If soft reset happened, firstAttempt exists as not_started — treat as no progress
+                                const isSoftReset2 = firstAttempt && firstAttempt.status === 'not_started';
+
+                                const hasActualProgress = !isSoftReset2 && progress && (
                                     progress.status === 'in_progress' ||
                                     progress.correct_questions > 0 ||
                                     (data?.userAnswers && Object.keys(data.userAnswers).length > 0) ||

@@ -62,7 +62,7 @@ export const Practice = () => {
         user, completePractice, questions: allQuestions, topicContent, submitAttempt,
         getTopicProgress, saveSectionProgress, completeSectionSession, getSectionProgress,
         isPro,
-        sections, incorrectQuestionIds, resetSectionProgress, getSectionProgressData,
+        sections, incorrectQuestionIds, resetSectionProgress, softResetSectionProgress, getSectionProgressData,
         fetchAllUserProgress, logUserActivity, getUserActivities,
         awardPoints, triggerCoinAnimation, userPoints, pointsBalanceRef
     } = useApp();
@@ -434,7 +434,7 @@ export const Practice = () => {
                     // 2. Initialize new session if NOT resuming
                     // Wipe database if force Start New
                     if (effectiveState?.forceStartNew && effectiveSectionId) {
-                        await resetSectionProgress(effectiveSectionId);
+                        await softResetSectionProgress(effectiveSectionId);
                     }
                 }
             } catch (err) {

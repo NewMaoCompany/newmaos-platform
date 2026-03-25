@@ -795,19 +795,26 @@ export const Forum = () => {
         if (!user?.id || pendingPoints.amount === 0) return;
 
         setIsClaimingPoints(true);
+
+        // Crucial: Must dispatch audio-unlock DURING the click event (before async/await) 
+        // to bypass browser autoplay policies for the coin sounds
+        window.dispatchEvent(new CustomEvent('audio-unlock'));
+
         try {
             const { data, error } = await supabase.rpc('claim_pending_points');
             if (error) throw error;
 
-            if (data && data[0]) {
-                const claimedAmount = data[0].claimed_amount || pendingPoints.amount;
-                // Trigger coin animation flying from click position to wallet
-                triggerCoinAnimation(claimedAmount, e.clientX, e.clientY, 'earn');
+            // RPC returning TABLE might come back as an array of objects
+            const claimedAmount = (data && Array.isArray(data) && data[0]?.claimed_amount) 
+                ? data[0].claimed_amount 
+                : pendingPoints.amount;
 
-                showToast(`+${claimedAmount} NMS Points claimed!`, 'success');
-                fetchPendingPoints();
-                if (fetchUserPoints) fetchUserPoints(); // Refresh balance
-            }
+            // Trigger coin animation flying from click position to wallet
+            triggerCoinAnimation(claimedAmount, e.clientX, e.clientY, 'earn');
+
+            showToast(`+${claimedAmount} NMS Points claimed!`, 'success');
+            fetchPendingPoints();
+            if (fetchUserPoints) fetchUserPoints(); // Refresh balance
         } catch (error: any) {
             console.error('Failed to claim points:', error);
             showToast('Failed to claim NMS Points', 'error');
@@ -1795,7 +1802,7 @@ export const Forum = () => {
 
             const { data: profiles } = await supabase
                 .from('user_profiles')
-                .select('id, name, avatar_url')
+                .select('id, name, avatar_url, is_official, equipped_title:titles(name, category, threshold)')
                 .in('id', friendIds);
 
             const combined = profiles?.map((profile: any) => ({
@@ -2404,17 +2411,25 @@ export const Forum = () => {
                         <span className="material-symbols-outlined text-xl">close</span>
                     </button>
                     <div className="flex flex-col items-center">
-                        <div className="relative mb-4 cursor-pointer hover:opacity-90 transition-opacity" onClick={() => navigate(`/profile/${selectedUserProfile.id}`)}>
-                            <img
-                                src={selectedUserProfile.avatarUrl || 'https://via.placeholder.com/150'}
-                                alt={selectedUserProfile.name}
-                                className="w-24 h-24 rounded-full border-4 border-gray-100 dark:border-gray-700 shadow-md object-cover"
-                            />
+                        <div className="relative mb-4 cursor-pointer hover:opacity-90 transition-opacity" onClick={() => { setSelectedUserProfile(null); navigate(`/profile/${selectedUserProfile.id}`); }}>
+                            {selectedUserProfile.avatarUrl ? (
+                                <img
+                                    src={selectedUserProfile.avatarUrl}
+                                    alt={selectedUserProfile.name || 'User'}
+                                    className="w-24 h-24 rounded-full border-4 border-gray-100 dark:border-gray-700 shadow-md object-cover"
+                                />
+                            ) : (
+                                <div className="w-24 h-24 rounded-full border-4 border-gray-100 dark:border-gray-700 shadow-md bg-gradient-to-br from-primary/60 to-primary flex items-center justify-center">
+                                    <span className="text-3xl font-black text-white drop-shadow-md">
+                                        {(selectedUserProfile.name?.charAt(0) || 'U').toUpperCase()}
+                                    </span>
+                                </div>
+                            )}
                             <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-4 border-white dark:border-zinc-800"></div>
                         </div>
 
                         <div className="flex items-center gap-2 mb-6">
-                            <h2 className="text-xl font-bold text-text-main dark:text-white hover:underline cursor-pointer" onClick={() => navigate(`/profile/${selectedUserProfile.id}`)}>{selectedUserProfile.name}</h2>
+                            <h2 className="text-xl font-bold text-text-main dark:text-white hover:underline cursor-pointer" onClick={() => { setSelectedUserProfile(null); navigate(`/profile/${selectedUserProfile.id}`); }}>{selectedUserProfile.name || 'User'}</h2>
                             {selectedUserProfile.is_official && (
                                 <span className="text-[10px] px-2 py-0.5 bg-primary text-white rounded-full font-black tracking-widest shadow-sm shadow-primary/20">OFFICIAL</span>
                             )}
@@ -2422,7 +2437,7 @@ export const Forum = () => {
 
                         <div className="flex flex-col gap-3 w-full">
                             <button
-                                onClick={() => navigate(`/profile/${selectedUserProfile.id}`)}
+                                onClick={() => { setSelectedUserProfile(null); navigate(`/profile/${selectedUserProfile.id}`); }}
                                 className="w-full flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/5 text-text-main dark:text-white py-2.5 rounded-xl font-medium hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-gray-700"
                             >
                                 <span className="material-symbols-outlined">id_card</span>
@@ -2435,7 +2450,7 @@ export const Forum = () => {
                                     {friendStatus === 'friends' ? (
                                         // Friend: Show Send Message
                                         <button
-                                            onClick={() => handleStartDM(selectedUserProfile.id, selectedUserProfile)}
+                                            onClick={() => { setSelectedUserProfile(null); handleStartDM(selectedUserProfile.id, selectedUserProfile); }}
                                             className="w-full flex items-center justify-center gap-2 bg-primary text-white py-2.5 rounded-xl font-medium hover:brightness-110 transition-all shadow-lg shadow-primary/20"
                                         >
                                             <span className="material-symbols-outlined">chat_bubble</span>
@@ -3341,7 +3356,12 @@ export const Forum = () => {
                                                             <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-white dark:border-black bg-green-500"></div>
                                                         )}
                                                     </div>
-                                                    <span className={`text-sm truncate flex-1 text-left ${dm.chat_id && activeChatId === dm.chat_id ? 'font-bold' : 'font-medium'}`}>{dm.user?.name || 'User'}</span>
+                                                    <div className="flex-1 flex items-center gap-1.5 min-w-0">
+                                                        <span className={`text-sm truncate text-left ${dm.chat_id && activeChatId === dm.chat_id ? 'font-bold' : 'font-medium'}`}>{dm.user?.name || 'User'}</span>
+                                                        {dm.user?.equipped_title && (
+                                                            <TitleBadge title={dm.user.equipped_title} size="xs" />
+                                                        )}
+                                                    </div>
                                                     {dm.chat_id && unreadCounts[dm.chat_id] > 0 && activeChatId !== dm.chat_id && (
                                                         <div className="min-w-[16px] h-[16px] flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
                                                             {unreadCounts[dm.chat_id] > 99 ? '99+' : unreadCounts[dm.chat_id]}
@@ -3433,6 +3453,9 @@ export const Forum = () => {
                                         <>
                                             <h3 className="font-bold text-base truncate flex items-center gap-2 text-text-main dark:text-white leading-tight">
                                                 {displayChannelName}
+                                                {viewMode === 'dm' && activeDmChat?.user?.equipped_title && (
+                                                    <TitleBadge title={activeDmChat.user.equipped_title} size="sm" />
+                                                )}
                                             </h3>
                                             <span className="text-xs text-text-secondary dark:text-gray-400 hidden sm:block truncate max-w-md mt-0.5">
                                                 {displayChannelDesc}

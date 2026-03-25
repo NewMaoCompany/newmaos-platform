@@ -98,6 +98,7 @@ interface AppContextType {
     getSectionStatus: (sectionId: string) => 'not_started' | 'in_progress' | 'completed';
     getSectionProgressData: (sectionId: string) => UserSectionProgress | undefined;
     resetSectionProgress: (sectionId: string) => Promise<boolean>;
+    softResetSectionProgress: (sectionId: string) => Promise<boolean>;
     sectionTimes: Record<string, number>;
     incorrectQuestionIds: Set<string>;
     fetchIncorrectQuestions: () => Promise<void>;
@@ -1579,6 +1580,62 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             return true;
         } catch (error) {
             console.error('resetSectionProgress error:', error);
+            return false;
+        }
+    };
+
+    // Soft reset: preserves summaryHistory while clearing current session data
+    const softResetSectionProgress = async (sectionId: string): Promise<boolean> => {
+        try {
+            // Read existing data to preserve summaryHistory
+            const existing = sectionProgressMap[sectionId];
+            const existingData = existing?.data || {};
+            const preservedHistory = existingData.summaryHistory || [];
+
+            // Build reset data — only keep summaryHistory
+            const resetData = {
+                summaryHistory: preservedHistory,
+                firstAttempt: { status: 'not_started' as const },
+                userAnswers: {},
+                questionResults: {},
+                currentIncorrectIds: [],
+                markedQuestionIds: []
+            };
+
+            const payload: any = {
+                p_section_id: sectionId,
+                p_user_id: user.id,
+                p_data: resetData,
+                p_completed_items: 0,
+                p_total_items: 0,
+                p_status: 'in_progress',
+                p_score: 0,
+                p_entity_type: existing?.entity_type || 'section'
+            };
+
+            const { error } = await supabase.rpc('save_section_progress', payload);
+            if (error) throw error;
+
+            // Optimistic update
+            setSectionProgressMap(prev => ({
+                ...prev,
+                [sectionId]: {
+                    ...prev[sectionId],
+                    section_id: sectionId,
+                    status: 'in_progress',
+                    data: resetData,
+                    correct_questions: 0,
+                    total_questions: 0,
+                    score: 0,
+                    last_accessed_at: new Date().toISOString(),
+                    user_id: user.id
+                } as UserSectionProgress
+            }));
+
+            console.log(`🔄 [softReset] Preserved ${preservedHistory.length} history entries for ${sectionId}`);
+            return true;
+        } catch (error) {
+            console.error('softResetSectionProgress error:', error);
             return false;
         }
     };
@@ -3389,6 +3446,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             getSectionStatus,
             getSectionProgressData,
             resetSectionProgress,
+            softResetSectionProgress,
             sectionTimes,
             incorrectQuestionIds,
             fetchIncorrectQuestions,
