@@ -447,7 +447,7 @@ export const Practice = () => {
         checkProgress();
     }, [subTopicId, topicParam, viewState, sessionMode, location.key]);
     // State for Sidebar Tools
-    const [activeTool, setActiveTool] = useState<'none' | 'calculator' | 'formula' | 'scratchpad'>('none');
+    const [activeTool, setActiveTool] = useState<'none' | 'calculator' | 'scratchpad'>('none');
 
     // Add calc position state
     const [calcPosition, setCalcPosition] = useState({ x: window.innerWidth / 2 - 320, y: window.innerHeight / 2 - 200 });
@@ -2160,83 +2160,7 @@ export const Practice = () => {
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch relative">
-                            {/* Formulas/Reference Panel */}
-                            {activeTool === 'formula' && (
-                                <div className="absolute top-0 left-0 right-0 z-20 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl animate-fade-in-up overflow-hidden ring-1 ring-black/5">
-                                    <div className="flex justify-between items-center p-4 bg-gray-50 dark:bg-black/20 border-b border-gray-100 dark:border-gray-800">
-                                        <h3 className="font-bold text-lg flex items-center gap-2">
-                                            <span className="material-symbols-outlined">function</span>
-                                            Reference Sheet
-                                        </h3>
-                                        <button onClick={() => setActiveTool('none')} className="text-gray-500 hover:text-black dark:hover:text-white">
-                                            <span className="material-symbols-outlined">close</span>
-                                        </button>
-                                    </div>
-                                <div className="p-5 overflow-y-auto scroll-bounce max-h-[500px]">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                                            {/* Derivatives */}
-                                            <div>
-                                                <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Derivatives</h4>
-                                                <div className="space-y-1.5 text-gray-700 dark:text-gray-300">
-                                                    <MathRenderer content="$$\frac{d}{dx}(x^n) = nx^{n-1}$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}(\sin x) = \cos x$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}(\cos x) = -\sin x$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}(\tan x) = \sec^2 x$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}(e^x) = e^x$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}(\ln x) = \frac{1}{x}$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}(\arcsin x) = \frac{1}{\sqrt{1-x^2}}$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}(\arctan x) = \frac{1}{1+x^2}$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}(a^x) = a^x \ln a$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}(\log_a x) = \frac{1}{x \ln a}$$" />
-                                                </div>
-                                            </div>
-                                            {/* Product / Quotient / Chain */}
-                                            <div>
-                                                <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Differentiation Rules</h4>
-                                                <div className="space-y-1.5 text-gray-700 dark:text-gray-300">
-                                                    <MathRenderer content="$$\frac{d}{dx}[f(x) \cdot g(x)] = f'(x)g(x) + f(x)g'(x)$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}\left[\frac{f(x)}{g(x)}\right] = \frac{f'(x)g(x) - f(x)g'(x)}{[g(x)]^2}$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}[f(g(x))] = f'(g(x)) \cdot g'(x)$$" />
-                                                </div>
-                                                <h4 className="font-bold mb-3 mt-4 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Integrals</h4>
-                                                <div className="space-y-1.5 text-gray-700 dark:text-gray-300">
-                                                    <MathRenderer content="$$\int x^n\,dx = \frac{x^{n+1}}{n+1} + C,\; n \neq -1$$" />
-                                                    <MathRenderer content="$$\int \frac{1}{x}\,dx = \ln|x| + C$$" />
-                                                    <MathRenderer content="$$\int e^x\,dx = e^x + C$$" />
-                                                    <MathRenderer content="$$\int \sin x\,dx = -\cos x + C$$" />
-                                                    <MathRenderer content="$$\int \cos x\,dx = \sin x + C$$" />
-                                                    <MathRenderer content="$$\int \sec^2 x\,dx = \tan x + C$$" />
-                                                    <MathRenderer content="$$\int \frac{1}{\sqrt{1-x^2}}\,dx = \arcsin x + C$$" />
-                                                    <MathRenderer content="$$\int \frac{1}{1+x^2}\,dx = \arctan x + C$$" />
-                                                    <MathRenderer content="$$\int a^x\,dx = \frac{a^x}{\ln a} + C$$" />
-                                                </div>
-                                            </div>
-                                            {/* Theorems & Identities */}
-                                            <div>
-                                                <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Fundamental Theorems</h4>
-                                                <div className="space-y-1.5 text-gray-700 dark:text-gray-300">
-                                                    <MathRenderer content="$$\int_a^b f(x)\,dx = F(b) - F(a)$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}\int_a^x f(t)\,dt = f(x)$$" />
-                                                    <MathRenderer content="$$\frac{d}{dx}\int_a^{g(x)} f(t)\,dt = f(g(x)) \cdot g'(x)$$" />
-                                                    <MathRenderer content="$$f_{\text{avg}} = \frac{1}{b-a}\int_a^b f(x)\,dx$$" />
-                                                </div>
-                                            </div>
-                                            {/* Limits & Series (BC) */}
-                                            <div>
-                                                <h4 className="font-bold mb-3 text-primary border-b border-gray-200 dark:border-gray-700 pb-1">Limits & Series (BC)</h4>
-                                                <div className="space-y-1.5 text-gray-700 dark:text-gray-300">
-                                                    <MathRenderer content="$$\lim_{x \to 0}\frac{\sin x}{x} = 1$$" />
-                                                    <MathRenderer content="$$e^x = \sum_{n=0}^{\infty}\frac{x^n}{n!}$$" />
-                                                    <MathRenderer content="$$\sin x = \sum_{n=0}^{\infty}\frac{(-1)^n x^{2n+1}}{(2n+1)!}$$" />
-                                                    <MathRenderer content="$$\cos x = \sum_{n=0}^{\infty}\frac{(-1)^n x^{2n}}{(2n)!}$$" />
-                                                    <MathRenderer content="$$\frac{1}{1-x} = \sum_{n=0}^{\infty} x^n,\; |x| < 1$$" />
-                                                    <MathRenderer content="$$\text{Integration by Parts: } \int u\,dv = uv - \int v\,du$$" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+
 
                             {/* Calculator */}
                             {activeTool === 'calculator' && question && (
@@ -2251,18 +2175,15 @@ export const Practice = () => {
                             )}
 
                             {/* Question Section */}
-                            <div className={`lg:col-span-6 flex flex-col ${isSubmitted ? 'min-h-[150px] max-h-[300px]' : 'lg:h-[calc(100vh-280px)] lg:min-h-[450px]'} overflow-hidden`}>
-                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col gap-4 relative h-full scroll-bounce ${isSubmitted ? 'p-4' : 'p-6'}`}>
+                            <div className={`lg:col-span-6 flex flex-col ${isSubmitted ? 'min-h-[120px] max-h-[250px]' : 'lg:h-[calc(100vh-280px)] lg:min-h-[450px]'} overflow-hidden`}>
+                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col gap-2 relative h-full scroll-bounce ${isSubmitted ? 'p-3' : 'p-6'}`}>
                                     <div className="flex justify-between items-start border-b border-gray-100 dark:border-gray-800 pb-3 mb-2">
                                         <div className="flex items-center gap-2 mr-6">
                                             <button onClick={() => setActiveTool(activeTool === 'scratchpad' ? 'none' : 'scratchpad')} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTool === 'scratchpad' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'}`}>
                                                 <span className="material-symbols-outlined text-lg">draw</span>
                                                 <span className="hidden sm:inline">Scratchpad</span>
                                             </button>
-                                            <button onClick={() => setActiveTool(activeTool === 'formula' ? 'none' : 'formula')} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTool === 'formula' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300'}`}>
-                                                <span className="material-symbols-outlined text-lg">function</span>
-                                                <span className="hidden sm:inline">Formulas</span>
-                                            </button>
+
                                             {question?.calculatorAllowed ? (
                                                 <button
                                                     onClick={() => setActiveTool(activeTool === 'calculator' ? 'none' : 'calculator')}
@@ -2308,8 +2229,8 @@ export const Practice = () => {
                             </div>
 
                             {/* Options Section */}
-                            <div className={`lg:col-span-6 flex flex-col gap-4 ${isSubmitted ? 'min-h-[100px]' : 'lg:h-[calc(100vh-280px)] lg:min-h-[450px]'}`}>
-                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-2.5' : 'p-6'}`}>
+                            <div className={`lg:col-span-6 flex flex-col gap-2 ${isSubmitted ? 'min-h-[80px]' : 'lg:h-[calc(100vh-280px)] lg:min-h-[450px]'}`}>
+                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-2' : 'p-6'}`}>
                                     {/* Hide Header on Submit to save space as requested */}
                                     {!isSubmitted && (
                                         <div>
@@ -2322,7 +2243,7 @@ export const Practice = () => {
                                         </div>
                                     )}
 
-                                    <div className={`flex-grow flex flex-col ${isSubmitted ? 'gap-1' : 'gap-3'} ${isSubmitted ? '' : 'overflow-y-auto scroll-bounce'} p-1 -m-1`}>
+                                    <div className={`flex-grow flex flex-col ${isSubmitted ? 'gap-0.5' : 'gap-3'} ${isSubmitted ? '' : 'overflow-y-auto scroll-bounce'} p-1 -m-1`}>
                                         {question.options.map((opt, idx) => {
                                             const isSelected = selectedAnswer === opt.id;
                                             const isCorrect = question.correctOptionId === opt.id;
@@ -2397,10 +2318,10 @@ export const Practice = () => {
                                                         }
                                                         if (isSubmitted) setViewingOptionId(opt.id);
                                                     }}
-                                                    className={`group relative flex cursor-pointer rounded-xl border ${borderClass} ${bgClass} transition-all duration-200 ${isSubmitted ? 'p-1 px-2' : 'p-4'} ${!isSubmitted && !isEliminated && 'hover:border-primary/50'}`}
+                                                    className={`group relative flex cursor-pointer rounded-xl border ${borderClass} ${bgClass} transition-all duration-200 ${isSubmitted ? 'p-0.5 px-1.5' : 'p-4'} ${!isSubmitted && !isEliminated && 'hover:border-primary/50'}`}
                                                 >
                                                     <div className="peer sr-only"></div>
-                                                    <div className={`flex items-center gap-4 relative z-10 w-full sm:pr-8 pr-2 ${isSubmitted ? 'py-0' : 'py-1'}`}>
+                                                    <div className={`flex items-center gap-2 relative z-10 w-full sm:pr-6 pr-1 ${isSubmitted ? 'py-0' : 'py-1'}`}>
                                                         {/* Eliminate Button - Right Side */}
                                                         {!isSubmitted && (
                                                             <button
@@ -2412,10 +2333,10 @@ export const Practice = () => {
                                                             </button>
                                                         )}
 
-                                                        <div className={`flex items-center justify-center rounded-full border font-bold transition-all shrink-0 ${circleClass} ${isSubmitted ? 'h-4 w-4 text-[10px]' : 'h-8 w-8 text-sm'}`}>
+                                                        <div className={`flex items-center justify-center rounded-full border font-bold transition-all shrink-0 ${circleClass} ${isSubmitted ? 'h-3.5 w-3.5 text-[9px]' : 'h-8 w-8 text-sm'}`}>
                                                             {opt.label || opt.id || String.fromCharCode(65 + idx)}
                                                         </div>
-                                                        <div className={`font-math px-1 w-full transition-all duration-500 overflow-x-auto overflow-y-visible ${textClass} ${isSubmitted ? 'text-xs py-0.5 leading-tight' : 'text-lg py-4'}`}>
+                                                        <div className={`font-math px-1 w-full transition-all duration-500 overflow-x-auto overflow-y-visible ${textClass} ${isSubmitted ? 'text-[11px] py-0 leading-snug' : 'text-lg py-4'}`}>
                                                             {renderContent(opt.value || (opt as any).text || '', opt.type, { noBorder: true })}
                                                         </div>
                                                         {isSubmitted && isCorrect && <span className="material-symbols-outlined ml-auto text-green-600">check_circle</span>}

@@ -304,10 +304,11 @@ export const WrongAnswerBook = () => {
     // Filters
     const [filterTopic, setFilterTopic] = useState<string>('all');
     const [filterDifficulty, setFilterDifficulty] = useState<number>(0);
-    const [sortBy, setSortBy] = useState<'recent' | 'count' | 'difficulty'>('recent');
-    const [searchQuery, setSearchQuery] = useState('');
+    const [sortBy] = useState<'recent' | 'count' | 'difficulty'>('recent');
     const [confirmDismissId, setConfirmDismissId] = useState<string | null>(null);
     const [stats, setStats] = useState({ total: 0, todayNew: 0, thisWeekNew: 0 });
+    const [isUnitDropdownOpen, setIsUnitDropdownOpen] = useState(false);
+    const unitDropdownRef = useRef<HTMLDivElement>(null);
 
     const [dismissedMap, setDismissedMap] = useState<Record<string, string>>(() => {
         try {
@@ -344,6 +345,15 @@ export const WrongAnswerBook = () => {
     useEffect(() => {
         fetchAndSync();
     }, [fetchAndSync]);
+
+    // Close unit dropdown on outside click
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (unitDropdownRef.current && !unitDropdownRef.current.contains(e.target as Node)) setIsUnitDropdownOpen(false);
+        };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
 
     // Update stats when cache changes
     useEffect(() => {
@@ -394,26 +404,13 @@ export const WrongAnswerBook = () => {
             });
         }
         if (filterDifficulty > 0) result = result.filter(w => w.question?.difficulty === filterDifficulty);
-        if (searchQuery.trim()) {
-            const q = searchQuery.toLowerCase();
-            result = result.filter(w => {
-                const titleMatch = (w.question?.title || '').toLowerCase().includes(q);
-                const subTopicMatch = (w.question?.sub_topic_id || '').toLowerCase().includes(q);
-                const promptText = extractSearchableText(w.question?.prompt);
-                const explanationText = extractSearchableText(w.question?.explanation);
-                const optionsText = extractSearchableText(
-                    typeof w.question?.options === 'string' ? w.question.options : JSON.stringify(w.question?.options || [])
-                );
-                return titleMatch || subTopicMatch || promptText.includes(q) || explanationText.includes(q) || optionsText.includes(q);
-            });
-        }
         switch (sortBy) {
             case 'count': result.sort((a, b) => b.wrongCount - a.wrongCount); break;
             case 'difficulty': result.sort((a, b) => (b.question?.difficulty || 0) - (a.question?.difficulty || 0)); break;
             default: result.sort((a, b) => new Date(b.lastWrongAt).getTime() - new Date(a.lastWrongAt).getTime());
         }
         return result;
-    }, [wrongAnswers, filterTopic, filterDifficulty, sortBy, searchQuery]);
+    }, [wrongAnswers, filterTopic, filterDifficulty, sortBy]);
 
     // Group by topic (Unit)
     const groupedByUnit = useMemo(() => {
@@ -486,29 +483,46 @@ export const WrongAnswerBook = () => {
 
                 {/* Filters — compact row */}
                 <div className="flex items-center gap-2 flex-wrap">
-                    {/* Search */}
-                    <div className="relative flex-1 min-w-[160px]">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-[16px]">search</span>
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            value={searchQuery}
-                            onChange={e => setSearchQuery(e.target.value)}
-                            className="w-full pl-8 pr-3 py-2 bg-white dark:bg-white/5 rounded-lg text-sm border border-gray-200 dark:border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none transition-all font-medium"
-                        />
-                    </div>
 
-                    {/* Unit Filter */}
-                    <select
-                        value={filterTopic}
-                        onChange={e => setFilterTopic(e.target.value)}
-                        className="px-3 py-2 rounded-lg text-sm font-semibold border border-gray-200 dark:border-gray-700 bg-white dark:bg-white/5 text-text-main dark:text-gray-300 outline-none focus:border-primary cursor-pointer"
-                    >
-                        <option value="all">All Units</option>
-                        {availableTopics.map(t => (
-                            <option key={t} value={t}>{getUnitLabel(t)}</option>
-                        ))}
-                    </select>
+                    {/* Unit Filter — Custom Dropdown */}
+                    <div ref={unitDropdownRef} className="relative">
+                        <button
+                            onClick={() => setIsUnitDropdownOpen(!isUnitDropdownOpen)}
+                            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-bold transition-all border ${isUnitDropdownOpen
+                                ? 'border-primary bg-primary/5 text-text-main dark:text-white shadow-sm'
+                                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-white/5 text-text-main dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
+                                }`}
+                        >
+                            <span className="material-symbols-outlined text-[16px] text-primary shrink-0">filter_list</span>
+                            <span className="truncate max-w-[160px]">{filterTopic === 'all' ? 'All Units' : getUnitLabel(filterTopic)}</span>
+                            <span className={`material-symbols-outlined text-[16px] shrink-0 transition-transform ${isUnitDropdownOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                        </button>
+                        {isUnitDropdownOpen && (
+                            <div className="absolute top-full left-0 mt-1.5 w-[260px] bg-white dark:bg-[#1e1e2a] border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 py-1 max-h-[320px] overflow-y-auto animate-fade-in">
+                                <button
+                                    onClick={() => { setFilterTopic('all'); setIsUnitDropdownOpen(false); }}
+                                    className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${filterTopic === 'all'
+                                        ? 'bg-primary/10 text-primary font-bold'
+                                        : 'text-text-main dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 font-medium'
+                                        }`}
+                                >
+                                    All Units
+                                </button>
+                                {availableTopics.map(t => (
+                                    <button
+                                        key={t}
+                                        onClick={() => { setFilterTopic(t); setIsUnitDropdownOpen(false); }}
+                                        className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${filterTopic === t
+                                            ? 'bg-primary/10 text-primary font-bold'
+                                            : 'text-text-main dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 font-medium'
+                                            }`}
+                                    >
+                                        {getUnitLabel(t)}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
 
                     {/* Difficulty pills */}
                     <div className="flex items-center gap-1">
@@ -525,17 +539,6 @@ export const WrongAnswerBook = () => {
                             </button>
                         ))}
                     </div>
-
-                    {/* Sort */}
-                    <select
-                        value={sortBy}
-                        onChange={e => setSortBy(e.target.value as any)}
-                        className="px-3 py-2 rounded-lg text-sm font-semibold border border-gray-200 dark:border-gray-700 bg-white dark:bg-white/5 text-text-main dark:text-gray-300 outline-none focus:border-primary cursor-pointer"
-                    >
-                        <option value="recent">Recent</option>
-                        <option value="count">Most Wrong</option>
-                        <option value="difficulty">Hardest</option>
-                    </select>
                 </div>
 
                 {/* Loading */}
