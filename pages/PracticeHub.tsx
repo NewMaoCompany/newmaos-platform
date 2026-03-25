@@ -8,17 +8,49 @@ import { ModeSelectionModal } from '../components/ModeSelectionModal';
 
 // Sub-component for Unit Card to handle its own async progress fetching
 const UnitCard = ({ topic, idx, onClick, hasNotification }: { topic: any, idx: number, onClick: () => void, hasNotification?: boolean }) => {
-    const { getUnitProgress, topicContent, questions, sections, getSectionStatus, user } = useApp();
+    const { getUnitProgress, topicContent, questions, sections, getSectionStatus, getSectionProgressData, user } = useApp();
     const [progress, setProgress] = useState(0);
 
     const content = topicContent[topic.id];
     const staticContent = COURSE_CONTENT_DATA[topic.id] || { subTopics: [] };
 
     useEffect(() => {
-        getUnitProgress(topic.id).then(data => {
-            if (data) setProgress(Math.round(data.progress_percentage || 0));
-        });
-    }, [topic.id]);
+        // Calculate progress client-side from sectionProgressMap for reliability
+        const unitSections = sections[topic.id] || [];
+        const regularSections = unitSections.filter((sec: any) => !sec.is_unit_test);
+        const unitTestSection = unitSections.find((sec: any) => sec.is_unit_test);
+
+        if (regularSections.length > 0 || unitTestSection) {
+            let chapterProgress = 0;
+            let chapterWeight = unitTestSection ? 80 : 100;
+
+            if (regularSections.length > 0) {
+                let completedCount = 0;
+                regularSections.forEach((sec: any) => {
+                    const p = getSectionProgressData(sec.id);
+                    if (p && p.status === 'completed') {
+                        completedCount++;
+                    }
+                });
+                chapterProgress = (completedCount / regularSections.length) * chapterWeight;
+            }
+
+            let unitTestProgress = 0;
+            if (unitTestSection) {
+                const p = getSectionProgressData(unitTestSection.id);
+                if (p && p.status === 'completed') {
+                    unitTestProgress = 20;
+                }
+            }
+
+            setProgress(Math.round(chapterProgress + unitTestProgress));
+        } else {
+            // Fallback to RPC if sections haven't loaded yet
+            getUnitProgress(topic.id).then(data => {
+                if (data) setProgress(Math.round(data.progress_percentage || 0));
+            });
+        }
+    }, [topic.id, sections]);
 
     // Icon helper
     const getTopicIcon = (id: string) => {

@@ -2230,7 +2230,7 @@ export const Practice = () => {
 
                             {/* Options Section */}
                             <div className={`lg:col-span-6 flex flex-col gap-2 ${isSubmitted ? 'min-h-[80px]' : 'lg:h-[calc(100vh-280px)] lg:min-h-[450px]'}`}>
-                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-2' : 'p-6'}`}>
+                                <div className={`bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-apple flex flex-col h-full ${isSubmitted ? 'p-3' : 'p-6'}`}>
                                     {/* Hide Header on Submit to save space as requested */}
                                     {!isSubmitted && (
                                         <div>
@@ -2243,7 +2243,7 @@ export const Practice = () => {
                                         </div>
                                     )}
 
-                                    <div className={`flex-grow flex flex-col ${isSubmitted ? 'gap-0.5' : 'gap-3'} ${isSubmitted ? '' : 'overflow-y-auto scroll-bounce'} p-1 -m-1`}>
+                                    <div className={`flex-grow flex flex-col ${isSubmitted ? 'gap-1.5' : 'gap-3'} ${isSubmitted ? '' : 'overflow-y-auto scroll-bounce'} p-1 -m-1`}>
                                         {question.options.map((opt, idx) => {
                                             const isSelected = selectedAnswer === opt.id;
                                             const isCorrect = question.correctOptionId === opt.id;
@@ -2318,10 +2318,10 @@ export const Practice = () => {
                                                         }
                                                         if (isSubmitted) setViewingOptionId(opt.id);
                                                     }}
-                                                    className={`group relative flex cursor-pointer rounded-xl border ${borderClass} ${bgClass} transition-all duration-200 ${isSubmitted ? 'p-0.5 px-1.5' : 'p-4'} ${!isSubmitted && !isEliminated && 'hover:border-primary/50'}`}
+                                                    className={`group relative flex cursor-pointer rounded-xl border ${borderClass} ${bgClass} transition-all duration-200 ${isSubmitted ? 'p-2 px-3' : 'p-4'} ${!isSubmitted && !isEliminated && 'hover:border-primary/50'}`}
                                                 >
                                                     <div className="peer sr-only"></div>
-                                                    <div className={`flex items-center gap-2 relative z-10 w-full sm:pr-6 pr-1 ${isSubmitted ? 'py-0' : 'py-1'}`}>
+                                                    <div className={`flex items-center gap-2 relative z-10 w-full sm:pr-6 pr-1 ${isSubmitted ? 'py-0.5' : 'py-1'}`}>
                                                         {/* Eliminate Button - Right Side */}
                                                         {!isSubmitted && (
                                                             <button
@@ -2333,10 +2333,10 @@ export const Practice = () => {
                                                             </button>
                                                         )}
 
-                                                        <div className={`flex items-center justify-center rounded-full border font-bold transition-all shrink-0 ${circleClass} ${isSubmitted ? 'h-3.5 w-3.5 text-[9px]' : 'h-8 w-8 text-sm'}`}>
+                                                        <div className={`flex items-center justify-center rounded-full border font-bold transition-all shrink-0 ${circleClass} ${isSubmitted ? 'h-5 w-5 text-[11px]' : 'h-8 w-8 text-sm'}`}>
                                                             {opt.label || opt.id || String.fromCharCode(65 + idx)}
                                                         </div>
-                                                        <div className={`font-math px-1 w-full transition-all duration-500 overflow-x-auto overflow-y-visible ${textClass} ${isSubmitted ? 'text-[11px] py-0 leading-snug' : 'text-lg py-4'}`}>
+                                                        <div className={`font-math px-1 w-full transition-all duration-500 overflow-x-auto overflow-y-visible ${textClass} ${isSubmitted ? 'text-sm py-0 leading-snug' : 'text-lg py-4'}`}>
                                                             {renderContent(opt.value || (opt as any).text || '', opt.type, { noBorder: true })}
                                                         </div>
                                                         {isSubmitted && isCorrect && <span className="material-symbols-outlined ml-auto text-green-600">check_circle</span>}

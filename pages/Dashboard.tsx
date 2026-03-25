@@ -45,7 +45,7 @@ const CourseCard = ({
   onSelect: () => void;
   onStart: (e: React.MouseEvent) => void;
 }) => {
-  const { user, courses, getSectionStatus, getCourseProgress } = useApp();
+  const { user, courses, getSectionStatus, getSectionProgressData, sections } = useApp();
   const course = courses[type];
   const isActive = user.currentCourse === type;
   const [progress, setProgress] = useState(0);
@@ -55,11 +55,51 @@ const CourseCard = ({
 
   useEffect(() => {
     if (user?.id) {
-      getCourseProgress(type).then(data => {
-        if (data) setProgress(data.progress_percentage || 0);
+      // Calculate overall course progress from sectionProgressMap
+      let totalProgress = 0;
+      let validTopicsCount = 0;
+
+      // Iterate through all units (Both_Limits, Both_Derivatives, etc.)
+      const relevantTopicIds = Object.keys(sections).filter(tId => tId.startsWith(type === 'AB' ? 'Both_' : 'BC_') || tId.startsWith(type === 'BC' ? 'Both_' : 'NONE'));
+      
+      relevantTopicIds.forEach(topicId => {
+        const unitSections = sections[topicId] || [];
+        const regularSections = unitSections.filter((sec: any) => !sec.is_unit_test);
+        const unitTestSection = unitSections.find((sec: any) => sec.is_unit_test);
+        
+        if (regularSections.length > 0 || unitTestSection) {
+          validTopicsCount++;
+          let chapterProgress = 0;
+          let chapterWeight = unitTestSection ? 80 : 100;
+
+          if (regularSections.length > 0) {
+            let completedCount = 0;
+            regularSections.forEach((sec: any) => {
+              const p = getSectionProgressData(sec.id);
+              if (p && p.status === 'completed') {
+                completedCount++;
+              }
+            });
+            chapterProgress = (completedCount / regularSections.length) * chapterWeight;
+          }
+
+          let unitTestProgress = 0;
+          if (unitTestSection) {
+            const p = getSectionProgressData(unitTestSection.id);
+            if (p && p.status === 'completed') {
+              unitTestProgress = 20;
+            }
+          }
+
+          totalProgress += (chapterProgress + unitTestProgress);
+        }
       });
+
+      if (validTopicsCount > 0) {
+        setProgress(Math.round(totalProgress / validTopicsCount));
+      }
     }
-  }, [type, user?.id]);
+  }, [type, user?.id, sections]);
 
   return (
     <div

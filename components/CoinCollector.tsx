@@ -102,11 +102,15 @@ export const CoinCollector: React.FC = () => {
         const handleCoinEvent = (e: any) => {
             const { amount, x, y, mode = 'earn' } = e.detail;
 
-            // Get Navbar wallet badge position
-            if (!pointsBalanceRef.current) return;
-            const walletRect = pointsBalanceRef.current.getBoundingClientRect();
-            const walletX = walletRect.left + walletRect.width / 2;
-            const walletY = walletRect.top + walletRect.height / 2;
+            // Get target wallet position - fallback to top-right if ref is missing
+            let walletX = window.innerWidth - 100;
+            let walletY = 40;
+
+            if (pointsBalanceRef.current) {
+                const walletRect = pointsBalanceRef.current.getBoundingClientRect();
+                walletX = walletRect.left + walletRect.width / 2;
+                walletY = walletRect.top + walletRect.height / 2;
+            }
 
             // Determine Source and Target based on mode
             let startX, startY, targetX, targetY;
