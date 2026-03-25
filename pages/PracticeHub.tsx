@@ -162,13 +162,19 @@ const UnitCard = ({ topic, idx, onClick, hasNotification }: { topic: any, idx: n
 const RecentSessionCard = ({ session, navigate }: { session: any, navigate: any }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
+    const isAlgorithmic = session.entity_type === 'algorithmic';
+    const isUnitTest = session.entity_type === 'section' && session.is_unit_test;
+    
+    const sessionTypeLabel = isAlgorithmic ? 'Algorithmic' : (isUnitTest ? 'Unit Test' : 'Chapter Practice');
+    const sessionIcon = isAlgorithmic ? 'psychology' : (isUnitTest ? 'assignment' : 'menu_book');
+
     const firstAttemptData = session.data?.firstAttempt;
     const reviewHistory = (session.data?.summaryHistory || []).filter((h: any) => h.type !== 'first_attempt');
     const hasHistory = reviewHistory.length > 0;
     const mode = session.data?.sessionMode || 'Adaptive';
-    const displayTopic = session.data?.sessionTopic || 'Calculus AB';
+    const displayTopic = session.data?.sessionTopic || session.title || session.section_id.replace(/^([A-Z]{2}_)/, '');
     const cleanTopic = displayTopic.includes('_') ? displayTopic.split('_')[1] : displayTopic;
-    const totalQ = session.data?.questionIds?.length || session.total_questions || 1;
+    const totalQ = session.data?.questionIds?.length || session.total_questions || 10;
 
     let mainScore = 0;
     let mainIsPerfect = false;
@@ -191,14 +197,21 @@ const RecentSessionCard = ({ session, navigate }: { session: any, navigate: any 
         <div className="bg-white dark:bg-[#1a1a24] border border-gray-100 dark:border-white/10 p-5 rounded-2xl shadow-sm flex flex-col gap-4 animate-fade-in-up transition-all hover:shadow-md">
             <div className="flex justify-between items-start gap-2">
                 <div>
-                    <h3 className="font-bold text-base line-clamp-2 mb-1">{mode} Practice: {cleanTopic}</h3>
+                    <h3 className="font-bold text-base line-clamp-2 mb-1">
+                        {isAlgorithmic ? `${mode} Practice: ${cleanTopic}` : displayTopic}
+                    </h3>
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-400">
                         <span className="flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[14px]">psychology</span>
-                            Algorithmic
+                            <span className="material-symbols-outlined text-[14px]">{sessionIcon}</span>
+                            {sessionTypeLabel}
                         </span>
                         {session.last_accessed_at && (
                             <span className="whitespace-nowrap">{new Date(session.last_accessed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                        )}
+                        {session.status === 'in_progress' && !firstAttemptData?.summaryHistory && (
+                            <span className="text-yellow-600 dark:text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30 px-2 py-0.5 rounded">
+                                In Progress
+                            </span>
                         )}
                     </div>
                 </div>
@@ -215,8 +228,8 @@ const RecentSessionCard = ({ session, navigate }: { session: any, navigate: any 
 
             <div className={`flex flex-wrap items-center justify-between mt-1 pt-3 border-t border-gray-100 dark:border-white/5 gap-3 ${isExpanded ? 'border-b pb-4 mb-2 -mx-5 px-5 bg-gray-50/50 dark:bg-white/[0.02]' : ''}`}>
                 <div className="flex items-center gap-2">
-                    <span className={`px-3 py-1.5 rounded-md text-[10px] sm:text-xs font-bold whitespace-nowrap ${mainIsPerfect ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>
-                        Score: {mainScore}%
+                    <span className={`px-3 py-1.5 rounded-md text-[10px] sm:text-xs font-bold whitespace-nowrap ${session.status === 'in_progress' ? 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400' : (mainIsPerfect ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400')}`}>
+                        {session.status === 'in_progress' ? `Progress: ${mainScore}%` : `Score: ${mainScore}%`}
                     </span>
                     {isExpanded && (
                         <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wide hidden sm:inline-block">First Attempt</span>
@@ -775,10 +788,10 @@ export const PracticeHub = () => {
 
                                                     {buttonState === 'IN_PROGRESS' && (
                                                         <button
-                                                            onClick={(e) => { e.preventDefault(); handleSmartClick(progressData?.mode || recommendation.mode, true, false); }}
+                                                            onClick={(e) => { e.preventDefault(); handleSmartClick(progressData?.sessionMode || recommendation.mode, true, false); }}
                                                             className="bg-black hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-xl transition-all flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                                                         >
-                                                            Resume <span className="material-symbols-outlined text-[20px]">history</span>
+                                                            Resume {firstAttempt?.questionIds?.length ? `• ${Math.round((Object.keys(firstAttempt.questionResults || {}).length / firstAttempt.questionIds.length) * 100)}%` : ''} <span className="material-symbols-outlined text-[20px]">history</span>
                                                         </button>
                                                     )}
 
@@ -786,10 +799,10 @@ export const PracticeHub = () => {
                                                         <>
                                                             <button
                                                                 onClick={(e) => { e.preventDefault(); handleSmartClick(recommendation.mode, false, true); }}
-                                                                className="bg-green-50 dark:bg-green-900/10 hover:bg-green-100 dark:hover:bg-green-900/20 text-green-600 dark:text-green-400 font-bold px-4 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shrink-0 shadow-sm h-full whitespace-nowrap"
+                                                                className="bg-green-50 dark:bg-green-900/10 hover:bg-green-100 dark:hover:bg-green-900/20 text-green-600 dark:text-green-400 font-bold px-4 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 flex-1 shadow-sm h-full whitespace-nowrap min-w-[140px]"
                                                             >
-                                                                <span className="material-symbols-outlined text-[18px]">refresh</span>
-                                                                Start Over
+                                                                <span className="material-symbols-outlined text-[18px]">add</span>
+                                                                Start a new one
                                                             </button>
                                                             {viewSummaryBtn}
                                                         </>
@@ -867,7 +880,7 @@ export const PracticeHub = () => {
 
                             {(() => {
                                 const recentSessions = Object.values(sectionProgressMap || {})
-                                    .filter(p => (p.status === 'completed' || (p.status === 'in_progress' && p.data?.summaryHistory?.length > 0)) && p.entity_type === 'algorithmic')
+                                    .filter(p => p.status === 'completed' || p.status === 'in_progress')
                                     .sort((a, b) => new Date(b.last_accessed_at || 0).getTime() - new Date(a.last_accessed_at || 0).getTime())
                                     .slice(0, 5);
 
