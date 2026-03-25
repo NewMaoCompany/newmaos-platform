@@ -198,6 +198,13 @@ export const usersApi = {
         });
     },
 
+    async acceptFriendRequest(senderId: string) {
+        return apiRequest<{ success: boolean }>('/users/friend-request/accept', {
+            method: 'POST',
+            body: JSON.stringify({ senderId }),
+        });
+    },
+
     async getFullUserData() {
         return apiRequest<{
             profile: any;
@@ -415,6 +422,11 @@ export const forumApi = {
         apiRequest<{ message: string; data: any }>('/forum/messages', {
             method: 'POST',
             body: JSON.stringify({ questionId, content, channelId, replyToId })
+        }),
+    rewardLike: (messageId: string, authorId: string) =>
+        apiRequest<{ success: boolean; ignored?: boolean; reason?: string }>('/forum/reward-like', {
+            method: 'POST',
+            body: JSON.stringify({ messageId, authorId })
         }),
 };
 

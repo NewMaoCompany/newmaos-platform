@@ -248,6 +248,36 @@ router.post('/:id/accept-friend', authMiddleware, async (req: Request, res: Resp
             .update({ metadata: { accepted: true }, unread: false })
             .eq('id', notifId);
 
+        // 4. Award 10 NMS Points to both users for adding a friend
+        const friendshipSourceId = [userId, senderId].sort().join('_');
+        
+        // Prevent duplicate friend rewards
+        const { data: existingReward } = await supabaseAdmin
+            .from('pending_points')
+            .select('id')
+            .eq('source_id', friendshipSourceId)
+            .eq('type', 'friend')
+            .limit(1);
+
+        if (!existingReward || existingReward.length === 0) {
+            await supabaseAdmin.from('pending_points').insert([
+                {
+                    user_id: userId,
+                    amount: 10,
+                    type: 'friend',
+                    source_id: friendshipSourceId,
+                    description: 'Added a new friend on the platform'
+                },
+                {
+                    user_id: senderId,
+                    amount: 10,
+                    type: 'friend',
+                    source_id: friendshipSourceId,
+                    description: 'Added a new friend on the platform'
+                }
+            ]);
+        }
+
         res.json({ success: true });
         console.log(`[AcceptFriend] Successfully accepted friend request from ${senderId}`);
     } catch (error) {

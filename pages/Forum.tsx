@@ -218,6 +218,15 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
                             user_id: currentUserId,
                             reaction_type: 'like'
                         });
+
+                    // Trigger 5 NMS Points reward for the author
+                    if (message.user_id && message.user_id !== currentUserId) {
+                        try {
+                            await api.forum.rewardLike(message.id, String(message.user_id));
+                        } catch (rewardErr) {
+                            console.error('Failed to dispatch like reward:', rewardErr);
+                        }
+                    }
                 }
             }
         } catch (err) {
@@ -1297,12 +1306,8 @@ export const Forum = () => {
         if (!user || !selectedUserProfile) return;
         try {
             // Accept the request where THEY are the sender and I am the receiver
-            const { error } = await supabase
-                .from('friend_requests')
-                .update({ status: 'accepted' })
-                .eq('sender_id', selectedUserProfile.id)
-                .eq('receiver_id', user.id);
-            if (error) throw error;
+            // We use the backend API to securely award NMS points to both players
+            await api.users.acceptFriendRequest(selectedUserProfile.id);
             setFriendStatus('friends');
             showToast('Friend request accepted!', 'success');
             // Optimistically update friends list

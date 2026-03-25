@@ -72,6 +72,15 @@ router.post('/messages', authMiddleware, async (req: Request, res: Response): Pr
                     unread: true,
                     link: channelId ? `/forum?channel_id=${channelId}` : '/forum'
                 });
+
+                // Award 10 NMS Points for receiving a reply
+                await supabaseAdmin.from('pending_points').insert({
+                    user_id: parentMsg.user_id,
+                    amount: 10,
+                    type: 'reply',
+                    source_id: insertedMessage.id,
+                    description: 'Received a reply to your message'
+                });
             }
         }
 
@@ -84,6 +93,67 @@ router.post('/messages', authMiddleware, async (req: Request, res: Response): Pr
         res.json({ message: 'Message saved successfully', data: responseData });
     } catch (error) {
         console.error('Post message error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// POST /api/forum/reward-like - Award points for a received like
+router.post('/reward-like', authMiddleware, async (req: Request, res: Response): Promise<void> => {
+    try {
+        const likerId = req.user!.id;
+        const { messageId, authorId } = req.body;
+
+        if (!messageId || !authorId) {
+            res.status(400).json({ error: 'messageId and authorId are required' });
+            return;
+        }
+
+        // 1. Prevent self-liking rewards
+        if (likerId === authorId) {
+            res.json({ success: true, ignored: true, reason: 'self_like' });
+            return;
+        }
+
+        // 2. Verify the like actually exists to prevent abuse
+        const { data: reaction } = await supabaseAdmin
+            .from('message_reactions')
+            .select('id')
+            .eq('message_id', messageId)
+            .eq('user_id', likerId)
+            .eq('reaction_type', 'like')
+            .maybeSingle();
+
+        if (!reaction) {
+            res.status(400).json({ error: 'Like not found' });
+            return;
+        }
+
+        // 3. Ensure points were not already awarded for this specific like
+        const sourceId = `${messageId}_${likerId}`;
+        const { data: existingPoint } = await supabaseAdmin
+            .from('pending_points')
+            .select('id')
+            .eq('source_id', sourceId)
+            .eq('type', 'like')
+            .maybeSingle();
+
+        if (existingPoint) {
+            res.json({ success: true, ignored: true, reason: 'already_awarded' });
+            return;
+        }
+
+        // 4. Award 5 NMS Points
+        await supabaseAdmin.from('pending_points').insert({
+            user_id: authorId,
+            amount: 5,
+            type: 'like',
+            source_id: sourceId,
+            description: 'Received a like on your forum message'
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Reward like error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

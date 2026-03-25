@@ -329,4 +329,80 @@ router.post('/friend-request', authMiddleware, async (req: Request, res: Respons
     }
 });
 
+// POST /api/users/friend-request/accept - Accept friend request and award points
+router.post('/friend-request/accept', authMiddleware, async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.user!.id;
+        const { senderId } = req.body;
+
+        if (!senderId) {
+            res.status(400).json({ error: 'senderId is required' });
+            return;
+        }
+
+        // 1. Update friend request status
+        const { error: frError } = await supabaseAdmin
+            .from('friend_requests')
+            .update({ status: 'accepted' })
+            .eq('sender_id', senderId)
+            .eq('receiver_id', userId);
+
+        if (frError) {
+            console.error('Failed to accept friend request:', frError);
+            res.status(400).json({ error: frError.message });
+            return;
+        }
+
+        // 2. Award 10 NMS Points to both users
+        const friendshipSourceId = [userId, senderId].sort().join('_');
+        
+        const { data: existingReward } = await supabaseAdmin
+            .from('pending_points')
+            .select('id')
+            .eq('source_id', friendshipSourceId)
+            .eq('type', 'friend')
+            .limit(1);
+
+        if (!existingReward || existingReward.length === 0) {
+            await supabaseAdmin.from('pending_points').insert([
+                {
+                    user_id: userId,
+                    amount: 10,
+                    type: 'friend',
+                    source_id: friendshipSourceId,
+                    description: 'Added a new friend on the platform'
+                },
+                {
+                    user_id: senderId,
+                    amount: 10,
+                    type: 'friend',
+                    source_id: friendshipSourceId,
+                    description: 'Added a new friend on the platform'
+                }
+            ]);
+        }
+
+        // 3. Mark related notifications as accepted
+        const { data: notifs } = await supabaseAdmin
+            .from('notifications')
+            .select('id, metadata')
+            .eq('user_id', userId)
+            .like('link', `%sender_id=${senderId}%`);
+
+        if (notifs && notifs.length > 0) {
+            for (const notif of notifs) {
+                await supabaseAdmin
+                    .from('notifications')
+                    .update({ metadata: { ...notif.metadata, accepted: true }, unread: false })
+                    .eq('id', notif.id);
+            }
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Accept friend error:', error);
+        res.status(500).json({ error: 'Failed to accept friend request' });
+    }
+});
+
 export default router;
