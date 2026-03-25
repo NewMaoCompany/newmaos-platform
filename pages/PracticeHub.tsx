@@ -879,8 +879,17 @@ export const PracticeHub = () => {
                             </h4>
 
                             {(() => {
+                                const hasActualProgress = (p: any) => {
+                                    if (p.status === 'completed') return true;
+                                    if (p.data?.summaryHistory?.length > 0) return true;
+                                    if (p.data?.firstAttempt?.questionResults && Object.keys(p.data.firstAttempt.questionResults).length > 0) return true;
+                                    if (p.correct_questions > 0) return true;
+                                    if (p.data?.userAnswers && Object.keys(p.data.userAnswers).length > 0) return true;
+                                    return false;
+                                };
+
                                 const recentSessions = Object.values(sectionProgressMap || {})
-                                    .filter(p => p.status === 'completed' || p.status === 'in_progress')
+                                    .filter(p => (p.status === 'completed' || p.status === 'in_progress') && hasActualProgress(p))
                                     .sort((a, b) => new Date(b.last_accessed_at || 0).getTime() - new Date(a.last_accessed_at || 0).getTime())
                                     .slice(0, 5);
 
