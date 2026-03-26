@@ -152,7 +152,7 @@ export const Settings = () => {
                         <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800/50">
                             <div className="flex flex-col gap-0.5">
                                 <span className="text-sm font-semibold">Email Notifications</span>
-                                <span className="text-xs text-gray-500 dark:text-gray-400">Receive weekly progress reports.</span>
+                                <span className="text-xs text-gray-500 dark:text-gray-400">Receive weekly reports and daily check-in reminders.</span>
                             </div>
                             <label className="relative inline-flex items-center cursor-pointer">
                                 <input

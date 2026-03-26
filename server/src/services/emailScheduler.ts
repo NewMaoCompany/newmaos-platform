@@ -228,6 +228,58 @@ const templateNewContent = (name: string) => `
 </html>
 `;
 
+// ==========================================
+// 6. Daily Check-in (Gold/Black - Streak)
+// ==========================================
+const templateDailyCheckin = (name: string) => `
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background-color:#f4f4f4;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:40px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.12);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color:#000000;padding:40px;text-align:center;border-bottom:4px solid #f9d406;">
+                            <div style="display:inline-block;width:60px;height:60px;background:#f9d406;border-radius:14px;line-height:60px;font-size:32px;font-weight:bold;color:#1c1a0d;">∫</div>
+                            <h1 style="color:#ffffff;margin-top:20px;font-size:24px;letter-spacing:1px;text-transform:uppercase;">Daily Check-in</h1>
+                        </td>
+                    </tr>
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding:40px;text-align:center;">
+                            <h2 style="font-size:22px;color:#111;margin-top:0;">Good morning, ${name}!</h2>
+                            <p style="font-size:16px;color:#555;line-height:1.6;margin-bottom:30px;">
+                                Your daily reward is ready to be claimed. Protect your streak and earn NMS points to unlock premium features and cosmetics.
+                            </p>
+                            
+                            <div style="margin:20px 0 40px;padding:20px;background:#fffdf0;border:1px dashed #f9d406;border-radius:12px;display:inline-block;">
+                                <div style="font-size:24px;font-weight:bold;color:#eab308;display:flex;align-items:center;justify-content:center;gap:8px;">
+                                    <span>+10</span>
+                                    <span style="font-size:16px;color:#666;text-transform:uppercase;">NMS Points Minimum</span>
+                                </div>
+                            </div>
+
+                            <a href="https://newmaos.com/dashboard" style="display:inline-block;background:#f9d406;color:#000000;padding:16px 40px;border-radius:50px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 15px rgba(249,212,6,0.3);text-transform:uppercase;letter-spacing:1px;">Claim Now</a>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color:#f9f9f9;padding:20px;text-align:center;font-size:12px;color:#888;">
+                            You are receiving this because you have Daily Check-in Reminders enabled.<br>
+                            To opt out, visit <a href="https://newmaos.com/settings" style="color:#666;text-decoration:underline;">Settings</a>.<br><br>
+                            © 2026 NewMaoS Learning.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+`;
+
 // Helper: Get Random Template
 const getRandomTemplate = (name: string) => {
     const templates = [
@@ -314,5 +366,64 @@ export const initEmailScheduler = () => {
         }
     });
 
-    console.log('✅ Email Scheduler Initialized (Weekly Emails + Daily Cleanup)');
+    // ------------------------------------------
+    // 3. Daily Check-in Reminder (8:00 AM NY Time)
+    // ------------------------------------------
+    cron.schedule('0 8 * * *', async () => {
+        console.log('⏰ Running Daily Check-in Email Job...');
+        try {
+            // 1. Fetch Users with Email Notifications Enabled
+            const { data: users, error } = await supabaseAdmin
+                .from('user_profiles')
+                .select('id, email, name, email_notifications')
+                .eq('email_notifications', true);
+
+            if (error) throw error;
+            if (!users || users.length === 0) return;
+
+            // 2. Fetch users who have ALREADY checked in today to exclude them
+            const today = new Date();
+            const options = { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' } as Intl.DateTimeFormatOptions;
+            const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(today);
+            const y = parts.find(p => p.type === 'year')?.value;
+            const m = parts.find(p => p.type === 'month')?.value;
+            const d = parts.find(p => p.type === 'day')?.value;
+            const todayStr = `${y}-${m}-${d}`;
+
+            const { data: checkins } = await supabaseAdmin
+                .from('user_checkins')
+                .select('user_id')
+                .eq('checkin_date', todayStr);
+
+            const checkedInUserIds = new Set(checkins?.map(c => c.user_id) || []);
+
+            const targetUsers = users.filter(u => !checkedInUserIds.has(u.id));
+            if (targetUsers.length === 0) {
+                console.log('📧 All subscribed users have already checked in today.');
+                return;
+            }
+
+            console.log(`📧 Sending Daily Check-in reminder to ${targetUsers.length} users.`);
+
+            // 3. Send Emails
+            for (const user of targetUsers) {
+                try {
+                    await sendEmail(
+                        user.email,
+                        '☀️ Your Daily Check-in is ready!',
+                        templateDailyCheckin(user.name || 'Student')
+                    );
+                    console.log(`✅ Sent daily reminder to ${user.email}`);
+                } catch (sendError) {
+                    console.error(`❌ Failed to send to ${user.email}:`, sendError);
+                }
+            }
+        } catch (err) {
+            console.error('🔥 Fatal Error in Daily Check-in Scheduler:', err);
+        }
+    }, {
+        timezone: 'America/New_York'
+    });
+
+    console.log('✅ Email Scheduler Initialized (Weekly Emails, Daily Checks, Cleanup)');
 };

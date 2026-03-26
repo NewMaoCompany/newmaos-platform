@@ -183,7 +183,7 @@ const RecentSessionCard = ({ session, navigate }: { session: any, navigate: any 
     if (firstAttemptData && firstAttemptData.questionResults) {
         const totalFirst = firstAttemptData.questionIds?.length || Object.keys(firstAttemptData.questionResults).length || totalQ;
         if (session.status === 'in_progress') {
-            const answeredCount = Object.keys(firstAttemptData.questionResults).length;
+            const answeredCount = session.data?.userAnswers ? Object.keys(session.data.userAnswers).length : Object.keys(firstAttemptData.questionResults).length;
             mainScore = Math.min(100, Math.round((answeredCount / (totalFirst || 1)) * 100));
             mainIsPerfect = false;
         } else {
@@ -812,7 +812,13 @@ export const PracticeHub = () => {
                                                             onClick={(e) => { e.preventDefault(); handleSmartClick(progressData?.sessionMode || recommendation.mode, true, false); }}
                                                             className="bg-black hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-xl transition-all flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                                                         >
-                                                            Resume {firstAttempt?.questionIds?.length ? `• ${Math.round((Object.keys(firstAttempt.questionResults || {}).length / firstAttempt.questionIds.length) * 100)}%` : ''} <span className="material-symbols-outlined text-[20px]">history</span>
+                                                             Resume {(() => {
+                                                                 const sessionData = mainProgress?.data;
+                                                                 const totalQuestionsCount = sessionData?.questionIds?.length || mainProgress?.total_questions || 10;
+                                                                 const answeredCount = sessionData?.userAnswers ? Object.keys(sessionData.userAnswers).length : (sessionData?.questionResults ? Object.keys(sessionData.questionResults).length : 0);
+                                                                 const pct = Math.round((answeredCount / totalQuestionsCount) * 100);
+                                                                 return `• ${pct}%`;
+                                                             })()} <span className="material-symbols-outlined text-[20px]">history</span>
                                                         </button>
                                                     )}
 

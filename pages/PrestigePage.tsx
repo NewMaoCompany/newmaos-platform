@@ -11,7 +11,8 @@ import { ProGateOverlay } from '../components/ProGateOverlay';
 let sharedAudioCtx: AudioContext | null = null;
 
 // Simple Synth for Sound Effects (reused logic)
-const playSound = (type: 'coin' | 'stardust' | 'celebration') => {
+const playSound = (type: 'coin' | 'stardust' | 'celebration', muted: boolean = false) => {
+    if (muted) return;
     try {
         if (!sharedAudioCtx) {
             const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
@@ -151,7 +152,7 @@ export const PrestigePage = () => {
         // Spawn multiple coins slowly
         for (let i = 0; i < 5; i++) {
             setTimeout(() => {
-                playSound('coin');
+                playSound('coin', user?.preferences?.soundEffects === false);
                 const burstAngle = (Math.PI * 2 * i) / 5 + (Math.random() - 0.5) * 0.4;
                 const burstDist = 30 + Math.random() * 20;
 
@@ -181,7 +182,7 @@ export const PrestigePage = () => {
                 const count = 12;
                 for (let i = 0; i < count; i++) {
                     setTimeout(() => {
-                        playSound('stardust');
+                        playSound('stardust', user?.preferences?.soundEffects === false);
                         const burstAngle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
                         const burstDist = 40 + Math.random() * 30;
 
