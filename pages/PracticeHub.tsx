@@ -256,7 +256,7 @@ const RecentSessionCard = ({ session, navigate }: { session: any, navigate: any 
                             onClick={() => navigate('/practice/session', { state: { topic: displayTopic, mode: mode, sessionId: session.section_id, forceStartNew: true } })}
                             className="bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/40 font-bold px-3 py-1.5 rounded-lg text-[10px] sm:text-xs transition-colors flex items-center justify-center gap-1 shadow-sm h-8"
                         >
-                            <span className="material-symbols-outlined text-[14px]">add</span>
+                            <span className="material-symbols-outlined text-[14px]">restart_alt</span>
                             Start Over
                         </button>
                     )}
@@ -916,7 +916,7 @@ export const PracticeHub = () => {
                                 };
 
                                 const recentSessions = Object.values(sectionProgressMap || {})
-                                    .filter(p => (p.status === 'completed' || p.status === 'in_progress') && hasActualProgress(p))
+                                    .filter(p => (p.entity_type === 'algorithmic' || p.entity_type === 'section') && (p.status === 'completed' || p.status === 'in_progress') && hasActualProgress(p))
                                     .sort((a, b) => new Date(b.last_accessed_at || 0).getTime() - new Date(a.last_accessed_at || 0).getTime())
                                     .slice(0, 5);
 
