@@ -228,8 +228,8 @@ const RecentSessionCard = ({ session, navigate }: { session: any, navigate: any 
 
             <div className={`flex flex-wrap items-center justify-between mt-1 pt-3 border-t border-gray-100 dark:border-white/5 gap-3 ${isExpanded ? 'border-b pb-4 mb-2 -mx-5 px-5 bg-gray-50/50 dark:bg-white/[0.02]' : ''}`}>
                 <div className="flex items-center gap-2">
-                    <span className={`px-3 py-1.5 rounded-md text-[10px] sm:text-xs font-bold whitespace-nowrap ${session.status === 'in_progress' ? 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400' : (mainIsPerfect ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400')}`}>
-                        {session.status === 'in_progress' ? `Progress: ${mainScore}%` : `Score: ${mainScore}%`}
+                    <span className={`px-3 py-1.5 rounded-md text-[10px] sm:text-xs font-bold whitespace-nowrap ${session.status === 'in_progress' ? 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
+                        {session.status === 'in_progress' ? `Progress: ${mainScore}%` : 'Completed'}
                     </span>
                     {isExpanded && (
                         <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wide hidden sm:inline-block">First Attempt</span>
@@ -237,13 +237,21 @@ const RecentSessionCard = ({ session, navigate }: { session: any, navigate: any 
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {!overallIsPerfect && (
+                    {session.status === 'in_progress' ? (
                         <button
-                            onClick={() => navigate('/practice/session', { state: { topic: displayTopic, mode: 'Review', sessionId: session.section_id, forceStartNew: true } })}
-                            className="bg-red-50 hover:bg-red-100 text-red-600 font-bold px-3 py-1.5 rounded-lg text-[10px] sm:text-xs transition-colors flex items-center justify-center gap-1 shadow-sm h-8"
+                            onClick={() => navigate('/practice/session', { state: { topic: displayTopic, mode: mode, sessionId: session.section_id, isResuming: true } })}
+                            className="bg-black hover:bg-gray-900 text-white font-bold px-3 py-1.5 rounded-lg text-[10px] sm:text-xs transition-colors flex items-center justify-center gap-1 shadow-sm h-8"
                         >
-                            <span className="material-symbols-outlined text-[14px]">rule</span>
-                            Review
+                            <span className="material-symbols-outlined text-[14px]">play_arrow</span>
+                            Resume
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => navigate('/practice/session', { state: { topic: displayTopic, mode: mode, sessionId: session.section_id, forceStartNew: true } })}
+                            className="bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/40 font-bold px-3 py-1.5 rounded-lg text-[10px] sm:text-xs transition-colors flex items-center justify-center gap-1 shadow-sm h-8"
+                        >
+                            <span className="material-symbols-outlined text-[14px]">add</span>
+                            Start Over
                         </button>
                     )}
                     <button
@@ -273,8 +281,8 @@ const RecentSessionCard = ({ session, navigate }: { session: any, navigate: any 
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <span className={`text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-lg ${histIsPerfect ? 'text-green-700 bg-green-100 dark:text-green-400 dark:bg-green-900/40' : 'text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-900/40'}`}>
-                                        {histScore}%
+                                    <span className="text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-lg text-gray-500 bg-gray-100 dark:text-gray-400 dark:bg-white/10">
+                                        Completed
                                     </span>
                                     <button
                                         onClick={() => navigate('/practice/session', { state: { topic: displayTopic, mode: 'Summary', sessionId: session.section_id, showSummary: true, historyTarget: historyItem.label } })}
