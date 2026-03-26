@@ -98,8 +98,15 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed })
 
                 // Use the SAME coin animation as Forum claim
                 // triggerCoinAnimation dispatches 'coin-collect' event
-                // CoinCollector renders gold PointsCoin with sound + fly animation
-                triggerCoinAnimation(200);
+                const giftIcon = document.getElementById('welcome-gift-icon');
+                let startX = window.innerWidth / 2;
+                let startY = window.innerHeight / 2;
+                if (giftIcon) {
+                    const rect = giftIcon.getBoundingClientRect();
+                    startX = rect.left + rect.width / 2;
+                    startY = rect.top + rect.height / 2;
+                }
+                triggerCoinAnimation(200, startX, startY);
 
                 // Fire big confetti
                 fireClaimConfetti();
@@ -157,6 +164,7 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed })
                         <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full scale-150"
                             style={{ animation: 'wgPulse 2s ease-in-out infinite' }}></div>
                         <div
+                            id="welcome-gift-icon"
                             className="w-24 h-24 bg-gradient-to-br from-primary to-yellow-400 rounded-3xl flex items-center justify-center text-text-main shadow-glow"
                             style={{ animation: 'wgFloat 3s ease-in-out infinite' }}
                         >

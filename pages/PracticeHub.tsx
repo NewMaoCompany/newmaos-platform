@@ -181,10 +181,16 @@ const RecentSessionCard = ({ session, navigate }: { session: any, navigate: any 
 
     // Use first attempt for main score, or fallback to capped total correct
     if (firstAttemptData && firstAttemptData.questionResults) {
-        const correctCount = Object.values(firstAttemptData.questionResults).filter((r) => r === 'correct').length;
         const totalFirst = firstAttemptData.questionIds?.length || Object.keys(firstAttemptData.questionResults).length || totalQ;
-        mainScore = Math.min(100, Math.round((correctCount / (totalFirst || 1)) * 100));
-        mainIsPerfect = mainScore === 100;
+        if (session.status === 'in_progress') {
+            const answeredCount = Object.keys(firstAttemptData.questionResults).length;
+            mainScore = Math.min(100, Math.round((answeredCount / (totalFirst || 1)) * 100));
+            mainIsPerfect = false;
+        } else {
+            const correctCount = Object.values(firstAttemptData.questionResults).filter((r) => r === 'correct').length;
+            mainScore = Math.min(100, Math.round((correctCount / (totalFirst || 1)) * 100));
+            mainIsPerfect = mainScore === 100;
+        }
     } else {
         mainScore = Math.min(100, Math.round(((session.correct_questions || 0) / totalQ) * 100));
         mainIsPerfect = mainScore === 100;
@@ -385,7 +391,14 @@ export const PracticeHub = () => {
     // Find the single most recent algorithmic session for this topic AND the currently selected mode.
     // This ensures Adaptive, Review, and Random are treated as 3 completely independent save files.
     const currentModeAlgorithmicSession = Object.values(sectionProgressMap || {})
-        .filter((p: any) => p.entity_type === 'algorithmic' && p.data?.sessionTopic === recommendation.topic && (p.data?.mode?.toLowerCase() === recommendation.mode.toLowerCase() || (!p.data?.mode && recommendation.mode === 'Adaptive')))
+        .filter((p: any) => {
+            if (p.entity_type !== 'algorithmic') return false;
+            const sTopic = p.data?.sessionTopic || '';
+            const rTopic = recommendation.topic || '';
+            const matchesTopic = sTopic === rTopic || sTopic.includes(rTopic) || rTopic.includes(sTopic);
+            const matchesMode = p.data?.mode?.toLowerCase() === recommendation.mode.toLowerCase() || (!p.data?.mode && recommendation.mode === 'Adaptive');
+            return matchesTopic && matchesMode;
+        })
         .sort((a: any, b: any) => new Date(b.last_accessed_at || 0).getTime() - new Date(a.last_accessed_at || 0).getTime())[0];
 
 

@@ -114,7 +114,14 @@ export const SessionSummary = ({
             hasFiredCoinAnimation.current = true;
             // Delay to let DOM fully render (pointsBalanceRef needs to be available)
             const timer = setTimeout(() => {
-                triggerCoinAnimation(coinsEarned);
+                const icon = document.getElementById('summary-coins-icon');
+                let startX, startY;
+                if (icon) {
+                    const rect = icon.getBoundingClientRect();
+                    startX = rect.left + rect.width / 2;
+                    startY = rect.top + rect.height / 2;
+                }
+                triggerCoinAnimation(coinsEarned, startX, startY);
             }, 800);
             return () => clearTimeout(timer);
         }
@@ -502,7 +509,7 @@ export const SessionSummary = ({
                         </div>
                         <div className="h-8 w-px bg-gray-200 dark:bg-gray-700"></div>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                            <div id="summary-coins-icon" className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
                                 <span className="material-symbols-outlined text-lg">monetization_on</span>
                             </div>
                             <div className="text-left">
