@@ -27,6 +27,7 @@ const StardustPage = React.lazy(() => import('./pages/StardustPage').then(m => (
 const QuestionCreator = React.lazy(() => import('./pages/QuestionCreator').then(m => ({ default: m.QuestionCreator })));
 const DebugQA = React.lazy(() => import('./pages/DebugQA').then(m => ({ default: m.DebugQA })));
 const WrongAnswerBook = React.lazy(() => import('./pages/WrongAnswerBook').then(m => ({ default: m.WrongAnswerBook })));
+const TextbookViewer = React.lazy(() => import('./pages/TextbookViewer').then(m => ({ default: m.TextbookViewer })));
 const ProfileSettings = React.lazy(() => import('./pages/SettingsSubpages').then(m => ({ default: m.ProfileSettings })));
 const SecuritySettings = React.lazy(() => import('./pages/SettingsSubpages').then(m => ({ default: m.SecuritySettings })));
 const SubscriptionSettings = React.lazy(() => import('./pages/SettingsSubpages').then(m => ({ default: m.SubscriptionSettings })));
@@ -235,6 +236,7 @@ const AppRoutes = () => {
             <Route path="/points" element={<ProtectedRoute><PointsPage /></ProtectedRoute>} />
             <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
             <Route path="/wrong-answers" element={<ProtectedRoute><WrongAnswerBook /></ProtectedRoute>} />
+            <Route path="/textbooks/:courseType/:unitNumber" element={<TextbookViewer />} />
 
             {/* Settings Subpages */}
             <Route path="/settings/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />

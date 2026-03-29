@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../AppContext';
 import { Navbar } from '../components/Navbar';
-import { COURSE_TOPICS, COURSE_CONTENT_DATA } from '../constants';
+import { COURSE_TOPICS, COURSE_CONTENT_DATA, TEXTBOOK_DATA } from '../constants';
 import { SessionMode, Question } from '../types';
 import { ModeSelectionModal } from '../components/ModeSelectionModal';
 
@@ -865,6 +865,80 @@ export const PracticeHub = () => {
                                     />
                                 );
                             })}
+                        </div>
+
+                        {/* Review Books Section */}
+                        <div className="mt-8">
+                            <h3 className="text-xl font-bold flex items-center gap-2 h-8 mb-4">
+                                <span className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400">
+                                    <span className="material-symbols-outlined text-lg block">auto_stories</span>
+                                </span>
+                                Review Books
+                                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-auto">📖 {user.currentCourse}</span>
+                            </h3>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                {(TEXTBOOK_DATA[user.currentCourse] || []).map((book) => {
+                                    const isPurchased = typeof window !== 'undefined' && !!localStorage.getItem(`book_purchased_${user.currentCourse}_${book.unitNumber}`);
+                                    return (
+                                        <div
+                                            key={`book_${book.unitNumber}`}
+                                            onClick={() => navigate(`/textbooks/${user.currentCourse}/${book.unitNumber}`)}
+                                            className={`group relative bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-4 cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-transparent hover:-translate-y-0.5 flex flex-col items-center text-center gap-2 ${!book.available ? 'opacity-60' : ''}`}
+                                            style={{
+                                                '--hover-border': book.coverColor
+                                            } as React.CSSProperties}
+                                        >
+                                            {/* Book Cover */}
+                                            <div
+                                                className="w-14 h-20 rounded-xl flex items-center justify-center text-white shadow-md relative overflow-hidden transition-transform group-hover:scale-105 group-hover:shadow-lg"
+                                                style={{ background: `linear-gradient(135deg, ${book.coverColor}, ${book.coverColor}cc)` }}
+                                            >
+                                                <span className="material-symbols-outlined text-3xl opacity-90">{book.icon}</span>
+                                                <div className="absolute bottom-0 left-0 right-0 bg-black/30 py-0.5 text-[8px] font-black uppercase tracking-wider">
+                                                    Unit {book.unitNumber}
+                                                </div>
+                                                {/* Shine effect */}
+                                                <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent pointer-events-none"></div>
+                                            </div>
+
+                                            {/* Title */}
+                                            <div className="flex flex-col gap-0.5">
+                                                <span className="text-[11px] font-bold text-text-main dark:text-white leading-tight line-clamp-2">
+                                                    {book.title}
+                                                </span>
+                                                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">
+                                                    {book.subtitle}
+                                                </span>
+                                            </div>
+
+                                            {/* Status Badge */}
+                                            {!book.available ? (
+                                                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-400">
+                                                    Coming Soon
+                                                </span>
+                                            ) : isPurchased ? (
+                                                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center gap-0.5">
+                                                    <span className="material-symbols-outlined text-[10px]">check_circle</span>
+                                                    Owned
+                                                </span>
+                                            ) : (
+                                                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-yellow-700 dark:text-primary flex items-center gap-0.5">
+                                                    🪙 {book.downloadCost}
+                                                </span>
+                                            )}
+
+                                            {/* Read Button on Hover */}
+                                            {book.available && (
+                                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 dark:group-hover:bg-white/5 rounded-2xl flex items-end justify-center pb-2 opacity-0 group-hover:opacity-100 transition-all pointer-events-none">
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-primary bg-white dark:bg-surface-dark px-3 py-1 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 pointer-events-auto">
+                                                        Read →
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </section>
 
