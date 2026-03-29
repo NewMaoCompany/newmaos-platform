@@ -7,6 +7,7 @@ import { SubTopicProgress, UserSectionProgress, SubTopic, SessionMode } from '..
 import { supabase } from '../src/services/supabaseClient';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { MathRenderer } from '../components/MathRenderer';
+import { PointsCoin } from '../components/PointsCoin';
 
 export const TopicDetail = () => {
     const { unitId } = useParams();
@@ -383,9 +384,13 @@ export const TopicDetail = () => {
                                                     Owned
                                                 </span>
                                             ) : (
-                                                <span className="text-xs font-black px-4 py-1.5 rounded-full bg-primary/10 text-yellow-700 dark:text-primary flex items-center gap-1 uppercase tracking-widest border border-primary/20">
-                                                    Read Free • 🪙 {currentBook.downloadCost} Coins for PDF
-                                                </span>
+                                                <div className="h-8 px-4 rounded-full bg-primary/10 border border-primary/20 flex items-center gap-2 transition-all">
+                                                    <span className="text-[11px] font-black uppercase text-yellow-700 dark:text-primary tracking-widest pt-0.5">Read Free •</span>
+                                                    <PointsCoin size="sm" />
+                                                    <span className="text-[11px] font-black uppercase text-yellow-700 dark:text-primary tracking-widest pt-0.5">
+                                                        {currentBook.downloadCost} Coins for PDF
+                                                    </span>
+                                                </div>
                                             )}
 
                                             {currentBook.available && (
