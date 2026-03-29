@@ -228,15 +228,27 @@ export const TextbookViewer = () => {
                                     <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Loading TextBook...</span>
                                 </div>
                             )}
-                            <iframe
-                                id="pdf-viewer"
-                                src={`${book.pdfUrl}?v=nocache#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
-                                className={`w-full h-full border-0 transition-opacity duration-500 rounded-3xl ${iframeLoaded ? 'opacity-100' : 'opacity-0'}`}
-                                title={`${book.title} - Review Book`}
-                                onLoad={() => setIframeLoaded(true)}
-                                // Key fix: prevent default context menu and sandbox if possible to stop "Save As"
-                                // But toolbar=0 is the standard for hiding the browser download button
-                            />
+                            <div className="relative w-full h-full">
+                                <iframe
+                                    id="pdf-viewer"
+                                    src={`${book.pdfUrl}?v=nocache#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
+                                    className={`w-full h-full border-0 transition-opacity duration-500 rounded-3xl ${iframeLoaded ? 'opacity-100' : 'opacity-0'}`}
+                                    title={`${book.title} - Review Book`}
+                                    onLoad={() => setIframeLoaded(true)}
+                                />
+                                
+                                {/* 
+                                  HACK: Transparent overlay to block native download/print buttons 
+                                  while keeping page nav & zoom visible (usually on the left/center).
+                                  Most browser PDF viewers place download/print in the top-right.
+                                */}
+                                <div 
+                                    className="absolute top-0 right-0 w-[160px] h-[55px] z-50 pointer-events-auto bg-transparent cursor-default"
+                                    title="Navigation buttons are disabled in free mode"
+                                    onClick={(e) => e.stopPropagation()}
+                                    onContextMenu={(e) => e.preventDefault()}
+                                />
+                            </div>
                         </>
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full gap-6">
