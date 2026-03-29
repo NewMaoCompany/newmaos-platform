@@ -384,7 +384,7 @@ export const TopicDetail = () => {
                                                 </span>
                                             ) : (
                                                 <span className="text-xs font-black px-4 py-1.5 rounded-full bg-primary/10 text-yellow-700 dark:text-primary flex items-center gap-1 uppercase tracking-widest border border-primary/20">
-                                                    🪙 {currentBook.downloadCost} Coins to Unlock
+                                                    Read Free • 🪙 {currentBook.downloadCost} Coins for PDF
                                                 </span>
                                             )}
 

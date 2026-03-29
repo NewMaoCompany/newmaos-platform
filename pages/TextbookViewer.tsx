@@ -157,33 +157,15 @@ export const TextbookViewer = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        {/* Fullscreen toggle */}
-                        <button
-                            onClick={() => {
-                                const iframe = document.getElementById('pdf-viewer') as HTMLIFrameElement;
-                                if (iframe) {
-                                    if (document.fullscreenElement) {
-                                        document.exitFullscreen();
-                                    } else {
-                                        iframe.requestFullscreen?.();
-                                    }
-                                }
-                            }}
-                            className="w-11 h-11 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-white/10 transition-all shadow-sm"
-                            title="Fullscreen"
-                        >
-                            <span className="material-symbols-outlined text-lg">fullscreen</span>
-                        </button>
-
                         {/* Download Button */}
                         {book.available && (
                             <button
                                 onClick={handleDownload}
                                 disabled={isDownloading}
-                                className={`h-11 px-5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm ${
+                                className={`h-11 px-6 rounded-2xl font-bold text-sm flex items-center gap-2.5 transition-all shadow-sm ${
                                     isPurchased
                                         ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30'
-                                        : 'bg-primary border border-primary/20 text-text-main hover:brightness-105 shadow-md'
+                                        : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:-translate-y-0.5 shadow-md hover:shadow-lg'
                                 } ${isDownloading ? 'opacity-60 cursor-not-allowed' : ''}`}
                             >
                                 {isDownloading ? (
@@ -195,9 +177,9 @@ export const TextbookViewer = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <PointsCoin size="sm" />
-                                        <span>{book.downloadCost}</span>
-                                        <span>Unlock Download</span>
+                                        <span className="-mr-1"><PointsCoin size="sm" /></span>
+                                        <span className="font-black text-[15px]">{book.downloadCost}</span>
+                                        <span className="ml-1 opacity-90 border-l border-white/20 dark:border-black/10 pl-3">Unlock Download</span>
                                     </>
                                 )}
                             </button>
