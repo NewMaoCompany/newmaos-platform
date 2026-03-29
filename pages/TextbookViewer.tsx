@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../AppContext';
 import { TEXTBOOK_DATA, TextbookInfo } from '../constants';
 import { PointsCoin } from '../components/PointsCoin';
+import { Navbar } from '../components/Navbar';
 
 export const TextbookViewer = () => {
     const { courseType, unitNumber } = useParams<{ courseType: string; unitNumber: string }>();
@@ -125,128 +126,124 @@ export const TextbookViewer = () => {
     }
 
     return (
-        <div className="h-full w-full flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 overflow-hidden">
-            {/* Top Toolbar */}
-            <div className="h-16 min-h-[64px] flex items-center justify-between px-4 sm:px-6 border-b border-gray-200 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md z-20 shrink-0">
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
-                    >
-                        <span className="material-symbols-outlined text-lg">arrow_back</span>
-                    </button>
-                    <div className="flex items-center gap-2">
-                        <div
-                            className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm"
-                            style={{ background: book.coverColor }}
+        <div className="h-full bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 flex flex-col overflow-hidden">
+            <Navbar />
+            
+            <main className="flex-grow w-full max-w-7xl mx-auto px-6 py-8 flex flex-col overflow-hidden">
+                {/* Header Section */}
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 shrink-0">
+                    <div>
+                        <button
+                            onClick={() => navigate('/practice')}
+                            className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors mb-6"
                         >
-                            <span className="material-symbols-outlined text-[18px]">{book.icon}</span>
+                            <span className="material-symbols-outlined">arrow_back</span>
+                            Back to Practice Hub
+                        </button>
+                        
+                        <div className="flex items-center gap-3 mb-2">
+                            <div
+                                className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-lg shadow-sm"
+                                style={{ background: book.coverColor }}
+                            >
+                                <span className="material-symbols-outlined">{book.icon}</span>
+                            </div>
+                            <span className="text-sm font-bold uppercase tracking-wider text-gray-500">Unit {book.unitNumber} Textbook</span>
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-sm font-bold text-text-main dark:text-white leading-tight truncate max-w-[200px] sm:max-w-none">
-                                Unit {book.unitNumber}: {book.title}
-                            </span>
-                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                                {course} • {book.subtitle} • ~{book.pageCount} pages
-                            </span>
-                        </div>
+                        <h1 className="text-3xl md:text-4xl font-black tracking-tight">{book.title}</h1>
+                        <p className="text-sm font-bold text-gray-400 uppercase tracking-wider mt-2">
+                            {course} • {book.subtitle} • ~{book.pageCount} pages
+                        </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        {/* Fullscreen toggle */}
+                        <button
+                            onClick={() => {
+                                const iframe = document.getElementById('pdf-viewer') as HTMLIFrameElement;
+                                if (iframe) {
+                                    if (document.fullscreenElement) {
+                                        document.exitFullscreen();
+                                    } else {
+                                        iframe.requestFullscreen?.();
+                                    }
+                                }
+                            }}
+                            className="w-11 h-11 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-white/10 transition-all shadow-sm"
+                            title="Fullscreen"
+                        >
+                            <span className="material-symbols-outlined text-lg">fullscreen</span>
+                        </button>
+
+                        {/* Download Button */}
+                        {book.available && (
+                            <button
+                                onClick={handleDownload}
+                                disabled={isDownloading}
+                                className={`h-11 px-5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm ${
+                                    isPurchased
+                                        ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30'
+                                        : 'bg-primary border border-primary/20 text-text-main hover:brightness-105 shadow-md'
+                                } ${isDownloading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            >
+                                {isDownloading ? (
+                                    <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+                                ) : isPurchased ? (
+                                    <>
+                                        <span className="material-symbols-outlined text-[18px]">download</span>
+                                        <span>Download PDF</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <PointsCoin size="sm" />
+                                        <span>{book.downloadCost}</span>
+                                        <span>Unlock Download</span>
+                                    </>
+                                )}
+                            </button>
+                        )}
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    {/* Fullscreen toggle */}
-                    <button
-                        onClick={() => {
-                            const iframe = document.getElementById('pdf-viewer') as HTMLIFrameElement;
-                            if (iframe) {
-                                if (document.fullscreenElement) {
-                                    document.exitFullscreen();
-                                } else {
-                                    iframe.requestFullscreen?.();
-                                }
-                            }
-                        }}
-                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
-                        title="Fullscreen"
-                    >
-                        <span className="material-symbols-outlined text-lg">fullscreen</span>
-                    </button>
-
-                    {/* Download Button */}
-                    {book.available && (
-                        <button
-                            onClick={handleDownload}
-                            disabled={isDownloading}
-                            className={`h-9 px-4 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm ${
-                                isPurchased
-                                    ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30'
-                                    : 'bg-primary text-text-main hover:brightness-105'
-                            } ${isDownloading ? 'opacity-60 cursor-not-allowed' : ''}`}
-                        >
-                            {isDownloading ? (
-                                <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                            ) : isPurchased ? (
-                                <>
-                                    <span className="material-symbols-outlined text-[16px]">download</span>
-                                    <span className="hidden sm:inline">Download</span>
-                                </>
-                            ) : (
-                                <>
-                                    <PointsCoin size="sm" />
-                                    <span>{book.downloadCost}</span>
-                                    <span className="hidden sm:inline">Download</span>
-                                </>
+                {/* PDF Viewer - Flex-1 to take remaining height */}
+                <div className="flex-1 min-h-0 bg-gray-100 dark:bg-[#1a1c23] rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden relative shadow-inner">
+                    {book.available ? (
+                        <>
+                            {!iframeLoaded && (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10">
+                                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                    <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Loading TextBook...</span>
+                                </div>
                             )}
-                        </button>
+                            <iframe
+                                id="pdf-viewer"
+                                src={`${book.pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
+                                className={`w-full h-full border-0 transition-opacity duration-500 rounded-3xl ${iframeLoaded ? 'opacity-100' : 'opacity-0'}`}
+                                title={`${book.title} - Review Book`}
+                                onLoad={() => setIframeLoaded(true)}
+                            />
+                        </>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center h-full gap-6">
+                            <div
+                                className="w-24 h-32 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden"
+                                style={{ background: `linear-gradient(135deg, ${book.coverColor}22, ${book.coverColor}44)` }}
+                            >
+                                <span className="material-symbols-outlined text-5xl" style={{ color: book.coverColor }}>menu_book</span>
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                                    <span className="material-symbols-outlined text-4xl text-white/80">lock</span>
+                                </div>
+                            </div>
+                            <div className="text-center">
+                                <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">Coming Soon</h3>
+                                <p className="text-gray-500 dark:text-gray-400 max-w-md">
+                                    Unit {book.unitNumber}: {book.title} review book is currently being prepared. Check back later!
+                                </p>
+                            </div>
+                        </div>
                     )}
                 </div>
-            </div>
-
-            {/* PDF Viewer */}
-            <div className="flex-1 relative bg-gray-100 dark:bg-gray-900 overflow-hidden">
-                {book.available ? (
-                    <>
-                        {!iframeLoaded && (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10">
-                                <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                                <span className="text-sm font-medium text-gray-500">Loading PDF...</span>
-                            </div>
-                        )}
-                        <iframe
-                            id="pdf-viewer"
-                            src={`${book.pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
-                            className={`w-full h-full border-0 transition-opacity duration-500 ${iframeLoaded ? 'opacity-100' : 'opacity-0'}`}
-                            title={`${book.title} - Review Book`}
-                            onLoad={() => setIframeLoaded(true)}
-                        />
-                    </>
-                ) : (
-                    <div className="flex flex-col items-center justify-center h-full gap-6">
-                        <div
-                            className="w-24 h-32 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden"
-                            style={{ background: `linear-gradient(135deg, ${book.coverColor}22, ${book.coverColor}44)` }}
-                        >
-                            <span className="material-symbols-outlined text-5xl" style={{ color: book.coverColor }}>menu_book</span>
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                                <span className="material-symbols-outlined text-4xl text-white/80">lock</span>
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">Coming Soon</h3>
-                            <p className="text-gray-500 dark:text-gray-400 max-w-md">
-                                Unit {book.unitNumber}: {book.title} review book is currently being prepared. Check back later!
-                            </p>
-                        </div>
-                        <button
-                            onClick={() => navigate(-1)}
-                            className="px-6 py-3 bg-gray-100 dark:bg-white/10 text-text-main dark:text-white font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-white/20 transition-colors flex items-center gap-2"
-                        >
-                            <span className="material-symbols-outlined text-lg">arrow_back</span>
-                            Go Back
-                        </button>
-                    </div>
-                )}
-            </div>
+            </main>
 
             {/* Purchase Confirmation Modal */}
             {showPurchaseModal && (

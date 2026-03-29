@@ -1891,13 +1891,7 @@ When you are ready to test your knowledge, click **Start Practice** below. Good 
                                 <span>{dynamicEstimatedMinutes || subTopicData?.estimatedMinutes || 10} MIN</span>
                             </div>
 
-                            {/* Type Badge */}
-                            {subTopicData?.hasLesson !== false && (
-                                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold uppercase tracking-wider">
-                                    <span className="material-symbols-outlined text-sm">menu_book</span>
-                                    <span>Lesson</span>
-                                </div>
-                            )}
+                            {/* Type Badge removed per user request */}
 
                             {/* Practice Badge - Show count */}
                             {subTopicData?.hasPractice !== false && (

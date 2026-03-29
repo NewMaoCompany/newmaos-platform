@@ -314,12 +314,7 @@ export const TopicDetail = () => {
                 </button>
 
                 <header className="mb-10">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-primary/20 rounded-lg text-yellow-700 dark:text-primary">
-                            <span className="material-symbols-outlined">topic</span>
-                        </div>
-                        <span className="text-sm font-bold uppercase tracking-wider text-gray-500">Unit Overview</span>
-                    </div>
+                    {/* UNIT OVERVIEW title removed per user request */}
                     <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">{unitContent.title}</h1>
                     <p className="text-xl text-text-secondary dark:text-gray-400 max-w-2xl leading-relaxed mb-6">
                         {unitContent.description}
@@ -335,65 +330,71 @@ export const TopicDetail = () => {
                         const isPurchased = typeof window !== 'undefined' && !!localStorage.getItem(`book_purchased_${user?.currentCourse || 'AB'}_${currentBook.unitNumber}`);
                         
                         return (
-                            <div className="mb-2 w-full sm:w-[320px]">
-                                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3 flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-[16px]">menu_book</span>
-                                    Unit Textbook
-                                </h3>
+                            <div className="mb-6 w-full">
                                 <div
                                     onClick={() => navigate(`/textbooks/${user?.currentCourse || 'AB'}/${currentBook.unitNumber}`)}
-                                    className={`group relative bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-4 cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-transparent hover:-translate-y-0.5 flex items-center gap-4 ${!currentBook.available ? 'opacity-60' : ''}`}
+                                    className={`group relative bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-3xl p-5 sm:p-6 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:border-transparent hover:-translate-y-1 flex flex-col sm:flex-row items-start sm:items-center gap-6 overflow-hidden ${!currentBook.available ? 'opacity-70' : ''}`}
                                     style={{
                                         '--hover-border': currentBook.coverColor
                                     } as React.CSSProperties}
                                 >
+                                    {/* Hover glow effect background */}
+                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
+                                         style={{ background: `linear-gradient(135deg, transparent, ${currentBook.coverColor})` }}>
+                                    </div>
+
                                     {/* Book Cover */}
                                     <div
-                                        className="w-16 h-24 shrink-0 rounded-xl flex items-center justify-center text-white shadow-md relative overflow-hidden transition-transform group-hover:scale-105 group-hover:shadow-lg"
+                                        className="w-24 h-36 shrink-0 rounded-2xl flex flex-col items-center justify-center text-white shadow-lg relative overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl group-hover:rotate-1"
                                         style={{ background: `linear-gradient(135deg, ${currentBook.coverColor}, ${currentBook.coverColor}cc)` }}
                                     >
-                                        <span className="material-symbols-outlined text-3xl opacity-90">{currentBook.icon}</span>
-                                        <div className="absolute bottom-0 left-0 right-0 bg-black/30 py-0.5 text-[8px] text-center font-black uppercase tracking-wider">
-                                            Unit {currentBook.unitNumber}
+                                        <span className="material-symbols-outlined text-4xl mb-2 opacity-90 transition-transform group-hover:scale-110">{currentBook.icon}</span>
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-white/90">Unit {currentBook.unitNumber}</span>
+                                        <div className="absolute bottom-0 left-0 right-0 bg-black/30 py-1 text-[8px] text-center font-black uppercase tracking-widest backdrop-blur-sm">
+                                            Textbook
                                         </div>
-                                        <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent pointer-events-none"></div>
+                                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8 pointer-events-none"></div>
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/20 pointer-events-none mix-blend-overlay"></div>
                                     </div>
 
                                     {/* Book Details */}
-                                    <div className="flex flex-col flex-1 min-w-0 py-1">
-                                        <span className="text-[14px] font-bold text-text-main dark:text-white leading-tight line-clamp-2 mb-1">
+                                    <div className="flex flex-col flex-1 min-w-0 w-full relative z-10">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                                                <span className="material-symbols-outlined text-[14px] align-text-bottom mr-1">menu_book</span>
+                                                Official Review Book
+                                            </span>
+                                        </div>
+                                        <h3 className="text-xl sm:text-2xl font-black text-text-main dark:text-white leading-tight mb-2 group-hover:text-primary transition-colors">
                                             {currentBook.title}
-                                        </span>
-                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">
-                                            {currentBook.subtitle} • {currentBook.pageCount} Pages
-                                        </span>
+                                        </h3>
+                                        <p className="text-sm font-medium text-text-secondary dark:text-gray-400 mb-6 max-w-xl leading-relaxed">
+                                            {currentBook.subtitle} • Includes ~{currentBook.pageCount} pages of comprehensive theories, examples, and exercises for Unit {currentBook.unitNumber}.
+                                        </p>
                                         
-                                        <div className="mt-auto flex items-center">
+                                        <div className="mt-auto flex flex-wrap items-center gap-3">
                                             {!currentBook.available ? (
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-400">
+                                                <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-500 uppercase tracking-widest">
                                                     Coming Soon
                                                 </span>
                                             ) : isPurchased ? (
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center gap-1">
-                                                    <span className="material-symbols-outlined text-[12px]">check_circle</span>
+                                                <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/50">
+                                                    <span className="material-symbols-outlined text-[14px]">check_circle</span>
                                                     Owned
                                                 </span>
                                             ) : (
-                                                <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-primary/10 text-yellow-700 dark:text-primary flex items-center gap-1">
-                                                    🪙 {currentBook.downloadCost}
+                                                <span className="text-xs font-black px-4 py-1.5 rounded-full bg-primary/10 text-yellow-700 dark:text-primary flex items-center gap-1 uppercase tracking-widest border border-primary/20">
+                                                    🪙 {currentBook.downloadCost} Coins to Unlock
+                                                </span>
+                                            )}
+
+                                            {currentBook.available && (
+                                                <span className="ml-auto text-sm font-black uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                                                    Read Book <span className="material-symbols-outlined text-lg">arrow_forward</span>
                                                 </span>
                                             )}
                                         </div>
                                     </div>
-
-                                    {/* Read Button on Hover */}
-                                    {currentBook.available && (
-                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 dark:group-hover:bg-white/5 rounded-2xl flex items-center justify-end pr-4 opacity-0 group-hover:opacity-100 transition-all pointer-events-none">
-                                            <span className="text-[12px] font-black uppercase tracking-wider text-primary bg-white dark:bg-surface-dark px-4 py-2 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 pointer-events-auto">
-                                                Read →
-                                            </span>
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         );
