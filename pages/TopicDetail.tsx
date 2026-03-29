@@ -383,13 +383,9 @@ export const TopicDetail = () => {
                                                     Owned
                                                 </span>
                                             ) : (
-                                                <div className="h-8 px-3 rounded-full bg-[#fdfaf3] border border-[#f5e6c4] flex items-center justify-center gap-1.5 shadow-sm min-w-max hover:brightness-95 transition-all">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-[#a1622b] mt-px"></div>
-                                                    <span className="material-symbols-outlined text-[#8a919e] text-[16px] drop-shadow-sm" style={{ fontVariationSettings: "'FILL' 1" }}>monetization_on</span>
-                                                    <span className="text-[11px] font-black uppercase text-[#a1622b] tracking-[0.05em] pt-0.5 whitespace-nowrap">
-                                                        {currentBook.downloadCost} COINS FOR PDF
-                                                    </span>
-                                                </div>
+                                                <span className="text-xs font-black px-4 py-1.5 rounded-full bg-primary/10 text-yellow-700 dark:text-primary flex items-center gap-1 uppercase tracking-widest border border-primary/20">
+                                                    Read Free • 🪙 {currentBook.downloadCost} Coins for PDF
+                                                </span>
                                             )}
 
                                             {currentBook.available && (

@@ -162,10 +162,10 @@ export const TextbookViewer = () => {
                             <button
                                 onClick={handleDownload}
                                 disabled={isDownloading}
-                                className={`h-10 px-5 rounded-full font-black text-[13px] flex items-center gap-2 transition-all shadow-sm tracking-[0.05em] uppercase ${
+                                className={`h-11 px-6 rounded-2xl font-bold text-sm flex items-center gap-2.5 transition-all shadow-sm ${
                                     isPurchased
                                         ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30'
-                                        : 'bg-[#fdfaf3] border border-[#f5e6c4] text-[#a1622b] hover:brightness-95'
+                                        : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:-translate-y-0.5 shadow-md hover:shadow-lg'
                                 } ${isDownloading ? 'opacity-60 cursor-not-allowed' : ''}`}
                             >
                                 {isDownloading ? (
@@ -173,13 +173,13 @@ export const TextbookViewer = () => {
                                 ) : isPurchased ? (
                                     <>
                                         <span className="material-symbols-outlined text-[18px]">download</span>
-                                        <span className="pt-0.5">DOWNLOAD PDF</span>
+                                        <span>Download PDF</span>
                                     </>
                                 ) : (
                                     <>
-                                        <div className="w-1.5 h-1.5 rounded-full bg-[#a1622b] mt-[1px]"></div>
-                                        <span className="material-symbols-outlined text-[#8a919e] text-[20px] drop-shadow-sm ml-[-2px] mr-[-2px]" style={{ fontVariationSettings: "'FILL' 1" }}>monetization_on</span>
-                                        <span className="pt-0.5 whitespace-nowrap">{book.downloadCost} COINS FOR PDF</span>
+                                        <span className="-mr-1"><PointsCoin size="sm" /></span>
+                                        <span className="font-black text-[15px]">{book.downloadCost}</span>
+                                        <span className="ml-1 opacity-90 border-l border-white/20 dark:border-black/10 pl-3">Unlock Download</span>
                                     </>
                                 )}
                             </button>
@@ -199,7 +199,7 @@ export const TextbookViewer = () => {
                             )}
                             <iframe
                                 id="pdf-viewer"
-                                src={`${book.pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
+                                src={`${book.pdfUrl}?v=nocache#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
                                 className={`w-full h-full border-0 transition-opacity duration-500 rounded-3xl ${iframeLoaded ? 'opacity-100' : 'opacity-0'}`}
                                 title={`${book.title} - Review Book`}
                                 onLoad={() => setIframeLoaded(true)}
