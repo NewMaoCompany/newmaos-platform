@@ -483,8 +483,9 @@ export const TEXTBOOK_DATA: Record<'AB' | 'BC', TextbookInfo[]> = {
   ],
   BC: [
     { unitId: 'Both_Limits', unitNumber: 1, title: 'Limits and Continuity', subtitle: 'Review Book', pdfUrl: '/books/BC_Unit_1.pdf', available: true, downloadCost: 99, pageCount: 24, coverColor: '#6366f1', icon: 'waves' },
-    { unitId: 'Both_Derivatives', unitNumber: 2, title: 'Differentiation: Definition', subtitle: 'Review Book', pdfUrl: '/books/BC_Unit_2.pdf', available: false, downloadCost: 99, pageCount: 28, coverColor: '#f59e0b', icon: 'trending_up' },
-    { unitId: 'Both_Composite', unitNumber: 3, title: 'Composite, Implicit & Inverse', subtitle: 'Review Book', pdfUrl: '/books/BC_Unit_3.pdf', available: false, downloadCost: 99, pageCount: 22, coverColor: '#10b981', icon: 'hub' },
+    { unitId: 'Both_Derivatives', unitNumber: 2, title: 'Differentiation: Definition', subtitle: 'Review Book', pdfUrl: '/books/BC_Unit_2.pdf', available: true, downloadCost: 99, pageCount: 28, coverColor: '#f59e0b', icon: 'trending_up' },
+    { unitId: 'Both_Composite', unitNumber: 3, title: 'Composite, Implicit & Inverse', subtitle: 'Review Book', pdfUrl: '/books/BC_Unit_3.pdf', available: true, downloadCost: 99, pageCount: 22, coverColor: '#10b981', icon: 'hub' },
+
     { unitId: 'Both_Applications', unitNumber: 4, title: 'Contextual Applications', subtitle: 'Review Book', pdfUrl: '/books/BC_Unit_4.pdf', available: false, downloadCost: 99, pageCount: 26, coverColor: '#ef4444', icon: 'speed' },
     { unitId: 'Both_Analytical', unitNumber: 5, title: 'Analytical Applications', subtitle: 'Review Book', pdfUrl: '/books/BC_Unit_5.pdf', available: false, downloadCost: 99, pageCount: 30, coverColor: '#8b5cf6', icon: 'insights' },
     { unitId: 'Both_Integration', unitNumber: 6, title: 'Integration & Accumulation', subtitle: 'Review Book', pdfUrl: '/books/BC_Unit_6.pdf', available: false, downloadCost: 99, pageCount: 28, coverColor: '#06b6d4', icon: 'waterfall_chart' },

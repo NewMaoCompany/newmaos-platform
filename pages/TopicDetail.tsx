@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { useApp } from '../AppContext';
-import { COURSE_CONTENT_DATA } from '../constants';
+import { COURSE_CONTENT_DATA, TEXTBOOK_DATA } from '../constants';
 import { SubTopicProgress, UserSectionProgress, SubTopic, SessionMode } from '../types';
 import { supabase } from '../src/services/supabaseClient';
 import { ConfirmModal } from '../components/ConfirmModal';
@@ -325,6 +325,79 @@ export const TopicDetail = () => {
                         {unitContent.description}
                     </p>
 
+                    {/* REVIEW BOOK INJECTION */}
+                    {(() => {
+                        const courseBooks = TEXTBOOK_DATA[user?.currentCourse || 'AB'] || [];
+                        const currentBook = courseBooks.find(b => b.unitId === (effectiveUnitId || unitId));
+                        
+                        if (!currentBook) return null;
+                        
+                        const isPurchased = typeof window !== 'undefined' && !!localStorage.getItem(`book_purchased_${user?.currentCourse || 'AB'}_${currentBook.unitNumber}`);
+                        
+                        return (
+                            <div className="mb-2 w-full sm:w-[320px]">
+                                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3 flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-[16px]">menu_book</span>
+                                    Unit Textbook
+                                </h3>
+                                <div
+                                    onClick={() => navigate(`/textbooks/${user?.currentCourse || 'AB'}/${currentBook.unitNumber}`)}
+                                    className={`group relative bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-4 cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-transparent hover:-translate-y-0.5 flex items-center gap-4 ${!currentBook.available ? 'opacity-60' : ''}`}
+                                    style={{
+                                        '--hover-border': currentBook.coverColor
+                                    } as React.CSSProperties}
+                                >
+                                    {/* Book Cover */}
+                                    <div
+                                        className="w-16 h-24 shrink-0 rounded-xl flex items-center justify-center text-white shadow-md relative overflow-hidden transition-transform group-hover:scale-105 group-hover:shadow-lg"
+                                        style={{ background: `linear-gradient(135deg, ${currentBook.coverColor}, ${currentBook.coverColor}cc)` }}
+                                    >
+                                        <span className="material-symbols-outlined text-3xl opacity-90">{currentBook.icon}</span>
+                                        <div className="absolute bottom-0 left-0 right-0 bg-black/30 py-0.5 text-[8px] text-center font-black uppercase tracking-wider">
+                                            Unit {currentBook.unitNumber}
+                                        </div>
+                                        <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent pointer-events-none"></div>
+                                    </div>
+
+                                    {/* Book Details */}
+                                    <div className="flex flex-col flex-1 min-w-0 py-1">
+                                        <span className="text-[14px] font-bold text-text-main dark:text-white leading-tight line-clamp-2 mb-1">
+                                            {currentBook.title}
+                                        </span>
+                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+                                            {currentBook.subtitle} • {currentBook.pageCount} Pages
+                                        </span>
+                                        
+                                        <div className="mt-auto flex items-center">
+                                            {!currentBook.available ? (
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-400">
+                                                    Coming Soon
+                                                </span>
+                                            ) : isPurchased ? (
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center gap-1">
+                                                    <span className="material-symbols-outlined text-[12px]">check_circle</span>
+                                                    Owned
+                                                </span>
+                                            ) : (
+                                                <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-primary/10 text-yellow-700 dark:text-primary flex items-center gap-1">
+                                                    🪙 {currentBook.downloadCost}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Read Button on Hover */}
+                                    {currentBook.available && (
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 dark:group-hover:bg-white/5 rounded-2xl flex items-center justify-end pr-4 opacity-0 group-hover:opacity-100 transition-all pointer-events-none">
+                                            <span className="text-[12px] font-black uppercase tracking-wider text-primary bg-white dark:bg-surface-dark px-4 py-2 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 pointer-events-auto">
+                                                Read →
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })()}
 
                 </header>
 
