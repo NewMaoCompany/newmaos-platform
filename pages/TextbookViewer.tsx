@@ -157,38 +157,69 @@ export const TextbookViewer = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        {/* Download Button */}
+                        {/* Fullscreen toggle */}
+                        <button
+                            onClick={() => {
+                                const container = document.getElementById('viewer-container');
+                                if (container) {
+                                    if (document.fullscreenElement) {
+                                        document.exitFullscreen();
+                                    } else {
+                                        container.requestFullscreen?.();
+                                    }
+                                }
+                            }}
+                            className="w-11 h-11 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-white/10 transition-all shadow-sm"
+                            title="Fullscreen"
+                        >
+                            <span className="material-symbols-outlined text-lg text-gray-600 dark:text-gray-300">fullscreen</span>
+                        </button>
+
+                        {/* Purchase & Download Logic */}
                         {book.available && (
-                            <button
-                                onClick={handleDownload}
-                                disabled={isDownloading}
-                                className={`h-11 px-6 rounded-2xl font-bold text-sm flex items-center gap-2.5 transition-all shadow-sm ${
-                                    isPurchased
-                                        ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30'
-                                        : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:-translate-y-0.5 shadow-md hover:shadow-lg'
-                                } ${isDownloading ? 'opacity-60 cursor-not-allowed' : ''}`}
-                            >
-                                {isDownloading ? (
-                                    <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                                ) : isPurchased ? (
+                            <div className="flex items-center gap-3">
+                                {isPurchased ? (
                                     <>
-                                        <span className="material-symbols-outlined text-[18px]">download</span>
-                                        <span>Download PDF</span>
+                                        <button
+                                            onClick={handleDownload}
+                                            disabled={isDownloading}
+                                            className="h-11 px-5 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 font-bold text-sm flex items-center gap-2 hover:bg-green-100 dark:hover:bg-green-900/30 transition-all shadow-sm"
+                                        >
+                                            <span className="material-symbols-outlined text-[18px]">download</span>
+                                            <span>Download PDF</span>
+                                        </button>
+                                        <button
+                                            onClick={() => window.open(book.pdfUrl, '_blank')}
+                                            className="h-11 px-5 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 font-bold text-sm flex items-center gap-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all shadow-sm"
+                                        >
+                                            <span className="material-symbols-outlined text-[18px]">add_to_drive</span>
+                                            <span className="hidden sm:inline">Open to Save</span>
+                                        </button>
                                     </>
                                 ) : (
-                                    <>
-                                        <span className="-mr-1"><PointsCoin size="sm" /></span>
-                                        <span className="font-black text-[15px]">{book.downloadCost}</span>
-                                        <span className="ml-1 opacity-90 border-l border-white/20 dark:border-black/10 pl-3">Unlock Download</span>
-                                    </>
+                                    <button
+                                        onClick={handleDownload}
+                                        disabled={isDownloading}
+                                        className={`h-11 px-6 rounded-2xl font-bold text-sm flex items-center gap-2.5 transition-all shadow-sm bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:-translate-y-0.5 shadow-md hover:shadow-lg ${isDownloading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                    >
+                                        {isDownloading ? (
+                                            <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+                                        ) : (
+                                            <>
+                                                <span className="-mr-1"><PointsCoin size="sm" /></span>
+                                                <span className="font-black text-[15px]">{book.downloadCost}</span>
+                                                <span className="ml-1 opacity-90 border-l border-white/20 dark:border-black/10 pl-3">Unlock Download</span>
+                                            </>
+                                        )}
+                                    </button>
                                 )}
-                            </button>
+                            </div>
                         )}
                     </div>
                 </div>
 
                 {/* PDF Viewer - Flex-1 to take remaining height */}
-                <div className="flex-1 min-h-0 bg-gray-100 dark:bg-[#1a1c23] rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden relative shadow-inner">
+                <div id="viewer-container" className="flex-1 min-h-0 bg-gray-100 dark:bg-[#1a1c23] rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden relative shadow-inner">
                     {book.available ? (
                         <>
                             {!iframeLoaded && (
@@ -199,10 +230,12 @@ export const TextbookViewer = () => {
                             )}
                             <iframe
                                 id="pdf-viewer"
-                                src={`${book.pdfUrl}?v=nocache#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
+                                src={`${book.pdfUrl}?v=nocache#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
                                 className={`w-full h-full border-0 transition-opacity duration-500 rounded-3xl ${iframeLoaded ? 'opacity-100' : 'opacity-0'}`}
                                 title={`${book.title} - Review Book`}
                                 onLoad={() => setIframeLoaded(true)}
+                                // Key fix: prevent default context menu and sandbox if possible to stop "Save As"
+                                // But toolbar=0 is the standard for hiding the browser download button
                             />
                         </>
                     ) : (
