@@ -400,7 +400,7 @@ export const TopicDetail = () => {
                                                 {currentBook.title}
                                             </h3>
                                             <p className="text-sm font-medium text-text-secondary dark:text-gray-400 mb-6 max-w-xl leading-relaxed">
-                                                Complete access includes premium theory summaries, concept maps, and high-quality practice problems for Unit {currentBook.unitNumber}.
+                                                Read the complete Unit {currentBook.unitNumber} review book for free in your browser. Premium PDF download and Google Drive access are available for offline study.
                                             </p>
                                             
                                             <div className="mt-auto flex flex-wrap items-center gap-3">
@@ -408,31 +408,36 @@ export const TopicDetail = () => {
                                                     <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-500 uppercase tracking-widest">
                                                         Coming Soon
                                                     </span>
-                                                ) : isPurchased ? (
-                                                    <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/50">
-                                                        <span className="material-symbols-outlined text-[14px]">check_circle</span>
-                                                        UNLOCKED
-                                                    </span>
                                                 ) : (
-                                                    <div className="h-8 px-4 rounded-full bg-gray-900 dark:bg-white flex items-center gap-2 transition-all shadow-md">
-                                                        {isFirstBookFree ? (
-                                                            <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
-                                                                Unlock for Free (First Book Deal)
-                                                            </span>
-                                                        ) : (
-                                                            <>
-                                                                <PointsCoin size="sm" />
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/50">
+                                                            <span className="material-symbols-outlined text-[14px]">menu_book</span>
+                                                            READ FREE
+                                                        </span>
+                                                        <div className="h-8 px-4 rounded-full bg-gray-900 dark:bg-white flex items-center gap-2 transition-all shadow-md">
+                                                            {isPurchased ? (
                                                                 <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
-                                                                    Unlock for {currentBook.downloadCost} Coins
+                                                                    PDF UNLOCKED
                                                                 </span>
-                                                            </>
-                                                        )}
+                                                            ) : isFirstBookFree ? (
+                                                                <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
+                                                                    FREE PDF DOWNLOAD
+                                                                </span>
+                                                            ) : (
+                                                                <>
+                                                                    <PointsCoin size="sm" />
+                                                                    <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
+                                                                        {currentBook.downloadCost} Coins for PDF
+                                                                    </span>
+                                                                </>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 )}
 
                                                 {currentBook.available && (
                                                     <span className="ml-auto text-sm font-black uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                                                        {isPurchased ? 'View Book' : 'Unlock Access'} <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                                                        {isPurchased ? 'View Book' : 'Start Reading'} <span className="material-symbols-outlined text-lg">arrow_forward</span>
                                                     </span>
                                                 )}
                                             </div>

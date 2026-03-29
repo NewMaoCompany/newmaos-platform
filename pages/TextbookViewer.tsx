@@ -88,7 +88,6 @@ export const TextbookViewer = () => {
             const { supabase } = await import('../src/services/supabaseClient');
             
             // Insert a record into points_ledger
-            // If it's the first book, amount is 0
             const { error: insertError } = await supabase
                 .from('points_ledger')
                 .insert({
@@ -96,8 +95,8 @@ export const TextbookViewer = () => {
                     amount: -cost,
                     type: 'book_download',
                     description: isFirstBookFree 
-                        ? `FREE First Book: ${course} Unit ${unitNum} - ${book.title}`
-                        : `Purchased: ${course} Unit ${unitNum} - ${book.title}`,
+                        ? `FREE First Download: ${course} Unit ${unitNum} - ${book.title}`
+                        : `Downloaded: ${course} Unit ${unitNum} - ${book.title} (99 Coins)`,
                     source_id: `book_${course}_${unitNum}`
                 });
 
@@ -111,7 +110,7 @@ export const TextbookViewer = () => {
                 triggerCoinAnimation(cost, btnRect.left + btnRect.width / 2, btnRect.top + btnRect.height / 2, 'spend');
             }
 
-            // Mark as purchased
+            // Mark as purchased (unlocked download/drive)
             localStorage.setItem(purchaseKey, new Date().toISOString());
             setIsPurchased(true);
             setShowPurchaseModal(false);
@@ -120,8 +119,11 @@ export const TextbookViewer = () => {
             // Refresh points balance
             await fetchUserPoints();
 
-            // Success feedback
-            setIsDownloading(false);
+            // Auto-trigger download after short delay
+            setTimeout(() => {
+                triggerDownload();
+                setIsDownloading(false);
+            }, 1000);
         } catch (err) {
             console.error('Purchase error:', err);
             setPurchaseError('Purchase failed. Please try again.');
@@ -207,50 +209,51 @@ export const TextbookViewer = () => {
                             <span className="material-symbols-outlined text-lg text-gray-600 dark:text-gray-300">fullscreen</span>
                         </button>
 
-                        {/* Download Logic (Always Visible After Unit Purchase) */}
-                        {book.available && isPurchased && (
+                        {/* Download Logic (Always Visible, Gates behind coins if not purchased) */}
+                        {book.available && (
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={handleDownload}
                                     disabled={isDownloading}
-                                    className="h-11 px-5 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 font-bold text-sm flex items-center gap-2 hover:bg-green-100 dark:hover:bg-green-900/30 transition-all shadow-sm"
+                                    className={`h-11 px-5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm ${
+                                        isPurchased 
+                                            ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30' 
+                                            : 'bg-primary text-text-main shadow-md hover:brightness-105 active:scale-95'
+                                    }`}
                                 >
                                     <span className="material-symbols-outlined text-[18px]">download</span>
-                                    <span>Download PDF</span>
+                                    <span>{isPurchased ? 'Download PDF' : 'Unlock Download'}</span>
+                                    {!isPurchased && (
+                                        <span className="ml-1 px-1.5 py-0.5 bg-black/10 rounded-lg text-[10px]">
+                                            {isFirstBookFree ? 'FREE' : `${book.downloadCost}pt`}
+                                        </span>
+                                    )}
                                 </button>
                                 <button
-                                    onClick={() => window.open(book.pdfUrl, '_blank')}
-                                    className="h-11 px-5 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 font-bold text-sm flex items-center gap-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all shadow-sm"
+                                    onClick={() => {
+                                        if (isPurchased) {
+                                            window.open(book.pdfUrl, '_blank');
+                                        } else {
+                                            setShowPurchaseModal(true);
+                                        }
+                                    }}
+                                    className={`h-11 px-5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm ${
+                                        isPurchased
+                                            ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30'
+                                            : 'bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10'
+                                    }`}
                                 >
                                     <span className="material-symbols-outlined text-[18px]">add_to_drive</span>
-                                    <span className="hidden sm:inline">Open to Save</span>
+                                    <span className="hidden sm:inline">{isPurchased ? 'Open to Save' : 'Save to Drive'}</span>
                                 </button>
                             </div>
                         )}
                     </div>
                 </div>
 
-                {/* CONTENT AREA: Iframe (if purchased) OR Lock Screen (if not) */}
+                {/* PDF Viewer - Always Visible */}
                 <div id="viewer-container" className="flex-1 min-h-0 bg-gray-100 dark:bg-[#1a1c23] rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden relative shadow-inner">
-                    {!book.available ? (
-                        <div className="flex flex-col items-center justify-center h-full gap-6 p-8">
-                            <div
-                                className="w-24 h-32 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden"
-                                style={{ background: `linear-gradient(135deg, ${book.coverColor}22, ${book.coverColor}44)` }}
-                            >
-                                <span className="material-symbols-outlined text-5xl" style={{ color: book.coverColor }}>menu_book</span>
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                                    <span className="material-symbols-outlined text-4xl text-white/80">lock</span>
-                                </div>
-                            </div>
-                            <div className="text-center">
-                                <h3 className="text-2xl font-black text-text-main dark:text-white mb-2 uppercase tracking-tight">Coming Soon</h3>
-                                <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto font-medium">
-                                    Unit {book.unitNumber}: {book.title} is currently under review. It will be available shortly!
-                                </p>
-                            </div>
-                        </div>
-                    ) : isPurchased ? (
+                    {book.available ? (
                         <>
                             {!iframeLoaded && (
                                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10 bg-gray-100 dark:bg-[#1a1c23]">
@@ -266,74 +269,41 @@ export const TextbookViewer = () => {
                                     title={`${book.title} - Review Book`}
                                     onLoad={() => setIframeLoaded(true)}
                                 />
+                                
+                                {/* 
+                                  HACK: Larger transparent overlay to block native PDF controls
+                                  Specifically covering: Add to Drive, Download, Print, and More icons (usually top-right).
+                                */}
                                 <div 
-                                    className="absolute top-0 right-0 w-[160px] h-[55px] z-50 pointer-events-auto bg-transparent cursor-default"
-                                    title="Navigation buttons are disabled in free mode"
-                                    onClick={(e) => e.stopPropagation()}
+                                    className="absolute top-0 right-0 w-[240px] h-[58px] z-50 pointer-events-auto bg-transparent cursor-default"
+                                    title={isPurchased ? "Please use the official buttons above for download/save" : "Unauthorized actions are blocked"}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (!isPurchased) {
+                                            setShowPurchaseModal(true);
+                                        }
+                                    }}
                                     onContextMenu={(e) => e.preventDefault()}
                                 />
                             </div>
                         </>
                     ) : (
-                        /* PREMIUM LOCKED UI */
-                        <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-gradient-to-b from-white to-gray-50 dark:from-[#1a1c23] dark:to-[#14161d]">
-                            <div className="relative mb-8">
-                                <div 
-                                    className="w-40 h-56 rounded-2xl flex flex-col items-center justify-center text-white shadow-2xl relative overflow-hidden transform -rotate-1 hover:rotate-0 transition-transform duration-500"
-                                    style={{ background: `linear-gradient(135deg, ${book.coverColor}, ${book.coverColor}dd)` }}
-                                >
-                                    <span className="material-symbols-outlined text-7xl mb-4 drop-shadow-lg opacity-90">{book.icon}</span>
-                                    <div className="absolute top-0 left-0 w-full h-1 bg-white/20" />
-                                    <div className="absolute bottom-0 left-0 right-0 bg-black/40 py-2.5 backdrop-blur-md">
-                                        <p className="text-[10px] font-black uppercase tracking-[0.2em]">AP CALC REVIEW</p>
-                                    </div>
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
-                                </div>
-                                <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-yellow-400 dark:bg-yellow-500 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-[#1a1c23] animate-bounce">
-                                    <span className="material-symbols-outlined text-gray-900 font-bold">lock</span>
+                        <div className="flex flex-col items-center justify-center h-full gap-6">
+                            <div
+                                className="w-24 h-32 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden"
+                                style={{ background: `linear-gradient(135deg, ${book.coverColor}22, ${book.coverColor}44)` }}
+                            >
+                                <span className="material-symbols-outlined text-5xl" style={{ color: book.coverColor }}>menu_book</span>
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                                    <span className="material-symbols-outlined text-4xl text-white/80">lock</span>
                                 </div>
                             </div>
-
-                            <h2 className="text-3xl font-black text-text-main dark:text-white mb-3">Unit {book.unitNumber}: {book.title}</h2>
-                            <p className="text-gray-500 dark:text-gray-400 font-bold max-w-md mb-10 leading-relaxed uppercase tracking-wide text-xs">
-                                Full review textbook includes summarized concepts, <br/>essential formulas, and practice strategies.
-                            </p>
-
-                            <button
-                                onClick={handleUnlock}
-                                disabled={isDownloading || hasAnyPurchase === null}
-                                className={`group relative px-10 py-5 rounded-2xl font-black text-lg shadow-xl transition-all hover:scale-105 active:scale-95 ${
-                                    isFirstBookFree 
-                                    ? 'bg-green-500 hover:bg-green-600 text-white shadow-green-500/20' 
-                                    : 'bg-primary hover:bg-primary-dark text-text-main shadow-primary/20'
-                                }`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    {isFirstBookFree ? (
-                                        <>
-                                            <span className="material-symbols-outlined">redeem</span>
-                                            <span>CLAIM FREE FIRST BOOK</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <PointsCoin size="md" />
-                                            <span>UNLOCK FOR {book.downloadCost} COINS</span>
-                                        </>
-                                    )}
-                                </div>
-                                {isFirstBookFree && (
-                                    <span className="absolute -top-3 -right-3 bg-yellow-400 text-gray-900 text-[10px] font-black px-2 py-1 rounded-full border-2 border-white dark:border-[#1a1c23] shadow-md">
-                                        NEW USER DEAL
-                                    </span>
-                                )}
-                            </button>
-                            
-                            {!isFirstBookFree && (
-                                <p className="mt-6 text-sm font-bold text-gray-400 flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-sm">verified_user</span>
-                                    ONE-TIME PURCHASE • PERMANENT ACCESS
+                            <div className="text-center">
+                                <h3 className="text-2xl font-black text-text-main dark:text-white mb-2 uppercase tracking-tight">Coming Soon</h3>
+                                <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto font-medium">
+                                    Unit {book.unitNumber}: {book.title} is currently under review. It will be available shortly!
                                 </p>
-                            )}
+                            </div>
                         </div>
                     )}
                 </div>
