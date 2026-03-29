@@ -1838,9 +1838,25 @@ export const Practice = () => {
     }
 
     if (viewState === 'lesson') {
+        const fallbackUnitTestContent = `### Unit Test Overview
+
+This comprehensive assessment is designed to evaluate your mastery of the entire unit. 
+
+**Format & Scope**
+- **Question Type:** AP-style multiple-choice questions.
+- **Coverage:** All concepts presented within this unit.
+- **Impact:** Your performance will update your overall unit mastery progress.
+
+**Preparation Guidelines**
+- Ensure you have an AP-approved calculator ready if permitted.
+- Have scratch paper and a pencil available for intermediate steps.
+- Review the unit materials beforehand if you feel unsure about any fundamental topics.
+
+When you are ready to test your knowledge, click **Start Practice** below. Good luck!`;
+
         // Strictly use the "Detailed Description (For Card)" from settings
         // If the user kept it EMPTY in Supabase, we show empty as requested.
-        const lessonContent = subTopicData?.description_2 || "No detailed description available.";
+        const lessonContent = subTopicData?.description_2 || (subTopicId === 'unit_test' ? fallbackUnitTestContent : "No detailed description available.");
 
         return (
             <div key={subTopicId} className="h-screen bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 flex flex-col overflow-hidden">
