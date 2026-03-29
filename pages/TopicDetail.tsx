@@ -549,87 +549,98 @@ export const TopicDetail = () => {
                     }
 
                     {/* UNIT TEST CARD */}
-                    <div
-                        id="subtopic-unit_test"
-                        onDoubleClick={() => handleSubTopicClick('unit_test')}
-                        className="group bg-gradient-to-br from-gray-50 to-gray-100 dark:from-surface-dark dark:to-black border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl p-6 md:p-8 hover:border-primary shadow-sm hover:shadow-lg transition-all flex flex-col md:flex-row gap-6 md:items-center relative overflow-hidden cursor-pointer"
-                    >
-                        <div className="flex-1 relative z-10 pl-4 md:pl-10">
-                            <h3 className="text-2xl font-black mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
-                                <span className="material-symbols-outlined">verified</span>
-                                {unitTestConfig.title}
-                            </h3>
-                            <p className="text-text-secondary dark:text-gray-400 font-medium mb-4">
-                                {unitTestConfig.description}
-                            </p>
-                            <div className="flex flex-wrap gap-2 mt-2">
-                                <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider text-gray-500">
-                                    <span className="flex items-center gap-1">
-                                        <span className="material-symbols-outlined text-[16px]">timer</span>
-                                        ~45-60 min
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                        <span className="material-symbols-outlined text-[16px]">grade</span>
-                                        Scored
-                                    </span>
-                                </div>
-                                {/* Unit Test Progress - Robust Check */}
-                                {(() => {
-                                    const status1 = getSectionStatus(`${effectiveUnitId}_unit_test`);
-                                    const status2 = getSectionStatus(`${unitId}_unit_test`);
-                                    const status3 = getSectionStatus('unit_test');
-                                    const finalStatus = status1 !== 'not_started' ? status1 : (status2 !== 'not_started' ? status2 : status3);
+                    {(() => {
+                        const s1 = getSectionStatus(`${effectiveUnitId}_unit_test`);
+                        const s2 = getSectionStatus(`${unitId}_unit_test`);
+                        const s3 = getSectionStatus('unit_test');
+                        
+                        let unitTestStatus = s1 !== 'not_started' ? s1 : (s2 !== 'not_started' ? s2 : 'not_started');
+                        let unitTestProgress = getSectionProgressData(
+                            s1 !== 'not_started' ? `${effectiveUnitId}_unit_test` :
+                                (s2 !== 'not_started' ? `${unitId}_unit_test` : null)
+                        );
 
-                                    const progress = getSectionProgressData(
-                                        status1 !== 'not_started' ? `${effectiveUnitId}_unit_test` :
-                                            (status2 !== 'not_started' ? `${unitId}_unit_test` : 'unit_test')
-                                    );
-                                    // Check if actually started (has answers OR moved past index 0)
-                                    // Robust check: Look for direct data OR firstAttempt data
-                                    const data = progress?.data;
-                                    const firstAttempt = data?.firstAttempt;
+                        // Only fallback to s3 'unit_test' if it shares the topic
+                        if (!unitTestProgress && s3 !== 'not_started') {
+                            const p3 = getSectionProgressData('unit_test');
+                            const p3Topic = p3?.data?.sessionTopic || '';
+                            const coreUnit = (effectiveUnitId || unitId || '').split('_').pop();
+                            if (p3Topic && coreUnit && p3Topic.includes(coreUnit)) {
+                                unitTestStatus = s3;
+                                unitTestProgress = p3;
+                            }
+                        }
 
-                                    // If soft reset happened, firstAttempt exists as not_started — treat as no progress
-                                    const isSoftReset = firstAttempt && firstAttempt.status === 'not_started';
+                        const progressData = unitTestProgress?.data;
+                        const firstAttempt = progressData?.firstAttempt;
 
-                                    const hasActualProgress = !isSoftReset && progress && (
-                                        progress.status === 'in_progress' ||
-                                        progress.correct_questions > 0 ||
-                                        // Check answers
-                                        (data?.userAnswers && Object.keys(data.userAnswers).length > 0) ||
-                                        (data?.questionResults && Object.keys(data.questionResults).length > 0) ||
-                                        (firstAttempt?.userAnswers && Object.keys(firstAttempt.userAnswers).length > 0) ||
-                                        (firstAttempt?.questionResults && Object.keys(firstAttempt.questionResults).length > 0) ||
-                                        // Check position
-                                        (typeof data?.currentQuestionIndex === 'number' && data.currentQuestionIndex > 0) ||
-                                        (typeof firstAttempt?.currentQuestionIndex === 'number' && firstAttempt.currentQuestionIndex > 0)
-                                    );
+                        // Calculate state machine (same as chapter)
+                        let buttonState: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' = 'NOT_STARTED';
 
-                                    // Calculate percent for Unit Test
-                                    const totalQuestions = progress?.total_questions || data?.firstAttempt?.questionIds?.length || data?.questionIds?.length || 30;
+                        if (firstAttempt && firstAttempt.status !== 'not_started') {
+                            if (firstAttempt.status === 'in_progress') {
+                                buttonState = 'IN_PROGRESS';
+                            } else if (firstAttempt.status === 'completed') {
+                                buttonState = 'COMPLETED';
+                            }
+                        }
 
-                                    // Calculate correct count looking in all places
-                                    let correctCount = progress?.correct_questions || 0;
-                                    if (correctCount === 0) {
-                                        const results = firstAttempt?.questionResults || data?.questionResults;
-                                        if (results) {
-                                            correctCount = Object.values(results).filter((r: any) => r === true || r === 'correct').length;
-                                        }
-                                    }
+                        // Fallback: Check legacy data structure 
+                        if (buttonState === 'NOT_STARTED' && unitTestProgress && !firstAttempt) {
+                            const hasLegacyData = unitTestProgress.correct_questions > 0 ||
+                                (progressData?.userAnswers && Object.keys(progressData.userAnswers).length > 0) ||
+                                (typeof progressData?.currentQuestionIndex === 'number' && progressData.currentQuestionIndex > 0);
 
-                                    const percent = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+                            if (unitTestStatus === 'completed') {
+                                buttonState = 'COMPLETED';
+                            } else if (hasLegacyData || unitTestStatus === 'in_progress') {
+                                buttonState = hasLegacyData ? 'IN_PROGRESS' : 'NOT_STARTED'; 
+                            }
+                        }
 
-                                    if (finalStatus === 'completed') {
-                                        return (
+                        // Calculate percent
+                        const totalQuestions = unitTestProgress?.total_questions || progressData?.firstAttempt?.questionIds?.length || progressData?.questionIds?.length || 30;
+                        let correctCount = unitTestProgress?.correct_questions || 0;
+                        if (correctCount === 0) {
+                            const results = firstAttempt?.questionResults || progressData?.questionResults;
+                            if (results) {
+                                correctCount = Object.values(results).filter((r: any) => r === true || r === 'correct').length;
+                            }
+                        }
+                        const percent = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+
+                        return (
+                            <div
+                                id="subtopic-unit_test"
+                                onDoubleClick={() => handleSubTopicClick('unit_test')}
+                                className="group bg-gradient-to-br from-gray-50 to-gray-100 dark:from-surface-dark dark:to-black border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl p-6 md:p-8 hover:border-primary shadow-sm hover:shadow-lg transition-all flex flex-col md:flex-row gap-6 md:items-center relative overflow-hidden cursor-pointer"
+                            >
+                                <div className="flex-1 relative z-10 pl-4 md:pl-10">
+                                    <h3 className="text-2xl font-black mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
+                                        <span className="material-symbols-outlined">verified</span>
+                                        {unitTestConfig.title}
+                                    </h3>
+                                    <p className="text-text-secondary dark:text-gray-400 font-medium mb-4">
+                                        {unitTestConfig.description}
+                                    </p>
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider text-gray-500">
+                                            <span className="flex items-center gap-1">
+                                                <span className="material-symbols-outlined text-[16px]">timer</span>
+                                                ~45-60 min
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <span className="material-symbols-outlined text-[16px]">grade</span>
+                                                Scored
+                                            </span>
+                                        </div>
+                                        {/* Progress Badge */}
+                                        {buttonState === 'COMPLETED' ? (
                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
                                                 <span className="material-symbols-outlined text-[12px]">check_circle</span>
                                                 Completed
                                             </span>
-                                        );
-                                    }
-
-                                    if (finalStatus === 'in_progress' && hasActualProgress) {
-                                        return (
+                                        ) : buttonState === 'IN_PROGRESS' ? (
                                             <div className="flex flex-col gap-1 w-32">
                                                 <span className="inline-flex items-center gap-2 px-2 py-1 rounded-xl text-[10px] font-bold bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
                                                     <span className="material-symbols-outlined text-[14px]">hourglass_top</span>
@@ -643,50 +654,14 @@ export const TopicDetail = () => {
                                                     ></div>
                                                 </div>
                                             </div>
-                                        );
-                                    }
-                                    return null;
-                                })()}
-                            </div>
-                        </div>
+                                        ) : null}
+                                    </div>
+                                </div>
 
-                        <div className="relative z-10 shrink-0 flex flex-col sm:flex-row gap-2">
-                            {(() => {
-                                const s1 = getSectionStatus(`${effectiveUnitId}_unit_test`);
-                                const s2 = getSectionStatus(`${unitId}_unit_test`);
-                                const s3 = getSectionStatus('unit_test');
-                                const finalStatus = s1 !== 'not_started' ? s1 : (s2 !== 'not_started' ? s2 : s3);
-
-                                const progress = getSectionProgressData(
-                                    s1 !== 'not_started' ? `${effectiveUnitId}_unit_test` :
-                                        (s2 !== 'not_started' ? `${unitId}_unit_test` : 'unit_test')
-                                );
-                                const isCompleted = finalStatus === 'completed';
-                                // Check if actually started (has answers)
-                                // Robust check: Look for direct data OR firstAttempt data
-                                const data = progress?.data;
-                                const firstAttempt = data?.firstAttempt;
-
-                                // If soft reset happened, firstAttempt exists as not_started — treat as no progress
-                                const isSoftReset2 = firstAttempt && firstAttempt.status === 'not_started';
-
-                                const hasActualProgress = !isSoftReset2 && progress && (
-                                    progress.status === 'in_progress' ||
-                                    progress.correct_questions > 0 ||
-                                    (data?.userAnswers && Object.keys(data.userAnswers).length > 0) ||
-                                    (data?.questionResults && Object.keys(data.questionResults).length > 0) ||
-                                    (firstAttempt?.userAnswers && Object.keys(firstAttempt.userAnswers).length > 0) ||
-                                    (firstAttempt?.questionResults && Object.keys(firstAttempt.questionResults).length > 0) ||
-                                    (typeof data?.currentQuestionIndex === 'number' && data.currentQuestionIndex > 0) ||
-                                    (typeof firstAttempt?.currentQuestionIndex === 'number' && firstAttempt.currentQuestionIndex > 0)
-                                );
-
-                                if (isCompleted || hasActualProgress) {
-                                    return (
+                                <div className="relative z-10 shrink-0 flex flex-col sm:flex-row gap-2">
+                                    {buttonState === 'COMPLETED' && (
                                         <>
-                                            {/* 1. Review Errors Button */}
-                                            {/* Only available if completed AND has errors */}
-                                            {isCompleted && checkHasErrors('unit_test') && (
+                                            {checkHasErrors('unit_test') && (
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); navigate('/review/unit_test'); }}
                                                     className="px-6 py-3 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-xl font-bold hover:bg-red-200 dark:hover:bg-red-900/30 transition-all flex items-center justify-center gap-2"
@@ -695,61 +670,49 @@ export const TopicDetail = () => {
                                                     Review Errors
                                                 </button>
                                             )}
-
-                                            {/* 2. Resume Test Button */}
-                                            {/* Only available if In Progress (not completed) */}
-                                            {!isCompleted && (
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); handleSubTopicClick('unit_test'); }}
-                                                    className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                                                >
-                                                    Resume Test
-                                                    <span className="material-symbols-outlined">history</span>
-                                                </button>
-                                            )}
-
-                                            {/* 3. Start Over Button */}
-                                            {isCompleted && (
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        // triggerConfirm implementation or direct restart
-                                                        handleSubTopicClick('unit_test', 'Adaptive', true);
-                                                    }}
-                                                    className="px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-700"
-                                                >
-                                                    <span className="material-symbols-outlined text-[18px]">refresh</span>
-                                                    Start Over
-                                                </button>
-                                            )}
-
-                                            {/* 4. View Summary Button */}
-                                            {isCompleted && (
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); navigate('/practice/session', { state: { topic: effectiveUnitId || unitId, subTopicId: 'unit_test', mode: 'Summary' } }); }}
-                                                    className="px-4 py-3 bg-gray-100 dark:bg-white/5 text-text-main dark:text-white rounded-xl font-bold hover:bg-primary hover:text-black transition-all flex items-center justify-center gap-2 text-sm border border-transparent hover:border-primary/20"
-                                                >
-                                                    <span className="material-symbols-outlined text-[18px]">analytics</span>
-                                                    Summary
-                                                </button>
-                                            )}
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleSubTopicClick('unit_test', 'Adaptive', true);
+                                                }}
+                                                className="px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-700"
+                                            >
+                                                <span className="material-symbols-outlined text-[18px]">refresh</span>
+                                                Start Over
+                                            </button>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); navigate('/practice/session', { state: { topic: effectiveUnitId || unitId, subTopicId: 'unit_test', mode: 'Summary' } }); }}
+                                                className="px-4 py-3 bg-gray-100 dark:bg-white/5 text-text-main dark:text-white rounded-xl font-bold hover:bg-primary hover:text-black transition-all flex items-center justify-center gap-2 text-sm border border-transparent hover:border-primary/20"
+                                            >
+                                                <span className="material-symbols-outlined text-[18px]">analytics</span>
+                                                Summary
+                                            </button>
                                         </>
-                                    );
-                                }
+                                    )}
 
-                                // 3. Start Test Button (Default if not completed and no progress)
-                                return (
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); handleSubTopicClick('unit_test'); }}
-                                        className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-all flex items-center gap-2 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-lg"
-                                    >
-                                        Start Test
-                                        <span className="material-symbols-outlined">play_arrow</span>
-                                    </button>
-                                );
-                            })()}
-                        </div>
-                    </div>
+                                    {buttonState === 'IN_PROGRESS' && (
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleSubTopicClick('unit_test'); }}
+                                            className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                                        >
+                                            Resume Test
+                                            <span className="material-symbols-outlined">history</span>
+                                        </button>
+                                    )}
+
+                                    {buttonState === 'NOT_STARTED' && (
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleSubTopicClick('unit_test'); }}
+                                            className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-all flex items-center gap-2 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-lg"
+                                        >
+                                            Start Test
+                                            <span className="material-symbols-outlined">play_arrow</span>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })()}
 
                 </section>
 
