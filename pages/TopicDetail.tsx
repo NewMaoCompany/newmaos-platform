@@ -78,6 +78,30 @@ export const TopicDetail = () => {
 
     const [unitProgress, setUnitProgress] = useState<any>(null);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [hasAnyPurchase, setHasAnyPurchase] = useState<boolean | null>(null);
+
+    // Check for first book free eligibility
+    useEffect(() => {
+        const checkFirstBook = async () => {
+            if (!user?.id) return;
+            try {
+                const { supabase } = await import('../src/services/supabaseClient');
+                const { data, error } = await supabase
+                    .from('points_ledger')
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .eq('type', 'book_download')
+                    .limit(1);
+                
+                if (!error) {
+                    setHasAnyPurchase(data && data.length > 0);
+                }
+            } catch (err) {
+                setHasAnyPurchase(false);
+            }
+        };
+        checkFirstBook();
+    }, [user?.id]);
 
     useEffect(() => {
         if (effectiveUnitId && user?.id) {
@@ -321,89 +345,102 @@ export const TopicDetail = () => {
                         {unitContent.description}
                     </p>
 
-                    {/* REVIEW BOOK INJECTION */}
-                    {(() => {
-                        const courseBooks = TEXTBOOK_DATA[user?.currentCourse || 'AB'] || [];
-                        const currentBook = courseBooks.find(b => b.unitId === (effectiveUnitId || unitId));
-                        
-                        if (!currentBook) return null;
-                        
-                        const isPurchased = typeof window !== 'undefined' && !!localStorage.getItem(`book_purchased_${user?.currentCourse || 'AB'}_${currentBook.unitNumber}`);
-                        
-                        return (
-                            <div className="mb-6 w-full">
-                                <div
-                                    onClick={() => navigate(`/textbooks/${user?.currentCourse || 'AB'}/${currentBook.unitNumber}`)}
-                                    className={`group relative bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-3xl p-5 sm:p-6 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:border-transparent hover:-translate-y-1 flex flex-col sm:flex-row items-start sm:items-center gap-6 overflow-hidden ${!currentBook.available ? 'opacity-70' : ''}`}
-                                    style={{
-                                        '--hover-border': currentBook.coverColor
-                                    } as React.CSSProperties}
-                                >
-                                    {/* Hover glow effect background */}
-                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
-                                         style={{ background: `linear-gradient(135deg, transparent, ${currentBook.coverColor})` }}>
-                                    </div>
-
-                                    {/* Book Cover */}
+                        {/* REVIEW BOOK INJECTION */}
+                        {(() => {
+                            const courseBooks = TEXTBOOK_DATA[user?.currentCourse || 'AB'] || [];
+                            const currentBook = courseBooks.find(b => b.unitId === (effectiveUnitId || unitId));
+                            
+                            if (!currentBook) return null;
+                            
+                            const isPurchased = typeof window !== 'undefined' && !!localStorage.getItem(`book_purchased_${user?.currentCourse || 'AB'}_${currentBook.unitNumber}`);
+                            const isFirstBookFree = hasAnyPurchase === false;
+                            
+                            return (
+                                <div className="mb-6 w-full">
                                     <div
-                                        className="w-24 h-36 shrink-0 rounded-2xl flex flex-col items-center justify-center text-white shadow-lg relative overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl group-hover:rotate-1"
-                                        style={{ background: `linear-gradient(135deg, ${currentBook.coverColor}, ${currentBook.coverColor}cc)` }}
+                                        onClick={() => navigate(`/textbooks/${user?.currentCourse || 'AB'}/${currentBook.unitNumber}`)}
+                                        className={`group relative bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-3xl p-5 sm:p-6 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:border-transparent hover:-translate-y-1 flex flex-col sm:flex-row items-start sm:items-center gap-6 overflow-hidden ${!currentBook.available ? 'opacity-70' : ''}`}
+                                        style={{
+                                            '--hover-border': currentBook.coverColor
+                                        } as React.CSSProperties}
                                     >
-                                        <span className="material-symbols-outlined text-4xl mb-2 opacity-90 transition-transform group-hover:scale-110">{currentBook.icon}</span>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-white/90">Unit {currentBook.unitNumber}</span>
-                                        <div className="absolute bottom-0 left-0 right-0 bg-black/30 py-1 text-[8px] text-center font-black uppercase tracking-widest backdrop-blur-sm">
-                                            Textbook
+                                        {/* Hover glow effect background */}
+                                        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
+                                             style={{ background: `linear-gradient(135deg, transparent, ${currentBook.coverColor})` }}>
                                         </div>
-                                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8 pointer-events-none"></div>
-                                        <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/20 pointer-events-none mix-blend-overlay"></div>
-                                    </div>
 
-                                    {/* Book Details */}
-                                    <div className="flex flex-col flex-1 min-w-0 w-full relative z-10">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
-                                                <span className="material-symbols-outlined text-[14px] align-text-bottom mr-1">menu_book</span>
-                                                Official Review Book
-                                            </span>
+                                        {/* Book Cover */}
+                                        <div
+                                            className="w-24 h-36 shrink-0 rounded-2xl flex flex-col items-center justify-center text-white shadow-lg relative overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl group-hover:rotate-1"
+                                            style={{ background: `linear-gradient(135deg, ${currentBook.coverColor}, ${currentBook.coverColor}cc)` }}
+                                        >
+                                            <span className="material-symbols-outlined text-4xl mb-2 opacity-90 transition-transform group-hover:scale-110">{currentBook.icon}</span>
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/90">Unit {currentBook.unitNumber}</span>
+                                            <div className="absolute bottom-0 left-0 right-0 bg-black/30 py-1 text-[8px] text-center font-black uppercase tracking-widest backdrop-blur-sm">
+                                                Textbook
+                                            </div>
+                                            <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8 pointer-events-none"></div>
+                                            <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/20 pointer-events-none mix-blend-overlay"></div>
                                         </div>
-                                        <h3 className="text-xl sm:text-2xl font-black text-text-main dark:text-white leading-tight mb-2 group-hover:text-primary transition-colors">
-                                            {currentBook.title}
-                                        </h3>
-                                        <p className="text-sm font-medium text-text-secondary dark:text-gray-400 mb-6 max-w-xl leading-relaxed">
-                                            {currentBook.subtitle} • Includes ~{currentBook.pageCount} pages of comprehensive theories, examples, and exercises for Unit {currentBook.unitNumber}.
-                                        </p>
-                                        
-                                        <div className="mt-auto flex flex-wrap items-center gap-3">
-                                            {!currentBook.available ? (
-                                                <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-500 uppercase tracking-widest">
-                                                    Coming Soon
+
+                                        {/* Book Details */}
+                                        <div className="flex flex-col flex-1 min-w-0 w-full relative z-10">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                                                    <span className="material-symbols-outlined text-[14px] align-text-bottom mr-1">menu_book</span>
+                                                    Exclusive Review Book
                                                 </span>
-                                            ) : isPurchased ? (
-                                                <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/50">
-                                                    <span className="material-symbols-outlined text-[14px]">check_circle</span>
-                                                    Owned
-                                                </span>
-                                            ) : (
-                                                <div className="h-8 px-4 rounded-full bg-primary/10 border border-primary/20 flex items-center gap-2 transition-all">
-                                                    <span className="text-[11px] font-black uppercase text-yellow-700 dark:text-primary tracking-widest pt-0.5">Read Free •</span>
-                                                    <PointsCoin size="sm" />
-                                                    <span className="text-[11px] font-black uppercase text-yellow-700 dark:text-primary tracking-widest pt-0.5">
-                                                        {currentBook.downloadCost} Coins for PDF
+                                                {isFirstBookFree && (
+                                                    <span className="text-[10px] font-black px-2 py-0.5 bg-yellow-400 text-gray-900 rounded-lg uppercase tracking-wider animate-pulse">
+                                                        First Book Free
                                                     </span>
-                                                </div>
-                                            )}
+                                                )}
+                                            </div>
+                                            <h3 className="text-xl sm:text-2xl font-black text-text-main dark:text-white leading-tight mb-2 group-hover:text-primary transition-colors">
+                                                {currentBook.title}
+                                            </h3>
+                                            <p className="text-sm font-medium text-text-secondary dark:text-gray-400 mb-6 max-w-xl leading-relaxed">
+                                                Complete access includes premium theory summaries, concept maps, and high-quality practice problems for Unit {currentBook.unitNumber}.
+                                            </p>
+                                            
+                                            <div className="mt-auto flex flex-wrap items-center gap-3">
+                                                {!currentBook.available ? (
+                                                    <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-500 uppercase tracking-widest">
+                                                        Coming Soon
+                                                    </span>
+                                                ) : isPurchased ? (
+                                                    <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/50">
+                                                        <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                                                        UNLOCKED
+                                                    </span>
+                                                ) : (
+                                                    <div className="h-8 px-4 rounded-full bg-gray-900 dark:bg-white flex items-center gap-2 transition-all shadow-md">
+                                                        {isFirstBookFree ? (
+                                                            <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
+                                                                Unlock for Free (First Book Deal)
+                                                            </span>
+                                                        ) : (
+                                                            <>
+                                                                <PointsCoin size="sm" />
+                                                                <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
+                                                                    Unlock for {currentBook.downloadCost} Coins
+                                                                </span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                )}
 
-                                            {currentBook.available && (
-                                                <span className="ml-auto text-sm font-black uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                                                    Read Book <span className="material-symbols-outlined text-lg">arrow_forward</span>
-                                                </span>
-                                            )}
+                                                {currentBook.available && (
+                                                    <span className="ml-auto text-sm font-black uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                                                        {isPurchased ? 'View Book' : 'Unlock Access'} <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        );
-                    })()}
+                            );
+                        })()}
 
                 </header>
 
