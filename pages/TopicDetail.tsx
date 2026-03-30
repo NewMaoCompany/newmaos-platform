@@ -352,8 +352,9 @@ export const TopicDetail = () => {
                             
                             if (!currentBook) return null;
                             
-                            const isPurchased = typeof window !== 'undefined' && !!localStorage.getItem(`book_purchased_${user?.currentCourse || 'AB'}_${currentBook.unitNumber}`);
+                            const isUnlocked = typeof window !== 'undefined' && !!localStorage.getItem(`book_unlocked_${user?.currentCourse || 'AB'}_${currentBook.unitNumber}`);
                             const isFirstBookFree = hasAnyPurchase === false;
+                            const UNLOCK_COST = 19;
                             
                             return (
                                 <div className="mb-6 w-full">
@@ -390,7 +391,7 @@ export const TopicDetail = () => {
                                                     <span className="material-symbols-outlined text-[14px] align-text-bottom mr-1">menu_book</span>
                                                     Exclusive Review Book
                                                 </span>
-                                                {isFirstBookFree && (
+                                                {isFirstBookFree && !isUnlocked && (
                                                     <span className="text-[10px] font-black px-2 py-0.5 bg-yellow-400 text-gray-900 rounded-lg uppercase tracking-wider animate-pulse">
                                                         First Book Free
                                                     </span>
@@ -400,7 +401,10 @@ export const TopicDetail = () => {
                                                 {currentBook.title}
                                             </h3>
                                             <p className="text-sm font-medium text-text-secondary dark:text-gray-400 mb-6 max-w-xl leading-relaxed">
-                                                Read the complete Unit {currentBook.unitNumber} review book for free in your browser. Premium PDF download and Google Drive access are available for offline study.
+                                                {isUnlocked 
+                                                    ? `已解锁！点击即可打开 Unit ${currentBook.unitNumber} 复习教材阅读。` 
+                                                    : `解锁后即可在浏览器中阅读完整的 Unit ${currentBook.unitNumber} 复习教材。`
+                                                }
                                             </p>
                                             
                                             <div className="mt-auto flex flex-wrap items-center gap-3">
@@ -410,34 +414,31 @@ export const TopicDetail = () => {
                                                     </span>
                                                 ) : (
                                                     <div className="flex items-center gap-3">
-                                                        <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/50">
-                                                            <span className="material-symbols-outlined text-[14px]">menu_book</span>
-                                                            READ FREE
-                                                        </span>
-                                                        <div className="h-8 px-4 rounded-full bg-gray-900 dark:bg-white flex items-center gap-2 transition-all shadow-md">
-                                                            {isPurchased ? (
-                                                                <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
-                                                                    PDF UNLOCKED
+                                                        {isUnlocked ? (
+                                                            <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/50">
+                                                                <span className="material-symbols-outlined text-[14px]">lock_open</span>
+                                                                已解锁
+                                                            </span>
+                                                        ) : isFirstBookFree ? (
+                                                            <div className="h-8 px-4 rounded-full bg-yellow-400 flex items-center gap-2 transition-all shadow-md">
+                                                                <span className="text-[11px] font-black uppercase text-gray-900 tracking-widest pt-0.5">
+                                                                    🎉 免费领取
                                                                 </span>
-                                                            ) : isFirstBookFree ? (
+                                                            </div>
+                                                        ) : (
+                                                            <div className="h-8 px-4 rounded-full bg-gray-900 dark:bg-white flex items-center gap-2 transition-all shadow-md">
+                                                                <PointsCoin size="sm" />
                                                                 <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
-                                                                    FREE PDF DOWNLOAD
+                                                                    {UNLOCK_COST} Coins 解锁
                                                                 </span>
-                                                            ) : (
-                                                                <>
-                                                                    <PointsCoin size="sm" />
-                                                                    <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
-                                                                        {currentBook.downloadCost} Coins for PDF
-                                                                    </span>
-                                                                </>
-                                                            )}
-                                                        </div>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 )}
 
                                                 {currentBook.available && (
                                                     <span className="ml-auto text-sm font-black uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                                                        {isPurchased ? 'View Book' : 'Start Reading'} <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                                                        {isUnlocked ? '继续阅读' : '去解锁'} <span className="material-symbols-outlined text-lg">arrow_forward</span>
                                                     </span>
                                                 )}
                                             </div>
