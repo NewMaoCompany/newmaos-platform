@@ -99,9 +99,8 @@ export const Login = () => {
     const handleLoginSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 1. Check for Mandatory Consent first
+        // 1. Mandatory Consent Check
         if (!hasAgreed) {
-            setShowConsentModal(true);
             return;
         }
 
@@ -347,10 +346,30 @@ export const Login = () => {
                             </div>
 
                             <div className="pt-2">
+                                <label className="flex items-start gap-3 mt-2 mb-4 p-3 rounded-2xl bg-gray-50 dark:bg-[#1a1c23] border border-gray-100 dark:border-gray-800 transition-colors cursor-pointer">
+                                  <div className="flex-shrink-0 mt-0.5">
+                                    <input
+                                        type="checkbox"
+                                        checked={hasAgreed}
+                                        onChange={(e) => {
+                                            setHasAgreed(e.target.checked);
+                                            if (e.target.checked) {
+                                                localStorage.setItem('privacy_agreed_2026', 'true');
+                                            } else {
+                                                localStorage.removeItem('privacy_agreed_2026');
+                                            }
+                                        }}
+                                        className="w-5 h-5 rounded hover:ring-2 hover:ring-primary/50 text-primary bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-primary focus:ring-offset-0 transition-all cursor-pointer"
+                                    />
+                                  </div>
+                                  <span className="text-xs text-left text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
+                                    I acknowledge and agree to the <Link to="/privacy" className="text-primary hover:underline font-bold" onClick={(e) => e.stopPropagation()}>Privacy Policy</Link> and <Link to="/terms" className="text-primary hover:underline font-bold" onClick={(e) => e.stopPropagation()}>Terms of Service</Link>, including all standard data protection policies for educational tools.
+                                  </span>
+                                </label>
                                 <button
                                     type="submit"
-                                    disabled={isLoading}
-                                    className="relative w-full overflow-hidden rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-[#1c1a0d] shadow-sm transition-all duration-200 hover:bg-[#eaca05] hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                                    disabled={isLoading || !hasAgreed}
+                                    className="relative w-full overflow-hidden rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-[#1c1a0d] shadow-sm transition-all duration-200 hover:bg-[#eaca05] hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                                 >
                                     {isLoading ? (
                                         <>
