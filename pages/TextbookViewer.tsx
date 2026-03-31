@@ -197,17 +197,17 @@ export const TextbookViewer = () => {
                         {book.available && (
                             <button
                                 onClick={handleDownloadClick}
-                                disabled={isProcessing || purchasedBookCount === null}
-                                className={`h-11 px-5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-sm transition-all hover:-translate-y-0.5 ${(isProcessing || purchasedBookCount === null) ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed' : 'bg-primary text-[#1c1a0d] hover:brightness-105'}`}
+                                disabled={isProcessing || (isAuthenticated && purchasedBookCount === null)}
+                                className={`h-11 px-5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-sm transition-all hover:-translate-y-0.5 ${(isProcessing || (isAuthenticated && purchasedBookCount === null)) ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed' : 'bg-primary text-[#1c1a0d] hover:brightness-105'}`}
                             >
                                 {isProcessing ? (
                                     <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
                                 ) : (
                                     <span className="material-symbols-outlined text-[18px]">
-                                        {isDownloaded ? 'download' : (isFirstBookFree ? 'redeem' : 'lock')}
+                                        {!isAuthenticated ? 'lock' : (isDownloaded ? 'download' : (isFirstBookFree ? 'redeem' : 'lock'))}
                                     </span>
                                 )}
-                                <span>{isDownloaded ? 'Download PDF' : (purchasedBookCount === null ? 'Loading...' : (isFirstBookFree ? '1st Export FREE' : `Export PDF (${DOWNLOAD_COST} Coins)`))}</span>
+                                <span>{!isAuthenticated ? 'Sign In to Export' : (isDownloaded ? 'Download PDF' : (purchasedBookCount === null ? 'Loading...' : (isFirstBookFree ? '1st Export FREE' : `Export PDF (${DOWNLOAD_COST} Coins)`)))}</span>
                             </button>
                         )}
 
@@ -242,30 +242,12 @@ export const TextbookViewer = () => {
                                 </div>
                             )}
                             
-                            {/* Robust CSS Overlay to block the native browser PDF top toolbar (download/print buttons) */}
-                            <div 
-                                className="absolute top-0 inset-x-0 h-16 z-20 bg-transparent flex items-start justify-end"
-                                title="Download and Print are disabled. Use the Export PDF button above."
-                                onContextMenu={(e) => e.preventDefault()}
-                            >
-                                {/* This right overlay specifically blocks the typical location of native download/print icons */}
-                                <div className="w-48 h-full bg-transparent cursor-not-allowed"></div>
-                            </div>
-                            
-                            {/* Also block the bottom right floating toolbar often seen in some browsers */}
-                            <div 
-                                className="absolute bottom-0 right-0 w-24 h-24 z-20 bg-transparent cursor-not-allowed"
-                                title="Download and Print are disabled. Use the Export PDF button above."
-                                onContextMenu={(e) => e.preventDefault()}
-                            ></div>
-
                             <iframe
                                 id="pdf-viewer"
-                                src={`${book.pdfUrl}?v=nocache#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                                src={`${book.pdfUrl}?v=nocache#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
                                 className={`w-full h-full border-0 transition-opacity duration-500 rounded-3xl ${iframeLoaded ? 'opacity-100' : 'opacity-0'}`}
                                 title={`${book.title} - Review Book`}
                                 onLoad={() => setIframeLoaded(true)}
-                                onContextMenu={(e) => e.preventDefault()}
                             />
                         </>
                     ) : (
