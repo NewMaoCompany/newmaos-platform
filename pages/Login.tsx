@@ -36,14 +36,34 @@ export const Login = () => {
     const [hasAgreed, setHasAgreed] = useState(() => localStorage.getItem('privacy_agreed_2026') === 'true');
     const [showConsentModal, setShowConsentModal] = useState(false);
     const [acceptedCheckbox, setAcceptedCheckbox] = useState(false);
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
+    const scrollRef = React.useRef<HTMLDivElement>(null);
 
     // Auto-show consent modal if not agreed
     useEffect(() => {
-        if (!hasAgreed) {
+        const agreed = localStorage.getItem('privacy_agreed_2026') === 'true';
+        if (!agreed) {
             setShowConsentModal(true);
         }
-    }, [hasAgreed]);
+    }, []);
+
+    const handlePrivacyScroll = () => {
+        if (scrollRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+            // Check if user reached bottom with 10px tolerance for various zooms/displays
+            if (scrollHeight - scrollTop <= clientHeight + 10) {
+                setIsScrolledToBottom(true);
+            }
+        }
+    };
+
+    const handlePrivacyConfirm = () => {
+        if (acceptedCheckbox && isScrolledToBottom) {
+            localStorage.setItem('privacy_agreed_2026', 'true');
+            setHasAgreed(true);
+            setShowConsentModal(false);
+        }
+    };
 
     // Password Validation
     const passwordChecks = {
@@ -145,7 +165,6 @@ export const Login = () => {
         localStorage.setItem('privacy_agreed_2026', 'true');
         setHasAgreed(true);
         setShowConsentModal(false);
-        setIsExpanded(false);
         showToast('Privacy & Terms accepted.', 'success');
     };
 
@@ -602,87 +621,95 @@ export const Login = () => {
             {/* --- Mandatory Privacy Consent Modal --- */}
             {showConsentModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
-                    <div className={`bg-surface-light dark:bg-surface-dark w-full ${isExpanded ? 'max-w-2xl' : 'max-w-sm'} rounded-[32px] p-8 shadow-2xl border border-white/10 relative transition-all duration-500 ease-in-out animate-fade-in-up`}>
-                        {!isExpanded ? (
-                            <div className="flex flex-col items-center text-center">
-                                <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-text-main shadow-glow mb-6 rotate-3">
-                                    <span className="material-symbols-outlined text-4xl">verified_user</span>
-                                </div>
-                                <h3 className="text-2xl font-black text-text-main dark:text-white mb-3">Privacy & Terms</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 leading-relaxed px-2">
-                                    To protect your data and comply with educational standards (FERPA/COPPA), please acknowledge our policies.
-                                </p>
+                    <div className="bg-surface-light dark:bg-surface-dark w-full max-w-2xl rounded-[32px] p-6 md:p-8 shadow-2xl border border-white/10 relative flex flex-col max-h-[90vh] animate-fade-in-up">
+                        <div className="flex flex-col items-center text-center mb-6 shrink-0">
+                            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-text-main shadow-glow mb-4 rotate-3">
+                                <span className="material-symbols-outlined text-3xl">verified_user</span>
+                            </div>
+                            <h3 className="text-2xl font-black text-text-main dark:text-white mb-1">Privacy & Terms</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Please read and scroll to the bottom to acknowledge our policies.
+                            </p>
+                        </div>
 
-                                <div className="w-full mb-6">
-                                    <label className="flex items-center justify-center gap-3 cursor-pointer group hover:bg-black/5 dark:hover:bg-white/5 p-3 rounded-xl transition-all border border-transparent hover:border-primary/20">
-                                        <input
-                                            type="checkbox"
-                                            checked={acceptedCheckbox}
-                                            onChange={(e) => setAcceptedCheckbox(e.target.checked)}
-                                            className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
-                                        />
-                                        <span className="text-sm font-bold text-gray-600 dark:text-gray-300 group-hover:text-text-main transition-colors">
-                                            I agree to the Privacy Policy and Terms
-                                        </span>
-                                    </label>
-                                </div>
+                        {/* Scrollable Policy Content */}
+                        <div 
+                            ref={scrollRef}
+                            onScroll={handlePrivacyScroll}
+                            className="flex-1 overflow-y-auto pr-2 mb-6 bg-gray-50 dark:bg-black/20 rounded-2xl p-6 border border-gray-100 dark:border-white/5 custom-scrollbar text-left"
+                        >
+                            <div className="prose prose-sm dark:prose-invert max-w-none">
+                                <h4 className="text-lg font-bold mb-4">Privacy Policy</h4>
+                                <p className="mb-4">Last Updated: March 31, 2026</p>
+                                
+                                <h5 className="font-bold mt-4 mb-2">1. Introduction</h5>
+                                <p>NewMaoS Learning, Inc. ("NewMaoS," "we," "our," or "us") is committed to protecting your privacy and the privacy of students who use our platform. By using our Service, you consent to the data practices described in this policy.</p>
+                                <p className="mt-2 font-semibold">This policy is designed to comply with FERPA, COPPA, SOPPA, and applicable state student privacy laws.</p>
 
-                                <div className="flex flex-col gap-3 w-full">
-                                    <button
-                                        onClick={() => setIsExpanded(true)}
-                                        disabled={!acceptedCheckbox}
-                                        className="w-full py-4 bg-primary text-[#1c1a0d] rounded-xl font-black shadow-lg hover:brightness-105 hover:shadow-xl active:scale-[0.98] transition-all text-base disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
-                                    >
-                                        Confirm & View Full Policy
-                                    </button>
-                                    <button
-                                        onClick={() => setShowConsentModal(false)}
-                                        className="w-full py-3.5 bg-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 font-bold transition-all text-xs tracking-widest uppercase"
-                                    >
-                                        Later
-                                    </button>
+                                <h5 className="font-bold mt-4 mb-2">2. Information We Collect</h5>
+                                <p>We collect Username, Email, and Hashed Passwords. We automatically collect performance metrics, unit mastery scores, and error patterns strictly for educational personalized learning.</p>
+                                <p className="mt-2 text-xs text-gray-500">We do NOT collect SSNs, financial info, biometric data, or geolocation.</p>
+
+                                <h5 className="font-bold mt-4 mb-2">3. How We Use Information</h5>
+                                <p>We use information strictly for educational purposes: providing services, personalizing learning, and generating analytics.</p>
+                                <ul className="list-disc pl-4 space-y-1 mt-2">
+                                    <li>We do NOT sell student data to third parties.</li>
+                                    <li>We do NOT use student data for targeted advertising.</li>
+                                    <li>We do NOT build non-educational profiles.</li>
+                                </ul>
+
+                                <h5 className="font-bold mt-4 mb-2">4. Data Security</h5>
+                                <p>Standard encryption (TLS/SSL) and bcrypt hashing are used. Database access is restricted with row-level security.</p>
+                                
+                                <h5 className="font-bold mt-8 mb-4 border-t pt-4">Terms of Service</h5>
+                                <h5 className="font-bold mt-4 mb-2">1. Agreement to Terms</h5>
+                                <p>By using the Service, you agree to be bound by these Terms and our Privacy Policy. You must be at least 13 years old to create an account.</p>
+                                
+                                <h5 className="font-bold mt-4 mb-2">2. Intellectual Property</h5>
+                                <p>All content including questions and unit review books are owned by NewMaoS. You are granted a limited license for personal, non-commercial educational use.</p>
+
+                                <h5 className="font-bold mt-4 mb-2">3. Prohibited Activities</h5>
+                                <p>You may not copy content, reverse engineer software, share accounts, or use the Service for academic dishonesty.</p>
+                                
+                                <h5 className="font-bold mt-4 mb-2">4. Termination</h5>
+                                <p>We may suspend or terminate accounts for breach of Terms. You may delete your account at any time in Settings.</p>
+                                
+                                <div className="mt-10 pt-4 border-t text-center text-xs text-gray-400">
+                                    End of Policies. Please acknowledge agreement below.
                                 </div>
                             </div>
-                        ) : (
-                            <div className="flex flex-col h-full max-h-[75vh]">
-                                <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 dark:border-white/10">
-                                    <div className="flex items-center gap-3">
-                                        <span className="material-symbols-outlined text-primary font-bold">policy</span>
-                                        <h3 className="text-xl font-black text-text-main dark:text-white">Full Privacy Policy & Terms</h3>
-                                    </div>
-                                    <button onClick={() => setIsExpanded(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-text-main p-2">
-                                        <span className="material-symbols-outlined">close</span>
-                                    </button>
+                        </div>
+
+                        {/* Agreement Controls */}
+                        <div className="shrink-0 space-y-4">
+                            <label className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                                isScrolledToBottom 
+                                    ? acceptedCheckbox ? 'border-primary bg-primary/5' : 'border-gray-200 dark:border-gray-700 hover:border-primary/50' 
+                                    : 'border-gray-100 dark:border-white/5 opacity-50 cursor-not-allowed'
+                            }`}>
+                                <input
+                                    type="checkbox"
+                                    checked={acceptedCheckbox}
+                                    disabled={!isScrolledToBottom}
+                                    onChange={(e) => setAcceptedCheckbox(e.target.checked)}
+                                    className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
+                                />
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-black text-text-main dark:text-white">I agree to the Privacy Policy and Terms</span>
+                                    {!isScrolledToBottom && (
+                                        <span className="text-[10px] text-primary font-bold uppercase tracking-widest mt-0.5">Please scroll to the bottom</span>
+                                    )}
                                 </div>
+                            </label>
 
-                                <div className="flex-1 overflow-y-auto pr-2 mb-8 custom-scrollbar">
-                                    <div className="prose prose-sm dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
-                                        <h4 className="font-bold text-text-main dark:text-white mb-2">1. Data Protection Standards</h4>
-                                        <p className="mb-4">We strictly adhere to FERPA, COPPA, and K-12 education data security protocols. Your personal learning data is encrypted and never sold to third parties.</p>
-
-                                        <h4 className="font-bold text-text-main dark:text-white mb-2">2. Information Collection</h4>
-                                        <p className="mb-4">We collect basic account info (email, username) and learning progress (accuracy, topic mastery) to provide personalized practice recommendations.</p>
-
-                                        <h4 className="font-bold text-text-main dark:text-white mb-2">3. User Rights</h4>
-                                        <p className="mb-4">You have the right to export your data or request complete account deletion at any time. Learning history is retained only for educational improvement purposes.</p>
-
-                                        <h4 className="font-bold text-text-main dark:text-white mb-2">4. Pro Access & Payments</h4>
-                                        <p className="mb-4">Textbook downloads and special features require virtual currency (Coins) or Pro membership. All transactions are final in the educational context.</p>
-
-                                        <h4 className="font-bold text-text-main dark:text-white mb-2">5. Updates</h4>
-                                        <p className="mb-4">Policies may update occasionally to reflect new safety regulations. Significant changes will be notified via the app.</p>
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={handleConfirmConsent}
-                                    className="w-full py-4 bg-primary text-[#1c1a0d] rounded-xl font-black shadow-lg hover:brightness-105 hover:shadow-xl active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-2"
-                                >
-                                    <span className="material-symbols-outlined">check_circle</span>
-                                    I Agree & Sign In
-                                </button>
-                            </div>
-                        )}
+                            <button
+                                onClick={handlePrivacyConfirm}
+                                disabled={!acceptedCheckbox || !isScrolledToBottom}
+                                className="w-full py-4 bg-primary text-[#1c1a0d] rounded-2xl font-black shadow-lg hover:brightness-105 hover:shadow-xl active:scale-[0.98] transition-all text-lg disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                            >
+                                {isScrolledToBottom ? 'Confirm & Start Learning' : 'Please Review Above'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
