@@ -43,11 +43,7 @@ export const Settings = () => {
         navigate('/login');
     };
 
-    const handleToggle = (key: keyof typeof preferences) => {
-        setPreferences(prev => ({ ...prev, [key]: !prev[key] }));
-    };
-
-    const handleSave = async () => {
+    const persistPreferences = async (newPrefs: typeof preferences) => {
         if (isSavingRef.current) return;
         isSavingRef.current = true;
         setIsSaving(true);
@@ -56,15 +52,15 @@ export const Settings = () => {
         try {
             // 1. Persist to Backend
             await usersApi.updatePreferences({
-                email_notifications: preferences.emailNotifications,
-                sound_effects: preferences.soundEffects
+                email_notifications: newPrefs.emailNotifications,
+                sound_effects: newPrefs.soundEffects
             });
 
             // 2. Update Local State (Context)
-            updateUser({ preferences });
+            updateUser({ preferences: newPrefs });
 
             setIsSaving(false);
-            setSaveMessage('Changes Saved!');
+            setSaveMessage('Saved');
         } catch (error) {
             console.error('Failed to save settings:', error);
             setSaveMessage('Error Saving');
@@ -72,8 +68,18 @@ export const Settings = () => {
             setIsSaving(false);
         } finally {
             // Reset message after a delay
-            setTimeout(() => setSaveMessage('Save Changes'), 2000);
+            setTimeout(() => {
+                setSaveMessage('Saved');
+                setIsSaving(false);
+                isSavingRef.current = false;
+            }, 1000);
         }
+    };
+
+    const handleToggle = (key: keyof typeof preferences) => {
+        const newPrefs = { ...preferences, [key]: !preferences[key] };
+        setPreferences(newPrefs);
+        persistPreferences(newPrefs);
     };
 
     return (
@@ -83,12 +89,27 @@ export const Settings = () => {
             <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 animate-fade-in flex flex-col gap-6 sm:gap-10 overflow-y-auto scroll-bounce">
 
                 <header className="flex flex-col gap-2">
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-text-main dark:text-white">Settings</h1>
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-text-main dark:text-white">Settings</h1>
+                        {isSaving && (
+                            <div className="flex items-center gap-2 text-primary animate-pulse">
+                                <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                                <span className="text-xs font-bold uppercase tracking-wider">Saving...</span>
+                            </div>
+                        )}
+                        {!isSaving && saveMessage === 'Saved' && (
+                            <div className="flex items-center gap-2 text-green-500">
+                                <span className="material-symbols-outlined text-sm">check_circle</span>
+                                <span className="text-xs font-bold uppercase tracking-wider">Saved</span>
+                            </div>
+                        )}
+                    </div>
                     <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-lg font-normal">Manage your account and system configurations.</p>
                 </header>
 
                 <div className="h-px w-full bg-gray-200 dark:bg-gray-800"></div>
 
+                {/* ... truncated for focus ... */}
                 {/* Account Info */}
                 <section className="flex flex-col gap-4">
                     <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-1">Account Info</h2>
@@ -215,14 +236,6 @@ export const Settings = () => {
                 </section>
 
                 <div className="flex flex-col items-center gap-6 mt-4 pb-12">
-                    <button
-                        onClick={handleSave}
-                        disabled={isSaving}
-                        className="w-full py-3.5 px-4 rounded-xl bg-primary text-text-main text-sm font-bold shadow-md hover:brightness-105 active:scale-[0.99] transition-all flex justify-center items-center gap-2 disabled:opacity-70"
-                    >
-                        {isSaving && <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>}
-                        {saveMessage}
-                    </button>
                     <button
                         onClick={handleLogout}
                         className="text-gray-500 hover:text-red-600 text-sm font-medium transition-colors flex items-center gap-2"

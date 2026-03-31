@@ -89,6 +89,7 @@ export const ProfileSettings = () => {
 
   // UI States
   const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
   const isSavingRef = useRef(false);
   const [activeTab, setActiveTab] = useState<'seniority' | 'streak' | 'mastery' | 'social' | 'influence' | 'questions' | 'posts'>('seniority');
   const [isLoadingDetails, setIsLoadingDetails] = useState(true); // Renamed, used only for specific UI hints if needed
@@ -187,84 +188,99 @@ export const ProfileSettings = () => {
   };
 
   // 3. Save Logic
-  const handleSave = async () => {
+  const persistProfile = async (overrides: any = {}) => {
     if (isSavingRef.current) return;
     isSavingRef.current = true;
     setIsSaving(true);
     let hasUpdates = false;
 
     try {
-      let finalAvatarUrl = avatarUrl;
+      let finalAvatarUrl = overrides.avatarUrl || avatarUrl;
 
-      // A. Upload Avatar if changed
-      if (file) {
-        const fileExt = file.name.split('.').pop();
+      // A. Upload Avatar if changed (from overrides or local state)
+      const currentFile = overrides.file || file;
+      if (currentFile) {
+        const fileExt = currentFile.name.split('.').pop();
         const fileName = `${Date.now()}.${fileExt}`;
         const filePath = `${user.id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
           .from('avatars')
-          .upload(filePath, file, { upsert: true });
+          .upload(filePath, currentFile, { upsert: true });
 
         if (uploadError) throw uploadError;
 
-        // Force public URL usage (bucket MUST be public)
-        // Previous fetch HEAD check would fail due to CORS and incorrectly fallback to a signed URL.
         const { data: { publicUrl } } = supabase.storage
           .from('avatars')
           .getPublicUrl(filePath);
 
         finalAvatarUrl = publicUrl;
+        setAvatarUrl(publicUrl);
+        setFile(null); // Clear file after successful upload
         hasUpdates = true;
       }
 
       // B. Consolidate Updates into Context
-      // This will handle both local state and database sync automatically
-      const selectedTitle = availableTitles.find(t => t.id === selectedTitleId);
+      // Values are prioritized: overrides > local state
+      const currentName = overrides.name !== undefined ? overrides.name : name;
+      const currentBio = overrides.bio !== undefined ? overrides.bio : bio;
+      const currentAvatarColor = overrides.avatarColor !== undefined ? overrides.avatarColor : avatarColor;
+      const currentShowName = overrides.showName !== undefined ? overrides.showName : showName;
+      const currentShowEmail = overrides.showEmail !== undefined ? overrides.showEmail : showEmail;
+      const currentShowBio = overrides.showBio !== undefined ? overrides.showBio : showBio;
+      const currentShowPrestige = overrides.showPrestige !== undefined ? overrides.showPrestige : showPrestige;
+      const currentDisplayPlanetLevel = overrides.displayPlanetLevel !== undefined ? overrides.displayPlanetLevel : displayPlanetLevel;
+      const currentSelectedTitleId = overrides.selectedTitleId !== undefined ? overrides.selectedTitleId : selectedTitleId;
+
+      const selectedTitle = availableTitles.find(t => t.id === currentSelectedTitleId);
 
       const contextUpdates: any = {
-        name,
+        name: currentName,
         avatarUrl: finalAvatarUrl,
-        bio,
-        avatarColor,
-        showName,
-        showEmail,
-        showBio,
-        showPrestige,
-        selectedPrestigeLevel: displayPlanetLevel, // Save the selected preview level
-        equippedTitleId: selectedTitleId,
+        bio: currentBio,
+        avatarColor: currentAvatarColor,
+        showName: currentShowName,
+        showEmail: currentShowEmail,
+        showBio: currentShowBio,
+        showPrestige: currentShowPrestige,
+        selectedPrestigeLevel: currentDisplayPlanetLevel,
+        equippedTitleId: currentSelectedTitleId,
         equippedTitle: selectedTitle || null
       };
 
       // Handle Auth Name separately if changed
-      if (name !== user.name) {
-        await supabase.auth.updateUser({ data: { name: name } });
+      if (currentName !== user.name) {
+        await supabase.auth.updateUser({ data: { name: currentName } });
       }
 
-      updateUser(contextUpdates);
-      hasUpdates = true;
+        updateUser(contextUpdates);
+        setSaveMessage('Saved');
 
-      // C. Handle Email Change
-      if (email !== user.email) {
-        setPendingEmail(email);
-        setVerifyCode(['', '', '', '', '', '']);
-        await authApi.initiateChangeEmail(email);
-        setShowVerifyModal(true);
-        // We stop here to wait for verification
+        // C. Handle Email Change
+        const currentEmail = overrides.email !== undefined ? overrides.email : email;
+        if (currentEmail !== user.email) {
+          setPendingEmail(currentEmail);
+          setVerifyCode(['', '', '', '', '', '']);
+          await authApi.initiateChangeEmail(currentEmail);
+          setShowVerifyModal(true);
+          // We stop here to wait for verification
+          isSavingRef.current = false;
+          setIsSaving(false);
+          return;
+        }
+
+        // Small delay for UX if requested immediately
+        if (overrides.notify) showToast('Profile updated!', 'success');
+
+      } catch (error: any) {
+        console.error('Update error:', error);
+        setSaveMessage('Error');
+        showToast(error.message || 'Failed to update profile', 'error');
+      } finally {
         isSavingRef.current = false;
         setIsSaving(false);
-        return;
+        setTimeout(() => setSaveMessage(''), 2000);
       }
-
-      showToast('Profile updated successfully!', 'success');
-
-    } catch (error: any) {
-      console.error('Update error:', error);
-      showToast(error.message || 'Failed to update profile', 'error');
-    } finally {
-      isSavingRef.current = false;
-      setIsSaving(false);
-    }
   };
 
   // Helper for Initials
@@ -352,7 +368,13 @@ export const ProfileSettings = () => {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={handleFileChange}
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        const f = e.target.files[0];
+                        setFile(f);
+                        persistProfile({ file: f });
+                      }
+                    }}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -376,7 +398,10 @@ export const ProfileSettings = () => {
                 {GRADIENTS.map(g => (
                   <button
                     key={g.name}
-                    onClick={() => setAvatarColor(g.value)}
+                    onClick={() => {
+                      setAvatarColor(g.value);
+                      persistProfile({ avatarColor: g.value });
+                    }}
                     className={`w-14 h-14 rounded-full transition-transform hover:scale-110 shadow-sm relative ${avatarColor === g.value ? 'scale-110' : ''}`}
                     title={g.name}
                   >
@@ -401,7 +426,10 @@ export const ProfileSettings = () => {
                   <input
                     type="color"
                     value={!GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? avatarColor : '#000000'}
-                    onChange={(e) => setAvatarColor(e.target.value)}
+                    onChange={(e) => {
+                      setAvatarColor(e.target.value);
+                      persistProfile({ avatarColor: e.target.value });
+                    }}
                     className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                     title="Custom Color"
                   />
@@ -446,13 +474,17 @@ export const ProfileSettings = () => {
                   </div>
                   <div className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-gray-100 dark:border-white/5 h-full">
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter shrink-0">{showName ? 'Public' : 'Hidden'}</span>
-                    <Toggle c={showName} onChange={setShowName} />
+                  <Toggle c={showName} onChange={(v) => {
+                      setShowName(v);
+                      persistProfile({ showName: v });
+                    }} />
                   </div>
                 </div>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  onBlur={() => name !== user.name && persistProfile({ name })}
                   className="w-full p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-black/20 outline-none focus:border-primary/50 transition-all font-bold"
                   placeholder="Enter your username"
                 />
@@ -469,13 +501,17 @@ export const ProfileSettings = () => {
                   </div>
                   <div className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-gray-100 dark:border-white/5 h-full">
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter shrink-0">{showEmail ? 'Public' : 'Hidden'}</span>
-                    <Toggle c={showEmail} onChange={setShowEmail} />
+                  <Toggle c={showEmail} onChange={(v) => {
+                      setShowEmail(v);
+                      persistProfile({ showEmail: v });
+                    }} />
                   </div>
                 </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  onBlur={() => email !== user.email && persistProfile({ email })}
                   className="w-full p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-black/20 outline-none focus:border-primary/50 transition-all font-bold"
                   placeholder="Enter your email"
                 />
@@ -487,12 +523,16 @@ export const ProfileSettings = () => {
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Personal Bio</label>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium text-gray-400">{showBio ? 'Visible' : 'Hidden'}</span>
-                  <Toggle c={showBio} onChange={setShowBio} />
+                  <Toggle c={showBio} onChange={(v) => {
+                    setShowBio(v);
+                    persistProfile({ showBio: v });
+                  }} />
                 </div>
               </div>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
+                onBlur={() => bio !== user.bio && persistProfile({ bio })}
                 maxLength={100}
                 className="w-full p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-black/20 outline-none focus:border-primary/50 transition-all font-medium h-24 resize-none"
                 placeholder="Tell us about yourself..."
@@ -512,12 +552,15 @@ export const ProfileSettings = () => {
               </label>
               <button
                 onClick={() => {
+                  let newId = null;
                   if (selectedTitleId === null) {
-                    if (lastSelectedTitleId) setSelectedTitleId(lastSelectedTitleId);
+                    if (lastSelectedTitleId) newId = lastSelectedTitleId;
                   } else {
                     setLastSelectedTitleId(selectedTitleId);
-                    setSelectedTitleId(null);
+                    newId = null;
                   }
+                  setSelectedTitleId(newId);
+                  persistProfile({ selectedTitleId: newId });
                 }}
                 className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all flex items-center gap-2 border-2 ${selectedTitleId === null
                   ? 'bg-red-50 text-red-600 border-red-200 shadow-sm'
@@ -566,8 +609,10 @@ export const ProfileSettings = () => {
                             if (selectedTitleId === t.id) {
                               setLastSelectedTitleId(t.id);
                               setSelectedTitleId(null);
+                              persistProfile({ selectedTitleId: null });
                             } else {
                               setSelectedTitleId(t.id);
+                              persistProfile({ selectedTitleId: t.id });
                             }
                           }}
                           disabled={!isUnlocked}
@@ -649,7 +694,10 @@ export const ProfileSettings = () => {
                 <span className={`text-[10px] font-black uppercase tracking-tighter ${showPrestige ? 'text-primary' : 'text-gray-400'}`}>
                   {showPrestige ? 'Public' : 'Hidden'}
                 </span>
-                <Toggle c={showPrestige} onChange={setShowPrestige} />
+                <Toggle c={showPrestige} onChange={(v) => {
+                  setShowPrestige(v);
+                  persistProfile({ showPrestige: v });
+                }} />
               </div>
             </div>
 
@@ -658,7 +706,10 @@ export const ProfileSettings = () => {
               {Array.from({ length: Math.min(5, userPrestige?.planet_level || 1) }, (_, i) => i + 1).map((level) => (
                 <button
                   key={level}
-                  onClick={() => setDisplayPlanetLevel(level)}
+                  onClick={() => {
+                    setDisplayPlanetLevel(level);
+                    persistProfile({ displayPlanetLevel: level });
+                  }}
                   className={`relative group flex flex-col items-center gap-2 transition-all p-2 rounded-2xl border-2 ${displayPlanetLevel === level
                     ? 'bg-primary/10 border-primary scale-105'
                     : 'bg-white dark:bg-white/5 border-transparent hover:bg-gray-50 dark:hover:bg-white/10'
@@ -817,21 +868,20 @@ export const ProfileSettings = () => {
                 </div>
               </div>
 
-              {/* Save Changes Button - MOVED UNDER PREVIEW AND STYLED YELLOW */}
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="mt-6 w-full py-4 bg-primary text-black rounded-2xl font-black text-lg shadow-[0_8px_20px_-4px_rgba(249,212,6,0.4)] hover:brightness-105 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3 border border-yellow-400/20"
-              >
+              {/* Auto-save Status Indicator */}
+              <div className="mt-8 flex justify-center h-10 items-center">
                 {isSaving ? (
-                  <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                ) : (
-                  <>
-                    <span className="material-symbols-outlined">verified</span>
-                    <span>Save My Profile</span>
-                  </>
-                )}
-              </button>
+                  <div className="flex items-center gap-2 text-primary animate-pulse">
+                    <span className="material-symbols-outlined text-xl animate-spin">progress_activity</span>
+                    <span className="text-sm font-bold uppercase tracking-widest">Saving Changes...</span>
+                  </div>
+                ) : saveMessage === 'Saved' ? (
+                  <div className="flex items-center gap-2 text-green-500 animate-in fade-in zoom-in duration-300">
+                    <span className="material-symbols-outlined text-xl">check_circle</span>
+                    <span className="text-sm font-bold uppercase tracking-widest">Profile Saved</span>
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
