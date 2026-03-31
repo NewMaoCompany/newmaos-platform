@@ -106,22 +106,21 @@ export const TextbookViewer = () => {
         try {
             const { supabase } = await import('../src/services/supabaseClient');
             
-            // Insert a record into points_ledger
-            const { error: insertError } = await supabase
-                .from('points_ledger')
-                .insert({
-                    user_id: user.id,
-                    amount: -currentCost,
-                    type: currentCost === 0 ? 'book_download' : 'book_download_paywall',
-                    description: currentCost === 0 
-                        ? `FREE First PDF: ${course} Unit ${unitNum} - ${book.title}`
-                        : `PDF Download: ${course} Unit ${unitNum} - ${book.title} (${currentCost} Coins)`,
-                    source_id: `download_${course}_${unitNum}`
-                });
+            // Use award_points RPC instead of direct insert to bypass the client RLS on points_ledger
+            const { data: rpcData, error: rpcError } = await supabase.rpc('award_points', {
+                p_user_id: user.id,
+                p_amount: -currentCost,
+                p_type: currentCost === 0 ? 'book_download' : 'book_download_paywall',
+                p_description: currentCost === 0 
+                    ? `FREE First PDF: ${course} Unit ${unitNum} - ${book.title}`
+                    : `PDF Download: ${course} Unit ${unitNum} - ${book.title} (${currentCost} Coins)`,
+                p_source_id: `download_${course}_${unitNum}`,
+                p_idempotency_key: `download_${course}_${unitNum}_${Date.now()}`
+            });
 
-            if (insertError) {
-                console.error('Purchase insert error:', insertError);
-                setPurchaseError('Purchase failed, please try again.');
+            if (rpcError || (rpcData && !rpcData.success)) {
+                console.error('Purchase RPC error:', rpcError || rpcData?.message);
+                setPurchaseError(rpcError?.message || rpcData?.message || 'Purchase failed, please try again.');
                 setIsProcessing(false);
                 return;
             }
