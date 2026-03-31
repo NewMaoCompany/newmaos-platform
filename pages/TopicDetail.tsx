@@ -76,6 +76,9 @@ export const TopicDetail = () => {
     }, [unitId]);
 
 
+    const UNLOCK_COST = 19;
+
+    // 1. Fetch data logic (standardized)
     const [unitProgress, setUnitProgress] = useState<any>(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [hasAnyPurchase, setHasAnyPurchase] = useState<boolean | null>(null);
@@ -402,8 +405,8 @@ export const TopicDetail = () => {
                                             </h3>
                                             <p className="text-sm font-medium text-text-secondary dark:text-gray-400 mb-6 max-w-xl leading-relaxed">
                                                 {isUnlocked 
-                                                    ? `已解锁！点击即可打开 Unit ${currentBook.unitNumber} 复习教材阅读。` 
-                                                    : `解锁后即可在浏览器中阅读完整的 Unit ${currentBook.unitNumber} 复习教材。`
+                                                    ? `Unlocked! Click to read the Unit ${currentBook.unitNumber} Review Textbook.` 
+                                                    : `Unlock to access the full Unit ${currentBook.unitNumber} Review Textbook in your browser.`
                                                 }
                                             </p>
                                             
@@ -417,19 +420,19 @@ export const TopicDetail = () => {
                                                         {isUnlocked ? (
                                                             <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/50">
                                                                 <span className="material-symbols-outlined text-[14px]">lock_open</span>
-                                                                已解锁
+                                                                Unlocked
                                                             </span>
                                                         ) : isFirstBookFree ? (
                                                             <div className="h-8 px-4 rounded-full bg-yellow-400 flex items-center gap-2 transition-all shadow-md">
                                                                 <span className="text-[11px] font-black uppercase text-gray-900 tracking-widest pt-0.5">
-                                                                    🎉 免费领取
+                                                                    🎉 Claim Free
                                                                 </span>
                                                             </div>
                                                         ) : (
                                                             <div className="h-8 px-4 rounded-full bg-gray-900 dark:bg-white flex items-center gap-2 transition-all shadow-md">
                                                                 <PointsCoin size="sm" />
                                                                 <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
-                                                                    {UNLOCK_COST} Coins 解锁
+                                                                    {UNLOCK_COST} Coins to Unlock
                                                                 </span>
                                                             </div>
                                                         )}
@@ -438,7 +441,7 @@ export const TopicDetail = () => {
 
                                                 {currentBook.available && (
                                                     <span className="ml-auto text-sm font-black uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                                                        {isUnlocked ? '继续阅读' : '去解锁'} <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                                                        {isUnlocked ? 'Continue Reading' : 'Go to Unlock'} <span className="material-symbols-outlined text-lg">arrow_forward</span>
                                                     </span>
                                                 )}
                                             </div>

@@ -362,12 +362,13 @@ export const Signup = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [hasAgreed, setHasAgreed] = useState(() => localStorage.getItem('privacy_agreed_2026') === 'true');
     const [showConsentModal, setShowConsentModal] = useState(false);
+    const [acceptedCheckbox, setAcceptedCheckbox] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     // Auto-show consent modal if not agreed
     useEffect(() => {
         if (!hasAgreed) {
-            const timer = setTimeout(() => setShowConsentModal(true), 1200);
-            return () => clearTimeout(timer);
+            setShowConsentModal(true);
         }
     }, [hasAgreed]);
 
@@ -434,7 +435,8 @@ export const Signup = () => {
         localStorage.setItem('privacy_agreed_2026', 'true');
         setHasAgreed(true);
         setShowConsentModal(false);
-        showInlineToast('隐私协议与服务条款已同意。', 'success');
+        setIsExpanded(false);
+        showInlineToast('Privacy & Terms accepted.', 'success');
     };
 
     // Helper to translate backend errors if they come in Chinese (duplicated from Login)
@@ -815,37 +817,90 @@ export const Signup = () => {
                 </div>
             )}
 
-            {/* --- 强制隐私协议确认弹窗 (Mandatory Privacy Consent Modal) --- */}
+            {/* --- Mandatory Privacy Consent Modal --- */}
             {showConsentModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
-                    <div className="bg-surface-light dark:bg-surface-dark w-full max-w-sm rounded-[32px] p-8 shadow-2xl border border-white/10 relative animate-fade-in-up">
-                        <div className="flex flex-col items-center text-center">
-                            <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-text-main shadow-glow mb-6 rotate-3">
-                                <span className="material-symbols-outlined text-4xl">verified_user</span>
-                            </div>
-                            <h3 className="text-2xl font-black text-text-main dark:text-white mb-3">隐私与条款确认</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 leading-relaxed px-2">
-                                为了保护您的学习数据并符合学术安全标准 (FERPA/COPPA)，请确认您已阅读并同意我们的{' '}
-                                <Link to="/privacy" target="_blank" className="font-bold text-[#1c1a0d] dark:text-primary hover:underline underline-offset-4 decoration-primary/30">隐私协议</Link>
-                                {' '}与{' '}
-                                <Link to="/terms" target="_blank" className="font-bold text-[#1c1a0d] dark:text-primary hover:underline underline-offset-4 decoration-primary/30">服务条款</Link>。
-                            </p>
+                    <div className={`bg-surface-light dark:bg-surface-dark w-full ${isExpanded ? 'max-w-2xl' : 'max-w-sm'} rounded-[32px] p-8 shadow-2xl border border-white/10 relative transition-all duration-500 ease-in-out animate-fade-in-up`}>
+                        {!isExpanded ? (
+                            <div className="flex flex-col items-center text-center">
+                                <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-text-main shadow-glow mb-6 rotate-3">
+                                    <span className="material-symbols-outlined text-4xl">verified_user</span>
+                                </div>
+                                <h3 className="text-2xl font-black text-text-main dark:text-white mb-3">Privacy & Terms</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 leading-relaxed px-2">
+                                    To protect your data and comply with educational standards (FERPA/COPPA), please acknowledge our policies.
+                                </p>
 
-                            <div className="flex flex-col gap-3 w-full">
+                                <div className="w-full mb-6">
+                                    <label className="flex items-center justify-center gap-3 cursor-pointer group hover:bg-black/5 dark:hover:bg-white/5 p-3 rounded-xl transition-all border border-transparent hover:border-primary/20">
+                                        <input
+                                            type="checkbox"
+                                            checked={acceptedCheckbox}
+                                            onChange={(e) => setAcceptedCheckbox(e.target.checked)}
+                                            className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
+                                        />
+                                        <span className="text-sm font-bold text-gray-600 dark:text-gray-300 group-hover:text-text-main transition-colors">
+                                            I agree to the Privacy Policy and Terms
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div className="flex flex-col gap-3 w-full">
+                                    <button
+                                        onClick={() => setIsExpanded(true)}
+                                        disabled={!acceptedCheckbox}
+                                        className="w-full py-4 bg-primary text-[#1c1a0d] rounded-xl font-black shadow-lg hover:brightness-105 hover:shadow-xl active:scale-[0.98] transition-all text-base disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                                    >
+                                        Confirm & View Full Policy
+                                    </button>
+                                    <button
+                                        onClick={() => setShowConsentModal(false)}
+                                        className="w-full py-3.5 bg-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 font-bold transition-all text-xs tracking-widest uppercase"
+                                    >
+                                        Later
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col h-full max-h-[75vh]">
+                                <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 dark:border-white/10">
+                                    <div className="flex items-center gap-3">
+                                        <span className="material-symbols-outlined text-primary font-bold">policy</span>
+                                        <h3 className="text-xl font-black text-text-main dark:text-white">Full Privacy Policy & Terms</h3>
+                                    </div>
+                                    <button onClick={() => setIsExpanded(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-text-main p-2">
+                                        <span className="material-symbols-outlined">close</span>
+                                    </button>
+                                </div>
+
+                                <div className="flex-1 overflow-y-auto pr-2 mb-8 custom-scrollbar">
+                                    <div className="prose prose-sm dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                                        <h4 className="font-bold text-text-main dark:text-white mb-2">1. Data Protection Standards</h4>
+                                        <p className="mb-4">We strictly adhere to FERPA, COPPA, and K-12 education data security protocols. Your personal learning data is encrypted and never sold to third parties.</p>
+
+                                        <h4 className="font-bold text-text-main dark:text-white mb-2">2. Information Collection</h4>
+                                        <p className="mb-4">We collect basic account info (email, username) and learning progress (accuracy, topic mastery) to provide personalized practice recommendations.</p>
+
+                                        <h4 className="font-bold text-text-main dark:text-white mb-2">3. User Rights</h4>
+                                        <p className="mb-4">You have the right to export your data or request complete account deletion at any time. Learning history is retained only for educational improvement purposes.</p>
+
+                                        <h4 className="font-bold text-text-main dark:text-white mb-2">4. Pro Access & Payments</h4>
+                                        <p className="mb-4">Textbook downloads and special features require virtual currency (Coins) or Pro membership. All transactions are final in the educational context.</p>
+
+                                        <h4 className="font-bold text-text-main dark:text-white mb-2">5. Updates</h4>
+                                        <p className="mb-4">Policies may update occasionally to reflect new safety regulations. Significant changes will be notified via the app.</p>
+                                    </div>
+                                </div>
+
                                 <button
                                     onClick={handleConfirmConsent}
-                                    className="w-full py-4 bg-primary text-[#1c1a0d] rounded-xl font-black shadow-lg hover:brightness-105 hover:shadow-xl active:scale-[0.98] transition-all text-base"
+                                    className="w-full py-4 bg-primary text-[#1c1a0d] rounded-xl font-black shadow-lg hover:brightness-105 hover:shadow-xl active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-2"
                                 >
-                                    同意并继续
-                                </button>
-                                <button
-                                    onClick={() => setShowConsentModal(false)}
-                                    className="w-full py-3.5 bg-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 font-bold transition-all text-xs tracking-widest uppercase"
-                                >
-                                    稍后再说
+                                    <span className="material-symbols-outlined">check_circle</span>
+                                    I Agree & Continue
                                 </button>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             )}

@@ -85,7 +85,7 @@ export const TextbookViewer = () => {
         const cost = currentCost;
 
         if (cost > 0 && userPoints.balance < cost) {
-            setPurchaseError(`金币不足！需要 ${cost} 金币，你只有 ${userPoints.balance} 金币。`);
+            setPurchaseError(`Insufficient Coins! Need ${cost} coins, you have ${userPoints.balance}.`);
             setIsProcessing(false);
             return;
         }
@@ -108,7 +108,7 @@ export const TextbookViewer = () => {
 
             if (insertError) {
                 console.error('Purchase insert error:', insertError);
-                setPurchaseError('解锁失败，请重试。');
+                setPurchaseError('Unlock failed, please try again.');
                 setIsProcessing(false);
                 return;
             }
@@ -129,7 +129,7 @@ export const TextbookViewer = () => {
             setIsProcessing(false);
         } catch (err) {
             console.error('Purchase error:', err);
-            setPurchaseError('解锁失败，请重试。');
+            setPurchaseError('Unlock failed, please try again.');
             setIsProcessing(false);
         }
     };
@@ -197,11 +197,11 @@ export const TextbookViewer = () => {
                             <span className="material-symbols-outlined text-lg text-gray-600 dark:text-gray-300">fullscreen</span>
                         </button>
 
-                        {/* Unlock status badge (no download/save buttons) */}
+                        {/* Unlock status badge */}
                         {book.available && canView && (
                             <div className="h-11 px-5 rounded-xl font-bold text-sm flex items-center gap-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400">
                                 <span className="material-symbols-outlined text-[18px]">lock_open</span>
-                                <span>已解锁</span>
+                                <span>Unlocked</span>
                             </div>
                         )}
                     </div>
@@ -242,12 +242,12 @@ export const TextbookViewer = () => {
                                 </div>
                                 <div className="text-center max-w-md">
                                     <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">
-                                        {purchasedBookCount === null ? '加载中...' : (isFirstBookFree ? '🎉 第一本书免费！' : '解锁此教材')}
+                                        {purchasedBookCount === null ? 'Loading...' : (isFirstBookFree ? '🎉 Your First Book is FREE!' : 'Unlock Textbook')}
                                     </h3>
                                     <p className="text-gray-500 dark:text-gray-400 font-medium mb-6">
                                         {isFirstBookFree 
-                                            ? `点击下方按钮免费领取 Unit ${book.unitNumber}: ${book.title}，即可开始阅读。`
-                                            : `解锁 Unit ${book.unitNumber}: ${book.title} 需要 ${UNLOCK_COST} 金币。`
+                                            ? `Claim your first Unit ${book.unitNumber}: ${book.title} review book for free to start reading.`
+                                            : `Unlocking Unit ${book.unitNumber}: ${book.title} costs ${UNLOCK_COST} coins.`
                                         }
                                     </p>
                                     
@@ -257,10 +257,10 @@ export const TextbookViewer = () => {
                                             <div className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 rounded-2xl px-5 py-3">
                                                 <PointsCoin size="md" />
                                                 <span className="text-2xl font-black text-text-main dark:text-white">{UNLOCK_COST}</span>
-                                                <span className="text-sm text-gray-500">金币</span>
+                                                <span className="text-sm text-gray-500">Coins</span>
                                             </div>
                                             <span className="text-sm text-gray-400">
-                                                余额: <span className={`font-bold ${userPoints.balance >= UNLOCK_COST ? 'text-green-500' : 'text-red-500'}`}>
+                                                Balance: <span className={`font-bold ${userPoints.balance >= UNLOCK_COST ? 'text-green-500' : 'text-red-500'}`}>
                                                     {userPoints.balance}
                                                 </span>
                                             </span>
@@ -281,7 +281,7 @@ export const TextbookViewer = () => {
                                         ) : (
                                             <>
                                                 <span className="material-symbols-outlined text-[20px]">{isFirstBookFree ? 'redeem' : 'lock_open'}</span>
-                                                {isFirstBookFree ? '免费领取' : '解锁阅读'}
+                                                {isFirstBookFree ? 'Claim for Free' : 'Unlock Reader'}
                                             </>
                                         )}
                                     </button>
@@ -333,14 +333,14 @@ export const TextbookViewer = () => {
                                 </div>
                             </div>
 
-                            <h3 className="text-xl font-black text-text-main dark:text-white mb-1">解锁教材</h3>
+                            <h3 className="text-xl font-black text-text-main dark:text-white mb-1">Unlock Textbook</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
                                 Unit {book.unitNumber}: {book.title}
                             </p>
 
                             {/* Cost Display */}
                             <div className="w-full bg-gray-50 dark:bg-white/5 rounded-2xl p-4 mb-5 flex items-center justify-between">
-                                <span className="text-sm font-bold text-gray-600 dark:text-gray-300">解锁费用</span>
+                                <span className="text-sm font-bold text-gray-600 dark:text-gray-300">Unlock Cost</span>
                                 <div className="flex items-center gap-2">
                                     <PointsCoin size="md" />
                                     <span className="text-2xl font-black text-text-main dark:text-white">{UNLOCK_COST}</span>
@@ -349,9 +349,9 @@ export const TextbookViewer = () => {
 
                             {/* Balance Display */}
                             <div className="w-full flex items-center justify-between text-sm mb-5 px-1">
-                                <span className="text-gray-400">你的余额</span>
+                                <span className="text-gray-400">Your Balance</span>
                                 <span className={`font-bold ${userPoints.balance >= UNLOCK_COST ? 'text-green-500' : 'text-red-500'}`}>
-                                    {userPoints.balance} 金币
+                                    {userPoints.balance} Coins
                                 </span>
                             </div>
 
@@ -376,7 +376,7 @@ export const TextbookViewer = () => {
                                     ) : (
                                         <>
                                             <span className="material-symbols-outlined text-[20px]">lock_open</span>
-                                            确认解锁
+                                            Confirm Unlock
                                         </>
                                     )}
                                 </button>
@@ -384,7 +384,7 @@ export const TextbookViewer = () => {
                                     onClick={() => setShowPurchaseModal(false)}
                                     className="w-full py-3 text-sm font-bold text-gray-400 hover:text-text-main dark:hover:text-white transition-colors"
                                 >
-                                    取消
+                                    Cancel
                                 </button>
                             </div>
                         </div>

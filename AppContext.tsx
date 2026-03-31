@@ -2875,21 +2875,9 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         setHasDismissedLoginPrompt(true); // Don't show popup immediately after logout
         sessionStorage.setItem('hasDismissedLoginPrompt', 'true'); // Persist dismissed state for this session
 
-        // CLEAR ALL STORAGE
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user_profile_cache');
-        localStorage.removeItem('user_course_mode');
-        localStorage.removeItem('forum_channels_cache');
-        localStorage.removeItem('forum_activeChannelId');
-        localStorage.removeItem('global_unread_counts');
-        localStorage.removeItem('forum_dm_cache');
-        sessionStorage.removeItem('streak_checked_today');
-        // Clear cached messages if any
-        Object.keys(localStorage).forEach(key => {
-            if (key.startsWith('forum_messages_cache_')) {
-                localStorage.removeItem(key);
-            }
-        });
+        // COMPLETE CLEAR OF ALL STORAGE
+        localStorage.clear();
+        sessionStorage.clear();
 
         sessionStorage.removeItem('streak_checked_today');
 
