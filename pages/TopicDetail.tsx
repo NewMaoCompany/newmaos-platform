@@ -81,6 +81,30 @@ export const TopicDetail = () => {
     // 1. Fetch data logic (standardized)
     const [unitProgress, setUnitProgress] = useState<any>(null);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [hasAnyPurchase, setHasAnyPurchase] = useState<boolean | null>(null);
+
+    // Check for first book free eligibility
+    useEffect(() => {
+        const checkFirstBook = async () => {
+            if (!user?.id) return;
+            try {
+                const { supabase } = await import('../src/services/supabaseClient');
+                const { data, error } = await supabase
+                    .from('points_ledger')
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .in('type', ['book_download', 'book_download_paywall'])
+                    .limit(1);
+                
+                if (!error) {
+                    setHasAnyPurchase(data && data.length > 0);
+                }
+            } catch (err) {
+                setHasAnyPurchase(false);
+            }
+        };
+        checkFirstBook();
+    }, [user?.id]);
 
     useEffect(() => {
         if (effectiveUnitId && user?.id) {
@@ -332,14 +356,14 @@ export const TopicDetail = () => {
                             if (!currentBook) return null;
                             
                             const isUnlocked = typeof window !== 'undefined' && !!localStorage.getItem(`book_downloaded_${user?.currentCourse || 'AB'}_${currentBook.unitNumber}`);
-                            const isFreeUnit = currentBook.unitNumber === 1;
+                            const isFirstBookFree = hasAnyPurchase === false;
                             const UNLOCK_COST = 19;
                             
                             return (
                                 <div className="mb-6 w-full">
                                     <div
                                         onClick={() => {
-                                            if (!isAuthenticated && currentBook.unitNumber !== 1) {
+                                            if (!isAuthenticated) {
                                                 navigate('/login');
                                                 return;
                                             }
@@ -376,15 +400,20 @@ export const TopicDetail = () => {
                                                     <span className="material-symbols-outlined text-[14px] align-text-bottom mr-1">menu_book</span>
                                                     Exclusive Review Book
                                                 </span>
+                                                {isFirstBookFree && !isUnlocked && (
+                                                    <span className="text-[10px] font-black px-2 py-0.5 bg-yellow-400 text-gray-900 rounded-lg uppercase tracking-wider animate-pulse">
+                                                        First Book Free
+                                                    </span>
+                                                )}
                                             </div>
                                             <h3 className="text-xl sm:text-2xl font-black text-text-main dark:text-white leading-tight mb-2 group-hover:text-primary transition-colors">
                                                 {currentBook.title}
                                             </h3>
                                             <p className="text-sm font-medium text-text-secondary dark:text-gray-400 mb-6 max-w-xl leading-relaxed">
-                                                {isFreeUnit
-                                                    ? `Read the full Unit ${currentBook.unitNumber} Review Textbook in your browser.`
-                                                    : isUnlocked 
-                                                        ? `Unlocked! Click to read the Unit ${currentBook.unitNumber} Review Textbook.` 
+                                                {isUnlocked 
+                                                    ? `Unlocked! Click to read the Unit ${currentBook.unitNumber} Review Textbook.` 
+                                                    : isFirstBookFree 
+                                                        ? `Your first textbook is on us! Unlock Unit ${currentBook.unitNumber} for free.`
                                                         : `Unlock to access the full Unit ${currentBook.unitNumber} Review Textbook in your browser.`
                                                 }
                                             </p>
@@ -396,20 +425,20 @@ export const TopicDetail = () => {
                                                     </span>
                                                 ) : (
                                                     <div className="flex items-center gap-3">
-                                                        {(isFreeUnit || isUnlocked) ? (
+                                                        {isUnlocked ? (
                                                             <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/50">
                                                                 <span className="material-symbols-outlined text-[14px]">lock_open</span>
-                                                                {isFreeUnit ? 'Free to Read' : 'Unlocked'}
+                                                                Unlocked
                                                             </span>
                                                         ) : (
                                                             <>
                                                                 <div className="h-8 px-4 rounded-full bg-[#fce01a] flex items-center gap-2 transition-all shadow-md hover:bg-[#e6c818]">
                                                                     <span className="text-[11px] font-black uppercase text-gray-900 tracking-widest pt-0.5">
-                                                                        {!isAuthenticated ? 'Sign In to Read' : 'Go to Unlock'}
+                                                                        {!isAuthenticated ? 'Sign In' : (isFirstBookFree ? 'Claim Free' : 'Go to Unlock')}
                                                                     </span>
                                                                     <span className="material-symbols-outlined text-[15px] text-gray-900">arrow_forward</span>
                                                                 </div>
-                                                                {isAuthenticated && (
+                                                                {isAuthenticated && !isFirstBookFree && (
                                                                     <span className="text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
                                                                         <PointsCoin size="sm" />
                                                                         {UNLOCK_COST} coins
@@ -422,7 +451,7 @@ export const TopicDetail = () => {
 
                                                 {currentBook.available && (
                                                     <span className="ml-auto text-sm font-black uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                                                        {isFreeUnit ? 'Read Now' : (isUnlocked ? 'Continue Reading' : 'Go to Unlock')} <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                                                        {isUnlocked ? 'Continue Reading' : (isFirstBookFree ? 'Claim Now' : 'Unlock Now')} <span className="material-symbols-outlined text-lg">arrow_forward</span>
                                                     </span>
                                                 )}
                                             </div>

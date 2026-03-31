@@ -234,7 +234,7 @@ export const TextbookViewer = () => {
                 {/* PDF Viewer OR Paywall OR Coming Soon */}
                 <div id="viewer-container" className="flex-1 min-h-0 bg-gray-100 dark:bg-[#1a1c23] rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden relative shadow-inner">
                     {book.available ? (
-                        (isDownloaded || unitNum === 1) ? (
+                        (isDownloaded || (!isAuthenticated && unitNum === 1)) ? (
                             <>
                                 {!iframeLoaded && (
                                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10 bg-gray-100 dark:bg-[#1a1c23]">
@@ -259,10 +259,15 @@ export const TextbookViewer = () => {
                                 >
                                     <span className="material-symbols-outlined text-5xl" style={{ color: book.coverColor }}>lock</span>
                                 </div>
-                                <div className="text-center">
+                                <div className="text-center px-4">
                                     <h3 className="text-2xl font-black text-text-main dark:text-white mb-2 uppercase tracking-tight">Unlock Required</h3>
-                                    <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto font-medium mb-6">
-                                        You need to unlock Unit {book.unitNumber} before you can read the textbook.
+                                    <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto font-medium mb-6 leading-relaxed">
+                                        {!isAuthenticated 
+                                            ? `Sign in to access Unit ${book.unitNumber} and start tracking your progress.`
+                                            : isFirstBookFree 
+                                                ? `Your first textbook is free! Claim Unit ${book.unitNumber} now to unlock full access.`
+                                                : `You've already used your free claim. Unlock Unit ${book.unitNumber} for 19 coins to keep reading.`
+                                        }
                                     </p>
                                     <button
                                         onClick={handleDownloadClick}
@@ -273,7 +278,7 @@ export const TextbookViewer = () => {
                                             <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
                                         ) : (
                                             <span className="material-symbols-outlined text-[20px]">
-                                                {isFirstBookFree ? 'redeem' : 'lock_open'}
+                                                {!isAuthenticated ? 'login' : (isFirstBookFree ? 'redeem' : 'lock_open')}
                                             </span>
                                         )}
                                         <span>{!isAuthenticated ? 'Sign In to Unlock' : (purchasedBookCount === null ? 'Loading...' : (isFirstBookFree ? 'Claim FREE Unlock' : `Unlock for ${DOWNLOAD_COST} Coins`))}</span>
