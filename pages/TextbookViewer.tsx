@@ -207,7 +207,7 @@ export const TextbookViewer = () => {
                                         {!isAuthenticated ? 'lock' : (isDownloaded ? 'download' : (isFirstBookFree ? 'redeem' : 'lock'))}
                                     </span>
                                 )}
-                                <span>{!isAuthenticated ? 'Sign In to Export' : (isDownloaded ? 'Download PDF' : (purchasedBookCount === null ? 'Loading...' : (isFirstBookFree ? '1st Export FREE' : `Export PDF (${DOWNLOAD_COST} Coins)`)))}</span>
+                                <span>{!isAuthenticated ? 'Sign In to Unlock' : (isDownloaded ? 'Download PDF' : (purchasedBookCount === null ? 'Loading...' : (isFirstBookFree ? 'Claim FREE' : `Unlock (${DOWNLOAD_COST} Coins)`)))}</span>
                             </button>
                         )}
 
@@ -231,25 +231,56 @@ export const TextbookViewer = () => {
                     </div>
                 </div>
 
-                {/* PDF Viewer OR Coming Soon */}
+                {/* PDF Viewer OR Paywall OR Coming Soon */}
                 <div id="viewer-container" className="flex-1 min-h-0 bg-gray-100 dark:bg-[#1a1c23] rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden relative shadow-inner">
                     {book.available ? (
-                        <>
-                            {!iframeLoaded && (
-                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10 bg-gray-100 dark:bg-[#1a1c23]">
-                                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                                    <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Opening Textbook...</span>
+                        (isDownloaded || unitNum === 1) ? (
+                            <>
+                                {!iframeLoaded && (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10 bg-gray-100 dark:bg-[#1a1c23]">
+                                        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                        <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Opening Textbook...</span>
+                                    </div>
+                                )}
+                                
+                                <iframe
+                                    id="pdf-viewer"
+                                    src={`${book.pdfUrl}?v=nocache#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
+                                    className={`w-full h-full border-0 transition-opacity duration-500 rounded-3xl ${iframeLoaded ? 'opacity-100' : 'opacity-0'}`}
+                                    title={`${book.title} - Review Book`}
+                                    onLoad={() => setIframeLoaded(true)}
+                                />
+                            </>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center h-full gap-6 bg-white dark:bg-[#1a1c23]">
+                                <div
+                                    className="w-24 h-32 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden"
+                                    style={{ background: `linear-gradient(135deg, ${book.coverColor}22, ${book.coverColor}44)` }}
+                                >
+                                    <span className="material-symbols-outlined text-5xl" style={{ color: book.coverColor }}>lock</span>
                                 </div>
-                            )}
-                            
-                            <iframe
-                                id="pdf-viewer"
-                                src={`${book.pdfUrl}?v=nocache#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
-                                className={`w-full h-full border-0 transition-opacity duration-500 rounded-3xl ${iframeLoaded ? 'opacity-100' : 'opacity-0'}`}
-                                title={`${book.title} - Review Book`}
-                                onLoad={() => setIframeLoaded(true)}
-                            />
-                        </>
+                                <div className="text-center">
+                                    <h3 className="text-2xl font-black text-text-main dark:text-white mb-2 uppercase tracking-tight">Unlock Required</h3>
+                                    <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto font-medium mb-6">
+                                        You need to unlock Unit {book.unitNumber} before you can read the textbook.
+                                    </p>
+                                    <button
+                                        onClick={handleDownloadClick}
+                                        disabled={isProcessing || (isAuthenticated && purchasedBookCount === null)}
+                                        className={`px-8 py-4 rounded-xl font-black text-base flex items-center gap-3 shadow-sm transition-all hover:-translate-y-0.5 mx-auto ${(isProcessing || (isAuthenticated && purchasedBookCount === null)) ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed' : 'bg-primary text-[#1c1a0d] hover:brightness-105'}`}
+                                    >
+                                        {isProcessing ? (
+                                            <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+                                        ) : (
+                                            <span className="material-symbols-outlined text-[20px]">
+                                                {isFirstBookFree ? 'redeem' : 'lock_open'}
+                                            </span>
+                                        )}
+                                        <span>{!isAuthenticated ? 'Sign In to Unlock' : (purchasedBookCount === null ? 'Loading...' : (isFirstBookFree ? 'Claim FREE Unlock' : `Unlock for ${DOWNLOAD_COST} Coins`))}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        )
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full gap-6">
                             <div
