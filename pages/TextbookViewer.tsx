@@ -140,10 +140,8 @@ export const TextbookViewer = () => {
             await fetchUserPoints();
             setIsProcessing(false);
             
-            // Automatically open PDF after a brief delay for UX
-            setTimeout(() => {
-                window.open(book.pdfUrl, '_blank');
-            }, 500);
+            // PDF is now unlocked and will be rendered automatically in the iframe below
+            // due to isDownloaded being set to true above.
 
         } catch (err) {
             console.error('Purchase error:', err);
