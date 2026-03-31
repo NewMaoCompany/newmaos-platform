@@ -360,6 +360,17 @@ export const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [hasAgreed, setHasAgreed] = useState(() => localStorage.getItem('privacy_agreed_2026') === 'true');
+    const [showConsentModal, setShowConsentModal] = useState(false);
+
+    // Auto-show consent modal if not agreed
+    useEffect(() => {
+        if (!hasAgreed) {
+            const timer = setTimeout(() => setShowConsentModal(true), 1200);
+            return () => clearTimeout(timer);
+        }
+    }, [hasAgreed]);
+
     // Referral code from URL param
     const refCode = searchParams.get('ref') || '';
     // Verification state
@@ -398,6 +409,13 @@ export const Signup = () => {
 
     const handleSignupSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // 1. Check for Mandatory Consent first
+        if (!hasAgreed) {
+            setShowConsentModal(true);
+            return;
+        }
+
         setIsLoading(true);
         setError('');
 
@@ -410,6 +428,13 @@ export const Signup = () => {
             setError(translateError(err.message) || 'Registration failed. Please try again.');
             setIsLoading(false);
         }
+    };
+
+    const handleConfirmConsent = () => {
+        localStorage.setItem('privacy_agreed_2026', 'true');
+        setHasAgreed(true);
+        setShowConsentModal(false);
+        showInlineToast('隐私协议与服务条款已同意。', 'success');
     };
 
     // Helper to translate backend errors if they come in Chinese (duplicated from Login)
@@ -786,6 +811,41 @@ export const Signup = () => {
                         >
                             <span className="material-symbols-outlined text-lg">close</span>
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {/* --- 强制隐私协议确认弹窗 (Mandatory Privacy Consent Modal) --- */}
+            {showConsentModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
+                    <div className="bg-surface-light dark:bg-surface-dark w-full max-w-sm rounded-[32px] p-8 shadow-2xl border border-white/10 relative animate-fade-in-up">
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-text-main shadow-glow mb-6 rotate-3">
+                                <span className="material-symbols-outlined text-4xl">verified_user</span>
+                            </div>
+                            <h3 className="text-2xl font-black text-text-main dark:text-white mb-3">隐私与条款确认</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 leading-relaxed px-2">
+                                为了保护您的学习数据并符合学术安全标准 (FERPA/COPPA)，请确认您已阅读并同意我们的{' '}
+                                <Link to="/privacy" target="_blank" className="font-bold text-[#1c1a0d] dark:text-primary hover:underline underline-offset-4 decoration-primary/30">隐私协议</Link>
+                                {' '}与{' '}
+                                <Link to="/terms" target="_blank" className="font-bold text-[#1c1a0d] dark:text-primary hover:underline underline-offset-4 decoration-primary/30">服务条款</Link>。
+                            </p>
+
+                            <div className="flex flex-col gap-3 w-full">
+                                <button
+                                    onClick={handleConfirmConsent}
+                                    className="w-full py-4 bg-primary text-[#1c1a0d] rounded-xl font-black shadow-lg hover:brightness-105 hover:shadow-xl active:scale-[0.98] transition-all text-base"
+                                >
+                                    同意并继续
+                                </button>
+                                <button
+                                    onClick={() => setShowConsentModal(false)}
+                                    className="w-full py-3.5 bg-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 font-bold transition-all text-xs tracking-widest uppercase"
+                                >
+                                    稍后再说
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
