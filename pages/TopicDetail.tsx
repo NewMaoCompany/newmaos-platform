@@ -400,7 +400,11 @@ export const TopicDetail = () => {
                                                     <span className="material-symbols-outlined text-[14px] align-text-bottom mr-1">menu_book</span>
                                                     Exclusive Review Book
                                                 </span>
-                                                {isFirstBookFree && !isUnlocked && (
+                                                {currentBook.unitNumber === 1 ? (
+                                                    <span className="text-[10px] font-black px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg uppercase tracking-wider border border-blue-200 dark:border-blue-800/50">
+                                                        Free Preview
+                                                    </span>
+                                                ) : isFirstBookFree && !isUnlocked && (
                                                     <span className="text-[10px] font-black px-2 py-0.5 bg-yellow-400 text-gray-900 rounded-lg uppercase tracking-wider animate-pulse">
                                                         First Book Free
                                                     </span>
@@ -410,9 +414,11 @@ export const TopicDetail = () => {
                                                 {currentBook.title}
                                             </h3>
                                             <p className="text-sm font-medium text-text-secondary dark:text-gray-400 mb-6 max-w-xl leading-relaxed">
-                                                {isUnlocked 
-                                                    ? `Unlocked! Click to read the Unit ${currentBook.unitNumber} Review Textbook.` 
-                                                    : `Unlock to access the full Unit ${currentBook.unitNumber} Review Textbook in your browser.`
+                                                {currentBook.unitNumber === 1 
+                                                    ? `Free preview! Read the full Unit ${currentBook.unitNumber} Review Textbook in your browser.`
+                                                    : isUnlocked 
+                                                        ? `Unlocked! Click to read the Unit ${currentBook.unitNumber} Review Textbook.` 
+                                                        : `Unlock to access the full Unit ${currentBook.unitNumber} Review Textbook in your browser.`
                                                 }
                                             </p>
                                             
@@ -423,7 +429,14 @@ export const TopicDetail = () => {
                                                     </span>
                                                 ) : (
                                                     <div className="flex items-center gap-3">
-                                                        {isUnlocked ? (
+                                                        {currentBook.unitNumber === 1 ? (
+                                                            <div className="h-8 px-4 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center gap-2 transition-all shadow-md border border-blue-200 dark:border-blue-800/50">
+                                                                <span className="material-symbols-outlined text-[16px] text-blue-700 dark:text-blue-400">auto_stories</span>
+                                                                <span className="text-[11px] font-black uppercase text-blue-700 dark:text-blue-400 tracking-widest pt-0.5">
+                                                                    Free to Read
+                                                                </span>
+                                                            </div>
+                                                        ) : isUnlocked ? (
                                                             <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1 uppercase tracking-widest border border-green-200 dark:border-green-800/50">
                                                                 <span className="material-symbols-outlined text-[14px]">lock_open</span>
                                                                 Unlocked
@@ -451,7 +464,7 @@ export const TopicDetail = () => {
 
                                                 {currentBook.available && (
                                                     <span className="ml-auto text-sm font-black uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                                                        {isUnlocked ? 'Continue Reading' : 'Go to Unlock'} <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                                                        {currentBook.unitNumber === 1 ? 'Read Now' : (isUnlocked ? 'Continue Reading' : 'Go to Unlock')} <span className="material-symbols-outlined text-lg">arrow_forward</span>
                                                     </span>
                                                 )}
                                             </div>
