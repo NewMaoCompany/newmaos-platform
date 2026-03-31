@@ -93,7 +93,7 @@ export const TopicDetail = () => {
                     .from('points_ledger')
                     .select('id')
                     .eq('user_id', user.id)
-                    .in('type', ['book_download', 'book_download_paywall'])
+                    .like('source_id', 'download_%')
                     .limit(1);
                 
                 if (!error) {

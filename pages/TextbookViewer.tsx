@@ -50,7 +50,7 @@ export const TextbookViewer = () => {
                     .from('points_ledger')
                     .select('id')
                     .eq('user_id', user.id)
-                    .in('type', ['book_download', 'book_download_paywall']);
+                    .like('source_id', 'download_%');
                 
                 if (!error) {
                     setPurchasedBookCount(data?.length || 0);
@@ -110,7 +110,7 @@ export const TextbookViewer = () => {
             const { data: rpcData, error: rpcError } = await supabase.rpc('award_points', {
                 p_user_id: user.id,
                 p_amount: -currentCost,
-                p_type: currentCost === 0 ? 'book_download' : 'book_download_paywall',
+                p_type: 'manual_adjustment',
                 p_description: currentCost === 0 
                     ? `FREE First PDF: ${course} Unit ${unitNum} - ${book.title}`
                     : `PDF Download: ${course} Unit ${unitNum} - ${book.title} (${currentCost} Coins)`,
