@@ -39,13 +39,7 @@ export const Login = () => {
     const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
     const scrollRef = React.useRef<HTMLDivElement>(null);
 
-    // Auto-show consent modal if not agreed
-    useEffect(() => {
-        const agreed = localStorage.getItem('privacy_agreed_2026') === 'true';
-        if (!agreed) {
-            setShowConsentModal(true);
-        }
-    }, []);
+    // Auto-show consent modal removed so users can see privacy links before attempting to login.
 
     const handlePrivacyScroll = () => {
         if (scrollRef.current) {
@@ -622,6 +616,12 @@ export const Login = () => {
             {showConsentModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
                     <div className="bg-surface-light dark:bg-surface-dark w-full max-w-2xl rounded-[32px] p-6 md:p-8 shadow-2xl border border-white/10 relative flex flex-col max-h-[90vh] animate-fade-in-up">
+                        <button
+                            onClick={() => setShowConsentModal(false)}
+                            className="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-gray-400 hover:text-gray-800 dark:hover:text-white"
+                        >
+                            <span className="material-symbols-outlined">close</span>
+                        </button>
                         <div className="flex flex-col items-center text-center mb-6 shrink-0">
                             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-text-main shadow-glow mb-4 rotate-3">
                                 <span className="material-symbols-outlined text-3xl">verified_user</span>
