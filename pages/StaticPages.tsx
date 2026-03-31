@@ -38,11 +38,12 @@ const SimpleLayout = ({ title, children, showNavbar = true }: { title: string, c
 export const Privacy = () => (
     <SimpleLayout title="Privacy Policy">
         <div className="space-y-8">
-            <p className="text-sm text-gray-500">Last Updated: January 16, 2026</p>
+            <p className="text-sm text-gray-500">Last Updated: March 31, 2026</p>
 
             <section>
                 <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">1. Introduction</h2>
-                <p>NewMaoS Learning, Inc. ("NewMaoS," "we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our AP Calculus learning platform at newmaos.com (the "Service"). Please read this policy carefully. By using our Service, you consent to the data practices described in this policy.</p>
+                <p>NewMaoS Learning, Inc. ("NewMaoS," "we," "our," or "us") is committed to protecting your privacy and the privacy of students who use our platform. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our AP Calculus learning platform at newmaos.com (the "Service"). Please read this policy carefully. By using our Service, you consent to the data practices described in this policy.</p>
+                <p className="mt-2 font-semibold">This policy is designed to comply with the Family Educational Rights and Privacy Act (FERPA), the Children's Online Privacy Protection Act (COPPA), the Student Online Personal Protection Act (SOPPA), and applicable state student privacy laws.</p>
             </section>
 
             <section>
@@ -50,92 +51,147 @@ export const Privacy = () => (
                 <h3 className="text-lg font-semibold mt-4 mb-2">2.1 Personal Information</h3>
                 <p>When you create an account, we collect:</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                    <li>Name or username</li>
+                    <li>Username (not required to be a real name)</li>
                     <li>Email address</li>
-                    <li>Password (encrypted)</li>
+                    <li>Password (hashed and encrypted — we never store plain text passwords)</li>
                     <li>Course preferences (AP Calculus AB/BC)</li>
                 </ul>
 
-                <h3 className="text-lg font-semibold mt-4 mb-2">2.2 Usage Data</h3>
-                <p>We automatically collect information about how you interact with our Service:</p>
+                <h3 className="text-lg font-semibold mt-4 mb-2">2.2 Education Records / Usage Data</h3>
+                <p>We automatically collect information about how you interact with our Service to provide personalized learning:</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
                     <li>Practice session data and performance metrics</li>
-                    <li>Learning progress and unit mastery scores</li>
+                    <li>Learning progress, unit mastery scores, and error patterns</li>
                     <li>Time spent on the platform</li>
-                    <li>Device information and browser type</li>
-                    <li>IP address and approximate location</li>
+                </ul>
+                <p className="mt-2 text-sm text-gray-500">We do <strong>NOT</strong> collect social security numbers, financial information, biometric data, geolocation, social media profiles, or any information not directly related to the educational purpose of the Service.</p>
+
+                <h3 className="text-lg font-semibold mt-4 mb-2">2.3 Automatically Collected Information</h3>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Device type and browser type (for compatibility purposes only)</li>
+                    <li>IP address (used solely for security and abuse prevention, not for tracking or profiling)</li>
                 </ul>
             </section>
 
             <section>
                 <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">3. How We Use Your Information</h2>
-                <p>We use the information we collect to:</p>
+                <p>We use the information we collect <strong>strictly for educational purposes</strong>:</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
                     <li>Provide, maintain, and improve our educational services</li>
                     <li>Personalize your learning experience and recommend content</li>
                     <li>Track your progress and generate performance analytics</li>
-                    <li>Communicate with you about updates, features, and support</li>
-                    <li>Ensure account security and prevent fraud</li>
+                    <li>Communicate with you about account-related updates and support</li>
+                    <li>Ensure account security and prevent fraud or abuse</li>
                     <li>Comply with legal obligations</li>
+                </ul>
+                <p className="mt-3 font-semibold text-text-main dark:text-white">We do NOT:</p>
+                <ul className="list-disc pl-5 mt-1 space-y-1">
+                    <li>Use student data for advertising or marketing purposes</li>
+                    <li>Sell, rent, or trade any personal information or student data to any third party</li>
+                    <li>Build non-educational profiles of students</li>
+                    <li>Use student data for targeted advertising of any kind</li>
                 </ul>
             </section>
 
             <section>
                 <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">4. Cookies and Tracking Technologies</h2>
-                <p>We use cookies and similar technologies to enhance your experience. These include:</p>
+                <p>We use only essential cookies required for the Service to function properly:</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                    <li><strong>Essential Cookies:</strong> Required for the Service to function properly</li>
-                    <li><strong>Analytics Cookies:</strong> Help us understand how users interact with our platform</li>
-                    <li><strong>Preference Cookies:</strong> Remember your settings and preferences</li>
+                    <li><strong>Authentication Cookies:</strong> Required to maintain your logged-in session</li>
+                    <li><strong>Preference Cookies:</strong> Remember your settings (dark mode, course selection)</li>
                 </ul>
-                <p className="mt-2">You can control cookies through your browser settings, but disabling them may affect Service functionality.</p>
+                <p className="mt-2">We do NOT use third-party advertising cookies, behavioral tracking pixels, or analytics services that profile individual users. We do NOT participate in any cross-site tracking.</p>
             </section>
 
             <section>
                 <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">5. Data Sharing and Disclosure</h2>
-                <p>We do not sell your personal information. We may share your data with:</p>
+                <p><strong>We do not sell, rent, or share your personal information with any third party for commercial purposes.</strong></p>
+                <p className="mt-2">We may share data only in the following limited circumstances:</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                    <li><strong>Service Providers:</strong> Third parties that help us operate our platform (e.g., hosting, analytics)</li>
-                    <li><strong>Legal Requirements:</strong> When required by law or to protect our rights</li>
-                    <li><strong>Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets</li>
+                    <li><strong>Infrastructure Providers:</strong> We use Supabase (database hosting) and Vercel (web hosting) to operate our platform. These providers process data on our behalf under strict data processing agreements and are prohibited from using student data for their own purposes.</li>
+                    <li><strong>Legal Requirements:</strong> When required by law, subpoena, or court order</li>
+                    <li><strong>Safety:</strong> When we believe disclosure is necessary to prevent harm to a user or others</li>
+                </ul>
+                <p className="mt-2">In the event of a merger, acquisition, or sale of assets, student data protections will continue to apply under identical terms, and users will be notified of any ownership change.</p>
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">6. FERPA Compliance (For Schools & Districts)</h2>
+                <p>When NewMaoS is used by a school or school district, we act as a "school official" under FERPA, meaning we are under the direct control of the school with respect to the use and maintenance of education records. We commit to the following:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Student education records are used solely for the educational purpose for which we were engaged</li>
+                    <li>We do not re-disclose student education records to other parties without proper authorization</li>
+                    <li>Schools maintain ownership and control of all student education records</li>
+                    <li>Schools and eligible students may request access to, correction of, or deletion of student records at any time</li>
+                    <li>We will cooperate with school investigations and audits regarding student data</li>
+                    <li>Upon termination of our agreement with a school, we will delete or return all student records upon request</li>
+                </ul>
+                <p className="mt-2">School administrators may contact us at <strong>privacy@newmaos.com</strong> to sign a Data Privacy Agreement (DPA), request a data inventory, or exercise any rights under FERPA.</p>
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">7. Children's Privacy (COPPA Compliance)</h2>
+                <p>Our Service is designed for students preparing for AP Calculus exams, typically ages 15–18. We recognize that some users may be under 13.</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Users under 13 must have verifiable parental consent before creating an account</li>
+                    <li>We collect only the minimum information necessary for the Service to function</li>
+                    <li>We do not condition participation on providing more information than is reasonably necessary</li>
+                    <li>Parents may contact us at <strong>privacy@newmaos.com</strong> to review, delete, or manage their child's information at any time</li>
+                    <li>Parents may refuse further data collection and request deletion of existing data</li>
                 </ul>
             </section>
 
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">6. Children's Privacy</h2>
-                <p>Our Service is designed for students preparing for AP Calculus exams, who may include minors. We comply with the Children's Online Privacy Protection Act (COPPA). If you are under 13, you must have parental consent to use our Service. Parents may contact us at privacy@newmaos.com to review, delete, or manage their child's information.</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">8. Data Security</h2>
+                <p>We implement industry-standard security measures to protect your information:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>All data is transmitted over encrypted connections (TLS/SSL)</li>
+                    <li>Passwords are hashed using bcrypt and are never stored in plain text</li>
+                    <li>Database access is restricted with row-level security policies</li>
+                    <li>Regular security reviews and monitoring</li>
+                    <li>Access to student data is limited to authorized personnel on a need-to-know basis</li>
+                </ul>
+                <p className="mt-2">In the event of a data breach affecting student records, we will notify affected schools, parents, and users within 72 hours, as required by applicable law.</p>
             </section>
 
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">7. Data Security</h2>
-                <p>We implement industry-standard security measures to protect your information, including encryption, secure servers, and regular security audits. However, no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security.</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">9. Data Retention and Deletion</h2>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Student data is retained only as long as the account is active and the educational relationship exists</li>
+                    <li>Users may delete their account and all associated data at any time through Settings</li>
+                    <li>Schools may request bulk deletion of student data upon termination of their use of the Service</li>
+                    <li>Deleted data is permanently removed from our systems within 30 days</li>
+                </ul>
             </section>
 
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">8. Your Rights</h2>
-                <p>Depending on your location, you may have the right to:</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">10. Your Rights</h2>
+                <p>Depending on your location and applicable law, you have the right to:</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
                     <li>Access and receive a copy of your personal data</li>
                     <li>Correct inaccurate or incomplete information</li>
-                    <li>Delete your account and associated data</li>
-                    <li>Opt out of marketing communications</li>
+                    <li>Delete your account and all associated data</li>
+                    <li>Opt out of non-essential communications</li>
                     <li>Data portability (receive your data in a structured format)</li>
+                    <li>Withdraw consent for optional data processing</li>
                 </ul>
-                <p className="mt-2">To exercise these rights, contact us at privacy@newmaos.com.</p>
+                <p className="mt-2">To exercise these rights, contact us at <strong>privacy@newmaos.com</strong>. We will respond to requests within 30 days.</p>
             </section>
 
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">9. Changes to This Policy</h2>
-                <p>We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the "Last Updated" date. Your continued use of the Service after changes constitutes acceptance of the revised policy.</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">11. Changes to This Policy</h2>
+                <p>We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the "Last Updated" date. If changes materially affect how we handle student data, we will provide 30 days' notice before the changes take effect. Your continued use of the Service after changes constitutes acceptance of the revised policy.</p>
             </section>
 
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">10. Contact Us</h2>
-                <p>If you have questions about this Privacy Policy, please contact us:</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">12. Contact Us</h2>
+                <p>If you have questions about this Privacy Policy, need to sign a Data Privacy Agreement (DPA), or wish to exercise any of your rights, please contact us:</p>
                 <ul className="list-none mt-2 space-y-1">
-                    <li><strong>Email:</strong> privacy@newmaos.com</li>
+                    <li><strong>Privacy Officer Email:</strong> privacy@newmaos.com</li>
+                    <li><strong>General Support:</strong> support@newmaos.com</li>
                     <li><strong>Website:</strong> newmaos.com/support</li>
                 </ul>
+                <p className="mt-3 text-sm text-gray-500">For school district IT administrators: We are happy to provide additional documentation, complete vendor assessment questionnaires, or sign your district's standard DPA. Please contact privacy@newmaos.com and we will respond within 2 business days.</p>
             </section>
         </div>
     </SimpleLayout>
@@ -144,46 +200,81 @@ export const Privacy = () => (
 export const Terms = () => (
     <SimpleLayout title="Terms of Service">
         <div className="space-y-8">
-            <p className="text-sm text-gray-500">Last Updated: January 16, 2026</p>
+            <p className="text-sm text-gray-500">Last Updated: March 31, 2026</p>
             <section>
                 <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">1. Agreement to Terms</h2>
-                <p>These Terms of Service constitute a legally binding agreement between you and NewMaoS Learning, Inc. By using our AP Calculus learning platform at newmaos.com, you agree to be bound by these Terms.</p>
+                <p>These Terms of Service ("Terms") constitute a legally binding agreement between you and NewMaoS Learning, Inc. ("NewMaoS," "we," "our," or "us"). By accessing or using our AP Calculus learning platform at newmaos.com (the "Service"), you agree to be bound by these Terms and our <a href="#/privacy" className="text-primary hover:underline font-semibold">Privacy Policy</a>.</p>
             </section>
             <section>
                 <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">2. Eligibility</h2>
-                <p>You must be at least 13 years old to use this Service. If you are under 18, you represent that you have parental consent.</p>
+                <p>You must be at least 13 years old to create an account. If you are under 18, you represent that you have parental or guardian consent to use the Service. If you are under 13, you must have verifiable parental consent before creating an account, in compliance with COPPA.</p>
             </section>
             <section>
                 <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">3. Account Registration</h2>
-                <p>You agree to provide accurate information, maintain account security, and accept responsibility for all activities under your account.</p>
+                <p>You agree to provide accurate information during registration, maintain the security of your account credentials, and accept responsibility for all activities under your account. You must notify us immediately of any unauthorized use of your account.</p>
             </section>
             <section>
                 <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">4. Intellectual Property</h2>
-                <p>The Service and all its contents are owned by NewMaoS and protected by copyright laws. You are granted a limited license for personal, non-commercial educational use only.</p>
+                <p>The Service and all its contents—including questions, explanations, review books, and software—are owned by NewMaoS and protected by copyright laws. You are granted a limited, non-exclusive, non-transferable license for personal, non-commercial educational use only. You may not reproduce, distribute, or create derivative works from our content without written permission.</p>
             </section>
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">5. Prohibited Activities</h2>
-                <p>You may not: copy or distribute the Service; reverse engineer the software; share credentials; use bots or scrapers; disrupt the Service; upload malware; harass users; or use the Service to cheat on exams.</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">5. Student Data Protection</h2>
+                <p>We are committed to protecting student data. In connection with the Service:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>We do not sell, rent, or trade student data to any third party</li>
+                    <li>We do not use student data for advertising or non-educational purposes</li>
+                    <li>We comply with FERPA, COPPA, and applicable state student privacy laws</li>
+                    <li>Student education records remain the property of the student and/or their school</li>
+                    <li>Students and parents may request access to, correction of, or deletion of their data at any time</li>
+                </ul>
+                <p className="mt-2">For more details, see our <a href="#/privacy" className="text-primary hover:underline font-semibold">Privacy Policy</a>.</p>
             </section>
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">6. Disclaimer of Warranties</h2>
-                <p className="uppercase text-sm">THE SERVICE IS PROVIDED AS IS WITHOUT WARRANTIES. WE DO NOT GUARANTEE ANY SPECIFIC EXAM SCORES OR ACADEMIC OUTCOMES.</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">6. Prohibited Activities</h2>
+                <p>You may not:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Copy, distribute, or reproduce the Service or its content</li>
+                    <li>Reverse engineer, decompile, or attempt to extract source code</li>
+                    <li>Share account credentials with others</li>
+                    <li>Use bots, scrapers, or automated tools to access the Service</li>
+                    <li>Disrupt or interfere with the Service or its infrastructure</li>
+                    <li>Upload malware or malicious content</li>
+                    <li>Harass, bully, or threaten other users</li>
+                    <li>Use the Service to facilitate academic dishonesty</li>
+                </ul>
             </section>
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">7. Limitation of Liability</h2>
-                <p className="uppercase text-sm">NEWMAOS SHALL NOT BE LIABLE FOR ANY INDIRECT OR CONSEQUENTIAL DAMAGES ARISING FROM YOUR USE OF THE SERVICE.</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">7. Virtual Currency (NMS Points / Coins)</h2>
+                <p>The Service may include a virtual currency system ("Coins" or "NMS Points") used to unlock features within the platform. Virtual currency has no real-world monetary value, is non-transferable, and cannot be exchanged for cash. We reserve the right to modify the virtual economy at any time.</p>
             </section>
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">8. Termination</h2>
-                <p>We may terminate your account at any time for breach of these Terms. You may delete your account through Settings.</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">8. Disclaimer of Warranties</h2>
+                <p className="uppercase text-sm">THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED. WE DO NOT GUARANTEE ANY SPECIFIC EXAM SCORES, ACADEMIC OUTCOMES, OR UNINTERRUPTED SERVICE AVAILABILITY.</p>
             </section>
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">9. Governing Law</h2>
-                <p>These Terms are governed by the laws of the State of Delaware, United States.</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">9. Limitation of Liability</h2>
+                <p className="uppercase text-sm">TO THE MAXIMUM EXTENT PERMITTED BY LAW, NEWMAOS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING FROM YOUR USE OF OR INABILITY TO USE THE SERVICE.</p>
             </section>
             <section>
-                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">10. Contact Us</h2>
-                <p>Questions? Contact us at legal@newmaos.com</p>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">10. Termination</h2>
+                <p>We may suspend or terminate your account at any time for breach of these Terms. You may delete your account at any time through Settings. Upon account deletion, we will remove your personal data in accordance with our Privacy Policy.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">11. Changes to Terms</h2>
+                <p>We may update these Terms from time to time. Material changes will be communicated by posting the updated Terms on this page and updating the "Last Updated" date. Your continued use of the Service after changes take effect constitutes acceptance of the revised Terms.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">12. Governing Law</h2>
+                <p>These Terms are governed by the laws of the State of Delaware, United States, without regard to its conflict of law provisions.</p>
+            </section>
+            <section>
+                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-3">13. Contact Us</h2>
+                <p>Questions about these Terms? Contact us:</p>
+                <ul className="list-none mt-2 space-y-1">
+                    <li><strong>Email:</strong> legal@newmaos.com</li>
+                    <li><strong>Privacy inquiries:</strong> privacy@newmaos.com</li>
+                    <li><strong>Website:</strong> newmaos.com/support</li>
+                </ul>
             </section>
         </div>
     </SimpleLayout>
@@ -549,6 +640,13 @@ export const Signup = () => {
                                 )}
                             </div>
 
+                            <p className="text-[11px] text-gray-400 dark:text-gray-500 leading-relaxed">
+                                By creating an account, you agree to our{' '}
+                                <Link to="/terms" className="font-bold text-gray-600 dark:text-gray-300 hover:underline">Terms of Service</Link>{' '}
+                                and{' '}
+                                <Link to="/privacy" className="font-bold text-gray-600 dark:text-gray-300 hover:underline">Privacy Policy</Link>.
+                            </p>
+
                             <div className="pt-2">
                                 <button
                                     type="submit"
@@ -693,8 +791,15 @@ export const Signup = () => {
             )}
 
             <footer className="mt-12 text-center relative z-10">
+                <div className="flex justify-center gap-4 mb-3">
+                    <Link to="/privacy" className="text-xs font-medium text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">Privacy Policy</Link>
+                    <span className="text-neutral-300 dark:text-neutral-700">·</span>
+                    <Link to="/terms" className="text-xs font-medium text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">Terms of Service</Link>
+                    <span className="text-neutral-300 dark:text-neutral-700">·</span>
+                    <Link to="/support" className="text-xs font-medium text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">Support</Link>
+                </div>
                 <p className="text-xs font-medium text-neutral-400 dark:text-neutral-600">
-                    © 2026 NewMaoS. Designed for Excellence.
+                    © 2026 NewMaoS Learning, Inc. All rights reserved.
                 </p>
             </footer>
         </div>

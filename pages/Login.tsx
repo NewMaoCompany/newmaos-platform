@@ -560,9 +560,16 @@ export const Login = () => {
 
             </div>
 
-            <footer className="mt-12 text-center">
+            <footer className="mt-12 text-center relative z-10">
+                <div className="flex justify-center gap-4 mb-3">
+                    <Link to="/privacy" className="text-xs font-medium text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">Privacy Policy</Link>
+                    <span className="text-neutral-300 dark:text-neutral-700">·</span>
+                    <Link to="/terms" className="text-xs font-medium text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">Terms of Service</Link>
+                    <span className="text-neutral-300 dark:text-neutral-700">·</span>
+                    <Link to="/support" className="text-xs font-medium text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">Support</Link>
+                </div>
                 <p className="text-xs font-medium text-neutral-400 dark:text-neutral-600">
-                    © 2026 NewMaoS. Designed for Excellence.
+                    © 2026 NewMaoS Learning, Inc. All rights reserved.
                 </p>
             </footer>
         </div>
