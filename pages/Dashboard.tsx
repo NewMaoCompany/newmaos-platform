@@ -653,7 +653,7 @@ export const Dashboard = () => {
                     />
                   </div>
                   <span className="text-xs text-left text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
-                    I acknowledge and agree to the <Link to="/privacy" className="text-primary hover:underline font-bold" onClick={handleDismissPrompt}>Privacy Policy</Link> and <Link to="/terms" className="text-primary hover:underline font-bold" onClick={handleDismissPrompt}>Terms of Service</Link>, including all standard data protection policies for educational tools.
+                    I acknowledge and agree to the <Link to="/privacy" className="text-primary hover:underline font-bold" onClick={(e) => e.stopPropagation()}>Privacy Policy</Link> and <Link to="/terms" className="text-primary hover:underline font-bold" onClick={(e) => e.stopPropagation()}>Terms of Service</Link>, including all standard data protection policies for educational tools.
                   </span>
                 </label>
 
