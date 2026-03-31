@@ -90,7 +90,7 @@ export const TextbookViewer = () => {
             setPurchaseError('');
             setShowPurchaseModal(true);
         }
-    }, [isDownloaded, isAuthenticated, book, isFirstBookFree, isProcessing, navigate]);
+    }, [isDownloaded, isAuthenticated, user, book, isFirstBookFree, isProcessing, navigate]);
 
     const purchaseDownload = async () => {
         if (!book || !user?.id) return;
@@ -274,6 +274,14 @@ export const TextbookViewer = () => {
                                                 : `You've already used your free claim. Unlock Unit ${book.unitNumber} for 19 coins to keep reading.`
                                         }
                                     </p>
+                                    
+                                    {purchaseError && (
+                                        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl flex items-center gap-3 text-red-600 dark:text-red-400 text-sm font-bold animate-shake">
+                                            <span className="material-symbols-outlined text-lg">error</span>
+                                            {purchaseError}
+                                        </div>
+                                    )}
+
                                     <button
                                         onClick={handleDownloadClick}
                                         disabled={isProcessing || (isAuthenticated && purchasedBookCount === null)}
