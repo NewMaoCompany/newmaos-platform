@@ -28,11 +28,11 @@ export const TextbookViewer = () => {
 
     // --- Strict Guest Access Guard ---
     useEffect(() => {
-        // Only unit 1 is completely free and public. All other units require login to view.
-        if (!isAuthenticated && unitNum !== 1) {
+        // No textbooks are accessible without login. Redirect all guests to login.
+        if (!isAuthenticated) {
             navigate('/login');
         }
-    }, [isAuthenticated, unitNum, navigate]);
+    }, [isAuthenticated, navigate]);
 
     // Check if THIS book is already downloaded/unlocked (localStorage)
     useEffect(() => {
@@ -67,7 +67,10 @@ export const TextbookViewer = () => {
     const currentCost = isFirstBookFree ? 0 : DOWNLOAD_COST;
 
     const handleDownloadClick = useCallback(() => {
-        if (!isAuthenticated) return;
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
         
         if (isDownloaded) {
             // Already paid, open the PDF directly
@@ -77,6 +80,8 @@ export const TextbookViewer = () => {
             return;
         }
 
+        if (isProcessing) return; // Prevent double-clicking
+
         if (isFirstBookFree) {
             // Auto-claim first free book
             purchaseDownload();
@@ -85,7 +90,7 @@ export const TextbookViewer = () => {
             setPurchaseError('');
             setShowPurchaseModal(true);
         }
-    }, [isDownloaded, isAuthenticated, book, isFirstBookFree]);
+    }, [isDownloaded, isAuthenticated, book, isFirstBookFree, isProcessing, navigate]);
 
     const purchaseDownload = async () => {
         if (!book || !user?.id) return;
@@ -234,7 +239,7 @@ export const TextbookViewer = () => {
                 {/* PDF Viewer OR Paywall OR Coming Soon */}
                 <div id="viewer-container" className="flex-1 min-h-0 bg-gray-100 dark:bg-[#1a1c23] rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden relative shadow-inner">
                     {book.available ? (
-                        (isDownloaded || (!isAuthenticated && unitNum === 1)) ? (
+                        isDownloaded ? (
                             <>
                                 {!iframeLoaded && (
                                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10 bg-gray-100 dark:bg-[#1a1c23]">
