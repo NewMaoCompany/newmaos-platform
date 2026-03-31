@@ -362,7 +362,13 @@ export const TopicDetail = () => {
                             return (
                                 <div className="mb-6 w-full">
                                     <div
-                                        onClick={() => navigate(`/textbooks/${user?.currentCourse || 'AB'}/${currentBook.unitNumber}`)}
+                                        onClick={() => {
+                                            if (!isAuthenticated && currentBook.unitNumber !== 1) {
+                                                navigate('/login');
+                                                return;
+                                            }
+                                            navigate(`/textbooks/${user?.currentCourse || 'AB'}/${currentBook.unitNumber}`);
+                                        }}
                                         className={`group relative bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-3xl p-5 sm:p-6 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:border-transparent hover:-translate-y-1 flex flex-col sm:flex-row items-start sm:items-center gap-6 overflow-hidden ${!currentBook.available ? 'opacity-70' : ''}`}
                                         style={{
                                             '--hover-border': currentBook.coverColor
@@ -430,9 +436,13 @@ export const TopicDetail = () => {
                                                             </div>
                                                         ) : (
                                                             <div className="h-8 px-4 rounded-full bg-gray-900 dark:bg-white flex items-center gap-2 transition-all shadow-md">
-                                                                <PointsCoin size="sm" />
+                                                                {!isAuthenticated && currentBook.unitNumber !== 1 ? (
+                                                                    <span className="material-symbols-outlined text-[16px] text-white dark:text-gray-900">lock</span>
+                                                                ) : (
+                                                                    <PointsCoin size="sm" />
+                                                                )}
                                                                 <span className="text-[11px] font-black uppercase text-white dark:text-gray-900 tracking-widest pt-0.5">
-                                                                    {UNLOCK_COST} Coins to Unlock
+                                                                    {!isAuthenticated && currentBook.unitNumber !== 1 ? 'Sign In to Read' : `${UNLOCK_COST} Coins to Unlock`}
                                                                 </span>
                                                             </div>
                                                         )}

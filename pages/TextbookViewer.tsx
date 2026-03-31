@@ -26,6 +26,14 @@ export const TextbookViewer = () => {
     const downloadKey = `book_downloaded_${course}_${unitNum}`;
     const DOWNLOAD_COST = 19;
 
+    // --- Strict Guest Access Guard ---
+    useEffect(() => {
+        // Only unit 1 is completely free and public. All other units require login to view.
+        if (!isAuthenticated && unitNum !== 1) {
+            navigate('/login');
+        }
+    }, [isAuthenticated, unitNum, navigate]);
+
     // Check if THIS book is already downloaded/unlocked (localStorage)
     useEffect(() => {
         const downloaded = localStorage.getItem(downloadKey);
