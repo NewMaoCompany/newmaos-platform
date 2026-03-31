@@ -206,10 +206,10 @@ export const TextbookViewer = () => {
                                     <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
                                 ) : (
                                     <span className="material-symbols-outlined text-[18px]">
-                                        {!isAuthenticated ? 'lock' : (isDownloaded ? 'download' : (isFirstBookFree ? 'redeem' : 'lock'))}
+                                        {!isAuthenticated ? 'lock' : (isDownloaded ? 'open_in_new' : (isFirstBookFree ? 'redeem' : 'lock'))}
                                     </span>
                                 )}
-                                <span>{!isAuthenticated ? 'Sign In to Unlock' : (isDownloaded ? 'Download PDF' : (purchasedBookCount === null ? 'Loading...' : (isFirstBookFree ? 'Claim FREE' : `Unlock (${DOWNLOAD_COST} Coins)`)))}</span>
+                                <span>{!isAuthenticated ? 'Sign In to Unlock' : (isDownloaded ? 'Open in a new page' : (purchasedBookCount === null ? 'Loading...' : (isFirstBookFree ? 'Claim FREE' : `Unlock (${DOWNLOAD_COST} Coins)`)))}</span>
                             </button>
                         )}
 
@@ -341,7 +341,7 @@ export const TextbookViewer = () => {
                                 </div>
                             </div>
 
-                            <h3 className="text-xl font-black text-text-main dark:text-white mb-1">Export PDF</h3>
+                            <h3 className="text-xl font-black text-text-main dark:text-white mb-1">Open Textbook</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
                                 Unit {book.unitNumber}: {book.title}
                             </p>
@@ -383,8 +383,8 @@ export const TextbookViewer = () => {
                                         <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
                                     ) : (
                                         <>
-                                            <span className="material-symbols-outlined text-[20px]">download</span>
-                                            Pay & Download
+                                            <span className="material-symbols-outlined text-[20px]">open_in_new</span>
+                                            Pay & Open
                                         </>
                                     )}
                                 </button>
