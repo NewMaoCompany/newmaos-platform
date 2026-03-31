@@ -166,6 +166,7 @@ export const Dashboard = () => {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [todayIndex, setTodayIndex] = useState(0);
   const [showWelcomeGift, setShowWelcomeGift] = useState(false);
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(() => localStorage.getItem('privacy_agreed_2026') === 'true');
 
   // Red dot driven by unread check-in notification (unified source of truth)
   const needsCheckin = notifications.some(n => n.unread && n.link === '/checkin');
@@ -627,30 +628,55 @@ export const Dashboard = () => {
 
               <div className="flex flex-col items-center text-center mt-4">
                 <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-text-main shadow-glow mb-6 rotate-3">
-                  <span className="material-symbols-outlined text-4xl">lock</span>
+                  <span className="material-symbols-outlined text-4xl">travel_explore</span>
                 </div>
-                <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">Sign In Required</h3>
-                <p className="text-gray-500 dark:text-gray-400 mb-8">
-                  Save your progress, track your completion, and get personalized AI recommendations.
+                <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">Sign In</h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">
+                  Create an account to securely save your progress and get personalized AI insights. Full access is always free.
                 </p>
+
+                {/* Privacy Checkbox */}
+                <label className="flex items-start gap-4 w-full p-4 mb-6 rounded-2xl bg-gray-50/50 dark:bg-white/5 border border-gray-100 dark:border-white/10 hover:border-gray-200 dark:hover:border-white/20 transition-all cursor-pointer group">
+                  <div className="flex-shrink-0 mt-0.5">
+                    <input
+                        type="checkbox"
+                        checked={agreedToPrivacy}
+                        onChange={(e) => {
+                            setAgreedToPrivacy(e.target.checked);
+                            if (e.target.checked) {
+                                localStorage.setItem('privacy_agreed_2026', 'true');
+                            } else {
+                                localStorage.removeItem('privacy_agreed_2026');
+                            }
+                        }}
+                        className="w-5 h-5 rounded hover:ring-2 hover:ring-primary/50 text-primary bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-primary focus:ring-offset-0 transition-all cursor-pointer"
+                    />
+                  </div>
+                  <span className="text-xs text-left text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
+                    I acknowledge and agree to the <Link to="/privacy" className="text-primary hover:underline font-bold" onClick={handleDismissPrompt}>Privacy Policy</Link> and <Link to="/terms" className="text-primary hover:underline font-bold" onClick={handleDismissPrompt}>Terms of Service</Link>, including all standard data protection policies for educational tools.
+                  </span>
+                </label>
 
                 <div className="flex flex-col gap-3 w-full">
                   <button
                     onClick={() => navigate('/login')}
-                    className="w-full py-3.5 bg-primary rounded-xl font-bold text-text-main shadow-md hover:brightness-105 active:scale-95 transition-all"
+                    disabled={!agreedToPrivacy}
+                    className="w-full py-3.5 bg-primary rounded-xl font-bold text-text-main shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed group-hover:brightness-100"
                   >
                     Sign In
                   </button>
                   <button
                     onClick={() => navigate('/signup')}
-                    className="w-full py-3.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+                    disabled={!agreedToPrivacy}
+                    className="w-full py-3.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Create Account
                   </button>
                 </div>
 
-                <p className="mt-6 text-xs text-gray-400 cursor-pointer hover:text-primary transition-colors" onClick={handleDismissPrompt}>
-                  Continue as Guest (Progress won't be saved)
+                <p className="mt-6 text-xs text-gray-400 font-medium cursor-pointer hover:text-primary transition-colors flex items-center justify-center gap-1 group/guest" onClick={handleDismissPrompt}>
+                  <span>Continue Browsing Without Saving</span>
+                  <span className="material-symbols-outlined text-[14px] group-hover/guest:translate-x-1 transition-transform">arrow_forward</span>
                 </p>
               </div>
             </div>
