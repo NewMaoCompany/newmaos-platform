@@ -694,7 +694,13 @@ export const Analysis = () => {
                 </div>
 
                 <footer className="mt-10 border-t border-gray-200 dark:border-white/10 pt-8 pb-10 flex flex-col md:flex-row justify-between items-center text-text-secondary text-sm">
-                    <p>© 2026 NewMaoS Learning. All rights reserved.</p>
+                    <p className="flex-1 text-left">© 2026 NewMaoS Learning. All rights reserved.</p>
+                    <div className="flex-1 text-center mt-4 md:mt-0 font-bold text-gray-500">This website is non-profit and completely free</div>
+                    <div className="flex gap-6 mt-4 md:mt-0 flex-1 justify-end">
+                        <Link to="/privacy" className="hover:text-text-main dark:hover:text-white transition-colors">Privacy</Link>
+                        <Link to="/terms" className="hover:text-text-main dark:hover:text-white transition-colors">Terms</Link>
+                        <Link to="/support" className="hover:text-text-main dark:hover:text-white transition-colors">Support</Link>
+                    </div>
                 </footer>
             </main>
         </div>
