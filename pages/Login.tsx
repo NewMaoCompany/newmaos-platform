@@ -257,6 +257,9 @@ export const Login = () => {
                             <div className="flex flex-col gap-1">
                                 <h1 className="text-3xl font-bold tracking-tight text-[#1c1a0d] dark:text-white">NewMaoS</h1>
                                 <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">AP Calculus Mastery</p>
+                                <div className="mt-2 text-xl font-black text-red-600 dark:text-red-400 animate-pulse">
+                                    This website is non-profit and completely free!
+                                </div>
                             </div>
                         </div>
 

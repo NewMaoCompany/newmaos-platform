@@ -270,6 +270,11 @@ const AppRoutes = () => {
         checkinResult={checkinResult}
       />
 
+      {/* Global Disclaimer */}
+      <div className="fixed bottom-0 left-0 w-full text-center pointer-events-none z-[9999] py-1 bg-gradient-to-t from-background-light/80 to-transparent dark:from-background-dark/80">
+        <p className="text-sm font-bold text-gray-500 dark:text-gray-400">This website is non-profit and completely free</p>
+      </div>
+
     </div>
   );
 };
