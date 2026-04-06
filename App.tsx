@@ -179,100 +179,101 @@ const AppRoutes = () => {
   const isPracticeSession = path.startsWith('/practice/session') || path.startsWith('/practice/unit/');
 
   return (
-    <div className={`h-[100dvh] w-full bg-background-light dark:bg-background-dark overflow-x-hidden overflow-y-hidden relative ${isPracticeSession ? '' : 'min-w-[360px]'}`}>
+    <div className={`flex flex-col h-[100dvh] w-full bg-background-light dark:bg-background-dark overflow-hidden relative ${isPracticeSession ? '' : 'min-w-[360px]'}`}>
 
+      <div className="relative flex-1 overflow-hidden">
+        {/* Persistent Page Layers (Main 5) */}
+        <>
+          <PageLayer active={isDashboard} zIndex={isDashboard ? 40 : 10}>
+            <Dashboard />
+          </PageLayer>
 
-      {/* Persistent Page Layers (Main 5) */}
-      <>
-        <PageLayer active={isDashboard} zIndex={isDashboard ? 40 : 10}>
-          <Dashboard />
-        </PageLayer>
+          <PageLayer active={isPractice} zIndex={isPractice ? 40 : 10}>
+            <PracticeHub />
+          </PageLayer>
 
-        <PageLayer active={isPractice} zIndex={isPractice ? 40 : 10}>
-          <PracticeHub />
-        </PageLayer>
+          {isAuthenticated && (
+            <>
+              <PageLayer active={isAnalysis} zIndex={isAnalysis ? 40 : 10}>
+                <Analysis />
+              </PageLayer>
 
-        {isAuthenticated && (
-          <>
-            <PageLayer active={isAnalysis} zIndex={isAnalysis ? 40 : 10}>
-              <Analysis />
-            </PageLayer>
+              <PageLayer active={isForum} zIndex={isForum ? 50 : 10}>
+                <Forum />
+              </PageLayer>
 
-            <PageLayer active={isForum} zIndex={isForum ? 50 : 10}>
-              <Forum />
-            </PageLayer>
+              <PageLayer active={isSettings} zIndex={isSettings ? 40 : 10}>
+                <Settings />
+              </PageLayer>
+            </>
+          )}
+        </>
 
-            <PageLayer active={isSettings} zIndex={isSettings ? 40 : 10}>
-              <Settings />
-            </PageLayer>
-          </>
-        )}
-      </>
+        {/* Redirect to login if unauthenticated and on a main page that REQUIRES auth */}
+        {!isAuthenticated && (isAnalysis || isForum || isSettings) && <Navigate to="/login" replace />}
 
-      {/* Redirect to login if unauthenticated and on a main page that REQUIRES auth */}
-      {!isAuthenticated && (isAnalysis || isForum || isSettings) && <Navigate to="/login" replace />}
+        {/* Sub-Routes & Non-Main Pages Layer (Always visible if NOT on a main page layer) */}
+        <div className={`absolute inset-0 z-[60] overflow-y-auto ${isOnMainPage ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 pointer-events-auto flex flex-col animate-page-in'}`}>
+          <Suspense fallback={<LazyFallback />}>
+            <Routes>
+              {/* Auth Pages (Always visible if not on main page) */}
+              {!isAuthenticated && (
+                <>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/verify-email" element={<VerifyEmail />} />
+                </>
+              )}
 
-      {/* Sub-Routes & Non-Main Pages Layer (Always visible if NOT on a main page layer) */}
-      <div className={`absolute inset-0 z-[60] overflow-y-auto ${isOnMainPage ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 pointer-events-auto flex flex-col animate-page-in'}`}>
-        <Suspense fallback={<LazyFallback />}>
-          <Routes>
-            {/* Auth Pages (Always visible if not on main page) */}
-            {!isAuthenticated && (
-              <>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/verify-email" element={<VerifyEmail />} />
-              </>
-            )}
+              {/* Sub-pages and Details (Overlay on main layers) */}
+              <Route path="/practice/unit/:unitId" element={<TopicDetail />} />
+              <Route path="/practice/session" element={<Practice />} />
+              <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
+              <Route path="/prestige" element={<ProtectedRoute><PrestigePage /></ProtectedRoute>} />
+              <Route path="/stardust" element={<ProtectedRoute><StardustPage /></ProtectedRoute>} />
+              <Route path="/profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/points" element={<ProtectedRoute><PointsPage /></ProtectedRoute>} />
+              <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
+              <Route path="/wrong-answers" element={<ProtectedRoute><WrongAnswerBook /></ProtectedRoute>} />
+              <Route path="/textbooks/:courseType/:unitNumber" element={<TextbookViewer />} />
 
-            {/* Sub-pages and Details (Overlay on main layers) */}
-            <Route path="/practice/unit/:unitId" element={<TopicDetail />} />
-            <Route path="/practice/session" element={<Practice />} />
-            <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
-            <Route path="/prestige" element={<ProtectedRoute><PrestigePage /></ProtectedRoute>} />
-            <Route path="/stardust" element={<ProtectedRoute><StardustPage /></ProtectedRoute>} />
-            <Route path="/profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/points" element={<ProtectedRoute><PointsPage /></ProtectedRoute>} />
-            <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
-            <Route path="/wrong-answers" element={<ProtectedRoute><WrongAnswerBook /></ProtectedRoute>} />
-            <Route path="/textbooks/:courseType/:unitNumber" element={<TextbookViewer />} />
+              {/* Settings Subpages */}
+              <Route path="/settings/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+              <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
+              <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionSettings /></ProtectedRoute>} />
+              <Route path="/settings/creator" element={<ProtectedRoute><QuestionCreator /></ProtectedRoute>} />
+              <Route path="/debug-qa" element={<ProtectedRoute><DebugQA /></ProtectedRoute>} />
 
-            {/* Settings Subpages */}
-            <Route path="/settings/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
-            <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
-            <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionSettings /></ProtectedRoute>} />
-            <Route path="/settings/creator" element={<ProtectedRoute><QuestionCreator /></ProtectedRoute>} />
-            <Route path="/debug-qa" element={<ProtectedRoute><DebugQA /></ProtectedRoute>} />
+              {/* Static Pages */}
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/support" element={<Support />} />
 
-            {/* Static Pages */}
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/support" element={<Support />} />
+              {/* Catch-all to make the URL reflect the state, though the layers handle visibility */}
+              <Route path="/dashboard" element={<div />} />
+              <Route path="/practice" element={<div />} />
+              <Route path="/analysis" element={<div />} />
+              <Route path="/forum" element={<div />} />
+              <Route path="/settings" element={<div />} />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Suspense>
+        </div>
 
-            {/* Catch-all to make the URL reflect the state, though the layers handle visibility */}
-            <Route path="/dashboard" element={<div />} />
-            <Route path="/practice" element={<div />} />
-            <Route path="/analysis" element={<div />} />
-            <Route path="/forum" element={<div />} />
-            <Route path="/settings" element={<div />} />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </Suspense>
+        {/* Global Daily Streak Modal */}
+        <StreakModal
+          isOpen={showStreakModal}
+          streak={streakCount}
+          onClose={() => { setShowStreakModal(false); setIsStreakModalOpen(false); }}
+          isRecovery={isStreakRecovery}
+          checkinResult={checkinResult}
+        />
       </div>
 
-      {/* Global Daily Streak Modal */}
-      <StreakModal
-        isOpen={showStreakModal}
-        streak={streakCount}
-        onClose={() => { setShowStreakModal(false); setIsStreakModalOpen(false); }}
-        isRecovery={isStreakRecovery}
-        checkinResult={checkinResult}
-      />
-
       {/* Global Disclaimer */}
-      <div className="fixed bottom-0 left-0 w-full text-center pointer-events-none z-[9999] py-1 bg-gradient-to-t from-background-light/80 to-transparent dark:from-background-dark/80">
-        <p className="text-sm font-bold text-gray-500 dark:text-gray-400">This website is non-profit and completely free</p>
+      <div className="shrink-0 w-full text-center py-1 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 z-[9999]">
+        <p className="text-xs font-bold text-gray-500 dark:text-gray-400">This website is non-profit and completely free</p>
       </div>
 
     </div>
