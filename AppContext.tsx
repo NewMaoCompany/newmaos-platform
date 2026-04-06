@@ -2462,8 +2462,18 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     };
 
     const isPro = useMemo(() => {
-        return user.subscriptionTier === 'pro';
-    }, [user.subscriptionTier]);
+        if (user.subscriptionTier !== 'pro') return false;
+        
+        // If there's an expiration date, verify it hasn't passed
+        if (user.subscriptionPeriodEnd) {
+            const endDate = new Date(user.subscriptionPeriodEnd);
+            if (endDate < new Date()) {
+                return false;
+            }
+        }
+        
+        return true;
+    }, [user.subscriptionTier, user.subscriptionPeriodEnd]);
 
     const claimFreePro = async () => {
         if (!isAuthenticated || !user.id) return false;

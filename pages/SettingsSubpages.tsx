@@ -1471,11 +1471,15 @@ export const SubscriptionSettings = () => {
                 <PointsCoin size="md" showGlow={false} />
                 <span className="text-sm font-bold text-gray-400">/ month</span>
               </div>
-              {isPro && user.subscriptionPeriodEnd && (
+              {(isPro && user.subscriptionPeriodEnd) ? (
                 <p className="text-[10px] font-black text-primary uppercase mt-2">
                   Expires on: {new Date(user.subscriptionPeriodEnd).toLocaleDateString()}
                 </p>
-              )}
+              ) : (!isPro && user.subscriptionTier === 'pro' && user.subscriptionPeriodEnd && new Date(user.subscriptionPeriodEnd) < new Date()) ? (
+                <p className="text-[10px] font-black text-red-500 uppercase mt-2">
+                  Expired on: {new Date(user.subscriptionPeriodEnd).toLocaleDateString()}
+                </p>
+              ) : null}
             </div>
 
             <div className="space-y-4 mb-10 flex-grow relative z-10">
