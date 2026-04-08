@@ -2056,30 +2056,43 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     // Effect: Check for existing Supabase session on app start (persistent login)
     useEffect(() => {
         const restoreSession = async () => {
-            // Safety valve: Force stop loading after 5 seconds to prevent white screen
+            // Check if we have a cached user — if so, render immediately from cache
+            const hasCachedUser = typeof window !== 'undefined' && localStorage.getItem('user_profile_cache') !== null;
+
+            // If we have cache, stop loading immediately so the UI renders from cache
+            // The full session restore will update in the background
+            if (hasCachedUser) {
+                setIsAuthLoading(false);
+            }
+
+            // Safety valve: Force stop loading after 3 seconds to prevent white screen
             const safetyTimeout = setTimeout(() => {
                 console.warn('⚠️ Session restore timed out, forcing load completion.');
                 setIsAuthLoading(false);
-            }, 5000);
+            }, 3000);
 
             try {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session?.user) {
                     const email = session.user.email || '';
-                    // Fetch full profile to get is_creator status AND latest name AND subscription data
-                    const { data: profile } = await supabase
-                        .from('user_profiles')
-                        .select('is_creator, name, avatar_url, subscription_tier, subscription_period_end, has_seen_pro_intro, bio, avatar_color, show_name, show_email, show_bio, streak_days, equipped_title_id, equipped_title:titles(*), locked_practice_mode, practice_mode_locked_at')
-                        .eq('id', session.user.id)
-                        .single();
 
-                    // Parallel fetch for stats and titles
-                    const { data: statsData } = await supabase.rpc('get_user_stats', { target_user_id: session.user.id });
+                    // Run profile, stats, and titles fetches in parallel
+                    const [profileResult, statsResult, titlesResult] = await Promise.all([
+                        supabase
+                            .from('user_profiles')
+                            .select('is_creator, name, avatar_url, subscription_tier, subscription_period_end, has_seen_pro_intro, bio, avatar_color, show_name, show_email, show_bio, streak_days, equipped_title_id, equipped_title:titles(*), locked_practice_mode, practice_mode_locked_at')
+                            .eq('id', session.user.id)
+                            .single(),
+                        supabase.rpc('get_user_stats', { target_user_id: session.user.id }),
+                        supabase
+                            .from('titles')
+                            .select('*')
+                            .order('threshold', { ascending: true })
+                    ]);
 
-                    const { data: allTitles } = await supabase
-                        .from('titles')
-                        .select('*')
-                        .order('threshold', { ascending: true });
+                    const profile = profileResult.data;
+                    const statsData = statsResult.data;
+                    const allTitles = titlesResult.data;
 
                     if (allTitles) setAvailableTitles(allTitles);
 

@@ -437,6 +437,7 @@ export const Signup = () => {
             // Call registration API
             const response = await authApi.register(email, password, name);
             // Always move to verify step for new registration flow
+            setIsLoading(false);
             setStep('verify');
         } catch (err: any) {
             setError(translateError(err.message) || 'Registration failed. Please try again.');
