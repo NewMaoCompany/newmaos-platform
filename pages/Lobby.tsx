@@ -165,8 +165,8 @@ export const Lobby = () => {
           >
             <div className="flex items-center gap-8 h-full px-6">
               <AnalogClock date={currentTime} />
-              <div className="flex flex-col justify-center min-w-0">
-                <p className="text-3xl sm:text-4xl font-black tracking-tighter truncate text-white">
+              <div className="flex flex-col justify-center min-w-0 flex-1">
+                <p className="text-3xl sm:text-4xl font-black tracking-tighter text-white whitespace-nowrap">
                   {currentTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
                 </p>
                 <p className="text-[17px] font-bold text-white/50 mb-4 tracking-wide">
@@ -184,11 +184,13 @@ export const Lobby = () => {
 
           <Widget title="Activity" icon="bolt" className="w-[340px] sm:w-[500px] h-[200px]">
             <div className="flex items-center h-full px-4 justify-between gap-4 overflow-hidden">
-               <div className="flex-1 flex flex-col items-center">
-                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 shadow-inner border border-white/20">
+               <div className="flex-1 flex flex-col items-center min-w-0">
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 shadow-inner border border-white/20 shrink-0">
                     <PointsCoin size="sm" />
                   </div>
-                  <span className="text-2xl font-black tracking-tight">{userPoints.balance.toLocaleString()}</span>
+                  <span className="text-lg sm:text-xl font-black tracking-tight whitespace-nowrap overflow-visible">
+                    {userPoints.balance.toLocaleString()}
+                  </span>
                   <span className="text-[10px] font-black text-white/40 uppercase tracking-widest mt-1">Points</span>
                </div>
                <div className="w-px h-12 bg-white/20" />
