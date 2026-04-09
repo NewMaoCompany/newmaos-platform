@@ -236,15 +236,15 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
           {/* Left Side Group (Logo + Notification) */}
           <div className="flex items-center h-full">
             {/* Logo Area - Always Visible */}
-            <div 
-              onClick={() => window.open('https://hall.newmaos.com', '_blank')}
+            <Link 
+              to="/lobby"
               className="flex items-center gap-2 group cursor-pointer shrink-0"
             >
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-text-main shadow-glow transition-transform group-hover:scale-105 overflow-hidden">
                 <span className="material-symbols-outlined font-bold" style={{ fontSize: '20px' }}>function</span>
               </div>
               <h1 className="text-lg sm:text-xl font-bold tracking-tight text-text-main dark:text-white">NewMaoS</h1>
-            </div>
+            </Link>
 
             {/* Notification Bell - Moved next to Logo */}
             {isAuthenticated && (
