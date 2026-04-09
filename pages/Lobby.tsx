@@ -4,7 +4,7 @@ import { useApp } from '../AppContext';
 import { MatchGame } from './MatchGame';
 import { PointsCoin } from '../components/PointsCoin';
 
-// --- iOS Components ---
+// --- Premium iOS Components ---
 
 // Analog Clock Widget
 const AnalogClock = ({ date }: { date: Date }) => {
@@ -13,8 +13,8 @@ const AnalogClock = ({ date }: { date: Date }) => {
   const hours = date.getHours();
 
   return (
-    <div className="w-full h-full relative flex items-center justify-center p-2">
-      <div className="w-[105px] h-[105px] rounded-full bg-white/10 backdrop-blur-md border border-white/20 relative shadow-inner">
+    <div className="w-full h-full relative flex items-center justify-center">
+      <div className="w-[100px] h-[100px] rounded-full bg-white/5 backdrop-blur-xl border border-white/10 relative shadow-2xl">
         {/* Clock Marks */}
         {[...Array(12)].map((_, i) => (
           <div
@@ -22,7 +22,7 @@ const AnalogClock = ({ date }: { date: Date }) => {
             className="absolute top-0 left-1/2 -ml-[1px] h-full w-[2px]"
             style={{ transform: `rotate(${i * 30}deg)` }}
           >
-            <div className="h-2 w-full bg-white/30 rounded-full" />
+            <div className="h-2 w-full bg-white/20 rounded-full" />
           </div>
         ))}
         {/* Hands */}
@@ -31,28 +31,27 @@ const AnalogClock = ({ date }: { date: Date }) => {
           style={{ transform: `rotate(${(hours % 12) * 30 + minutes * 0.5}deg)` }}
         />
         <div 
-          className="absolute top-1/2 left-1/2 -mt-12 -ml-[1px] w-[2px] h-12 bg-white/90 rounded-full origin-bottom"
+          className="absolute top-1/2 left-1/2 -mt-12 -ml-[1px] w-[2px] h-12 bg-white/80 rounded-full origin-bottom"
           style={{ transform: `rotate(${minutes * 6}deg)` }}
         />
         <div 
-          className="absolute top-1/2 left-1/2 -mt-12 -ml-[0.5px] w-[1px] h-12 bg-[#FF3B30] rounded-full origin-bottom"
+          className="absolute top-1/2 left-1/2 -mt-12 -ml-[0.5px] w-[1px] h-12 bg-[#FF3B30] rounded-full origin-bottom shadow-[0_0_8px_rgba(255,59,48,0.5)]"
           style={{ transform: `rotate(${seconds * 6}deg)` }}
         />
-        <div className="absolute top-1/2 left-1/2 -mt-[2px] -ml-[2px] w-1 h-1 bg-white rounded-full shadow-sm" />
+        <div className="absolute top-1/2 left-1/2 -mt-[2px] -ml-[2px] w-1 h-1 bg-white rounded-full" />
       </div>
     </div>
   );
 };
 
-// Generic Widget Wrapper
+// Minimalist High-End Widget
 const Widget = ({ children, className = '', title = '', icon = '' }: { children: React.ReactNode; className?: string; title?: string; icon?: string }) => (
-  <div className={`aspect-square bg-white/10 backdrop-blur-3xl rounded-[28px] p-4 border border-white/20 shadow-xl overflow-hidden relative group active:scale-[0.98] transition-transform ${className}`}>
-    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50" />
+  <div className={`bg-white/5 backdrop-blur-[40px] rounded-[32px] p-5 border border-white/10 shadow-2xl overflow-hidden relative group active:scale-[0.98] transition-all duration-500 hover:bg-white/10 ${className}`}>
     <div className="relative z-10 h-full flex flex-col">
       {title && (
-        <div className="flex items-center gap-1.5 mb-2 opacity-40">
-          {icon && <span className="material-symbols-outlined text-[12px]">{icon}</span>}
-          <span className="text-[9px] font-black uppercase tracking-[0.1em]">{title}</span>
+        <div className="flex items-center gap-2 mb-3 opacity-30">
+          {icon && <span className="material-symbols-outlined text-[14px]">{icon}</span>}
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{title}</span>
         </div>
       )}
       <div className="flex-1 min-h-0">
@@ -62,53 +61,47 @@ const Widget = ({ children, className = '', title = '', icon = '' }: { children:
   </div>
 );
 
-// App Icon Component
+// App Icon Component (Vibrant iOS Style)
 const AppIcon = ({ 
   icon, 
   label, 
   gradient, 
   onClick, 
-  badge,
-  isDock = false,
-  fillIcon = true
+  badge
 }: { 
   icon: string; 
   label: string; 
   gradient: string; 
   onClick: () => void; 
   badge?: number;
-  isDock?: boolean;
-  fillIcon?: boolean;
 }) => (
-  <button onClick={onClick} className={`flex flex-col items-center gap-1.5 group select-none ${isDock ? 'mt-[-8px]' : ''}`}>
+  <button onClick={onClick} className="flex flex-col items-center gap-3 group select-none transition-transform duration-300 hover:scale-105 active:scale-90">
     <div 
-      className={`rounded-[22%] flex items-center justify-center shadow-lg relative active:scale-[0.85] active:brightness-90 transition-all duration-300 ${isDock ? 'w-[52px] h-[52px] sm:w-[60px] sm:h-[60px]' : 'w-[62px] h-[62px] sm:w-[68px] sm:h-[68px]'}`}
+      className="w-[72px] h-[72px] sm:w-[84px] sm:h-[84px] rounded-[22%] flex items-center justify-center relative shadow-2xl transition-all duration-500"
       style={{ 
         background: gradient,
-        boxShadow: '0 8px 20px -5px rgba(0,0,0,0.4)',
+        boxShadow: '0 15px 35px -5px rgba(0,0,0,0.5), inset 0 2px 8px rgba(255,255,255,0.2)',
       }}
     >
       <div className="absolute inset-0 bg-white/10 rounded-[22%] opacity-0 group-hover:opacity-100 transition-opacity" />
-      <span className="material-symbols-outlined text-white" style={{ fontSize: isDock ? '30px' : '34px', fontVariationSettings: fillIcon ? "'FILL' 1" : "'FILL' 0" }}>
+      <span className="material-symbols-outlined text-white" style={{ fontSize: '40px', fontVariationSettings: "'FILL' 1" }}>
         {icon}
       </span>
       {badge && badge > 0 && (
-        <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 flex items-center justify-center bg-[#FF3B30] text-white text-[10px] font-black rounded-full px-1.5 shadow-lg border-2 border-white/20 animate-bounce-subtle">
+        <span className="absolute -top-1 -right-1 min-w-[24px] h-6 flex items-center justify-center bg-[#FF3B30] text-white text-[12px] font-black rounded-full px-1.5 shadow-lg border-2 border-white/20 animate-pulse">
           {badge > 99 ? '99+' : badge}
         </span>
       )}
     </div>
-    {!isDock && (
-      <span className="text-[11px] font-semibold text-white/90 drop-shadow-md tracking-tight">
-        {label}
-      </span>
-    )}
+    <span className="text-[13px] font-bold text-white tracking-wide drop-shadow-lg opacity-90 group-hover:opacity-100 transition-opacity">
+      {label}
+    </span>
   </button>
 );
 
 export const Lobby = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, user, notifications, userPoints, userPrestige, checkinStatus } = useApp();
+  const { isAuthenticated, notifications, userPoints, userPrestige } = useApp();
   const [showMatchGame, setShowMatchGame] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -122,141 +115,128 @@ export const Lobby = () => {
   if (showMatchGame) return <MatchGame onBack={() => setShowMatchGame(false)} />;
 
   return (
-    <div className="fixed inset-0 z-[90] flex flex-col items-center bg-[#000] overflow-hidden text-white selection:bg-primary/30">
-      {/* --- Wallpaper --- */}
-      <div className="absolute inset-0 transition-all duration-1000 overflow-hidden">
-        {/* Dynamic Liquid background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a40] via-[#2d1b69] to-[#0a0a1a]" />
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#007AFF]/20 rounded-full blur-[120px] animate-liquid-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#5856D6]/20 rounded-full blur-[120px] animate-liquid-pulse-slow" />
-        <div className="absolute top-[30%] right-[10%] w-[40%] h-[40%] bg-[#FF2D55]/10 rounded-full blur-[100px] animate-liquid-pulse" />
+    <div className="fixed inset-0 z-[90] flex flex-col items-center bg-[#000] overflow-hidden text-white font-sans selection:bg-white/20">
+      
+      {/* --- Premium Liquid Background --- */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-[#0a0a0f]" />
+        {/* Dynamic Blobs with Intense Vibrant Colors */}
+        <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-[hsl(215,100%,40%)]/30 rounded-full blur-[120px] animate-blob-1" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-[hsl(275,100%,40%)]/25 rounded-full blur-[140px] animate-blob-2" />
+        <div className="absolute top-[20%] right-[-5%] w-[50%] h-[50%] bg-[hsl(330,100%,40%)]/20 rounded-full blur-[110px] animate-blob-3" />
+        {/* Subtle texture/grain can be added here if needed */}
       </div>
 
-      {/* --- Status Bar --- */}
-      <div className="w-full flex items-center justify-between px-8 py-3 z-50 font-semibold text-[13px] tracking-tight backdrop-blur-sm bg-black/5">
-        <div className="flex items-center gap-1">
-          <span className="tabular-nums">{currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}</span>
-          <span>{currentTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+      {/* --- Minimalist Status Bar (Clock Only) --- */}
+      <div className="w-full flex items-center justify-between px-10 py-5 z-50 font-bold text-[15px] tracking-tight opacity-90">
+        <div>
+          <span className="tabular-nums drop-shadow-sm">
+            {currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
+          </span>
         </div>
-        <div className="flex items-center gap-2 opacity-90">
-          <span className="material-symbols-outlined text-[18px]">signal_cellular_alt</span>
-          <span className="material-symbols-outlined text-[18px]">wifi</span>
-          <div className="flex items-center gap-1 ml-1 px-1.5 py-0.5 rounded-md bg-white/10">
-            <span className="text-[10px] font-bold">85%</span>
-            <span className="material-symbols-outlined text-[16px]">battery_80</span>
-          </div>
+        <div>
+          {/* Icons removed as requested */}
         </div>
       </div>
 
-      {/* --- Main iPad Root --- */}
-      <div className="relative z-50 flex-1 w-full flex flex-col items-center px-4 sm:px-8 pt-6 sm:pt-10 overflow-y-auto overflow-x-hidden scroll-none">
+      {/* --- Main Content --- */}
+      <div className="relative z-50 flex-1 w-full flex flex-col items-center px-8 pt-4 sm:pt-10 overflow-hidden">
         
-        {/* WIDGET ROW: Explicit flex/grid to prevent overlap */}
-        <div className="w-full max-w-[1000px] flex flex-wrap justify-center gap-6 mb-10">
+        {/* WIDGET GRID (Bulletproof spacing to prevent overlap) */}
+        <div className="w-full max-w-[1100px] flex flex-wrap justify-center items-center gap-8 mb-16">
           
-          {/* Clock Widget (2x1 equivalent) */}
-          <Widget title="Clock" icon="schedule" className="w-full sm:w-[480px] h-[165px]">
-            <div className="flex items-center gap-4 sm:gap-8 h-full px-4">
+          <Widget title="Today" icon="calendar_today" className="w-[320px] sm:w-[460px] h-[180px]">
+            <div className="flex items-center gap-6 h-full px-4">
               <AnalogClock date={currentTime} />
-              <div className="flex flex-col justify-center gap-1 min-w-0">
-                <p className="text-xl sm:text-2xl font-black truncate">{currentTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</p>
-                <p className="text-xs sm:text-sm font-bold text-white/50">{currentTime.toLocaleDateString('en-US', { weekday: 'long' })}</p>
-                <div className="mt-2 text-[10px] sm:text-xs font-bold text-primary flex items-center gap-1 underline underline-offset-4 cursor-pointer">
-                  Check Schedule <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+              <div className="flex flex-col justify-center min-w-0">
+                <p className="text-2xl sm:text-3xl font-black tracking-tighter truncate">
+                  {currentTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+                </p>
+                <p className="text-[15px] font-bold text-white/40 mb-3 tracking-wide">
+                  {currentTime.toLocaleDateString('en-US', { weekday: 'long' })}
+                </p>
+                <div className="flex items-center gap-2 text-xs font-black text-blue-400 bg-blue-400/10 self-start px-3 py-1.5 rounded-full border border-blue-400/20 active:scale-95 transition-transform cursor-pointer">
+                  SIGN SCHEDULE <span className="material-symbols-outlined text-[14px]">chevron_right</span>
                 </div>
               </div>
             </div>
           </Widget>
 
-          {/* Learning Status Widget (2x1 equivalent) */}
-          <Widget title="Learning Status" icon="analytics" className="w-full sm:w-[480px] h-[165px]">
-            <div className="flex items-center gap-4 sm:gap-6 h-full px-4 justify-around">
-               <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-2">
+          <Widget title="Activity" icon="bolt" className="w-[320px] sm:w-[460px] h-[180px]">
+            <div className="flex items-center h-full px-2 justify-between gap-2 overflow-hidden">
+               <div className="flex-1 flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400/20 to-orange-500/10 flex items-center justify-center mb-2 shadow-inner">
                     <PointsCoin size="sm" />
                   </div>
-                  <span className="text-sm sm:text-lg font-black">{userPoints.balance}</span>
-                  <span className="text-[8px] sm:text-[9px] font-bold text-white/40 uppercase">Balance</span>
+                  <span className="text-xl font-black tracking-tight">{userPoints.balance.toLocaleString()}</span>
+                  <span className="text-[9px] font-black text-white/30 uppercase tracking-widest mt-0.5">Points</span>
                </div>
-               <div className="w-px h-10 sm:h-12 bg-white/10" />
-               <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-2">
-                    <span className="material-symbols-outlined text-purple-400">auto_awesome</span>
+               <div className="w-px h-10 bg-white/5" />
+               <div className="flex-1 flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400/20 to-indigo-500/10 flex items-center justify-center mb-2 shadow-inner">
+                    <span className="material-symbols-outlined text-purple-400" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
                   </div>
-                  <span className="text-sm sm:text-lg font-black">{userPrestige?.current_stardust || 0}</span>
-                  <span className="text-[8px] sm:text-[9px] font-bold text-white/40 uppercase">Stardust</span>
+                  <span className="text-xl font-black tracking-tight">{(userPrestige?.current_stardust || 0).toLocaleString()}</span>
+                  <span className="text-[9px] font-black text-white/30 uppercase tracking-widest mt-0.5">Stardust</span>
                </div>
-               <div className="w-px h-10 sm:h-12 bg-white/10" />
-               <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-2">
-                    <span className="material-symbols-outlined text-orange-400">verified</span>
+               <div className="w-px h-10 bg-white/5" />
+               <div className="flex-1 flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-400/20 to-cyan-500/10 flex items-center justify-center mb-2 shadow-inner">
+                    <span className="material-symbols-outlined text-cyan-400" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                   </div>
-                  <span className="text-sm sm:text-lg font-black">{userPrestige?.world_rank || '-'}</span>
-                  <span className="text-[8px] sm:text-[9px] font-bold text-white/40 uppercase">Rank</span>
+                  <span className="text-xl font-black tracking-tight">{userPrestige?.world_rank || '-'}</span>
+                  <span className="text-[9px] font-black text-white/30 uppercase tracking-widest mt-0.5">Global Rank</span>
                </div>
             </div>
           </Widget>
 
         </div>
 
-        {/* APP GRID: Only Two Apps */}
-        <div className="w-full max-w-[1000px] flex justify-center gap-12 sm:gap-20 mb-20">
+        {/* MAIN APP GRID: STRICTLY TWO APPS */}
+        <div className="w-full max-w-[800px] flex justify-center gap-16 sm:gap-28 mt-4 animate-scale-in">
           <AppIcon 
-            icon="function" 
+            icon="school" 
             label="Learning" 
-            gradient="linear-gradient(135deg, #f9d406, #FF9500)" 
+            gradient="linear-gradient(135deg, #FF9500, #FF5E00)" 
             onClick={() => navigate('/dashboard')} 
             badge={unreadCount}
           />
           <AppIcon 
-            icon="grid_view" 
+            icon="stadia_controller" 
             label="Game Hub" 
-            gradient="linear-gradient(135deg, #FF2D55, #FF6B9D)" 
+            gradient="linear-gradient(135deg, #FF2D55, #C40030)" 
             onClick={() => setShowMatchGame(true)} 
           />
         </div>
 
-        {/* Page Indicators */}
-        <div className="fixed bottom-28 sm:bottom-36 flex items-center gap-1.5 pointer-events-none">
-          <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
-          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
-          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
-        </div>
       </div>
 
-      {/* --- IPAD DOCK (Expanded) --- */}
-      <div className="fixed bottom-6 sm:bottom-10 left-6 right-6 z-[100] flex justify-center pointer-events-none">
-        <div className="w-full max-w-[700px] h-[80px] sm:h-[92px] bg-white/10 backdrop-blur-[50px] rounded-[30px] sm:rounded-[40px] p-2 sm:p-4 border border-white/20 shadow-2xl flex items-center justify-around pointer-events-auto ring-1 ring-white/10">
-          <AppIcon icon="forum" label="" gradient="linear-gradient(135deg, #5856D6, #AF52DE)" onClick={() => navigate('/forum')} isDock />
-          <AppIcon icon="school" label="" gradient="linear-gradient(135deg, #34C759, #28CD41)" onClick={() => navigate('/practice')} isDock />
-          <AppIcon icon="analytics" label="" gradient="linear-gradient(135deg, #007AFF, #00BFFF)" onClick={() => navigate('/analysis')} isDock />
-          <AppIcon icon="local_fire_department" label="" gradient="linear-gradient(135deg, #ff9f43, #ff6b6b)" onClick={() => navigate('/dashboard')} isDock badge={checkinStatus === 'not_checked_in' ? 1 : 0} />
-          <div className="w-[1px] h-10 bg-white/10 rounded-full mx-1 sm:mx-2" />
-          <AppIcon icon="menu_book" label="" gradient="linear-gradient(135deg, #f9d406, #e67e22)" onClick={() => {}} isDock />
-          <AppIcon icon="person" label="" gradient="linear-gradient(135deg, #8E8E93, #AEAEB2)" onClick={() => navigate('/settings')} isDock />
-        </div>
-      </div>
-
-      {/* iPad Home Indicator */}
-      <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-40 h-1 bg-white/20 rounded-full z-[101]" />
+      {/* --- Footer Elements Removed (Dock, Indicator, Dots) --- */}
 
       <style>{`
-        @keyframes liquid-pulse {
-          0%, 100% { transform: scale(1) translate(0, 0); }
-          50% { transform: scale(1.1) translate(30px, -30px); opacity: 0.3; }
+        @keyframes blob-1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(40px, -60px) scale(1.1); }
+          66% { transform: translate(-20px, 40px) scale(0.9); }
         }
-        @keyframes liquid-pulse-slow {
-          0%, 100% { transform: scale(1) translate(0, 0); }
-          50% { transform: scale(1.05) translate(-20px, 20px); opacity: 0.2; }
+        @keyframes blob-2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(-50px, 40px) scale(1.05); }
+          66% { transform: translate(40px, -30px) scale(0.95); }
         }
-        @keyframes bounce-subtle {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-3px); }
+        @keyframes blob-3 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(30px, 30px) scale(1.1); }
+          66% { transform: translate(-40px, -20px) scale(0.9); }
         }
-        .animate-liquid-pulse { animation: liquid-pulse 20s ease-in-out infinite; }
-        .animate-liquid-pulse-slow { animation: liquid-pulse-slow 25s ease-in-out infinite; }
-        .animate-bounce-subtle { animation: bounce-subtle 4s ease-in-out infinite; }
-        .scroll-none::-webkit-scrollbar { display: none; }
+        .animate-blob-1 { animation: blob-1 25s ease-in-out infinite; }
+        .animate-blob-2 { animation: blob-2 30s ease-in-out infinite; }
+        .animate-blob-3 { animation: blob-3 22s ease-in-out infinite; }
+        .animate-scale-in { animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes scaleIn {
+          from { transform: scale(0.8); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
       `}</style>
     </div>
   );
