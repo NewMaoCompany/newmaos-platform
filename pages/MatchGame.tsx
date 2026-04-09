@@ -97,7 +97,10 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
   const [gameOver, setGameOver] = useState(false);
   const [showCombo, setShowCombo] = useState(false);
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; color: string }[]>([]);
+  const [popups, setPopups] = useState<{ id: number; x: number; y: number; text: string; color: string }[]>([]);
+  const [isShaking, setIsShaking] = useState(false);
   const particleId = useRef(0);
+  const popupId = useRef(0);
   const boardRef = useRef<HTMLDivElement>(null);
 
   // Touch drag state
@@ -116,6 +119,21 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
     }, 600);
   }, []);
 
+  const addScorePopup = useCallback((row: number, col: number, text: string, color: string) => {
+    const id = popupId.current++;
+    const newPopup = {
+      id,
+      x: col * (CELL_SIZE + GAP) + CELL_SIZE / 2,
+      y: row * (CELL_SIZE + GAP) + CELL_SIZE / 2,
+      text,
+      color
+    };
+    setPopups(prev => [...prev, newPopup]);
+    setTimeout(() => {
+      setPopups(prev => prev.filter(p => p.id !== id));
+    }, 1000);
+  }, []);
+
   const processBoard = useCallback(async (b: Cell[][], comboCount: number = 0) => {
     const matched = findMatches(b);
     if (!hasAnyMatch(matched)) {
@@ -124,15 +142,29 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
       return;
     }
 
-    const matchCount = countMatched(matched);
     const newCombo = comboCount + 1;
     const points = matchCount * 10 * newCombo;
     setCombo(newCombo);
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 200);
     
     if (newCombo > 1) {
       setShowCombo(true);
       setTimeout(() => setShowCombo(false), 800);
     }
+
+    // Add score popup at center of match
+    let avgR = 0, avgC = 0, firstMatchColor = '#fff';
+    let count = 0;
+    for(let r=0; r<GRID_SIZE; r++) {
+      for(let c=0; c<GRID_SIZE; c++) {
+        if(matched[r][c]) {
+          avgR += r; avgC += c; count++;
+          if (count === 1) firstMatchColor = GEMS[b[r][c].type]?.color;
+        }
+      }
+    }
+    addScorePopup(avgR/count, avgC/count, `+${points}`, firstMatchColor);
 
     // Mark removing
     const nb = cloneBoard(b);
@@ -207,8 +239,14 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
       setSelected(null);
       setTimeout(() => processBoard(nb, 0), 200);
     } else {
-      // Invalid swap: swap back
+      // Invalid swap: visually swap then swap back
+      setAnimating(true);
+      setBoard(nb);
       setSelected(null);
+      setTimeout(() => {
+        setBoard(board);
+        setAnimating(false);
+      }, 300);
     }
   }, [board, animating, gameOver, processBoard]);
 
@@ -283,8 +321,10 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
         background: 'linear-gradient(180deg, #0a0a1a 0%, #1a1040 40%, #2d1b69 100%)',
       }}
     >
+      <div className="absolute inset-0 mesh-liquid opacity-30 pointer-events-none"></div>
+
       {/* Header */}
-      <div className="w-full flex items-center justify-between px-4 pt-[env(safe-area-inset-top,12px)] pb-2" style={{ paddingTop: 'max(env(safe-area-inset-top), 12px)' }}>
+      <div className="w-full flex items-center justify-between px-4 pt-[env(safe-area-inset-top,12px)] pb-3 bg-white/5 backdrop-blur-xl border-b border-white/10 z-50">
         <button
           onClick={onBack}
           className="flex items-center gap-1 text-white/70 active:text-white transition-colors px-2 py-2"
@@ -332,13 +372,14 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
       {/* Board */}
       <div
         ref={boardRef}
-        className="relative rounded-2xl p-3"
+        className={`relative rounded-[32px] p-4 ${isShaking ? 'animate-liquid-shake' : ''}`}
         style={{
-          width: gridPx + 24,
-          height: gridPx + 24,
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          backdropFilter: 'blur(40px)',
+          width: gridPx + 32,
+          height: gridPx + 32,
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 20px 50px -10px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(30px)',
         }}
       >
         {/* Particles */}
@@ -359,6 +400,23 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
               opacity: 0,
             }}
           />
+        ))}
+
+        {/* Score Popups */}
+        {popups.map(p => (
+          <div
+            key={p.id}
+            className="absolute pointer-events-none z-50 font-black text-lg text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] flex items-center gap-1"
+            style={{
+              left: p.x + 12,
+              top: p.y + 12,
+              transform: 'translate(-50%, -50%)',
+              animation: 'score-float 1s ease-out forwards',
+              color: p.color
+            }}
+          >
+            {p.text}
+          </div>
         ))}
 
         {/* Grid cells */}
@@ -465,6 +523,24 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
             opacity: 0;
             transform: translate(var(--tx, 30px), var(--ty, -30px)) scale(0);
           }
+        }
+        @keyframes pulse-liquid-gem {
+          0%, 100% { transform: scale(1); filter: brightness(1); }
+          50% { transform: scale(1.02); filter: brightness(1.2); }
+        }
+        @keyframes score-float {
+          0% { transform: translate(-50%, -20%) scale(0.5); opacity: 0; }
+          20% { transform: translate(-50%, -100%) scale(1.2); opacity: 1; }
+          100% { transform: translate(-50%, -250%) scale(1); opacity: 0; }
+        }
+        @keyframes liquid-shake {
+          0%, 100% { transform: translate(0, 0); }
+          25% { transform: translate(-2px, 2px); }
+          50% { transform: translate(2px, -2px); }
+          75% { transform: translate(-1px, -1px); }
+        }
+        .animate-liquid-shake {
+          animation: liquid-shake 0.2s ease-in-out;
         }
         .animate-fade-in {
           animation: fadeIn 0.3s ease-out;

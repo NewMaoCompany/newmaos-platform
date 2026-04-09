@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../AppContext';
 import { MatchGame } from './MatchGame';
+import { PointsCoin } from '../components/PointsCoin';
 
 // Login Required Modal
 const LoginModal = ({ onClose, onLogin }: { onClose: () => void; onLogin: () => void }) => (
@@ -72,9 +73,17 @@ const AppIcon = ({
   </button>
 );
 
+// Organic Liquid Blob Decoration
+const LiquidBlob = ({ className, delay = '0s' }: { className: string; delay?: string }) => (
+  <div 
+    className={`absolute rounded-full blur-[60px] opacity-20 mix-blend-screen pointer-events-none animate-liquid-blob ${className}`}
+    style={{ animationDelay: delay }}
+  />
+);
+
 export const Lobby = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, user, notifications } = useApp();
+  const { isAuthenticated, user, notifications, userPoints, userPrestige } = useApp();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showMatchGame, setShowMatchGame] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -103,11 +112,16 @@ export const Lobby = () => {
   }
 
   return (
-    <div className="fixed inset-0 z-[90] flex flex-col select-none"
+    <div className="fixed inset-0 z-[90] flex flex-col select-none mesh-liquid overflow-hidden"
       style={{
         background: 'linear-gradient(160deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #e94560 100%)',
       }}
     >
+      {/* Liquid Elements */}
+      <LiquidBlob className="top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-500" />
+      <LiquidBlob className="bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-purple-500" delay="2s" />
+      <LiquidBlob className="top-[30%] left-[20%] w-[30%] h-[30%] bg-pink-500/40" delay="4s" />
+      <LiquidBlob className="bottom-[40%] right-[10%] w-[25%] h-[25%] bg-cyan-500/30" delay="6s" />
       {/* iOS Status Bar */}
       <div className="flex items-center justify-between px-6 pt-3 pb-1 text-white/80 text-xs font-medium">
         <span className="w-20">{timeStr}</span>
@@ -118,12 +132,41 @@ export const Lobby = () => {
         </div>
       </div>
 
-      {/* Date & Time Display (iOS Lock Screen style) */}
-      <div className="text-center mt-6 mb-8">
-        <p className="text-white/60 text-sm font-medium tracking-wide">{dateStr}</p>
-        <h1 className="text-white text-6xl font-thin tracking-tight mt-1" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>
-          {currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
-        </h1>
+      {/* Date & Time Display + Cosmic Wallet */}
+      <div className="flex flex-col items-center mt-6 mb-4 px-6 gap-6">
+        <div className="text-center">
+          <p className="text-white/60 text-sm font-medium tracking-wide">{dateStr}</p>
+          <h1 className="text-white text-6xl font-thin tracking-tight mt-1" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>
+            {currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
+          </h1>
+        </div>
+
+        {/* Liquid Wallet Widget */}
+        <div className="w-full max-w-[340px] bg-white/10 backdrop-blur-2xl rounded-[32px] p-5 border border-white/20 shadow-2xl relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+          <div className="relative z-10 flex items-center justify-between">
+            {/* Points */}
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-1">Wallet (NMS)</span>
+              <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-2xl border border-white/5">
+                <PointsCoin size={18} />
+                <span className="text-xl font-bold text-white tabular-nums">
+                  {userPoints.balance.toLocaleString()}
+                </span>
+              </div>
+            </div>
+            {/* Stardust */}
+            <div className="flex flex-col gap-1 items-end">
+              <span className="text-[10px] font-black text-white/40 uppercase tracking-widest pr-1">Stardust</span>
+              <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-2xl border border-white/5">
+                <span className="material-symbols-outlined text-purple-400 text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+                <span className="text-xl font-bold text-white tabular-nums">
+                  {(userPrestige?.current_stardust || 0).toLocaleString()}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* App Grid */}
@@ -280,5 +323,15 @@ export const Lobby = () => {
         />
       )}
     </div>
+    <style>{`
+      @keyframes liquid-blob {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+      }
+      .animate-liquid-blob {
+        animation: liquid-blob 15s ease-in-out infinite;
+      }
+    `}</style>
   );
 };
