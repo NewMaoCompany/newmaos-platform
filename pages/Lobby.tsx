@@ -14,7 +14,7 @@ const AnalogClock = ({ date }: { date: Date }) => {
 
   return (
     <div className="w-full h-full relative flex items-center justify-center">
-      <div className="w-[100px] h-[100px] rounded-full bg-white/5 backdrop-blur-xl border border-white/10 relative shadow-2xl">
+      <div className="w-[100px] h-[100px] rounded-full bg-white/10 backdrop-blur-2xl border border-white/20 relative shadow-2xl">
         {/* Clock Marks */}
         {[...Array(12)].map((_, i) => (
           <div
@@ -22,7 +22,7 @@ const AnalogClock = ({ date }: { date: Date }) => {
             className="absolute top-0 left-1/2 -ml-[1px] h-full w-[2px]"
             style={{ transform: `rotate(${i * 30}deg)` }}
           >
-            <div className="h-2 w-full bg-white/20 rounded-full" />
+            <div className="h-2 w-full bg-white/30 rounded-full" />
           </div>
         ))}
         {/* Hands */}
@@ -31,11 +31,11 @@ const AnalogClock = ({ date }: { date: Date }) => {
           style={{ transform: `rotate(${(hours % 12) * 30 + minutes * 0.5}deg)` }}
         />
         <div 
-          className="absolute top-1/2 left-1/2 -mt-12 -ml-[1px] w-[2px] h-12 bg-white/80 rounded-full origin-bottom"
+          className="absolute top-1/2 left-1/2 -mt-12 -ml-[1px] w-[2px] h-12 bg-white/90 rounded-full origin-bottom"
           style={{ transform: `rotate(${minutes * 6}deg)` }}
         />
         <div 
-          className="absolute top-1/2 left-1/2 -mt-12 -ml-[0.5px] w-[1px] h-12 bg-[#FF3B30] rounded-full origin-bottom shadow-[0_0_8px_rgba(255,59,48,0.5)]"
+          className="absolute top-1/2 left-1/2 -mt-12 -ml-[0.5px] w-[1px] h-12 bg-[#FF3B30] rounded-full origin-bottom shadow-[0_0_10px_rgba(255,59,48,0.7)]"
           style={{ transform: `rotate(${seconds * 6}deg)` }}
         />
         <div className="absolute top-1/2 left-1/2 -mt-[2px] -ml-[2px] w-1 h-1 bg-white rounded-full" />
@@ -45,13 +45,17 @@ const AnalogClock = ({ date }: { date: Date }) => {
 };
 
 // Minimalist High-End Widget
-const Widget = ({ children, className = '', title = '', icon = '' }: { children: React.ReactNode; className?: string; title?: string; icon?: string }) => (
-  <div className={`bg-white/5 backdrop-blur-[40px] rounded-[32px] p-5 border border-white/10 shadow-2xl overflow-hidden relative group active:scale-[0.98] transition-all duration-500 hover:bg-white/10 ${className}`}>
+const Widget = ({ children, className = '', title = '', icon = '', onClick }: { children: React.ReactNode; className?: string; title?: string; icon?: string; onClick?: () => void }) => (
+  <div 
+    onClick={onClick}
+    className={`bg-white/10 backdrop-blur-[60px] rounded-[36px] p-6 border border-white/30 shadow-2xl overflow-hidden relative group active:scale-[0.98] transition-all duration-500 hover:bg-white/15 ${onClick ? 'cursor-pointer' : ''} ${className}`}
+  >
+    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50" />
     <div className="relative z-10 h-full flex flex-col">
       {title && (
-        <div className="flex items-center gap-2 mb-3 opacity-30">
-          {icon && <span className="material-symbols-outlined text-[14px]">{icon}</span>}
-          <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{title}</span>
+        <div className="flex items-center gap-2 mb-4 opacity-40">
+          {icon && <span className="material-symbols-outlined text-[16px]">{icon}</span>}
+          <span className="text-[11px] font-black uppercase tracking-[0.25em]">{title}</span>
         </div>
       )}
       <div className="flex-1 min-h-0">
@@ -61,39 +65,38 @@ const Widget = ({ children, className = '', title = '', icon = '' }: { children:
   </div>
 );
 
-// App Icon Component (Vibrant iOS Style)
+// App Icon Component (Translucent Liquid Style)
 const AppIcon = ({ 
   icon, 
   label, 
-  gradient, 
+  glowColor, 
   onClick, 
   badge
 }: { 
   icon: string; 
   label: string; 
-  gradient: string; 
+  glowColor: string; 
   onClick: () => void; 
   badge?: number;
 }) => (
-  <button onClick={onClick} className="flex flex-col items-center gap-3 group select-none transition-transform duration-300 hover:scale-105 active:scale-90">
+  <button onClick={onClick} className="flex flex-col items-center gap-4 group select-none transition-transform duration-500 hover:scale-105 active:scale-90">
     <div 
-      className="w-[72px] h-[72px] sm:w-[84px] sm:h-[84px] rounded-[22%] flex items-center justify-center relative shadow-2xl transition-all duration-500"
+      className="w-[80px] h-[80px] sm:w-[92px] sm:h-[92px] rounded-[22%] flex items-center justify-center relative shadow-2xl transition-all duration-500 bg-white/10 backdrop-blur-[40px] border border-white/30"
       style={{ 
-        background: gradient,
-        boxShadow: '0 15px 35px -5px rgba(0,0,0,0.5), inset 0 2px 8px rgba(255,255,255,0.2)',
+        boxShadow: `0 15px 35px -5px rgba(0,0,0,0.3), 0 0 20px -5px ${glowColor}66, inset 0 2px 10px rgba(255,255,255,0.3)`,
       }}
     >
-      <div className="absolute inset-0 bg-white/10 rounded-[22%] opacity-0 group-hover:opacity-100 transition-opacity" />
-      <span className="material-symbols-outlined text-white" style={{ fontSize: '40px', fontVariationSettings: "'FILL' 1" }}>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-[22%] opacity-50" />
+      <span className="material-symbols-outlined text-white z-10" style={{ fontSize: '44px', fontVariationSettings: "'FILL' 1", filter: `drop-shadow(0 0 8px ${glowColor})` }}>
         {icon}
       </span>
       {badge && badge > 0 && (
-        <span className="absolute -top-1 -right-1 min-w-[24px] h-6 flex items-center justify-center bg-[#FF3B30] text-white text-[12px] font-black rounded-full px-1.5 shadow-lg border-2 border-white/20 animate-pulse">
+        <span className="absolute -top-1 -right-1 min-w-[26px] h-6.5 flex items-center justify-center bg-[#FF3B30] text-white text-[12px] font-black rounded-full px-1.5 shadow-lg border-2 border-white/30 animate-pulse z-20">
           {badge > 99 ? '99+' : badge}
         </span>
       )}
     </div>
-    <span className="text-[13px] font-bold text-white tracking-wide drop-shadow-lg opacity-90 group-hover:opacity-100 transition-opacity">
+    <span className="text-[14px] font-bold text-white tracking-wide drop-shadow-md opacity-80 group-hover:opacity-100 transition-opacity">
       {label}
     </span>
   </button>
@@ -115,126 +118,130 @@ export const Lobby = () => {
   if (showMatchGame) return <MatchGame onBack={() => setShowMatchGame(false)} />;
 
   return (
-    <div className="fixed inset-0 z-[90] flex flex-col items-center bg-[#000] overflow-hidden text-white font-sans selection:bg-white/20">
+    <div className="fixed inset-0 z-[90] flex flex-col items-center bg-[#101020] overflow-hidden text-white font-sans selection:bg-white/30">
       
-      {/* --- Premium Liquid Background --- */}
+      {/* --- Premium Brightened Liquid Background --- */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[#0a0a0f]" />
-        {/* Dynamic Blobs with Intense Vibrant Colors */}
-        <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-[hsl(215,100%,40%)]/30 rounded-full blur-[120px] animate-blob-1" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-[hsl(275,100%,40%)]/25 rounded-full blur-[140px] animate-blob-2" />
-        <div className="absolute top-[20%] right-[-5%] w-[50%] h-[50%] bg-[hsl(330,100%,40%)]/20 rounded-full blur-[110px] animate-blob-3" />
-        {/* Subtle texture/grain can be added here if needed */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a35] via-[#101020] to-[#251545]" />
+        {/* Lighter, More Vibrant Dynamic Blobs */}
+        <div className="absolute top-[-15%] left-[-15%] w-[80%] h-[80%] bg-[hsl(215,100%,60%)]/25 rounded-full blur-[130px] animate-blob-1" />
+        <div className="absolute bottom-[-15%] right-[-15%] w-[80%] h-[80%] bg-[hsl(275,100%,60%)]/20 rounded-full blur-[150px] animate-blob-2" />
+        <div className="absolute top-[25%] right-[-10%] w-[60%] h-[60%] bg-[hsl(330,100%,70%)]/15 rounded-full blur-[120px] animate-blob-3" />
+        <div className="absolute inset-0 bg-white/[0.02]" />
       </div>
 
       {/* --- Minimalist Status Bar (Clock Only) --- */}
-      <div className="w-full flex items-center justify-between px-10 py-5 z-50 font-bold text-[15px] tracking-tight opacity-90">
+      <div className="w-full flex items-center justify-between px-12 py-6 z-50 font-black text-[17px] tracking-tight opacity-100">
         <div>
-          <span className="tabular-nums drop-shadow-sm">
+          <span className="tabular-nums drop-shadow-lg text-white/90">
             {currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
           </span>
         </div>
-        <div>
-          {/* Icons removed as requested */}
-        </div>
+        <div />
       </div>
 
       {/* --- Main Content --- */}
-      <div className="relative z-50 flex-1 w-full flex flex-col items-center px-8 pt-4 sm:pt-10 overflow-hidden">
+      <div className="relative z-50 flex-1 w-full flex flex-col items-center px-10 pt-6 sm:pt-14 overflow-hidden">
         
         {/* WIDGET GRID (Bulletproof spacing to prevent overlap) */}
-        <div className="w-full max-w-[1100px] flex flex-wrap justify-center items-center gap-8 mb-16">
+        <div className="w-full max-w-[1200px] flex flex-wrap justify-center items-center gap-10 mb-20">
           
-          <Widget title="Today" icon="calendar_today" className="w-[320px] sm:w-[460px] h-[180px]">
-            <div className="flex items-center gap-6 h-full px-4">
+          <Widget 
+            title="Today" 
+            icon="calendar_today" 
+            className="w-[340px] sm:w-[500px] h-[200px]"
+            onClick={() => navigate('/checkin')}
+          >
+            <div className="flex items-center gap-8 h-full px-6">
               <AnalogClock date={currentTime} />
               <div className="flex flex-col justify-center min-w-0">
-                <p className="text-2xl sm:text-3xl font-black tracking-tighter truncate">
+                <p className="text-3xl sm:text-4xl font-black tracking-tighter truncate text-white">
                   {currentTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
                 </p>
-                <p className="text-[15px] font-bold text-white/40 mb-3 tracking-wide">
+                <p className="text-[17px] font-bold text-white/50 mb-4 tracking-wide">
                   {currentTime.toLocaleDateString('en-US', { weekday: 'long' })}
                 </p>
-                <div className="flex items-center gap-2 text-xs font-black text-blue-400 bg-blue-400/10 self-start px-3 py-1.5 rounded-full border border-blue-400/20 active:scale-95 transition-transform cursor-pointer">
-                  SIGN SCHEDULE <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-                </div>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); navigate('/checkin'); }}
+                  className="flex items-center gap-2 text-xs font-black text-white bg-white/20 self-start px-4 py-2 rounded-full border border-white/30 active:scale-95 transition-all hover:bg-white/30 backdrop-blur-md"
+                >
+                  SIGN SCHEDULE <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+                </button>
               </div>
             </div>
           </Widget>
 
-          <Widget title="Activity" icon="bolt" className="w-[320px] sm:w-[460px] h-[180px]">
-            <div className="flex items-center h-full px-2 justify-between gap-2 overflow-hidden">
+          <Widget title="Activity" icon="bolt" className="w-[340px] sm:w-[500px] h-[200px]">
+            <div className="flex items-center h-full px-4 justify-between gap-4 overflow-hidden">
                <div className="flex-1 flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400/20 to-orange-500/10 flex items-center justify-center mb-2 shadow-inner">
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 shadow-inner border border-white/20">
                     <PointsCoin size="sm" />
                   </div>
-                  <span className="text-xl font-black tracking-tight">{userPoints.balance.toLocaleString()}</span>
-                  <span className="text-[9px] font-black text-white/30 uppercase tracking-widest mt-0.5">Points</span>
+                  <span className="text-2xl font-black tracking-tight">{userPoints.balance.toLocaleString()}</span>
+                  <span className="text-[10px] font-black text-white/40 uppercase tracking-widest mt-1">Points</span>
                </div>
-               <div className="w-px h-10 bg-white/5" />
+               <div className="w-px h-12 bg-white/20" />
                <div className="flex-1 flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400/20 to-indigo-500/10 flex items-center justify-center mb-2 shadow-inner">
-                    <span className="material-symbols-outlined text-purple-400" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 shadow-inner border border-white/20">
+                    <span className="material-symbols-outlined text-purple-300" style={{ fontVariationSettings: "'FILL' 1", filter: 'drop-shadow(0 0 8px rgba(168,85,247,0.5))' }}>auto_awesome</span>
                   </div>
-                  <span className="text-xl font-black tracking-tight">{(userPrestige?.current_stardust || 0).toLocaleString()}</span>
-                  <span className="text-[9px] font-black text-white/30 uppercase tracking-widest mt-0.5">Stardust</span>
+                  <span className="text-2xl font-black tracking-tight">{(userPrestige?.current_stardust || 0).toLocaleString()}</span>
+                  <span className="text-[10px] font-black text-white/40 uppercase tracking-widest mt-1">Stardust</span>
                </div>
-               <div className="w-px h-10 bg-white/5" />
+               <div className="w-px h-12 bg-white/20" />
                <div className="flex-1 flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-400/20 to-cyan-500/10 flex items-center justify-center mb-2 shadow-inner">
-                    <span className="material-symbols-outlined text-cyan-400" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 shadow-inner border border-white/20">
+                    <span className="material-symbols-outlined text-cyan-300" style={{ fontVariationSettings: "'FILL' 1", filter: 'drop-shadow(0 0 8px rgba(34,211,238,0.5))' }}>verified</span>
                   </div>
-                  <span className="text-xl font-black tracking-tight">{userPrestige?.world_rank || '-'}</span>
-                  <span className="text-[9px] font-black text-white/30 uppercase tracking-widest mt-0.5">Global Rank</span>
+                  <span className="text-2xl font-black tracking-tight">{userPrestige?.world_rank || '-'}</span>
+                  <span className="text-[10px] font-black text-white/40 uppercase tracking-widest mt-1">Global Rank</span>
                </div>
             </div>
           </Widget>
 
         </div>
 
-        {/* MAIN APP GRID: STRICTLY TWO APPS */}
-        <div className="w-full max-w-[800px] flex justify-center gap-16 sm:gap-28 mt-4 animate-scale-in">
+        {/* MAIN APP GRID: STRICTLY TWO APPS - TRANSLUCENT STYLE */}
+        <div className="w-full max-w-[900px] flex justify-center gap-20 sm:gap-32 mt-6 animate-scale-in">
           <AppIcon 
             icon="school" 
             label="Learning" 
-            gradient="linear-gradient(135deg, #FF9500, #FF5E00)" 
+            glowColor="#FF9500" 
             onClick={() => navigate('/dashboard')} 
             badge={unreadCount}
           />
           <AppIcon 
             icon="stadia_controller" 
             label="Game Hub" 
-            gradient="linear-gradient(135deg, #FF2D55, #C40030)" 
+            glowColor="#FF2D55" 
             onClick={() => setShowMatchGame(true)} 
           />
         </div>
 
       </div>
 
-      {/* --- Footer Elements Removed (Dock, Indicator, Dots) --- */}
-
       <style>{`
         @keyframes blob-1 {
           0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(40px, -60px) scale(1.1); }
-          66% { transform: translate(-20px, 40px) scale(0.9); }
+          33% { transform: translate(50px, -70px) scale(1.15); }
+          66% { transform: translate(-30px, 50px) scale(0.85); }
         }
         @keyframes blob-2 {
           0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(-50px, 40px) scale(1.05); }
-          66% { transform: translate(40px, -30px) scale(0.95); }
+          33% { transform: translate(-60px, 50px) scale(1.1); }
+          66% { transform: translate(50px, -40px) scale(0.9); }
         }
         @keyframes blob-3 {
           0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, 30px) scale(1.1); }
-          66% { transform: translate(-40px, -20px) scale(0.9); }
+          33% { transform: translate(40px, 40px) scale(1.15); }
+          66% { transform: translate(-50px, -30px) scale(0.85); }
         }
         .animate-blob-1 { animation: blob-1 25s ease-in-out infinite; }
         .animate-blob-2 { animation: blob-2 30s ease-in-out infinite; }
         .animate-blob-3 { animation: blob-3 22s ease-in-out infinite; }
-        .animate-scale-in { animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .animate-scale-in { animation: scaleIn 1s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes scaleIn {
-          from { transform: scale(0.8); opacity: 0; }
+          from { transform: scale(0.85); opacity: 0; }
           to { transform: scale(1); opacity: 1; }
         }
       `}</style>
