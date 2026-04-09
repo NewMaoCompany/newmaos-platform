@@ -119,116 +119,122 @@ export const Game2048 = () => {
     return () => window.removeEventListener('keydown', handleKey);
   }, [move]);
 
-  const tileColors: Record<number, string> = {
-    2: '#8E8E93', 4: '#64D2FF', 8: '#5AC8FA', 16: '#007AFF',
-    32: '#5856D6', 64: '#AF52DE', 128: '#FF2D55', 256: '#FF3B30',
-    512: '#FF9500', 1024: '#FFCC00', 2048: '#34C759'
+  const tileColors: Record<number, { bg: string, text: string, shadow: string }> = {
+    2: { bg: '#F2E8CF', text: '#386641', shadow: 'rgba(56,102,65,0.1)' },
+    4: { bg: '#A7C957', text: '#386641', shadow: 'rgba(56,102,65,0.15)' },
+    8: { bg: '#6A994E', text: '#F2E8CF', shadow: 'rgba(106,153,78,0.2)' },
+    16: { bg: '#386641', text: '#F2E8CF', shadow: 'rgba(56,102,65,0.25)' },
+    32: { bg: '#BC4749', text: '#F2E8CF', shadow: 'rgba(188,71,73,0.2)' },
+    64: { bg: '#8B2635', text: '#F2E8CF', shadow: 'rgba(139,38,53,0.3)' },
+    128: { bg: '#2B2D42', text: '#EDF2F4', shadow: 'rgba(43,45,66,0.25)' },
+    256: { bg: '#8D99AE', text: '#2B2D42', shadow: 'rgba(141,153,174,0.3)' },
+    512: { bg: '#DF928E', text: '#4D243D', shadow: 'rgba(223,146,142,0.3)' },
+    1024: { bg: '#C5D86D', text: '#261C15', shadow: 'rgba(197,216,109,0.3)' },
+    2048: { bg: '#FDE74C', text: '#5BC0EB', shadow: 'rgba(253,231,76,0.4)' }
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex flex-col items-center bg-[#fdfdff] text-black font-sans overflow-hidden">
-      <div className="absolute inset-0 opacity-10 bg-[linear-gradient(45deg,_#eee_25%,_transparent_25%,_transparent_50%,_#eee_50%,_#eee_75%,_transparent_75%,_transparent)] bg-[length:40px_40px]" />
+    <div className="fixed inset-0 z-[110] flex flex-col items-center bg-[#F9F6F0] text-[#2B2D42] font-serif overflow-hidden">
+      {/* Washi Texture Overlay */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/pinstriped-suit.png')] select-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#F9F6F0]/20 to-[#F9F6F0] pointer-events-none" />
 
-      {/* Header */}
+      {/* Zen Header */}
       <div className="w-full flex items-center justify-between px-10 py-10 z-50">
         <button 
-            onClick={() => navigate('/lobby')} 
-            className="w-14 h-14 rounded-3xl bg-white/60 backdrop-blur-3xl border border-black/5 flex items-center justify-center hover:bg-white active:scale-90 transition-all shadow-xl"
+            onClick={() => navigate('/games')} 
+            className="group flex items-center gap-2 text-[#386641] transition-all"
         >
-          <span className="material-symbols-outlined text-black text-3xl">arrow_back</span>
+          <div className="w-10 h-10 rounded-full border border-[#386641]/20 flex items-center justify-center group-hover:bg-[#386641]/5 transition-colors">
+            <span className="material-symbols-outlined text-xl">west</span>
+          </div>
+          <span className="text-sm font-bold uppercase tracking-widest opacity-60">Escape</span>
         </button>
         <div className="text-center">
-          <h2 className="text-4xl font-black italic uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">Liquid Fusion</h2>
-          <div className="flex items-center justify-center gap-3 mt-1">
-             <div className="bg-white/60 backdrop-blur-md px-4 py-1.5 rounded-2xl border border-black/5 shadow-sm">
-                <span className="text-[10px] font-black uppercase tracking-widest opacity-40 mr-2">Score</span>
-                <span className="font-black tabular-nums">{score}</span>
-             </div>
+          <h2 className="text-3xl font-light italic text-[#386641] tracking-tight">Washi Fusion</h2>
+          <div className="w-12 h-[1px] bg-[#386641]/20 mx-auto mt-2" />
+          <div className="mt-4 flex flex-col items-center">
+             <span className="text-[10px] font-bold uppercase tracking-[0.4em] opacity-40 mb-1">Spirit Score</span>
+             <span className="text-2xl font-light tabular-nums">{score}</span>
           </div>
         </div>
-        <div className="w-14" />
+        <div className="w-24" />
       </div>
 
-      {/* Board */}
+      {/* The Board: Minimalist Frame */}
       <div className="relative flex-1 w-full flex flex-col items-center justify-center px-8">
-        <div className="relative aspect-square w-full max-w-[460px] bg-black/[0.03] backdrop-blur-xl rounded-[48px] p-4 border border-black/5 shadow-inner overflow-hidden">
-          {/* Grid Background */}
+        <div className="relative aspect-square w-full max-w-[440px] bg-white rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] p-4 border border-[#F2E8CF] overflow-hidden">
+          {/* Subtle Grid Lines */}
           <div className="grid grid-cols-4 grid-rows-4 gap-4 w-full h-full">
             {[...Array(16)].map((_, i) => (
-              <div key={i} className="bg-black/[0.03] rounded-[32%] border border-white/40" />
+              <div key={i} className="bg-[#F9F6F0]/60 rounded-lg border border-[#F2E8CF]/30" />
             ))}
           </div>
 
-          {/* Tiles Layer */}
+          {/* Hand-crafted Tiles */}
           <div className="absolute inset-4 pointer-events-none">
-            {board.map(tile => (
-                <div
-                    key={tile.id}
-                    className="absolute w-[22.5%] h-[22.5%] transition-all duration-[200ms] cubic-bezier(0, 0, 0.2, 1)"
-                    style={{
-                        left: `${tile.col * 25}%`,
-                        top: `${tile.row * 25}%`,
-                    }}
-                >
-                    <div 
-                        className="w-full h-full flex flex-col items-center justify-center rounded-[32%] relative animate-scale-in overflow-hidden shadow-lg border border-white/60"
-                        style={{ 
-                            background: `linear-gradient(135deg, ${tileColors[tile.value] || '#000'}22, ${tileColors[tile.value] || '#000'}44)`,
-                            backdropFilter: 'blur(34px)',
-                            boxShadow: `0 10px 20px -5px ${tileColors[tile.value] || '#000'}33, inset 0 2px 10px rgba(255,255,255,0.7)` 
+            {board.map(tile => {
+                const style = tileColors[tile.value] || { bg: '#2B2D42', text: '#fff', shadow: 'rgba(0,0,0,0.1)' };
+                return (
+                    <div
+                        key={tile.id}
+                        className="absolute w-[22.5%] h-[22.5%] transition-all duration-[240ms] cubic-bezier(0.19, 1, 0.22, 1)"
+                        style={{
+                            left: `${tile.col * 25}%`,
+                            top: `${tile.row * 25}%`,
                         }}
                     >
-                        {/* Blob Highlight */}
-                        <div className="absolute top-1 left-2 w-1/2 h-1/2 bg-white/30 rounded-full blur-[8px]" />
-                        
-                        <span 
-                            className="text-2xl sm:text-3xl font-black italic tracking-tighter z-10"
-                            style={{ color: tileColors[tile.value] || '#000', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}
+                        <div 
+                            className="w-full h-full flex flex-col items-center justify-center rounded-lg relative animate-zen-spawn shadow-lg border-b-2 border-r-2"
+                            style={{ 
+                                backgroundColor: style.bg,
+                                color: style.text,
+                                borderColor: 'rgba(0,0,0,0.05)',
+                                boxShadow: `0 8px 16px -4px ${style.shadow}` 
+                            }}
                         >
-                            {tile.value}
-                        </span>
-                        
-                        {/* Tile Rank Label */}
-                        <div className="absolute bottom-2 text-[8px] font-black uppercase tracking-[0.2em] opacity-30" style={{ color: tileColors[tile.value] }}>
-                           {tile.value >= 2048 ? 'Apex' : tile.value >= 128 ? 'Rare' : 'Core'}
+                            <span className="text-3xl sm:text-4xl font-light italic">
+                                {tile.value}
+                            </span>
+                            
+                            {/* Ink Bleed Decorative Decor */}
+                            <div className="absolute top-0 left-0 w-2 h-2 rounded-full bg-white opacity-20 m-1" />
                         </div>
                     </div>
-                </div>
-            ))}
+                );
+            })}
           </div>
 
+          {/* Zen Game Over */}
           {gameOver && (
-            <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white/60 backdrop-blur-xl animate-fade-in">
-                <span className="text-[12px] font-black text-red-500 uppercase tracking-[0.6em] mb-2">Core Destabilized</span>
-                <h3 className="text-6xl font-black italic uppercase tracking-tighter mb-8">Game Over</h3>
+            <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#F9F6F0]/95 animate-fade-in backdrop-blur-sm">
+                <span className="text-[10px] font-bold text-[#BC4749] uppercase tracking-[0.5em] mb-4">The Cycle Concludes</span>
+                <h3 className="text-5xl font-light italic mb-10 text-[#2B2D42]">Peace Attained</h3>
                 <button 
                    onClick={initGame}
-                   className="px-12 py-5 bg-black text-white rounded-full font-black text-sm uppercase tracking-[0.3em] shadow-2xl active:scale-95 transition-all"
+                   className="px-12 py-4 border border-[#2B2D42]/20 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] hover:bg-[#2B2D42] hover:text-white transition-all shadow-sm active:scale-95"
                 >
-                   Reboot
+                   Begin Anew
                 </button>
             </div>
           )}
         </div>
 
-        {/* Swipe Controls / Hint */}
-        <div className="mt-12 text-center opacity-30">
-           <p className="text-[10px] font-black uppercase tracking-[0.5em] mb-4">Swipe to Fuse</p>
-           <div className="flex gap-4 justify-center">
-              <span className="material-symbols-outlined text-3xl">swipe_up</span>
-              <span className="material-symbols-outlined text-3xl">swipe_down</span>
-              <span className="material-symbols-outlined text-3xl">swipe_left</span>
-              <span className="material-symbols-outlined text-3xl">swipe_right</span>
-           </div>
+        {/* Minimalist Navigation Hint */}
+        <div className="mt-16 flex items-center gap-12 opacity-20">
+           <span className="material-symbols-outlined text-4xl font-light">keyboard_arrow_up</span>
+           <span className="material-symbols-outlined text-4xl font-light">keyboard_arrow_left</span>
+           <span className="material-symbols-outlined text-4xl font-light">keyboard_arrow_down</span>
+           <span className="material-symbols-outlined text-4xl font-light">keyboard_arrow_right</span>
         </div>
       </div>
 
       <style>{`
-        @keyframes scale-in {
-            from { transform: scale(0.6); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        @keyframes zen-spawn {
+            from { transform: scale(0.85); opacity: 0; filter: blur(4px); }
+            to { transform: scale(1); opacity: 1; filter: blur(0); }
         }
-        .animate-scale-in { animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .animate-zen-spawn { animation: zen-spawn 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
       `}</style>
     </div>
   );

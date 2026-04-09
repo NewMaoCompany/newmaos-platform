@@ -98,126 +98,132 @@ export const SnakeGame = () => {
   }, [gameStarted]);
 
   return (
-    <div className="fixed inset-0 z-[110] flex flex-col items-center bg-[#050510] text-white font-sans overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_#ffffff10_0%,_transparent_100%)]" />
-      <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-30" />
+    <div className="fixed inset-0 z-[110] flex flex-col items-center bg-[#0a0a12] text-[#00f2ff] font-mono overflow-hidden">
+      {/* Cyberpunk Background & Scanlines */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#222_0%,_#0a0a12_100%)]" />
+        <div className="absolute top-0 w-full h-[2px] bg-[#00f2ff] opacity-20 shadow-[0_0_15px_#00f2ff] animate-scanline" />
+      </div>
 
-      {/* Header */}
+      {/* Header HUD */}
       <div className="w-full flex items-center justify-between px-8 py-6 z-50">
         <button 
-            onClick={() => navigate('/lobby')} 
-            className="w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 flex items-center justify-center hover:bg-white/10 active:scale-90 transition-all"
+            onClick={() => navigate('/games')} 
+            className="w-12 h-12 rounded-lg bg-[#00f2ff]/10 border border-[#00f2ff]/30 flex items-center justify-center hover:bg-[#00f2ff]/20 active:scale-90 transition-all shadow-[0_0_10px_rgba(0,242,255,0.2)]"
         >
-          <span className="material-symbols-outlined text-white text-2xl">arrow_back</span>
+          <span className="material-symbols-outlined text-[#00f2ff] text-2xl">arrow_back</span>
         </button>
         <div className="text-center">
-          <h2 className="text-2xl font-black italic uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">Radiant Path</h2>
-          <div className="flex items-center justify-center gap-2 opacity-50">
-             <span className="text-[10px] font-black uppercase tracking-[0.3em]">Score</span>
-             <span className="text-lg font-black tabular-nums text-white">{score}</span>
+          <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-[#00f2ff] drop-shadow-[0_0_8px_#00f2ff]">Snake.sys</h2>
+          <div className="flex items-center justify-center gap-2 mt-1">
+             <span className="text-[10px] font-bold uppercase opacity-60">Memory_Gained:</span>
+             <span className="text-lg font-bold tabular-nums text-[#ff00ff] drop-shadow-[0_0_5px_#ff00ff]">{score}</span>
           </div>
         </div>
-        <div className="w-12" />
+        <div className="w-12 h-12 flex items-center justify-center">
+            <div className="w-2 h-2 bg-[#ff00ff] rounded-full animate-ping" />
+        </div>
       </div>
 
       {/* Game Board Container */}
       <div className="relative flex-1 w-full flex flex-col items-center justify-center px-6">
         <div 
-          className="relative aspect-square w-full max-w-[500px] bg-white/[0.03] backdrop-blur-md rounded-[40px] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.5)] overflow-hidden"
-          style={{ padding: '10px' }}
+          className="relative aspect-square w-full max-w-[500px] bg-black/80 rounded-sm border-2 border-[#00f2ff]/40 shadow-[0_0_30px_rgba(0,242,255,0.1)] overflow-hidden"
+          style={{ padding: '0px' }}
         >
-          {/* Grid Lines */}
-          <div className="absolute inset-0 grid grid-cols-20 grid-rows-20 opacity-5 pointer-events-none">
+          {/* Cyber Grid */}
+          <div className="absolute inset-0 grid grid-cols-20 grid-rows-20 pointer-events-none">
              {[...Array(400)].map((_, i) => (
-                <div key={i} className="border-[0.5px] border-white/30" />
+                <div key={i} className="border-[0.5px] border-[#00f2ff]/5" />
              ))}
           </div>
 
           <div className="relative w-full h-full">
-            {/* Food */}
+            {/* Digital Bit (Food) */}
             <div 
-                className="absolute w-[5%] h-[5%] transition-all duration-300 z-20"
+                className="absolute w-[5%] h-[5%] transition-all duration-300 z-20 flex items-center justify-center"
                 style={{ 
                     left: `${food.x * 5}%`, 
                     top: `${food.y * 5}%`,
                 }}
             >
-                <div className="w-full h-full bg-white rounded-full shadow-[0_0_20px_#fff] animate-pulse scale-90" />
-                <div className="absolute inset-0 bg-blue-500 rounded-full blur-[10px] opacity-60" />
+                <div className="w-3 h-3 bg-[#ff00ff] shadow-[0_0_15px_#ff00ff] animate-pulse" />
+                <div className="absolute inset-0 bg-[#ff00ff]/20 blur-[5px]" />
             </div>
 
-            {/* Snake Body */}
-            {snake.map((segment, i) => {
-                const color = `hsl(${(i * 10 + score) % 360}, 80%, 60%)`;
-                return (
+            {/* Snake Segments (Digital Blocks) */}
+            {snake.map((segment, i) => (
+                <div 
+                    key={i}
+                    className="absolute w-[5%] h-[5%] transition-all duration-[120ms] ease-linear z-10 flex items-center justify-center"
+                    style={{ 
+                        left: `${segment.x * 5}%`, 
+                        top: `${segment.y * 5}%`,
+                    }}
+                >
                     <div 
-                        key={i}
-                        className="absolute w-[5%] h-[5%] transition-all duration-[120ms] ease-linear z-10"
+                        className={`w-[90%] h-[90%] border-2 ${i === 0 ? 'bg-white border-[#00f2ff]' : 'bg-transparent border-[#00f2ff]/60'} shadow-[0_0_10px_rgba(0,242,255,0.3)]`}
                         style={{ 
-                            left: `${segment.x * 5}%`, 
-                            top: `${segment.y * 5}%`,
-                            opacity: 1 - (i / (snake.length + 5))
-                        }}
-                    >
-                        <div 
-                            className={`w-full h-full rounded-full shadow-lg ${i === 0 ? 'scale-110' : 'scale-90'}`}
-                            style={{ 
-                                background: i === 0 ? 'white' : color,
-                                boxShadow: `0 0 15px ${i === 0 ? '#fff' : color}` 
-                            }} 
-                        />
-                        {i === 0 && (
-                            <div className="absolute -inset-1 bg-white/20 rounded-full blur-[6px] animate-pulse" />
-                        )}
-                    </div>
-                );
-            })}
+                            boxShadow: i === 0 ? '0 0 15px #00f2ff' : 'none'
+                        }} 
+                    />
+                </div>
+            ))}
           </div>
 
-          {/* Start/Game Over Overlays */}
+          {/* Overlays */}
           {!gameStarted && (
-             <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm">
-                <div className="w-24 h-24 rounded-full bg-green-500/20 flex items-center justify-center mb-6 animate-pulse border border-green-500/30">
-                   <span className="material-symbols-outlined text-green-400 text-5xl">play_arrow</span>
+             <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/90">
+                <div className="mb-8 font-bold text-[#00f2ff] animate-pulse whitespace-nowrap overflow-hidden border-r-2 border-[#00f2ff] pr-1">
+                   [SYSTEM_READY: PRESS START]
                 </div>
                 <button 
                    onClick={resetGame}
-                   className="px-10 py-4 bg-white text-black rounded-full font-black text-sm uppercase tracking-[0.3em] shadow-2xl active:scale-95 transition-all"
+                   className="px-12 py-4 border-2 border-[#00f2ff] text-[#00f2ff] bg-transparent font-bold text-sm uppercase tracking-[0.4em] hover:bg-[#00f2ff]/10 active:scale-95 transition-all shadow-[0_0_20px_rgba(0,242,255,0.2)]"
                 >
-                   Start Trail
+                   EXECUTE_INIT
                 </button>
              </div>
           )}
 
           {gameOver && (
-             <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-red-500/10 backdrop-blur-md">
-                <span className="text-[12px] font-black text-red-500 uppercase tracking-[0.6em] mb-2">Trail Terminated</span>
-                <h3 className="text-6xl font-black italic uppercase tracking-tighter mb-8">Game Over</h3>
-                <div className="text-3xl font-black mb-10 flex items-center gap-4">
-                   <span className="opacity-40">Final Score:</span>
-                   <span className="text-green-400 tabular-nums">{score}</span>
+             <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#ff0055]/10 backdrop-blur-md border-[20px] border-[#ff0055]/20">
+                <h3 className="text-5xl font-black uppercase italic tracking-tighter text-[#ff0055] drop-shadow-[0_0_15px_#ff0055] mb-2">SYSTEM_CRASH</h3>
+                <p className="font-mono text-[10px] text-[#ff0055] animate-pulse mb-8">ERROR_CODE: COLLISION_DETECTED</p>
+                
+                <div className="text-xl font-bold mb-10 text-white/80 border-l-4 border-[#ff0055] pl-4">
+                   DATA_RECOVERED: <span className="text-[#00f2ff]">{score} Bits</span>
                 </div>
+
                 <button 
                    onClick={resetGame}
-                   className="px-12 py-5 bg-white text-black rounded-full font-black text-sm uppercase tracking-[0.3em] shadow-xl active:scale-95 transition-all"
+                   className="px-12 py-4 border-2 border-white text-white bg-transparent font-bold text-sm uppercase tracking-[0.4em] hover:bg-white/10 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                 >
-                   Retry Path
+                   REBOOT_SYSTEM
                 </button>
              </div>
           )}
         </div>
 
-        {/* Controls - Mobile Friendly DPAD */}
-        <div className="mt-12 grid grid-cols-3 gap-4">
+        {/* Controls HUD */}
+        <div className="mt-12 grid grid-cols-3 gap-6">
            <div />
-           <ControlBtn icon="arrow_upward" onClick={() => lastDirRef.current.y === 0 && setDirection({ x: 0, y: -1 })} />
+           <ControlBtn icon="expand_less" onClick={() => lastDirRef.current.y === 0 && setDirection({ x: 0, y: -1 })} />
            <div />
-           <ControlBtn icon="arrow_back" onClick={() => lastDirRef.current.x === 0 && setDirection({ x: -1, y: 0 })} />
-           <ControlBtn icon="arrow_downward" onClick={() => lastDirRef.current.y === 0 && setDirection({ x: 0, y: 1 })} />
-           <ControlBtn icon="arrow_forward" onClick={() => lastDirRef.current.x === 0 && setDirection({ x: 1, y: 0 })} />
+           <ControlBtn icon="chevron_left" onClick={() => lastDirRef.current.x === 0 && setDirection({ x: -1, y: 0 })} />
+           <ControlBtn icon="expand_more" onClick={() => lastDirRef.current.y === 0 && setDirection({ x: 0, y: 1 })} />
+           <ControlBtn icon="chevron_right" onClick={() => lastDirRef.current.x === 0 && setDirection({ x: 1, y: 0 })} />
         </div>
       </div>
+
+      <style>{`
+        @keyframes scanline {
+          0% { top: -10%; }
+          100% { top: 110%; }
+        }
+        .animate-scanline { animation: scanline 8s linear infinite; }
+      `}</style>
     </div>
   );
 };
@@ -225,8 +231,8 @@ export const SnakeGame = () => {
 const ControlBtn = ({ icon, onClick }: { icon: string; onClick: () => void }) => (
     <button 
         onClick={onClick}
-        className="w-16 h-16 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center active:scale-90 active:bg-white/20 transition-all backdrop-blur-md"
+        className="w-16 h-16 bg-[#00f2ff]/5 border border-[#00f2ff]/30 flex items-center justify-center active:scale-90 active:bg-[#00f2ff]/20 transition-all shadow-[0_0_15px_rgba(0,242,255,0.1)]"
     >
-        <span className="material-symbols-outlined text-white/40 text-3xl group-active:text-white transition-colors">{icon}</span>
+        <span className="material-symbols-outlined text-[#00f2ff] text-4xl">{icon}</span>
     </button>
 );
