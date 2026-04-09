@@ -182,7 +182,12 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
         return false;
     }); // Optimistic auth from cache
-    const [isAuthLoading, setIsAuthLoading] = useState(true);
+    const [isAuthLoading, setIsAuthLoading] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('user_profile_cache') === null;
+        }
+        return true;
+    });
     // Initialize from localStorage so the prompt state persists across page refreshes
     // Use sessionStorage so popup appears once per browser session (closing tab resets it)
     const [availableTitles, setAvailableTitles] = useState<Title[]>([]);
