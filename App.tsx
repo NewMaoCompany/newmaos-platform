@@ -95,9 +95,9 @@ const AutoReadHandler = () => {
       (n.link === currentPath || (n.link === '/dashboard' && location.pathname === '/') || (n.link === '/checkin' && location.pathname.startsWith('/checkin')))
     );
     
-    // Also include check-in reminders if already checked in
+    // Also include ALL check-in reminders if already checked in
     if (checkinStatus === 'checked_in') {
-      const checkinNotifs = notifications.filter(n => n.unread && (n.link === '/checkin' || n.text?.includes('Daily Check-in')));
+      const checkinNotifs = notifications.filter(n => n.unread && (n.link?.includes('/checkin') || n.text?.includes('Daily Check-in')));
       matchingNotifications.push(...checkinNotifs);
     }
 

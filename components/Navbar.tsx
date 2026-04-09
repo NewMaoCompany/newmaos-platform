@@ -116,7 +116,13 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   const unreadCount = notifications.filter(n => {
     if (!n.unread || n.chatId || n.channelId || n.type === 'dm') return false;
     const isCheckin = n.link === '/checkin' || n.text?.includes('Daily Check-in');
-    if (isCheckin && checkinStatus !== 'not_checked_in') return false;
+    
+    // Deduplicate: If this is a check-in link, only count it if it's the first unread check-in msg
+    if (isCheckin) {
+      if (checkinStatus !== 'not_checked_in') return false;
+      const firstCheckin = notifications.find(notif => notif.unread && (notif.link === '/checkin' || notif.text?.includes('Daily Check-in')));
+      if (firstCheckin && firstCheckin.id !== n.id) return false;
+    }
     return true;
   }).length + checkinUnread;
   const totalUnreadChatCount = Object.values(unreadCounts).reduce((a, b) => a + b, 0);
@@ -221,7 +227,12 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   const dashboardUnreadCount = visibleNotifications.filter(n => {
     if (!n.unread) return false;
     const isCheckin = n.link === '/checkin' || n.link === '/dashboard' || n.text?.includes('Daily Check-in');
-    if (isCheckin && (n.link === '/checkin' || n.text?.includes('Daily Check-in')) && checkinStatus !== 'not_checked_in') return false;
+    if (isCheckin) {
+      // Deduplicate: only count 1 checkin notif, and only if not checked in
+      if (checkinStatus !== 'not_checked_in') return false;
+      const firstCheckin = visibleNotifications.find(notif => notif.unread && (notif.link === '/checkin' || notif.link === '/dashboard' || notif.text?.includes('Daily Check-in')));
+      if (firstCheckin && firstCheckin.id !== n.id) return false;
+    }
     return isCheckin;
   }).length + checkinUnread;
   const analysisUnreadCount = visibleNotifications.filter(n => n.unread && n.link === '/analysis').length;
@@ -369,7 +380,11 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
               <div className="pointer-events-auto flex items-center gap-1">
                 <Link
                   to="/dashboard"
-                  onClick={() => markLinkAsRead('/checkin')}
+                  onClick={() => {
+                    markLinkAsRead('/checkin');
+                    markLinkAsRead('/dashboard');
+                    notifications.filter(n => n.unread && n.text?.includes('Daily Check-in')).forEach(n => markNotificationRead(n.id));
+                  }}
                   className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
                 >
                   <span>Dashboard</span>
