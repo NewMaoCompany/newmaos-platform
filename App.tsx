@@ -35,7 +35,6 @@ const Privacy = React.lazy(() => import('./pages/StaticPages').then(m => ({ defa
 const Terms = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.Terms })));
 const Support = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.Support })));
 const Lobby = React.lazy(() => import('./pages/Lobby').then(m => ({ default: m.Lobby })));
-const VirtualBrowser = React.lazy(() => import('./pages/VirtualBrowser').then(m => ({ default: m.VirtualBrowser })));
 
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -253,9 +252,8 @@ const AppRoutes = () => {
             <Route path="/settings/creator" element={<ProtectedRoute><QuestionCreator /></ProtectedRoute>} />
             <Route path="/debug-qa" element={<ProtectedRoute><DebugQA /></ProtectedRoute>} />
 
-            {/* Lobby & Browser */}
+            {/* Lobby */}
             <Route path="/lobby" element={<Lobby />} />
-            <Route path="/browser" element={<VirtualBrowser />} />
 
             {/* Static Pages */}
             <Route path="/privacy" element={<Privacy />} />
