@@ -34,6 +34,7 @@ const SubscriptionSettings = React.lazy(() => import('./pages/SettingsSubpages')
 const Privacy = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.Privacy })));
 const Terms = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.Terms })));
 const Support = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.Support })));
+const Lobby = React.lazy(() => import('./pages/Lobby').then(m => ({ default: m.Lobby })));
 
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -244,6 +245,9 @@ const AppRoutes = () => {
             <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionSettings /></ProtectedRoute>} />
             <Route path="/settings/creator" element={<ProtectedRoute><QuestionCreator /></ProtectedRoute>} />
             <Route path="/debug-qa" element={<ProtectedRoute><DebugQA /></ProtectedRoute>} />
+
+            {/* Lobby */}
+            <Route path="/lobby" element={<Lobby />} />
 
             {/* Static Pages */}
             <Route path="/privacy" element={<Privacy />} />
