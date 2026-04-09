@@ -84,7 +84,7 @@ const PageLayer = ({ active, children, zIndex = 0 }: { active: boolean; children
 // --- Auto-Read Notifications on Route Change ---
 const AutoReadHandler = () => {
   const location = useLocation();
-  const { notifications, markNotificationRead } = useApp();
+  const { notifications, markNotificationRead, checkinStatus } = useApp();
 
   useEffect(() => {
     const currentPath = location.pathname + location.search;
@@ -96,7 +96,6 @@ const AutoReadHandler = () => {
     );
     
     // Also include check-in reminders if already checked in
-    const { checkinStatus } = useApp();
     if (checkinStatus === 'checked_in') {
       const checkinNotifs = notifications.filter(n => n.unread && (n.link === '/checkin' || n.text?.includes('Daily Check-in')));
       matchingNotifications.push(...checkinNotifs);
@@ -106,7 +105,7 @@ const AutoReadHandler = () => {
       console.log(`[AutoRead] Marking notification ${n.id} as read (linked to ${n.link})`);
       markNotificationRead(n.id);
     });
-  }, [location.pathname, location.search, notifications, markNotificationRead]);
+  }, [location.pathname, location.search, notifications, markNotificationRead, checkinStatus]);
 
   return null;
 };
