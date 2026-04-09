@@ -112,8 +112,13 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
 
   const visibleNotifications = notifications.filter(n => !isNotificationMuted(n));
   const checkinUnread = (isAuthenticated && checkinStatus === 'not_checked_in') ? 1 : 0;
-  // Filter out chat notifications from the main list to avoid double counting with unreadCounts
-  const unreadCount = notifications.filter(n => n.unread && !n.chatId && !n.channelId && n.type !== 'dm').length + checkinUnread;
+  // Filter out chat notifications and check-in reminders if already checked in or loading
+  const unreadCount = notifications.filter(n => {
+    if (!n.unread || n.chatId || n.channelId || n.type === 'dm') return false;
+    const isCheckin = n.link === '/checkin' || n.text?.includes('Daily Check-in');
+    if (isCheckin && checkinStatus !== 'not_checked_in') return false;
+    return true;
+  }).length + checkinUnread;
   const totalUnreadChatCount = Object.values(unreadCounts).reduce((a, b) => a + b, 0);
   const totalUnreadCount = unreadCount + totalUnreadChatCount;
 
@@ -213,7 +218,12 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   };
 
 
-  const dashboardUnreadCount = visibleNotifications.filter(n => n.unread && (n.link === '/checkin' || n.link === '/dashboard' || n.text?.includes('Daily Check-in'))).length + checkinUnread;
+  const dashboardUnreadCount = visibleNotifications.filter(n => {
+    if (!n.unread) return false;
+    const isCheckin = n.link === '/checkin' || n.link === '/dashboard' || n.text?.includes('Daily Check-in');
+    if (isCheckin && (n.link === '/checkin' || n.text?.includes('Daily Check-in')) && checkinStatus !== 'not_checked_in') return false;
+    return isCheckin;
+  }).length + checkinUnread;
   const analysisUnreadCount = visibleNotifications.filter(n => n.unread && n.link === '/analysis').length;
   const practiceUnreadCount = visibleNotifications.filter(n => n.unread && n.link?.startsWith('/practice')).length;
   const settingsUnreadCount = visibleNotifications.filter(n => n.unread && (n.link?.includes('/settings') || n.text?.startsWith('[Membership]'))).length;
