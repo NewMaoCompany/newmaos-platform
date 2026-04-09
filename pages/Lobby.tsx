@@ -4,111 +4,111 @@ import { useApp } from '../AppContext';
 import { MatchGame } from './MatchGame';
 import { PointsCoin } from '../components/PointsCoin';
 
-// Login Required Modal
-const LoginModal = ({ onClose, onLogin }: { onClose: () => void; onLogin: () => void }) => (
-  <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xl animate-fade-in" onClick={onClose}>
-    <div
-      className="bg-white/90 dark:bg-[#1c1c1e]/90 backdrop-blur-2xl rounded-[28px] p-8 max-w-[340px] w-full text-center shadow-2xl border border-white/20 animate-fade-in-up"
-      onClick={e => e.stopPropagation()}
-    >
-      <div className="w-16 h-16 mx-auto mb-5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-[18px] flex items-center justify-center shadow-lg">
-        <span className="material-symbols-outlined text-white text-3xl">lock</span>
+// --- iOS Components ---
+
+// Analog Clock Widget
+const AnalogClock = ({ date }: { date: Date }) => {
+  const seconds = date.getSeconds();
+  const minutes = date.getMinutes();
+  const hours = date.getHours();
+
+  return (
+    <div className="w-full h-full relative flex items-center justify-center p-2">
+      <div className="w-[105px] h-[105px] rounded-full bg-white/10 backdrop-blur-md border border-white/20 relative shadow-inner">
+        {/* Clock Marks */}
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute top-0 left-1/2 -ml-[1px] h-full w-[2px]"
+            style={{ transform: `rotate(${i * 30}deg)` }}
+          >
+            <div className="h-2 w-full bg-white/30 rounded-full" />
+          </div>
+        ))}
+        {/* Hands */}
+        <div 
+          className="absolute top-1/2 left-1/2 -mt-10 -ml-[1.5px] w-[3px] h-10 bg-white rounded-full origin-bottom"
+          style={{ transform: `rotate(${(hours % 12) * 30 + minutes * 0.5}deg)` }}
+        />
+        <div 
+          className="absolute top-1/2 left-1/2 -mt-12 -ml-[1px] w-[2px] h-12 bg-white/90 rounded-full origin-bottom"
+          style={{ transform: `rotate(${minutes * 6}deg)` }}
+        />
+        <div 
+          className="absolute top-1/2 left-1/2 -mt-12 -ml-[0.5px] w-[1px] h-12 bg-[#FF3B30] rounded-full origin-bottom"
+          style={{ transform: `rotate(${seconds * 6}deg)` }}
+        />
+        <div className="absolute top-1/2 left-1/2 -mt-[2px] -ml-[2px] w-1 h-1 bg-white rounded-full shadow-sm" />
       </div>
-      <h3 className="text-xl font-bold text-[#1c1c1e] dark:text-white mb-2">Sign In Required</h3>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
-        Please sign in to your NewMaoS account to play games and access all features.
-      </p>
-      <button
-        onClick={onLogin}
-        className="w-full py-3.5 bg-[#007AFF] text-white rounded-2xl font-semibold text-[15px] active:scale-[0.97] transition-transform mb-3"
-      >
-        Sign In
-      </button>
-      <button
-        onClick={onClose}
-        className="w-full py-3 text-[#007AFF] rounded-2xl font-medium text-[15px] active:opacity-60 transition-opacity"
-      >
-        Cancel
-      </button>
+    </div>
+  );
+};
+
+// Generic Widget Wrapper
+const Widget = ({ children, className = '', title = '', icon = '' }: { children: React.ReactNode; className?: string; title?: string; icon?: string }) => (
+  <div className={`aspect-square bg-white/10 backdrop-blur-3xl rounded-[28px] p-4 border border-white/20 shadow-xl overflow-hidden relative group active:scale-[0.98] transition-transform ${className}`}>
+    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50" />
+    <div className="relative z-10 h-full flex flex-col">
+      {title && (
+        <div className="flex items-center gap-1.5 mb-2 opacity-40">
+          {icon && <span className="material-symbols-outlined text-[12px]">{icon}</span>}
+          <span className="text-[9px] font-black uppercase tracking-[0.1em]">{title}</span>
+        </div>
+      )}
+      <div className="flex-1 min-h-0">
+        {children}
+      </div>
     </div>
   </div>
 );
 
-// iOS Style App Icon
+// App Icon Component
 const AppIcon = ({ 
   icon, 
   label, 
   gradient, 
   onClick, 
   badge,
-  isLarge = false 
+  isDock = false,
+  fillIcon = true
 }: { 
   icon: string; 
   label: string; 
   gradient: string; 
   onClick: () => void; 
   badge?: number;
-  isLarge?: boolean;
+  isDock?: boolean;
+  fillIcon?: boolean;
 }) => (
-  <button onClick={onClick} className="flex flex-col items-center gap-2 group transition-all">
+  <button onClick={onClick} className={`flex flex-col items-center gap-1.5 group select-none ${isDock ? 'mt-[-8px]' : ''}`}>
     <div 
-      className={`rounded-[22%] flex items-center justify-center shadow-2xl relative active:scale-[0.85] transition-all duration-300 ${isLarge ? 'w-[72px] h-[72px]' : 'w-[62px] h-[62px]'}`}
+      className={`rounded-[22%] flex items-center justify-center shadow-lg relative active:scale-[0.85] active:brightness-90 transition-all duration-300 ${isDock ? 'w-[52px] h-[52px] sm:w-[60px] sm:h-[60px]' : 'w-[62px] h-[62px] sm:w-[68px] sm:h-[68px]'}`}
       style={{ 
         background: gradient,
-        boxShadow: '0 10px 25px -5px rgba(0,0,0,0.3)',
+        boxShadow: '0 8px 20px -5px rgba(0,0,0,0.4)',
       }}
     >
       <div className="absolute inset-0 bg-white/10 rounded-[22%] opacity-0 group-hover:opacity-100 transition-opacity" />
-      <span className="material-symbols-outlined text-white" style={{ fontSize: isLarge ? '36px' : '30px', fontVariationSettings: "'FILL' 1" }}>
+      <span className="material-symbols-outlined text-white" style={{ fontSize: isDock ? '30px' : '34px', fontVariationSettings: fillIcon ? "'FILL' 1" : "'FILL' 0" }}>
         {icon}
       </span>
       {badge && badge > 0 && (
-        <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 flex items-center justify-center bg-[#FF3B30] text-white text-[11px] font-bold rounded-full px-1.5 shadow-lg border-2 border-white/20 backdrop-blur-md">
+        <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 flex items-center justify-center bg-[#FF3B30] text-white text-[10px] font-black rounded-full px-1.5 shadow-lg border-2 border-white/20 animate-bounce-subtle">
           {badge > 99 ? '99+' : badge}
         </span>
       )}
     </div>
-    <span className="text-[11px] font-bold text-white/90 drop-shadow-md tracking-tight">
-      {label}
-    </span>
+    {!isDock && (
+      <span className="text-[11px] font-semibold text-white/90 drop-shadow-md tracking-tight">
+        {label}
+      </span>
+    )}
   </button>
-);
-
-// iOS Widget (2x2)
-const CurrencyWidget = ({ points, stardust }: { points: number; stardust: number }) => (
-  <div className="w-[155px] h-[155px] bg-white/10 backdrop-blur-3xl rounded-[28px] p-4 border border-white/20 shadow-2xl flex flex-col justify-between relative overflow-hidden group active:scale-[0.98] transition-transform">
-    {/* Liquid Background for Widget */}
-    <div className="absolute inset-0 mesh-liquid opacity-40 group-hover:opacity-60 transition-opacity" style={{ background: 'linear-gradient(135deg, #FF3B3011, #5856D611)' }}></div>
-    
-    <div className="relative z-10 flex items-center justify-between">
-      <span className="material-symbols-outlined text-white/40 text-sm">account_balance_wallet</span>
-      <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.15em] font-sans">Wallet</span>
-    </div>
-
-    <div className="relative z-10 space-y-3">
-      <div className="flex flex-col">
-        <div className="flex items-center gap-1.5">
-          <PointsCoin size="sm" />
-          <span className="text-xl font-black text-white tabular-nums drop-shadow-sm leading-none">{points.toLocaleString()}</span>
-        </div>
-        <span className="text-[9px] font-bold text-white/40 uppercase ml-5 mt-0.5 tracking-wider">NMS Points</span>
-      </div>
-
-      <div className="flex flex-col">
-        <div className="flex items-center gap-1.5">
-          <span className="material-symbols-outlined text-purple-400 text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
-          <span className="text-xl font-black text-white tabular-nums drop-shadow-sm leading-none">{stardust.toLocaleString()}</span>
-        </div>
-        <span className="text-[9px] font-bold text-white/40 uppercase ml-5 mt-0.5 tracking-wider">Stardust</span>
-      </div>
-    </div>
-  </div>
 );
 
 export const Lobby = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, user, notifications, userPoints, userPrestige } = useApp();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { isAuthenticated, user, notifications, userPoints, userPrestige, checkinStatus } = useApp();
   const [showMatchGame, setShowMatchGame] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -119,126 +119,178 @@ export const Lobby = () => {
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
-  const handleGameLaunch = (gameId: string) => {
-    if (!isAuthenticated) return setShowLoginModal(true);
-    if (gameId === 'match3') setShowMatchGame(true);
-  };
-
   if (showMatchGame) return <MatchGame onBack={() => setShowMatchGame(false)} />;
 
   return (
-    <div className="fixed inset-0 z-[90] flex flex-col items-center bg-black overflow-hidden font-sans">
-      {/* Primary Liquid Wallpaper */}
-      <div className="absolute inset-0 mesh-liquid transition-all duration-1000" 
-        style={{ 
-          background: 'linear-gradient(215deg, #0a0a1a 0%, #1a1a40 25%, #2d1b69 50%, #4a1b4d 75%, #1a0a2e 100%)',
-          filter: 'contrast(1.2) brightness(1.2)'
-        }}
-      />
-      
-      {/* Secondary Liquid Shapes */}
-      <div className="absolute top-[10%] left-[-20%] w-[100%] h-[100%] rounded-full bg-blue-600/30 blur-[120px] animate-liquid-pulse pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[120%] h-[120%] rounded-full bg-purple-600/20 blur-[150px] animate-liquid-pulse-slow pointer-events-none" />
-
-      {/* iOS Status Bar */}
-      <div className="w-full flex items-center justify-between px-8 pt-3 pb-1 z-50 text-white font-semibold text-[13px]">
-        <span className="w-20 tabular-nums">
-          {currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
-        </span>
-        <div className="flex items-center gap-1.5 opacity-90">
-          <span className="material-symbols-outlined text-[17px]">signal_cellular_alt</span>
-          <span className="material-symbols-outlined text-[17px]">wifi</span>
-          <span className="material-symbols-outlined text-[17px]">battery_80</span>
-        </div>
+    <div className="fixed inset-0 z-[90] flex flex-col items-center bg-[#000] overflow-hidden text-white selection:bg-primary/30">
+      {/* --- Wallpaper --- */}
+      <div className="absolute inset-0 transition-all duration-1000 overflow-hidden">
+        {/* Dynamic Liquid background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a40] via-[#2d1b69] to-[#0a0a1a]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#007AFF]/20 rounded-full blur-[120px] animate-liquid-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#5856D6]/20 rounded-full blur-[120px] animate-liquid-pulse-slow" />
+        <div className="absolute top-[30%] right-[10%] w-[40%] h-[40%] bg-[#FF2D55]/10 rounded-full blur-[100px] animate-liquid-pulse" />
       </div>
 
-      {/* Main Screen Content */}
-      <div className="relative z-50 flex-1 w-full max-w-[420px] flex flex-col items-center px-6 pt-10">
-        
-        {/* iOS Clock Header */}
-        <div className="text-center mb-12 animate-page-in">
-          <p className="text-white/80 text-[20px] font-semibold tracking-tight uppercase">
-            {currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-          </p>
-          <h1 className="text-white text-[88px] font-thin tracking-tighter -mt-2 drop-shadow-xl" style={{ fontFamily: '"SF Pro Display", -apple-system, sans-serif' }}>
-            {currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
-          </h1>
+      {/* --- Status Bar --- */}
+      <div className="w-full flex items-center justify-between px-8 py-3 z-50 font-semibold text-[13px] tracking-tight backdrop-blur-sm bg-black/5">
+        <div className="flex items-center gap-1">
+          <span className="tabular-nums">{currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}</span>
+          <span>{currentTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
         </div>
-
-        {/* Widgets & Apps Section */}
-        <div className="w-full grid grid-cols-2 gap-6 items-start mb-8">
-          {/* Top Left: Wallet Widget */}
-          <CurrencyWidget points={userPoints.balance} stardust={userPrestige?.current_stardust || 0} />
-          
-          {/* Top Right: Apps Grid */}
-          <div className="grid grid-cols-2 gap-y-6 gap-x-2 h-full">
-            <AppIcon 
-              icon="function" 
-              label="Learning" 
-              gradient="linear-gradient(135deg, #f9d406, #FF9500)" 
-              onClick={() => navigate('/dashboard')}
-              badge={unreadCount}
-              isLarge
-            />
-            <AppIcon 
-              icon="grid_view" 
-              label="Match 3" 
-              gradient="linear-gradient(135deg, #FF2D55, #FF6B9D)" 
-              onClick={() => handleGameLaunch('match3')}
-              isLarge
-            />
+        <div className="flex items-center gap-2 opacity-90">
+          <span className="material-symbols-outlined text-[18px]">signal_cellular_alt</span>
+          <span className="material-symbols-outlined text-[18px]">wifi</span>
+          <div className="flex items-center gap-1 ml-1 px-1.5 py-0.5 rounded-md bg-white/10">
+            <span className="text-[10px] font-bold">85%</span>
+            <span className="material-symbols-outlined text-[16px]">battery_80</span>
           </div>
         </div>
+      </div>
 
-        {/* Page Indicators */}
-        <div className="flex items-center gap-1.5 mb-10">
-          <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
-          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+      {/* --- Main iPad Grid --- */}
+      <div className="relative z-50 flex-1 w-full max-w-[1200px] px-8 pt-8 overflow-y-auto scroll-none flex flex-col items-center">
+        
+        {/* Widget and Main App Grid */}
+        <div className="w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 sm:gap-8 auto-rows-max justify-items-center mb-24 max-w-[1000px]">
+          
+          {/* LARGE WIDGETS (2x2 span) */}
+          <Widget title="Clock" icon="schedule" className="col-span-2 row-span-1 min-w-[340px] aspect-auto h-[165px]">
+            <div className="flex items-center gap-6 h-full px-4">
+              <AnalogClock date={currentTime} />
+              <div className="flex flex-col justify-center gap-1">
+                <p className="text-2xl font-black">{currentTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</p>
+                <p className="text-sm font-bold text-white/50">{currentTime.toLocaleDateString('en-US', { weekday: 'long' })}</p>
+                <div className="mt-2 text-xs font-bold text-primary flex items-center gap-1 underline underline-offset-4">
+                  Check Schedule <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </div>
+              </div>
+            </div>
+          </Widget>
+
+          <Widget title="Learning Status" icon="analytics" className="col-span-2 row-span-1 min-w-[340px] aspect-auto h-[165px]">
+            <div className="flex items-center gap-6 h-full px-4 justify-around">
+               <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-2">
+                    <PointsCoin size="sm" />
+                  </div>
+                  <span className="text-lg font-black">{userPoints.balance}</span>
+                  <span className="text-[9px] font-bold text-white/40 uppercase">Balance</span>
+               </div>
+               <div className="w-px h-12 bg-white/10" />
+               <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-2">
+                    <span className="material-symbols-outlined text-purple-400">auto_awesome</span>
+                  </div>
+                  <span className="text-lg font-black">{userPrestige?.current_stardust || 0}</span>
+                  <span className="text-[9px] font-bold text-white/40 uppercase">Stardust</span>
+               </div>
+               <div className="w-px h-12 bg-white/10" />
+               <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-2">
+                    <span className="material-symbols-outlined text-orange-400">verified</span>
+                  </div>
+                  <span className="text-lg font-black">{userPrestige?.world_rank || '-'}</span>
+                  <span className="text-[9px] font-bold text-white/40 uppercase">Rank</span>
+               </div>
+            </div>
+          </Widget>
+
+          {/* STANDARD APP ICONS */}
+          <AppIcon 
+            icon="function" 
+            label="Dashboard" 
+            gradient="linear-gradient(135deg, #f9d406, #FF9500)" 
+            onClick={() => navigate('/dashboard')} 
+            badge={unreadCount}
+          />
+          <AppIcon 
+            icon="grid_view" 
+            label="Game Hub" 
+            gradient="linear-gradient(135deg, #FF2D55, #FF6B9D)" 
+            onClick={() => setShowMatchGame(true)} 
+          />
+          <AppIcon 
+            icon="school" 
+            label="Practice" 
+            gradient="linear-gradient(135deg, #34C759, #28CD41)" 
+            onClick={() => navigate('/practice')} 
+          />
+          <AppIcon 
+            icon="forum" 
+            label="Messages" 
+            gradient="linear-gradient(135deg, #5856D6, #AF52DE)" 
+            onClick={() => navigate('/forum')} 
+          />
+          <AppIcon 
+           icon="analytics" 
+           label="Analysis" 
+           gradient="linear-gradient(135deg, #007AFF, #00BFFF)" 
+           onClick={() => navigate('/analysis')} 
+          />
+          <AppIcon 
+            icon="person" 
+            label="Settings" 
+            gradient="linear-gradient(135deg, #8E8E93, #AEAEB2)" 
+            onClick={() => navigate('/settings')} 
+          />
+          <AppIcon 
+            icon="menu_book" 
+            label="Notes" 
+            gradient="linear-gradient(135deg, #f9d406, #e67e22)" 
+            onClick={() => {}} 
+          />
+          <AppIcon 
+            icon="local_fire_department" 
+            label="Streak" 
+            gradient="linear-gradient(135deg, #ff9f43, #ff6b6b)" 
+            onClick={() => navigate('/dashboard')} 
+            badge={checkinStatus === 'not_checked_in' ? 1 : 0}
+          />
+          
+        </div>
+
+        {/* Home Indicators */}
+        <div className="fixed bottom-36 flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-white shadow-sm" />
+          <div className="w-2 h-2 rounded-full bg-white/30" />
+          <div className="w-2 h-2 rounded-full bg-white/30" />
         </div>
       </div>
 
-      {/* Floating Bottom Dock */}
-      <div className="absolute bottom-10 left-6 right-6 z-50 flex justify-center">
-        <div className="w-full max-w-[360px] bg-white/10 backdrop-blur-3xl rounded-[36px] p-3 border border-white/20 shadow-2xl flex items-center justify-around">
-          <AppIcon icon="forum" label="" gradient="linear-gradient(135deg, #5856D6, #AF52DE)" onClick={() => navigate('/forum')} />
-          <AppIcon icon="school" label="" gradient="linear-gradient(135deg, #34C759, #28CD41)" onClick={() => navigate('/practice')} />
-          <AppIcon icon="analytics" label="" gradient="linear-gradient(135deg, #007AFF, #00BFFF)" onClick={() => navigate('/analysis')} />
-          <AppIcon icon="person" label="" gradient="linear-gradient(135deg, #8E8E93, #AEAEB2)" onClick={() => navigate('/settings')} />
+      {/* --- IPAD DOCK --- */}
+      <div className="fixed bottom-10 left-10 right-10 z-[100] flex justify-center pointer-events-none">
+        <div className="w-full max-w-[800px] h-[92px] bg-white/10 backdrop-blur-[50px] rounded-[36px] p-4 border border-white/20 shadow-2xl flex items-center justify-around pointer-events-auto ring-1 ring-white/10">
+          <AppIcon icon="forum" label="" gradient="linear-gradient(135deg, #5856D6, #AF52DE)" onClick={() => navigate('/forum')} isDock />
+          <AppIcon icon="school" label="" gradient="linear-gradient(135deg, #34C759, #28CD41)" onClick={() => navigate('/practice')} isDock />
+          <AppIcon icon="analytics" label="" gradient="linear-gradient(135deg, #007AFF, #00BFFF)" onClick={() => navigate('/analysis')} isDock />
+          <div className="w-[2px] h-12 bg-white/10 rounded-full mx-2" />
+          <AppIcon icon="function" label="" gradient="linear-gradient(135deg, #f9d406, #FF9500)" onClick={() => navigate('/dashboard')} isDock />
+          <AppIcon icon="person" label="" gradient="linear-gradient(135deg, #8E8E93, #AEAEB2)" onClick={() => navigate('/settings')} isDock />
+          <AppIcon icon="grid_view" label="" gradient="linear-gradient(135deg, #FF2D55, #FF6B9D)" onClick={() => setShowMatchGame(true)} isDock />
         </div>
       </div>
 
-      {/* Home Indicator */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full z-50" />
+      {/* iPad Home Indicator */}
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-48 h-[5px] bg-white/20 rounded-full z-[101]" />
 
-      {/* Modals */}
-      {showLoginModal && (
-        <LoginModal 
-          onClose={() => setShowLoginModal(false)} 
-          onLogin={() => { setShowLoginModal(false); navigate('/login'); }} 
-        />
-      )}
-
-      {/* Global Styles for True Liquid */}
       <style>{`
         @keyframes liquid-pulse {
           0%, 100% { transform: scale(1) translate(0, 0); }
-          50% { transform: scale(1.1) translate(20px, -20px); }
+          50% { transform: scale(1.1) translate(30px, -30px); opacity: 0.3; }
         }
         @keyframes liquid-pulse-slow {
           0%, 100% { transform: scale(1) translate(0, 0); }
-          50% { transform: scale(1.05) translate(-10px, 10px); }
+          50% { transform: scale(1.05) translate(-20px, 20px); opacity: 0.2; }
+        }
+        @keyframes bounce-subtle {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3px); }
         }
         .animate-liquid-pulse { animation: liquid-pulse 20s ease-in-out infinite; }
         .animate-liquid-pulse-slow { animation: liquid-pulse-slow 25s ease-in-out infinite; }
-        .mesh-liquid {
-          background-size: 400% 400% !important;
-          animation: mesh-liquid-anim 30s ease infinite !important;
-        }
-        @keyframes mesh-liquid-anim {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
+        .animate-bounce-subtle { animation: bounce-subtle 4s ease-in-out infinite; }
+        .scroll-none::-webkit-scrollbar { display: none; }
       `}</style>
     </div>
   );
