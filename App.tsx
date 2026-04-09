@@ -35,6 +35,11 @@ const Privacy = React.lazy(() => import('./pages/StaticPages').then(m => ({ defa
 const Terms = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.Terms })));
 const Support = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.Support })));
 const Lobby = React.lazy(() => import('./pages/Lobby').then(m => ({ default: m.Lobby })));
+const GameHub = React.lazy(() => import('./pages/GameHub').then(m => ({ default: m.GameHub })));
+const SnakeGame = React.lazy(() => import('./pages/SnakeGame').then(m => ({ default: m.SnakeGame })));
+const Game2048 = React.lazy(() => import('./pages/Game2048').then(m => ({ default: m.Game2048 })));
+const TetrisGame = React.lazy(() => import('./pages/TetrisGame').then(m => ({ default: m.TetrisGame })));
+const MatchGameWrapper = React.lazy(() => import('./pages/MatchGame').then(m => ({ default: m.MatchGame })));
 
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -252,8 +257,13 @@ const AppRoutes = () => {
             <Route path="/settings/creator" element={<ProtectedRoute><QuestionCreator /></ProtectedRoute>} />
             <Route path="/debug-qa" element={<ProtectedRoute><DebugQA /></ProtectedRoute>} />
 
-            {/* Lobby */}
+            {/* Lobby & Games */}
             <Route path="/lobby" element={<Lobby />} />
+            <Route path="/games" element={<GameHub />} />
+            <Route path="/games/match3" element={<MatchGameWrapper onBack={() => window.history.back()} />} />
+            <Route path="/games/snake" element={<SnakeGame />} />
+            <Route path="/games/2048" element={<Game2048 />} />
+            <Route path="/games/tetris" element={<TetrisGame />} />
 
             {/* Static Pages */}
             <Route path="/privacy" element={<Privacy />} />

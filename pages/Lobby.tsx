@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../AppContext';
-import { MatchGame } from './MatchGame';
 import { PointsCoin } from '../components/PointsCoin';
 
 // --- Premium iOS Components ---
@@ -141,7 +140,6 @@ const AppIcon = ({
 export const Lobby = () => {
   const navigate = useNavigate();
   const { isAuthenticated, notifications, userPoints, userPrestige, checkinStatus } = useApp();
-  const [showMatchGame, setShowMatchGame] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -162,7 +160,6 @@ export const Lobby = () => {
     return true;
   }).length;
 
-  if (showMatchGame) return <MatchGame onBack={() => setShowMatchGame(false)} />;
 
   return (
     <div className="fixed inset-0 z-[90] flex flex-col items-center bg-[#151525] overflow-hidden text-white font-sans selection:bg-white/30">
@@ -260,7 +257,7 @@ export const Lobby = () => {
             icon="stadia_controller" 
             label="Game Hub" 
             glowColor="#FF2D55" 
-            onClick={() => setShowMatchGame(true)} 
+            onClick={() => navigate('/games')} 
           />
           <AppIcon 
             icon="workspace_premium" 
