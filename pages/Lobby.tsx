@@ -148,58 +148,62 @@ export const Lobby = () => {
         </div>
       </div>
 
-      {/* --- Main iPad Grid --- */}
-      <div className="relative z-50 flex-1 w-full max-w-[1200px] px-8 pt-8 overflow-y-auto scroll-none flex flex-col items-center">
+      {/* --- Main iPad Root --- */}
+      <div className="relative z-50 flex-1 w-full flex flex-col items-center px-4 sm:px-8 pt-6 sm:pt-10 overflow-y-auto overflow-x-hidden scroll-none">
         
-        {/* Widget and Main App Grid */}
-        <div className="w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 sm:gap-8 auto-rows-max justify-items-center mb-24 max-w-[1000px]">
+        {/* WIDGET ROW: Explicit flex/grid to prevent overlap */}
+        <div className="w-full max-w-[1000px] flex flex-wrap justify-center gap-6 mb-10">
           
-          {/* LARGE WIDGETS (2x2 span) */}
-          <Widget title="Clock" icon="schedule" className="col-span-2 row-span-1 min-w-[340px] aspect-auto h-[165px]">
-            <div className="flex items-center gap-6 h-full px-4">
+          {/* Clock Widget (2x1 equivalent) */}
+          <Widget title="Clock" icon="schedule" className="w-full sm:w-[480px] h-[165px]">
+            <div className="flex items-center gap-4 sm:gap-8 h-full px-4">
               <AnalogClock date={currentTime} />
-              <div className="flex flex-col justify-center gap-1">
-                <p className="text-2xl font-black">{currentTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</p>
-                <p className="text-sm font-bold text-white/50">{currentTime.toLocaleDateString('en-US', { weekday: 'long' })}</p>
-                <div className="mt-2 text-xs font-bold text-primary flex items-center gap-1 underline underline-offset-4">
+              <div className="flex flex-col justify-center gap-1 min-w-0">
+                <p className="text-xl sm:text-2xl font-black truncate">{currentTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</p>
+                <p className="text-xs sm:text-sm font-bold text-white/50">{currentTime.toLocaleDateString('en-US', { weekday: 'long' })}</p>
+                <div className="mt-2 text-[10px] sm:text-xs font-bold text-primary flex items-center gap-1 underline underline-offset-4 cursor-pointer">
                   Check Schedule <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </div>
               </div>
             </div>
           </Widget>
 
-          <Widget title="Learning Status" icon="analytics" className="col-span-2 row-span-1 min-w-[340px] aspect-auto h-[165px]">
-            <div className="flex items-center gap-6 h-full px-4 justify-around">
+          {/* Learning Status Widget (2x1 equivalent) */}
+          <Widget title="Learning Status" icon="analytics" className="w-full sm:w-[480px] h-[165px]">
+            <div className="flex items-center gap-4 sm:gap-6 h-full px-4 justify-around">
                <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-2">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-2">
                     <PointsCoin size="sm" />
                   </div>
-                  <span className="text-lg font-black">{userPoints.balance}</span>
-                  <span className="text-[9px] font-bold text-white/40 uppercase">Balance</span>
+                  <span className="text-sm sm:text-lg font-black">{userPoints.balance}</span>
+                  <span className="text-[8px] sm:text-[9px] font-bold text-white/40 uppercase">Balance</span>
                </div>
-               <div className="w-px h-12 bg-white/10" />
+               <div className="w-px h-10 sm:h-12 bg-white/10" />
                <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-2">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-2">
                     <span className="material-symbols-outlined text-purple-400">auto_awesome</span>
                   </div>
-                  <span className="text-lg font-black">{userPrestige?.current_stardust || 0}</span>
-                  <span className="text-[9px] font-bold text-white/40 uppercase">Stardust</span>
+                  <span className="text-sm sm:text-lg font-black">{userPrestige?.current_stardust || 0}</span>
+                  <span className="text-[8px] sm:text-[9px] font-bold text-white/40 uppercase">Stardust</span>
                </div>
-               <div className="w-px h-12 bg-white/10" />
+               <div className="w-px h-10 sm:h-12 bg-white/10" />
                <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-2">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-2">
                     <span className="material-symbols-outlined text-orange-400">verified</span>
                   </div>
-                  <span className="text-lg font-black">{userPrestige?.world_rank || '-'}</span>
-                  <span className="text-[9px] font-bold text-white/40 uppercase">Rank</span>
+                  <span className="text-sm sm:text-lg font-black">{userPrestige?.world_rank || '-'}</span>
+                  <span className="text-[8px] sm:text-[9px] font-bold text-white/40 uppercase">Rank</span>
                </div>
             </div>
           </Widget>
 
-          {/* STANDARD APP ICONS */}
+        </div>
+
+        {/* APP GRID: Only Two Apps */}
+        <div className="w-full max-w-[1000px] flex justify-center gap-12 sm:gap-20 mb-20">
           <AppIcon 
             icon="function" 
-            label="Dashboard" 
+            label="Learning" 
             gradient="linear-gradient(135deg, #f9d406, #FF9500)" 
             onClick={() => navigate('/dashboard')} 
             badge={unreadCount}
@@ -210,69 +214,31 @@ export const Lobby = () => {
             gradient="linear-gradient(135deg, #FF2D55, #FF6B9D)" 
             onClick={() => setShowMatchGame(true)} 
           />
-          <AppIcon 
-            icon="school" 
-            label="Practice" 
-            gradient="linear-gradient(135deg, #34C759, #28CD41)" 
-            onClick={() => navigate('/practice')} 
-          />
-          <AppIcon 
-            icon="forum" 
-            label="Messages" 
-            gradient="linear-gradient(135deg, #5856D6, #AF52DE)" 
-            onClick={() => navigate('/forum')} 
-          />
-          <AppIcon 
-           icon="analytics" 
-           label="Analysis" 
-           gradient="linear-gradient(135deg, #007AFF, #00BFFF)" 
-           onClick={() => navigate('/analysis')} 
-          />
-          <AppIcon 
-            icon="person" 
-            label="Settings" 
-            gradient="linear-gradient(135deg, #8E8E93, #AEAEB2)" 
-            onClick={() => navigate('/settings')} 
-          />
-          <AppIcon 
-            icon="menu_book" 
-            label="Notes" 
-            gradient="linear-gradient(135deg, #f9d406, #e67e22)" 
-            onClick={() => {}} 
-          />
-          <AppIcon 
-            icon="local_fire_department" 
-            label="Streak" 
-            gradient="linear-gradient(135deg, #ff9f43, #ff6b6b)" 
-            onClick={() => navigate('/dashboard')} 
-            badge={checkinStatus === 'not_checked_in' ? 1 : 0}
-          />
-          
         </div>
 
-        {/* Home Indicators */}
-        <div className="fixed bottom-36 flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-white shadow-sm" />
-          <div className="w-2 h-2 rounded-full bg-white/30" />
-          <div className="w-2 h-2 rounded-full bg-white/30" />
+        {/* Page Indicators */}
+        <div className="fixed bottom-28 sm:bottom-36 flex items-center gap-1.5 pointer-events-none">
+          <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
         </div>
       </div>
 
-      {/* --- IPAD DOCK --- */}
-      <div className="fixed bottom-10 left-10 right-10 z-[100] flex justify-center pointer-events-none">
-        <div className="w-full max-w-[800px] h-[92px] bg-white/10 backdrop-blur-[50px] rounded-[36px] p-4 border border-white/20 shadow-2xl flex items-center justify-around pointer-events-auto ring-1 ring-white/10">
+      {/* --- IPAD DOCK (Expanded) --- */}
+      <div className="fixed bottom-6 sm:bottom-10 left-6 right-6 z-[100] flex justify-center pointer-events-none">
+        <div className="w-full max-w-[700px] h-[80px] sm:h-[92px] bg-white/10 backdrop-blur-[50px] rounded-[30px] sm:rounded-[40px] p-2 sm:p-4 border border-white/20 shadow-2xl flex items-center justify-around pointer-events-auto ring-1 ring-white/10">
           <AppIcon icon="forum" label="" gradient="linear-gradient(135deg, #5856D6, #AF52DE)" onClick={() => navigate('/forum')} isDock />
           <AppIcon icon="school" label="" gradient="linear-gradient(135deg, #34C759, #28CD41)" onClick={() => navigate('/practice')} isDock />
           <AppIcon icon="analytics" label="" gradient="linear-gradient(135deg, #007AFF, #00BFFF)" onClick={() => navigate('/analysis')} isDock />
-          <div className="w-[2px] h-12 bg-white/10 rounded-full mx-2" />
-          <AppIcon icon="function" label="" gradient="linear-gradient(135deg, #f9d406, #FF9500)" onClick={() => navigate('/dashboard')} isDock />
+          <AppIcon icon="local_fire_department" label="" gradient="linear-gradient(135deg, #ff9f43, #ff6b6b)" onClick={() => navigate('/dashboard')} isDock badge={checkinStatus === 'not_checked_in' ? 1 : 0} />
+          <div className="w-[1px] h-10 bg-white/10 rounded-full mx-1 sm:mx-2" />
+          <AppIcon icon="menu_book" label="" gradient="linear-gradient(135deg, #f9d406, #e67e22)" onClick={() => {}} isDock />
           <AppIcon icon="person" label="" gradient="linear-gradient(135deg, #8E8E93, #AEAEB2)" onClick={() => navigate('/settings')} isDock />
-          <AppIcon icon="grid_view" label="" gradient="linear-gradient(135deg, #FF2D55, #FF6B9D)" onClick={() => setShowMatchGame(true)} isDock />
         </div>
       </div>
 
       {/* iPad Home Indicator */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-48 h-[5px] bg-white/20 rounded-full z-[101]" />
+      <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-40 h-1 bg-white/20 rounded-full z-[101]" />
 
       <style>{`
         @keyframes liquid-pulse {
