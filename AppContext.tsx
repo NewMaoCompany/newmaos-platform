@@ -2743,12 +2743,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 setCheckinStatus('checked_in');
                 sessionStorage.setItem('streak_checked_today', 'true');
 
-                // Clear any check-in notifications
-                setNotifications(prev => {
-                    const checkinNotifs = prev.filter(n => n.link === '/checkin' && n.unread);
-                    checkinNotifs.forEach(n => markNotificationRead(n.id));
-                    return prev;
-                });
+                // Clear any check-in notifications (Deduplication fix)
+                notifications.filter(n => n.unread && (n.link === '/checkin' || n.text?.includes('Daily Check-in'))).forEach(n => markNotificationRead(n.id));
 
                 return {
                     success: true,

@@ -3275,6 +3275,7 @@ export const Forum = () => {
                                                 ) : (
                                                     channels.filter(c => ['User', 'Official', 'Custom'].includes(c.category) && String(c.creator_id).toLowerCase() !== String(user?.id).toLowerCase() && joinedChannelIds.has(c.id)).map(channel => (
                                                         <ChannelItem key={channel.id} name={channel.name} isActive={activeChannelId === channel.id}
+                                                            unreadCount={unreadCounts[channel.id] || 0}
                                                             onClick={() => { setActiveSidebarSection('Channels'); setViewMode('channel'); setActiveChannelId(channel.id); setActiveChatId(null); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
                                                             rightElement={
                                                                 <button

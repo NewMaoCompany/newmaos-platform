@@ -92,8 +92,15 @@ const AutoReadHandler = () => {
     // Find unread notifications whose link matches current path
     const matchingNotifications = notifications.filter(n =>
       n.unread &&
-      (n.link === currentPath || (n.link === '/dashboard' && location.pathname === '/'))
+      (n.link === currentPath || (n.link === '/dashboard' && location.pathname === '/') || (n.link === '/checkin' && location.pathname.startsWith('/checkin')))
     );
+    
+    // Also include check-in reminders if already checked in
+    const { checkinStatus } = useApp();
+    if (checkinStatus === 'checked_in') {
+      const checkinNotifs = notifications.filter(n => n.unread && (n.link === '/checkin' || n.text?.includes('Daily Check-in')));
+      matchingNotifications.push(...checkinNotifs);
+    }
 
     matchingNotifications.forEach(n => {
       console.log(`[AutoRead] Marking notification ${n.id} as read (linked to ${n.link})`);

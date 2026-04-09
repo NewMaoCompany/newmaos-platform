@@ -111,8 +111,9 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   };
 
   const visibleNotifications = notifications.filter(n => !isNotificationMuted(n));
+  const checkinUnread = (isAuthenticated && checkinStatus === 'not_checked_in') ? 1 : 0;
   // Filter out chat notifications from the main list to avoid double counting with unreadCounts
-  const unreadCount = notifications.filter(n => n.unread && !n.chatId && !n.channelId && n.type !== 'dm').length;
+  const unreadCount = notifications.filter(n => n.unread && !n.chatId && !n.channelId && n.type !== 'dm').length + checkinUnread;
   const totalUnreadChatCount = Object.values(unreadCounts).reduce((a, b) => a + b, 0);
   const totalUnreadCount = unreadCount + totalUnreadChatCount;
 
@@ -212,7 +213,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   };
 
 
-  const dashboardUnreadCount = visibleNotifications.filter(n => n.unread && (n.link === '/checkin' || n.link === '/dashboard' || n.text?.includes('Daily Check-in'))).length;
+  const dashboardUnreadCount = visibleNotifications.filter(n => n.unread && (n.link === '/checkin' || n.link === '/dashboard' || n.text?.includes('Daily Check-in'))).length + checkinUnread;
   const analysisUnreadCount = visibleNotifications.filter(n => n.unread && n.link === '/analysis').length;
   const practiceUnreadCount = visibleNotifications.filter(n => n.unread && n.link?.startsWith('/practice')).length;
   const settingsUnreadCount = visibleNotifications.filter(n => n.unread && (n.link?.includes('/settings') || n.text?.startsWith('[Membership]'))).length;

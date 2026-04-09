@@ -168,8 +168,8 @@ export const Dashboard = () => {
   const [showWelcomeGift, setShowWelcomeGift] = useState(false);
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(() => localStorage.getItem('privacy_agreed_2026') === 'true');
 
-  // Red dot driven by unread check-in notification (unified source of truth)
-  const needsCheckin = notifications.some(n => n.unread && n.link === '/checkin');
+  // Red dot driven by check-in status (unified source of truth)
+  const needsCheckin = isAuthenticated && checkinStatus === 'not_checked_in';
 
   // Trigger login modal ONLY after auth loading completes and user is NOT authenticated
   useEffect(() => {

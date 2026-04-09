@@ -886,8 +886,14 @@ export const PracticeHub = () => {
                                 className="group bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-2xl p-5 cursor-pointer hover:shadow-md hover:border-red-200 dark:hover:border-red-800/50 transition-all duration-200"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                                    <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform relative">
                                         <span className="material-symbols-outlined text-[22px]">menu_book</span>
+                                        {isAuthenticated && incorrectQuestionIds.length > 0 && (
+                                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 border border-white dark:border-surface-dark shadow-sm"></span>
+                                            </span>
+                                        )}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
