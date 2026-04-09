@@ -104,7 +104,7 @@ const AppIcon = ({
 
 export const Lobby = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, notifications, userPoints, userPrestige } = useApp();
+  const { isAuthenticated, notifications, userPoints, userPrestige, checkinStatus } = useApp();
   const [showMatchGame, setShowMatchGame] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
