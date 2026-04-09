@@ -4,6 +4,36 @@ import { useApp } from '../AppContext';
 import { MatchGame } from './MatchGame';
 import { PointsCoin } from '../components/PointsCoin';
 
+// Login Required Modal
+const LoginModal = ({ onClose, onLogin }: { onClose: () => void; onLogin: () => void }) => (
+  <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xl animate-fade-in" onClick={onClose}>
+    <div
+      className="bg-white/90 dark:bg-[#1c1c1e]/90 backdrop-blur-2xl rounded-[28px] p-8 max-w-[340px] w-full text-center shadow-2xl border border-white/20 animate-fade-in-up"
+      onClick={e => e.stopPropagation()}
+    >
+      <div className="w-16 h-16 mx-auto mb-5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-[18px] flex items-center justify-center shadow-lg">
+        <span className="material-symbols-outlined text-white text-3xl">lock</span>
+      </div>
+      <h3 className="text-xl font-bold text-[#1c1c1e] dark:text-white mb-2">Sign In Required</h3>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
+        Please sign in to your NewMaoS account to play games and access all features.
+      </p>
+      <button
+        onClick={onLogin}
+        className="w-full py-3.5 bg-[#007AFF] text-white rounded-2xl font-semibold text-[15px] active:scale-[0.97] transition-transform mb-3"
+      >
+        Sign In
+      </button>
+      <button
+        onClick={onClose}
+        className="w-full py-3 text-[#007AFF] rounded-2xl font-medium text-[15px] active:opacity-60 transition-opacity"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+);
+
 // iOS Style App Icon
 const AppIcon = ({ 
   icon, 
@@ -58,7 +88,7 @@ const CurrencyWidget = ({ points, stardust }: { points: number; stardust: number
     <div className="relative z-10 space-y-3">
       <div className="flex flex-col">
         <div className="flex items-center gap-1.5">
-          <PointsCoin size={14} />
+          <PointsCoin size="sm" />
           <span className="text-xl font-black text-white tabular-nums drop-shadow-sm leading-none">{points.toLocaleString()}</span>
         </div>
         <span className="text-[9px] font-bold text-white/40 uppercase ml-5 mt-0.5 tracking-wider">NMS Points</span>
