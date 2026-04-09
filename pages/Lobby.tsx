@@ -113,7 +113,18 @@ export const Lobby = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  const unreadCount = notifications.filter(n => {
+    if (!n.unread) return false;
+    const isCheckin = n.link?.includes('/checkin') || n.text?.includes('Daily Check-in');
+    
+    // Deduplicate and filter based on checkinStatus
+    if (isCheckin) {
+      if (checkinStatus !== 'not_checked_in') return false;
+      const firstCheckin = notifications.find(notif => notif.unread && (notif.link?.includes('/checkin') || notif.text?.includes('Daily Check-in')));
+      if (firstCheckin && firstCheckin.id !== n.id) return false;
+    }
+    return true;
+  }).length;
 
   if (showMatchGame) return <MatchGame onBack={() => setShowMatchGame(false)} />;
 
