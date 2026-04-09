@@ -247,8 +247,8 @@ export const Lobby = () => {
 
         </div>
 
-        {/* MAIN APP GRID: TRANSLUCENT STYLE */}
-        <div className="w-full max-w-[950px] flex justify-center gap-24 sm:gap-40 mt-6 animate-scale-in">
+        {/* MAIN APP GRID: TRANSLUCENT STYLE - 4 COLUMN GRID */}
+        <div className="w-full max-w-[950px] grid grid-cols-2 sm:grid-cols-4 gap-12 sm:gap-20 mt-6 animate-scale-in px-10 justify-items-center">
           <AppIcon 
             icon="school" 
             label="Learning" 
@@ -261,6 +261,18 @@ export const Lobby = () => {
             label="Game Hub" 
             glowColor="#FF2D55" 
             onClick={() => setShowMatchGame(true)} 
+          />
+          <AppIcon 
+            icon="workspace_premium" 
+            label="Prestige" 
+            glowColor="#FFD60A" 
+            onClick={() => navigate('/prestige')} 
+          />
+          <AppIcon 
+            icon="public" 
+            label="Browser" 
+            glowColor="#007AFF" 
+            onClick={() => navigate('/browser')} 
           />
         </div>
 

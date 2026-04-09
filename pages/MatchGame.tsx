@@ -569,8 +569,8 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
       {/* Prop Bar - NEW */}
       <div className="mt-8 mb-6 flex items-center gap-6 z-50">
         {[
-          { id: 'hammer', icon: 'hammer', label: '🔨', count: propCounts.hammer },
-          { id: 'prism', icon: 'auto_awesome', label: '🌈', count: propCounts.prism },
+          { id: 'hammer', icon: 'handyman', label: '🔨', count: propCounts.hammer },
+          { id: 'prism', icon: 'bolt', label: '🌈', count: propCounts.prism },
           { id: 'shuffle', icon: 'shuffle', label: '🌀', count: propCounts.shuffle },
         ].map(p => (
           <button
