@@ -210,10 +210,12 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
            <div className="flex-1 w-full max-w-4xl px-8 flex items-center justify-center">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
                  {LEVELS.map(l => (
-                    <button key={l.id} onClick={() => startLevel(l.id)} className="w-32 h-32 sm:w-40 sm:h-40 rounded-[48px] bg-white/60 backdrop-blur-3xl border border-white flex flex-col items-center justify-center hover:scale-105 transition-all shadow-xl group">
-                       <span className="text-3xl font-black mb-1 italic opacity-80">{l.id}</span>
-                       <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">{l.title}</span>
-                       <div className="mt-4 px-3 py-1 rounded-full bg-blue-500 text-white text-[9px] font-black">{l.target} PT</div>
+                    <button key={l.id} onClick={() => startLevel(l.id)} className="w-32 h-32 sm:w-44 sm:h-44 rounded-[42px] bg-white/60 backdrop-blur-3xl border border-white flex flex-col items-center justify-center hover:scale-105 transition-all shadow-xl group overflow-hidden">
+                       <span className="text-4xl sm:text-6xl font-black mb-1 italic opacity-80 pr-3 bg-clip-text text-transparent bg-gradient-to-b from-black to-black/40">{l.id}</span>
+                       <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 mb-5">{l.title}</span>
+                       <div className="px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 text-[10px] font-black tracking-tight shadow-inner">
+                          {l.target.toLocaleString()} PT
+                       </div>
                     </button>
                  ))}
               </div>
@@ -311,7 +313,7 @@ const Header = ({ title, onBack }: any) => (
        <span className="material-symbols-outlined text-black font-bold">west</span>
     </button>
     <div className="text-center">
-       <h1 className="text-4xl font-black italic uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500">{title}</h1>
+       <h1 className="text-4xl font-black italic uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 pr-4">{title}</h1>
     </div>
     <div className="w-14" />
   </div>

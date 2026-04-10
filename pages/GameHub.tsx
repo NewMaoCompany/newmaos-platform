@@ -91,7 +91,7 @@ export const GameHub = () => {
         </button>
         
         <div className="text-center">
-          <h1 className="text-4xl sm:text-7xl font-black italic uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500 drop-shadow-2xl">Arcade Vault</h1>
+          <h1 className="text-4xl sm:text-7xl font-black italic uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-500 drop-shadow-2xl pr-4">Arcade Vault</h1>
           <div className="flex items-center justify-center gap-4 mt-2 sm:mt-4">
              <div className="h-[1px] w-10 bg-white/10" />
              <p className="text-[10px] sm:text-[12px] font-black tracking-[0.6em] opacity-40 uppercase">Premium Interactive Lab</p>
@@ -115,12 +115,12 @@ export const GameHub = () => {
             <button
               key={game.id}
               onClick={() => navigate(game.path)}
-              className="group relative flex items-center p-8 sm:p-10 rounded-[48px] bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl transition-all duration-700 hover:scale-[1.02] hover:bg-white/10 active:scale-[0.98] text-left overflow-hidden"
+              className="group relative flex items-center p-6 sm:p-8 rounded-[48px] bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl transition-all duration-700 hover:scale-[1.02] hover:bg-white/10 active:scale-[0.98] text-left overflow-hidden"
             >
               {/* Animated Accent */}
               <div 
-                className="absolute inset-x-0 bottom-0 h-[2px] opacity-30 group-hover:h-2 group-hover:opacity-100 transition-all duration-500"
-                style={{ background: game.color, filter: `drop-shadow(0 0 10px ${game.color})` }}
+                className="absolute inset-x-0 bottom-0 h-[3px] opacity-40 group-hover:h-3 group-hover:opacity-100 transition-all duration-500"
+                style={{ background: game.color, filter: `blur(1px) drop-shadow(0 -2px 10px ${game.color})` }}
               />
               
               {/* Dynamic Glow Orb */}
