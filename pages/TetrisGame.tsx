@@ -6,13 +6,13 @@ const COLS = 10;
 const ROWS = 20;
 
 const TETROMINOS = {
-  I: { shape: [[1, 1, 1, 1]], color: '#64D2FF' },
-  J: { shape: [[1, 0, 0], [1, 1, 1]], color: '#007AFF' },
-  L: { shape: [[0, 0, 1], [1, 1, 1]], color: '#FF9500' },
-  O: { shape: [[1, 1], [1, 1]], color: '#FFCC00' },
-  S: { shape: [[0, 1, 1], [1, 1, 0]], color: '#34C759' },
-  T: { shape: [[0, 1, 0], [1, 1, 1]], color: '#AF52DE' },
-  Z: { shape: [[1, 1, 0], [0, 1, 1]], color: '#FF3B30' },
+  I: { shape: [[1, 1, 1, 1]], color: '#00f2ff', glow: 'rgba(0, 242, 255, 0.6)' },
+  J: { shape: [[1, 0, 0], [1, 1, 1]], color: '#007AFF', glow: 'rgba(0, 122, 255, 0.6)' },
+  L: { shape: [[0, 0, 1], [1, 1, 1]], color: '#FF9500', glow: 'rgba(255, 149, 0, 0.6)' },
+  O: { shape: [[1, 1], [1, 1]], color: '#FFD60A', glow: 'rgba(255, 214, 10, 0.6)' },
+  S: { shape: [[0, 1, 1], [1, 1, 0]], color: '#34C759', glow: 'rgba(52, 199, 89, 0.6)' },
+  T: { shape: [[0, 1, 0], [1, 1, 1]], color: '#AF52DE', glow: 'rgba(175, 82, 222, 0.6)' },
+  Z: { shape: [[1, 1, 0], [0, 1, 1]], color: '#FF3B30', glow: 'rgba(255, 59, 48, 0.6)' },
 };
 
 export const TetrisGame = () => {
@@ -24,6 +24,7 @@ export const TetrisGame = () => {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+  const [pulse, setPulse] = useState(false);
   const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
 
   const spawnPiece = useCallback(() => {
@@ -31,10 +32,9 @@ export const TetrisGame = () => {
     const type = types[Math.floor(Math.random() * types.length)] as keyof typeof TETROMINOS;
     const piece = TETROMINOS[type];
     const newPos = { x: Math.floor((COLS - piece.shape[0].length) / 2), y: 0 };
-    
     if (checkCollision(newPos, piece.shape, grid)) {
         setGameOver(true);
-        if (score > 500) awardPoints(Math.floor(score / 50), 'Played Tetris: Aurora Grid');
+        if (score > 500) awardPoints(Math.floor(score / 50), 'Played Tetris: Orbital HUD');
     } else {
         setActivePiece(piece);
         setPos(newPos);
@@ -54,60 +54,46 @@ export const TetrisGame = () => {
     return false;
   };
 
-  const rotate = (shape: number[][]) => {
-    const newShape = shape[0].map((_, i) => shape.map(row => row[i]).reverse());
-    return newShape;
-  };
-
   const handleRotate = () => {
     if (!activePiece || gameOver) return;
-    const newShape = rotate(activePiece.shape);
-    if (!checkCollision(pos, newShape, grid)) {
-        setActivePiece({ ...activePiece, shape: newShape });
-    }
+    const newShape = activePiece.shape[0].map((_: any, i: any) => activePiece.shape.map((row: any) => row[i]).reverse());
+    if (!checkCollision(pos, newShape, grid)) setActivePiece({ ...activePiece, shape: newShape });
   };
-
-  const placePiece = useCallback(() => {
-    const newGrid = grid.map(row => [...row]);
-    activePiece.shape.forEach((row: number[], r: number) => {
-      row.forEach((val, c) => {
-        if (val) {
-          const newY = pos.y + r;
-          const newX = pos.x + c;
-          if (newY >= 0) newGrid[newY][newX] = activePiece.color;
-        }
-      });
-    });
-
-    // Line clearing
-    let linesCleared = 0;
-    const filteredGrid = newGrid.filter(row => {
-        const full = row.every(cell => cell !== '');
-        if (full) linesCleared++;
-        return !full;
-    });
-    while (filteredGrid.length < ROWS) {
-        filteredGrid.unshift(Array(COLS).fill(''));
-    }
-
-    setGrid(filteredGrid);
-    setScore(s => s + [0, 100, 300, 500, 800][linesCleared]);
-    spawnPiece();
-  }, [activePiece, grid, pos, spawnPiece]);
 
   const moveDown = useCallback(() => {
     if (!activePiece || gameOver) return;
     const newPos = { ...pos, y: pos.y + 1 };
     if (checkCollision(newPos, activePiece.shape, grid)) {
-        placePiece();
+        const newGrid = grid.map(row => [...row]);
+        activePiece.shape.forEach((row: any, r: any) => row.forEach((val: any, c: any) => {
+            if (val) {
+              const ny = pos.y + r;
+              const nx = pos.x + c;
+              if (ny >= 0) newGrid[ny][nx] = activePiece.color;
+            }
+        }));
+        let cleared = 0;
+        const filtered = newGrid.filter(row => {
+            const isFull = row.every(cell => cell !== '');
+            if (isFull) cleared++;
+            return !isFull;
+        });
+        while (filtered.length < ROWS) filtered.unshift(Array(COLS).fill(''));
+        setGrid(filtered);
+        if (cleared > 0) {
+            setScore(s => s + [0, 100, 300, 700, 1500][cleared]);
+            setPulse(true);
+            setTimeout(() => setPulse(false), 300);
+        }
+        spawnPiece();
     } else {
         setPos(newPos);
     }
-  }, [activePiece, gameOver, pos, grid, placePiece]);
+  }, [activePiece, gameOver, pos, grid, spawnPiece]);
 
   useEffect(() => {
     if (gameStarted && !gameOver) {
-        gameLoopRef.current = setInterval(moveDown, Math.max(100, 800 - Math.floor(score / 1000) * 100));
+        gameLoopRef.current = setInterval(moveDown, Math.max(120, 850 - Math.floor(score / 1500) * 80));
     } else {
         if (gameLoopRef.current) clearInterval(gameLoopRef.current);
     }
@@ -117,12 +103,12 @@ export const TetrisGame = () => {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
         if (e.key === 'ArrowLeft') {
-            const newPos = { ...pos, x: pos.x - 1 };
-            if (!checkCollision(newPos, activePiece?.shape, grid)) setPos(newPos);
+            const np = { ...pos, x: pos.x - 1 };
+            if (!checkCollision(np, activePiece?.shape, grid)) setPos(np);
         }
         if (e.key === 'ArrowRight') {
-            const newPos = { ...pos, x: pos.x + 1 };
-            if (!checkCollision(newPos, activePiece?.shape, grid)) setPos(newPos);
+            const np = { ...pos, x: pos.x + 1 };
+            if (!checkCollision(np, activePiece?.shape, grid)) setPos(np);
         }
         if (e.key === 'ArrowDown') moveDown();
         if (e.key === 'ArrowUp') handleRotate();
@@ -140,70 +126,88 @@ export const TetrisGame = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex flex-col items-center bg-[#05050a] text-[#00f2ff] font-mono overflow-hidden">
-      {/* Deep Space Parallax Background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-40 animate-parallax" />
-        <div className="absolute top-[20%] left-[10%] w-[150px] h-[150px] bg-purple-500/20 rounded-full blur-[100px] animate-pulse" />
-        <div className="absolute bottom-[30%] right-[5%] w-[200px] h-[200px] bg-blue-500/10 rounded-full blur-[120px]" />
+    <div className={`fixed inset-0 z-[110] flex flex-col items-center bg-[#020205] text-[#00f2ff] font-mono overflow-hidden select-none transition-all duration-300 ${pulse ? 'brightness-125 saturate-150 scale-[1.005]' : ''}`}>
+      
+      {/* Deep Space Background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[#020205] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 animate-parallax-slow" />
+        <div className="absolute top-[25%] left-[15%] w-96 h-96 bg-blue-900/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[20%] right-[10%] w-80 h-80 bg-purple-900/10 rounded-full blur-[100px]" />
+        
+        {/* Rotating HUD Geometry */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-cyan-500/5 rounded-full animate-rotate-slow pointer-events-none flex items-center justify-center">
+           <div className="w-[80%] h-[80%] border border-cyan-500/10 rounded-full animate-rotate-reverse-slow" />
+           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#00f2ff05_0%,_transparent_70%)]" />
+        </div>
       </div>
 
-      {/* Sci-Fi HUD Header */}
-      <div className="w-full flex items-center justify-between px-10 py-10 z-50">
+      {/* Sci-Fi HUD Header - Adaptive */}
+      <div className="w-full flex items-center justify-between px-6 sm:px-12 py-6 sm:py-10 z-50 shrink-0">
         <button 
             onClick={() => navigate('/games')} 
-            className="group flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity"
+            className="group flex flex-col items-center gap-1 opacity-50 hover:opacity-100 transition-opacity"
         >
-          <div className="w-12 h-12 border border-[#00f2ff]/30 flex items-center justify-center bg-[#00f2ff]/5">
-            <span className="material-symbols-outlined text-xl">close</span>
+          <div className="w-10 h-10 sm:w-14 sm:h-14 border border-cyan-500/40 bg-cyan-900/20 backdrop-blur-md flex items-center justify-center group-hover:bg-cyan-500/30">
+            <span className="material-symbols-outlined text-cyan-400 text-2xl">power_settings_new</span>
           </div>
-          <span className="text-[9px] font-bold uppercase tracking-[0.2em]">Abort</span>
+          <span className="text-[8px] font-black tracking-widest uppercase">System.Exit</span>
         </button>
-        <div className="text-center">
-          <div className="flex items-center gap-4 justify-center mb-1">
-             <div className="w-8 h-[1px] bg-[#00f2ff]/40" />
-             <h2 className="text-2xl font-black uppercase tracking-[0.3em] text-[#00f2ff] drop-shadow-[0_0_10px_#00f2ff]">Orbital.Stack</h2>
-             <div className="w-8 h-[1px] bg-[#00f2ff]/40" />
+        
+        <div className="text-center px-4">
+          <div className="flex items-center gap-3 justify-center mb-1">
+             <div className="h-[1px] w-4 sm:w-10 bg-cyan-400/30" />
+             <h2 className="text-lg sm:text-3xl font-black uppercase tracking-[0.3em] drop-shadow-[0_0_15px_rgba(0,242,255,0.6)]">Orbital.Stack</h2>
+             <div className="h-[1px] w-4 sm:w-10 bg-cyan-400/30" />
           </div>
-          <div className="text-[10px] font-bold flex items-center justify-center gap-4 opacity-50 uppercase tracking-widest">
-             <div className="flex items-center gap-1">
-                <span>Sector:</span>
-                <span className="text-white">Alpha-9</span>
-             </div>
-             <div className="flex items-center gap-1">
-                <span>Core_Power:</span>
-                <span className="text-[#34C759]">Nominal</span>
-             </div>
-          </div>
+          <p className="text-[9px] font-bold opacity-40 uppercase tracking-[0.5em]">Command Center v0.42</p>
         </div>
-        <div className="flex flex-col items-end gap-1 px-4 py-2 border border-[#00f2ff]/20 bg-[#00f2ff]/5">
-           <span className="text-[8px] font-bold uppercase opacity-40 tracking-widest">Calculated_Mass</span>
-           <span className="text-xl font-bold tabular-nums text-white">{score}</span>
+        
+        <div className="flex flex-col items-end gap-1 px-3 sm:px-6 py-2 border border-cyan-500/20 bg-cyan-500/10 backdrop-blur-sm min-w-[120px]">
+           <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Cargo_Mass</span>
+           <span className="text-xl sm:text-3xl font-black tabular-nums transition-all duration-300">{score.toLocaleString()}</span>
         </div>
       </div>
 
-      {/* Main Containment Field (Game Board) */}
-      <div className="relative flex-1 w-full flex flex-col items-center justify-center px-4 pb-12">
-        <div className="relative h-[78vh] aspect-[1/2] bg-black/80 rounded-sm border border-[#00f2ff]/30 shadow-[0_0_50px_rgba(0,242,255,0.05)] overflow-hidden">
-          {/* Target Grid */}
-          <div className="grid grid-cols-10 grid-rows-20 w-full h-full gap-[1px]">
+      {/* Main Containment (Game Board) - ADAPTIVE SIZING */}
+      <div className="relative flex-1 w-full flex flex-col items-center justify-center p-4 min-h-0">
+        <div 
+          className="relative aspect-[1/2] h-[min(100%,70vh)] max-w-[min(90vw,35vh)] bg-black/80 border-2 border-cyan-500/30 shadow-[0_0_100px_rgba(0,0,0,0.5),0_0_20px_rgba(0,242,255,0.1)] overflow-hidden rounded-md"
+        >
+          {/* Subtle Scanning Lines */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none" />
+          
+          {/* Containment Grid Overlay */}
+          <div className="grid grid-cols-10 grid-rows-20 w-full h-full gap-[1px] opacity-[0.05]">
+             {[...Array(200)].map((_, i) => (
+                <div key={i} className="border-[0.5px] border-cyan-500" />
+             ))}
+          </div>
+
+          {/* Settled Blocks Grid */}
+          <div className="absolute inset-0 pointer-events-none">
              {grid.map((row, r) => row.map((color, c) => (
-                <div key={`${r}-${c}`} className="relative border-[0.5px] border-[#00f2ff]/5" style={{ background: color ? `${color}dd` : 'transparent' }}>
-                    {color && (
-                        <>
-                            <div className="absolute inset-0 bg-gradient-to-tr from-black/60 to-transparent" />
-                            <div className="absolute inset-[2px] border border-white/20 opacity-30" />
-                            <div className="absolute top-0 left-0 w-full h-full shadow-[inset_0_0_10px_rgba(0,242,255,0.2)]" />
-                        </>
-                    )}
-                </div>
+                color ? (
+                    <div 
+                        key={`${r}-${c}`}
+                        className="absolute w-[10%] h-[5%] p-[1px] transition-all duration-300"
+                        style={{ left: `${c * 10}%`, top: `${r * 5}%` }}
+                    >
+                        <div 
+                            className="w-full h-full border border-white/20 relative animate-block-settle"
+                            style={{ 
+                                background: `linear-gradient(135deg, ${color}dd, ${color}99)`,
+                                boxShadow: `inset 2px 2px 5px rgba(255,255,255,0.2), 0 0 10px ${color}44` 
+                            }}
+                        />
+                    </div>
+                ) : null
              )))}
           </div>
 
-          {/* Holographic Active Transponder */}
-          {activePiece && (
-              <div className="absolute inset-0 pointer-events-none">
-                  {activePiece.shape.map((row: number[], r: number) => row.map((val, c) => {
+          {/* Active Unit (Ghost & Piece) */}
+          {activePiece && !gameOver && (
+              <div className="absolute inset-0 pointer-events-none z-10">
+                  {activePiece.shape.map((row: any, r: any) => row.map((val: any, c: any) => {
                       if (!val) return null;
                       const x = pos.x + c;
                       const y = pos.y + r;
@@ -211,13 +215,12 @@ export const TetrisGame = () => {
                       return (
                         <div 
                             key={`${r}-${c}`}
-                            className="absolute w-[10%] h-[5%] p-[1px]"
+                            className="absolute w-[10%] h-[5%] p-[1px] transition-all duration-[100ms] ease-linear"
                             style={{ left: `${x * 10}%`, top: `${y * 5}%` }}
                         >
-                            <div className="w-full h-full relative shadow-[0_0_20px_rgba(0,242,255,0.4)]" style={{ background: activePiece.color }}>
-                                <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent" />
-                                <div className="absolute inset-[2px] border-2 border-white/40 opacity-40" />
-                                <div className="absolute top-1 left-1 w-1 h-1 bg-white rounded-full glow shadow-[0_0_5px_#fff]" />
+                            <div className="w-full h-full border-2 border-white/40 shadow-[0_0_25px_rgba(255,255,255,0.2)] animate-pulse" style={{ background: activePiece.color }}>
+                                <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent" />
+                                <div className="absolute top-1 left-1 w-[20%] h-[20%] bg-white rounded-full blur-[2px]" />
                             </div>
                         </div>
                       );
@@ -225,57 +228,81 @@ export const TetrisGame = () => {
               </div>
           )}
 
-          {/* Start/End Overlays */}
+          {/* Game Over / Start Interfaces */}
           {!gameStarted && (
-              <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/90">
+              <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/95">
+                 <div className="mb-10 w-20 h-20 border-2 border-cyan-500 animate-spin flex items-center justify-center" style={{ animationDuration: '3s' }}>
+                    <div className="w-12 h-12 border-2 border-cyan-300 animate-spin" style={{ animationDuration: '1s', animationDirection: 'reverse' }} />
+                 </div>
                  <button 
                    onClick={startGame}
-                   className="px-10 py-4 border border-[#00f2ff] text-[#00f2ff] bg-transparent font-bold text-xs uppercase tracking-[0.4em] hover:bg-[#00f2ff]/10 active:scale-95 transition-all shadow-[0_0_20px_rgba(0,242,255,0.2)]"
+                   className="px-12 py-4 border border-cyan-500/50 text-cyan-400 font-black text-sm uppercase tracking-[0.5em] hover:bg-cyan-400/20 active:scale-95 transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)]"
                 >
-                   Initiate_Orbital
+                   Initiate Stack
                 </button>
               </div>
           )}
 
           {gameOver && (
-              <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#ff3b30]/10 backdrop-blur-xl border-x-[1px] border-[#ff3b30]/40">
-                <span className="text-[10px] font-bold text-[#ff3b30] uppercase tracking-[0.8em] mb-4 animate-pulse">Structural_Collapse</span>
-                <h3 className="text-5xl font-black uppercase text-white mb-12">Hull_Failure</h3>
+              <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#ff3b30]/10 backdrop-blur-xl border-[1px] border-[#ff3b30]/40 p-8 text-center">
+                <span className="text-[10px] font-black text-[#ff3b30] uppercase tracking-[0.8em] mb-4 animate-pulse">Critical_Atmosphere_Lost</span>
+                <h3 className="text-4xl sm:text-6xl font-black uppercase text-white drop-shadow-[0_0_20px_#ff3b30] mb-12 italic">Total Breach</h3>
+                
+                <div className="px-6 py-4 border border-cyan-500/30 bg-black/80 mb-12">
+                   <div className="text-[8px] font-black uppercase tracking-widest opacity-40 mb-1">Recovered_Data</div>
+                   <div className="text-2xl font-black text-white">{score} UNITS</div>
+                </div>
+
                 <button 
                    onClick={startGame}
-                   className="px-12 py-5 border border-white text-white bg-transparent font-bold text-xs uppercase tracking-[0.4em] hover:bg-white/10 active:scale-95 transition-all"
+                   className="px-14 py-5 bg-white text-black font-black text-xs uppercase tracking-[0.4em] shadow-[0_20px_50px_rgba(0,0,0,0.5)] active:scale-95 transition-all w-full"
                 >
-                   Rebuild_Core
+                   Stabilize Hull
                 </button>
               </div>
           )}
         </div>
       </div>
 
-      {/* Control Surface */}
-      <div className="absolute bottom-10 left-0 w-full flex justify-center gap-8 py-6 px-10 z-50 bg-[#05050a]/80 backdrop-blur-md border-t border-white/5">
-         <div className="grid grid-cols-2 gap-4">
-            <NavBtn icon="west" onClick={() => {
-                const newPos = { ...pos, x: pos.x - 1 };
-                if (!checkCollision(newPos, activePiece?.shape, grid)) setPos(newPos);
+      {/* Control Surface - HUD Interface */}
+      <div className="w-full flex justify-center items-center gap-10 py-10 px-10 z-50 bg-black/60 backdrop-blur-md border-t border-cyan-500/20 shrink-0">
+         <div className="grid grid-cols-2 gap-4 sm:gap-6">
+            <NavBtn icon="chevron_left" onClick={() => {
+                const np = { ...pos, x: pos.x - 1 };
+                if (!checkCollision(np, activePiece?.shape, grid)) setPos(np);
             }} />
-            <NavBtn icon="east" onClick={() => {
-                const newPos = { ...pos, x: pos.x + 1 };
-                if (!checkCollision(newPos, activePiece?.shape, grid)) setPos(newPos);
+            <NavBtn icon="chevron_right" onClick={() => {
+                const np = { ...pos, x: pos.x + 1 };
+                if (!checkCollision(np, activePiece?.shape, grid)) setPos(np);
             }} />
          </div>
-         <div className="grid grid-cols-2 gap-4">
-            <NavBtn icon="south" onClick={moveDown} />
-            <NavBtn icon="cached" onClick={handleRotate} />
+         <div className="grid grid-cols-2 gap-4 sm:gap-6">
+            <NavBtn icon="keyboard_double_arrow_down" onClick={moveDown} />
+            <NavBtn icon="sync" onClick={handleRotate} />
          </div>
       </div>
 
       <style>{`
-        @keyframes parallax {
+        @keyframes parallax-slow {
             from { background-position: 0 0; }
-            to { background-position: 0 1000px; }
+            to { background-position: 1000px 1000px; }
         }
-        .animate-parallax { animation: parallax 60s linear infinite; }
+        @keyframes rotate-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes rotate-reverse-slow {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        @keyframes block-settle {
+            0% { transform: scale(1.1); filter: brightness(2); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+        .animate-parallax-slow { animation: parallax-slow 120s linear infinite; }
+        .animate-rotate-slow { animation: rotate-slow 20s linear infinite; }
+        .animate-rotate-reverse-slow { animation: rotate-reverse-slow 15s linear infinite; }
+        .animate-block-settle { animation: block-settle 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
       `}</style>
     </div>
   );
@@ -284,8 +311,8 @@ export const TetrisGame = () => {
 const NavBtn = ({ icon, onClick }: { icon: string; onClick: () => void }) => (
     <button 
         onClick={onClick}
-        className="w-14 h-14 border border-[#00f2ff]/20 bg-[#00f2ff]/5 flex items-center justify-center active:scale-90 active:bg-[#00f2ff]/10 transition-all"
+        className="w-14 h-14 sm:w-20 sm:h-20 border border-cyan-500/30 bg-cyan-950/20 flex items-center justify-center active:scale-90 active:bg-cyan-500/30 transition-all shadow-[inset_0_0_15px_rgba(0,0,0,0.5)] group"
     >
-        <span className="material-symbols-outlined text-[#00f2ff] text-3xl opacity-60">{icon}</span>
+        <span className="material-symbols-outlined text-cyan-400 text-3xl sm:text-5xl opacity-40 group-active:opacity-100">{icon}</span>
     </button>
 );

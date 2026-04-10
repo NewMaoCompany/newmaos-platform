@@ -2,18 +2,16 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useApp } from '../AppContext';
 
 const GRID_SIZE = 8;
-const CELL_SIZE = 48;
+const BASE_CELL_SIZE = 48;
 const GAP = 6;
 
 const LEVELS = [
-  { id: 1, target: 1000, moves: 30, reward: 50, title: 'Prism Start' },
-  { id: 2, target: 2500, moves: 25, reward: 100, title: 'Iridescent' },
-  { id: 3, target: 5000, moves: 22, reward: 200, title: 'Neon Flux' },
-  { id: 4, target: 7500, moves: 20, reward: 400, title: 'Rainbow Tide' },
-  { id: 5, target: 10000, moves: 18, reward: 800, title: 'Chroma Core' },
-  { id: 6, target: 15000, moves: 18, reward: 1200, title: 'Prismatic Rain' },
-  { id: 7, target: 20000, moves: 15, reward: 2000, title: 'Elite Spectrum' },
-  { id: 8, target: 30000, moves: 15, reward: 3500, title: 'Infinite RGB' },
+  { id: 1, target: 800, moves: 30, reward: 50, title: 'Prism Start' },
+  { id: 2, target: 2000, moves: 25, reward: 100, title: 'Iridescent' },
+  { id: 3, target: 4500, moves: 22, reward: 200, title: 'Neon Flux' },
+  { id: 4, target: 6000, moves: 20, reward: 400, title: 'Rainbow Tide' },
+  { id: 5, target: 8500, moves: 18, reward: 800, title: 'Chroma Core' },
+  { id: 6, target: 12000, moves: 18, reward: 1200, title: 'Prismatic Rain' },
 ];
 
 const GEMS = [
@@ -27,19 +25,11 @@ const GEMS = [
 
 const RAINBOW_GRADIENT = "linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff)";
 
-type Cell = {
-  type: number;
-  id: number;
-  removing?: boolean;
-  falling?: boolean;
-  isNew?: boolean;
-};
-
+type Cell = { type: number; id: number; removing?: boolean; falling?: boolean; isNew?: boolean };
 type PropType = 'hammer' | 'prism' | 'shuffle' | null;
 
 let cellIdCounter = 0;
 const newCell = (type: number): Cell => ({ type, id: cellIdCounter++, removing: false });
-
 const randomType = () => Math.floor(Math.random() * GEMS.length);
 
 const createBoard = (): Cell[][] => {
@@ -48,9 +38,7 @@ const createBoard = (): Cell[][] => {
     board[r] = [];
     for (let c = 0; c < GRID_SIZE; c++) {
       let t: number;
-      do {
-        t = randomType();
-      } while (
+      do { t = randomType(); } while (
         (c >= 2 && board[r][c - 1].type === t && board[r][c - 2].type === t) ||
         (r >= 2 && board[r - 1][c].type === t && board[r - 2][c].type === t)
       );
@@ -62,44 +50,8 @@ const createBoard = (): Cell[][] => {
 
 const cloneBoard = (b: Cell[][]): Cell[][] => b.map(row => row.map(cell => ({ ...cell })));
 
-const findMatches = (board: Cell[][]): boolean[][] => {
-  const matched: boolean[][] = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(false));
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE - 2; c++) {
-      const t = board[r][c].type;
-      if (t >= 0 && board[r][c + 1].type === t && board[r][c + 2].type === t) {
-        matched[r][c] = matched[r][c + 1] = matched[r][c + 2] = true;
-      }
-    }
-  }
-  for (let c = 0; c < GRID_SIZE; c++) {
-    for (let r = 0; r < GRID_SIZE - 2; r++) {
-      const t = board[r][c].type;
-      if (t >= 0 && board[r + 1][c].type === t && board[r + 2][c].type === t) {
-        matched[r][c] = matched[r + 1][c] = matched[r + 2][c] = true;
-      }
-    }
-  }
-  return matched;
-};
-
-const hasAnyMatch = (matched: boolean[][]): boolean => {
-  for (let r = 0; r < GRID_SIZE; r++)
-    for (let c = 0; c < GRID_SIZE; c++)
-      if (matched[r][c]) return true;
-  return false;
-};
-
-const countMatched = (matched: boolean[][]): number => {
-  let count = 0;
-  for (let r = 0; r < GRID_SIZE; r++)
-    for (let c = 0; c < GRID_SIZE; c++)
-      if (matched[r][c]) count++;
-  return count;
-};
-
 export const MatchGame = ({ onBack }: { onBack: () => void }) => {
-  const { awardPoints, saveSectionProgress, getSectionProgress, sectionProgressMap } = useApp();
+  const { awardPoints, saveSectionProgress, sectionProgressMap } = useApp();
   const [stage, setStage] = useState<'selector' | 'game'>('selector');
   const [currentLevelId, setCurrentLevelId] = useState(1);
   const [board, setBoard] = useState<Cell[][]>(() => createBoard());
@@ -115,577 +67,259 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
   const [popups, setPopups] = useState<{ id: number; x: number; y: number; text: string; color: string }[]>([]);
   const [isShaking, setIsShaking] = useState(false);
   
-  // Props States
+  // Props
   const [activeProp, setActiveProp] = useState<PropType>(null);
-  const [propCounts, setPropCounts] = useState<Record<string, number>>({ hammer: 3, prism: 2, shuffle: 2 });
+  const [propCounts, setPropCounts] = useState<Record<string, number>>({ hammer: 1, prism: 1, shuffle: 1 });
   
   const particleId = useRef(0);
   const popupId = useRef(0);
-
   const level = LEVELS.find(l => l.id === currentLevelId) || LEVELS[0];
 
   const addParticles = useCallback((row: number, col: number, color: string) => {
-    const newParticles = Array.from({ length: 16 }, () => ({
+    const newParticles = Array.from({ length: 12 }, () => ({
       id: particleId.current++,
-      x: col * (CELL_SIZE + GAP) + CELL_SIZE / 2,
-      y: row * (CELL_SIZE + GAP) + CELL_SIZE / 2,
+      x: col * 12.5 + 6.25,
+      y: row * 12.5 + 6.25,
       color,
-      dx: (Math.random() - 0.5) * 180,
-      dy: (Math.random() - 0.5) * 180,
-      size: Math.random() * 12 + 4,
+      dx: (Math.random() - 0.5) * 40,
+      dy: (Math.random() - 0.5) * 40,
+      size: Math.random() * 4 + 2,
     }));
     setParticles(prev => [...prev, ...newParticles]);
-    setTimeout(() => {
-      setParticles(prev => prev.filter(p => !newParticles.find(np => np.id === p.id)));
-    }, 1000);
+    setTimeout(() => setParticles(prev => prev.filter(p => !newParticles.find(np => np.id === p.id))), 800);
   }, []);
 
   const addScorePopup = useCallback((row: number, col: number, text: string, color: string) => {
     const id = popupId.current++;
-    const newPopup = {
-      id,
-      x: col * (CELL_SIZE + GAP) + CELL_SIZE / 2,
-      y: row * (CELL_SIZE + GAP) + CELL_SIZE / 2,
-      text,
-      color
-    };
-    setPopups(prev => [...prev, newPopup]);
-    setTimeout(() => {
-      setPopups(prev => prev.filter(p => p.id !== id));
-    }, 1200);
+    setPopups(prev => [...prev, { id, x: col * 12.5 + 6.25, y: row * 12.5 + 6.25, text, color }]);
+    setTimeout(() => setPopups(prev => prev.filter(p => p.id !== id)), 1000);
   }, []);
 
-  const cascadeGems = useCallback(async (b: Cell[][]) => {
-    const afterRemove = cloneBoard(b);
-    for (let c = 0; c < GRID_SIZE; c++) {
-      let writeRow = GRID_SIZE - 1;
-      for (let r = GRID_SIZE - 1; r >= 0; r--) {
-        if (!afterRemove[r][c].removing) {
-          if (writeRow !== r) {
-            afterRemove[writeRow][c] = { ...afterRemove[r][c], falling: true };
-            afterRemove[r][c] = newCell(-1);
-          }
-          writeRow--;
-        }
-      }
-      for (let r = writeRow; r >= 0; r--) {
-        afterRemove[r][c] = { ...newCell(randomType()), isNew: true };
-      }
-    }
-    setBoard(afterRemove);
-    await new Promise(res => setTimeout(res, 450));
-
-    const clean = cloneBoard(afterRemove);
-    for (let r = 0; r < GRID_SIZE; r++) {
-      for (let c = 0; c < GRID_SIZE; c++) {
-        clean[r][c].falling = false;
-        clean[r][c].isNew = false;
-        clean[r][c].removing = false;
-      }
-    }
-    setBoard(clean);
-    return clean;
-  }, []);
+  const findMatches = (b: Cell[][]) => {
+    const matched = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(false));
+    for (let r = 0; r < GRID_SIZE; r++)
+      for (let c = 0; c < GRID_SIZE - 2; c++)
+        if (b[r][c].type >= 0 && b[r][c].type === b[r][c+1].type && b[r][c].type === b[r][c+2].type) matched[r][c] = matched[r][c+1] = matched[r][c+2] = true;
+    for (let c = 0; c < GRID_SIZE; c++)
+      for (let r = 0; r < GRID_SIZE - 2; r++)
+        if (b[r][c].type >= 0 && b[r][c].type === b[r+1][c].type && b[r][c].type === b[r+2][c].type) matched[r][c] = matched[r+1][c] = matched[r+2][c] = true;
+    return matched;
+  };
 
   const processBoard = useCallback(async (b: Cell[][], comboCount: number = 0) => {
     const matched = findMatches(b);
-    if (!hasAnyMatch(matched)) {
-      setAnimating(false);
-      setCombo(0);
-      return;
-    }
-
-    const matchCount = countMatched(matched);
-    const newCombo = comboCount + 1;
-    const points = matchCount * 25 * newCombo;
-    setCombo(newCombo);
+    let count = 0;
+    for(let r=0; r<GRID_SIZE; r++) for(let c=0; c<GRID_SIZE; c++) if(matched[r][c]) count++;
     
-    // Trigger Flash & Shake
+    if (count === 0) { setAnimating(false); setCombo(0); return; }
+
+    const newCombo = comboCount + 1;
+    const points = count * 25 * newCombo;
+    setCombo(newCombo);
     setIsFlashActive(true);
     setIsShaking(true);
-    setTimeout(() => { setIsFlashActive(false); setIsShaking(false); }, 350);
+    setTimeout(() => { setIsFlashActive(false); setIsShaking(false); }, 300);
     
-    if (newCombo > 1) {
-      setShowCombo(true);
-      setTimeout(() => setShowCombo(false), 1000);
-    }
-
-    let avgR = 0, avgC = 0, firstMatchColor = '#fff';
-    let count = 0;
-    for(let r=0; r<GRID_SIZE; r++) {
-      for(let c=0; c<GRID_SIZE; c++) {
-        if(matched[r][c]) {
-          avgR += r; avgC += c; count++;
-          if (count === 1) firstMatchColor = GEMS[b[r][c].type]?.color;
-        }
-      }
-    }
-    addScorePopup(avgR/count, avgC/count, `+${points}`, firstMatchColor);
+    if (newCombo > 1) { setShowCombo(true); setTimeout(() => setShowCombo(false), 800); }
 
     const nb = cloneBoard(b);
-    for (let r = 0; r < GRID_SIZE; r++) {
-      for (let c = 0; c < GRID_SIZE; c++) {
-        if (matched[r][c]) {
-          nb[r][c] = { ...nb[r][c], removing: true };
-          addParticles(r, c, GEMS[nb[r][c].type]?.color || '#fff');
-        }
-      }
+    let avgR = 0, avgC = 0, firstCol = '#fff';
+    for(let r=0; r<GRID_SIZE; r++) for(let c=0; c<GRID_SIZE; c++) if(matched[r][c]) {
+      nb[r][c].removing = true;
+      addParticles(r, c, GEMS[b[r][c].type]?.color || '#fff');
+      avgR += r; avgC += c;
+      if (firstCol === '#fff') firstCol = GEMS[b[r][c].type]?.color;
     }
     setBoard(nb);
-
+    addScorePopup(avgR/count, avgC/count, `+${points}`, firstCol);
     await new Promise(res => setTimeout(res, 400));
-    setScore(prev => prev + points);
+    setScore(s => s + points);
 
-    const afterCascade = await cascadeGems(nb);
-    processBoard(afterCascade, newCombo);
-  }, [addParticles, addScorePopup, cascadeGems]);
+    // Cascade
+    const afterCascade = cloneBoard(nb);
+    for (let c = 0; c < GRID_SIZE; c++) {
+      let wr = GRID_SIZE - 1;
+      for (let r = GRID_SIZE - 1; r >= 0; r--) if (!afterCascade[r][c].removing) {
+        if (wr !== r) { afterCascade[wr][c] = { ...afterCascade[r][c], falling: true }; afterCascade[r][c] = newCell(-1); }
+        wr--;
+      }
+      for (let r = wr; r >= 0; r--) afterCascade[r][c] = { ...newCell(randomType()), isNew: true };
+    }
+    setBoard(afterCascade);
+    await new Promise(res => setTimeout(res, 400));
+    
+    const final = cloneBoard(afterCascade);
+    final.forEach(r => r.forEach(c => { c.falling = c.isNew = c.removing = false; }));
+    setBoard(final);
+    processBoard(final, newCombo);
+  }, [addParticles, addScorePopup]);
 
   const swap = useCallback((r1: number, c1: number, r2: number, c2: number) => {
     if (animating || gameResult) return;
     const nb = cloneBoard(board);
     [nb[r1][c1], nb[r2][c2]] = [nb[r2][c2], nb[r1][c1]];
-
-    if (hasAnyMatch(findMatches(nb))) {
-      setAnimating(true);
-      setBoard(nb);
-      setMoves(prev => prev - 1);
-      setSelected(null);
+    if (countMatched(findMatches(nb)) > 0) {
+      setAnimating(true); setBoard(nb); setMoves(m => m - 1); setSelected(null);
       setTimeout(() => processBoard(nb, 0), 200);
     } else {
-      setAnimating(true);
-      setBoard(nb);
-      setSelected(null);
-      setTimeout(() => {
-        setBoard(board);
-        setAnimating(false);
-      }, 300);
+      setAnimating(true); setBoard(nb); setSelected(null);
+      setTimeout(() => { setBoard(board); setAnimating(false); }, 300);
     }
   }, [board, animating, gameResult, processBoard]);
 
-  const handleHammer = useCallback(async (r: number, c: number) => {
-    if (propCounts.hammer <= 0) return;
-    setAnimating(true);
-    setPropCounts(prev => ({ ...prev, hammer: prev.hammer - 1 }));
-    setActiveProp(null);
-    
-    const nb = cloneBoard(board);
-    nb[r][c].removing = true;
-    addParticles(r, c, GEMS[nb[r][c].type]?.color || '#fff');
-    setBoard(nb);
-    
-    await new Promise(res => setTimeout(res, 400));
-    addScorePopup(r, c, "+100 (Hammer)", "#f9d406");
-    setScore(s => s + 100);
-    
-    const afterCascade = await cascadeGems(nb);
-    processBoard(afterCascade, 0);
-  }, [board, propCounts.hammer, addParticles, addScorePopup, cascadeGems, processBoard]);
-
-  const handlePrism = useCallback(async (r: number, c: number) => {
-    if (propCounts.prism <= 0) return;
-    const targetType = board[r][c].type;
-    if (targetType < 0) return;
-
-    setAnimating(true);
-    setPropCounts(prev => ({ ...prev, prism: prev.prism - 1 }));
-    setActiveProp(null);
-
-    const nb = cloneBoard(board);
-    let count = 0;
-    for (let i = 0; i < GRID_SIZE; i++) {
-      for (let j = 0; j < GRID_SIZE; j++) {
-        if (nb[i][j].type === targetType) {
-          nb[i][j].removing = true;
-          addParticles(i, j, GEMS[targetType].color);
-          count++;
-        }
-      }
-    }
-    setBoard(nb);
-    setIsFlashActive(true);
-    setTimeout(() => setIsFlashActive(false), 500);
-
-    await new Promise(res => setTimeout(res, 400));
-    const points = count * 50;
-    addScorePopup(r, c, `+${points} (Rainbow)`, RAINBOW_GRADIENT);
-    setScore(s => s + points);
-
-    const afterCascade = await cascadeGems(nb);
-    processBoard(afterCascade, 0);
-  }, [board, propCounts.prism, addParticles, addScorePopup, cascadeGems, processBoard]);
-
-  const handleShuffle = useCallback(() => {
-    if (propCounts.shuffle <= 0 || animating || gameResult) return;
-    setPropCounts(prev => ({ ...prev, shuffle: prev.shuffle - 1 }));
-    setAnimating(true);
-    
-    // Flatten gems, shuffle types, and rebuild
-    const types = board.flat().map(c => c.type);
-    for (let i = types.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [types[i], types[j]] = [types[j], types[i]];
-    }
-    
-    const nb = cloneBoard(board);
-    let k = 0;
-    for(let r=0; r<GRID_SIZE; r++) {
-      for(let c=0; c<GRID_SIZE; c++) {
-        nb[r][c].type = types[k++];
-        nb[r][c].isNew = true;
-      }
-    }
-    setBoard(nb);
-    setIsShaking(true);
-    setTimeout(() => {
-      setIsShaking(false);
-      setAnimating(false);
-      const clean = cloneBoard(nb);
-      clean.forEach(r => r.forEach(c => c.isNew = false));
-      setBoard(clean);
-      processBoard(clean, 0);
-    }, 600);
-  }, [board, animating, gameResult, propCounts.shuffle, processBoard]);
-
   const handleCellClick = useCallback((r: number, c: number) => {
     if (animating || gameResult) return;
-    
     if (activeProp === 'hammer') {
-      handleHammer(r, c);
-      return;
+       setAnimating(true); setPropCounts(p => ({ ...p, hammer: p.hammer - 1 })); setActiveProp(null);
+       const nb = cloneBoard(board); nb[r][c].removing = true; setBoard(nb);
+       addParticles(r, c, GEMS[nb[r][c].type].color);
+       setTimeout(() => processBoard(nb, 0), 400);
+       return;
     }
-    if (activeProp === 'prism') {
-      handlePrism(r, c);
-      return;
-    }
-
     if (selected) {
       const [sr, sc] = selected;
-      if (Math.abs(sr - r) + Math.abs(sc - c) === 1) {
-        swap(sr, sc, r, c);
-      } else {
-        setSelected([r, c]);
-      }
-    } else {
-      setSelected([r, c]);
-    }
-  }, [selected, animating, gameResult, swap, activeProp, handleHammer, handlePrism]);
+      if (Math.abs(sr - r) + Math.abs(sc - c) === 1) swap(sr, sc, r, c); else setSelected([r, c]);
+    } else setSelected([r, c]);
+  }, [selected, animating, gameResult, swap, activeProp, board, addParticles, processBoard]);
 
   const startLevel = (id: number) => {
-    const l = LEVELS.find(lvl => lvl.id === id) || LEVELS[0];
-    setCurrentLevelId(id);
-    setBoard(createBoard());
-    setScore(0);
-    setMoves(l.moves);
-    setCombo(0);
-    setGameResult(null);
-    setAnimating(false);
-    setSelected(null);
-    setActiveProp(null);
-    setPropCounts({ hammer: 3, prism: 2, shuffle: 2 });
-    setStage('game');
+    setCurrentLevelId(id); setBoard(createBoard()); setScore(0);
+    setMoves(LEVELS.find(l => l.id === id)!.moves); setGameResult(null); setStage('game'); setPropCounts({ hammer: 1, prism: 1, shuffle: 1 });
   };
 
   useEffect(() => {
     if (score >= level.target && !animating && !gameResult) {
-      setGameResult('win');
-      saveSectionProgress(`match3_level_${currentLevelId}`, { highScore: score }, { completed: 1, total: 1, score: score });
-      awardPoints(level.reward, 'game_win', `match3_lvl_${currentLevelId}`, `Cleared Match 3 Level ${currentLevelId}`);
-    } else if (moves <= 0 && score < level.target && !animating && !gameResult) {
-      setGameResult('lose');
-    }
-  }, [score, moves, animating, level, gameResult, currentLevelId, saveSectionProgress, awardPoints]);
+      setGameResult('win'); awardPoints(level.reward, 'game_win', `match3_${currentLevelId}`, 'Cleared Match 3');
+      saveSectionProgress(`match3_lvl_${currentLevelId}`, { completed: 1 });
+    } else if (moves <= 0 && score < level.target && !animating && !gameResult) setGameResult('lose');
+  }, [score, moves, animating, level, gameResult, currentLevelId, awardPoints, saveSectionProgress]);
 
-  const gridPx = GRID_SIZE * CELL_SIZE + (GRID_SIZE - 1) * GAP;
+  const countMatched = (m: boolean[][]) => m.flat().filter(x => x).length;
 
-  // Render Level Selector - Rainbow Prism & Liquid Blobs
-  if (stage === 'selector') {
-    return (
-      <div className="fixed inset-0 z-[100] flex flex-col items-center select-none overflow-hidden bg-white">
-        <div className="absolute inset-0 bg-[#f8f9ff]" />
-        <div className="absolute inset-0 opacity-40 animate-rainbow-fade mix-blend-overlay" style={{ background: RAINBOW_GRADIENT, backgroundSize: '400% 400%' }} />
-        <div className="absolute top-[-25%] left-[-25%] w-[80%] h-[80%] bg-[hsl(200,100%,80%)] rounded-full blur-[150px] animate-blob-morph" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[hsl(300,100%,85%)] rounded-full blur-[130px] animate-blob-morph-alt" />
-
-        <div className="w-full flex items-center justify-between px-10 py-12 z-50">
-          <button onClick={onBack} className="w-16 h-16 rounded-[28px] bg-white/40 backdrop-blur-3xl border border-white/60 flex items-center justify-center hover:bg-white/60 active:scale-90 transition-all shadow-xl">
-            <span className="material-symbols-outlined text-black text-3xl">arrow_back</span>
-          </button>
-          <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl font-black italic uppercase text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 tracking-tighter">Rainbow Prism</h1>
-            <p className="text-[10px] sm:text-[12px] font-black tracking-[0.6em] opacity-40 uppercase mt-2 text-black">Liquid Gems Odyssey</p>
-          </div>
-          <div className="w-16" />
-        </div>
-
-        <div className="relative z-50 flex-1 w-full max-w-[1200px] overflow-y-auto px-10 pb-20 custom-scrollbar mt-4">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-16 justify-items-center">
-            {LEVELS.map((l, idx) => {
-              const progress = sectionProgressMap[`match3_level_${l.id}`];
-              const isPrevCompleted = idx === 0 || !!sectionProgressMap[`match3_level_${l.id - 1}`];
-              const isLocked = !isPrevCompleted;
-
-              return (
-                <button
-                  key={l.id}
-                  disabled={isLocked}
-                  onClick={() => startLevel(l.id)}
-                  className={`group relative w-36 h-36 sm:w-48 sm:h-48 flex flex-col items-center justify-center transition-all duration-700 ${isLocked ? 'opacity-30 grayscale cursor-not-allowed' : 'hover:scale-105 active:scale-95'}`}
-                >
-                  <div className={`absolute inset-0 animate-blob-morph transition-all duration-700 ${isLocked ? 'bg-gray-200 border-gray-300' : 'bg-white/60 backdrop-blur-3xl border border-white/80 shadow-2xl group-hover:bg-white/80'}`} />
-                  <div className="relative z-10 flex flex-col items-center">
-                    {isLocked ? (
-                      <span className="material-symbols-outlined text-4xl text-gray-400">lock</span>
-                    ) : (
-                      <>
-                        <span className="text-4xl sm:text-5xl font-black text-black mb-1 drop-shadow-sm">{l.id}</span>
-                        <span className="text-[10px] sm:text-[11px] font-black text-black/40 uppercase tracking-widest text-center px-4 leading-tight mb-4">{l.title}</span>
-                        <div className="flex flex-col items-center gap-1 sm:gap-2">
-                           <div className="px-3 py-1 rounded-full bg-black/5 text-[9px] sm:text-[10px] font-black text-blue-600 border border-black/5">
-                             {l.target.toLocaleString()} PTS
-                           </div>
-                           {progress?.status === 'completed' && (
-                             <span className="material-symbols-outlined text-green-500 text-xl sm:text-2xl fill-1">verified</span>
-                           )}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Render Game Stage - Prism Glass Style
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center select-none overflow-hidden bg-[#fafaff] text-black font-sans">
-      <div className="absolute inset-0 opacity-20 animate-rainbow-fade" style={{ background: RAINBOW_GRADIENT, backgroundSize: '400% 400%' }} />
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-300 rounded-full blur-[120px] animate-blob-morph" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-pink-300 rounded-full blur-[120px] animate-blob-morph-alt" />
+    <div className="fixed inset-0 z-[110] flex flex-col items-center bg-[#fdfdff] text-black font-sans select-none overflow-hidden">
+      {/* Premium Rainbow Background */}
+      <div className="absolute inset-0 opacity-20 animate-rainbow-fade shadow-inner" style={{ background: RAINBOW_GRADIENT, backgroundSize: '400% 400%' }} />
+      <div className="absolute top-[-15%] left-[-15%] w-[60%] h-[60%] bg-blue-200 rounded-full blur-[140px] animate-blob-morph" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-pink-200 rounded-full blur-[130px] animate-blob-morph-alt" />
 
-      {/* Matching Flash Overlay */}
-      <div className={`fixed inset-0 z-[200] bg-white transition-opacity duration-300 pointer-events-none ${isFlashActive ? 'opacity-30' : 'opacity-0'}`} />
-
-      {/* Header - COMPACT */}
-      <div className="w-full flex items-center justify-between px-8 py-4 z-50 bg-white/40 backdrop-blur-3xl border-b border-white/60 shadow-lg">
-        <button onClick={() => setStage('selector')} className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-[16px] bg-white/60 border border-white shadow-md flex items-center justify-center group-active:scale-90 transition-transform">
-            <span className="material-symbols-outlined text-black text-2xl">apps</span>
-          </div>
-          <div className="hidden sm:block">
-            <p className="text-[9px] font-black text-black/40 uppercase tracking-widest">Stage {level.id}</p>
-            <p className="font-black text-sm uppercase tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">{level.title}</p>
-          </div>
-        </button>
-
-        <div className="flex flex-col items-center flex-1 mx-4">
-          <div className="w-full max-w-[240px] h-3 bg-black/5 rounded-full overflow-hidden mb-1.5 border border-black/5 shadow-inner">
-            <div 
-              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-700"
-              style={{ width: `${Math.min(100, (score / level.target) * 100)}%` }}
-            />
-          </div>
-          <p className="text-[10px] font-black uppercase tracking-[0.1em] text-black/60">
-            Goal: <span className="text-black">{score.toLocaleString()}</span> / {level.target.toLocaleString()}
-          </p>
-        </div>
-
-        <button onClick={() => startLevel(currentLevelId)} className="w-10 h-10 rounded-[16px] bg-white/60 border border-white shadow-md flex items-center justify-center active:rotate-180 transition-transform duration-700">
-          <span className="material-symbols-outlined text-black text-xl">sync</span>
-        </button>
-      </div>
-
-      {/* Hero Stats - COMPACT */}
-      <div className="flex items-center gap-12 sm:gap-20 mt-4 mb-4 z-50">
-        <div className="flex flex-col items-center">
-          <span className="text-[10px] font-black text-black/30 uppercase tracking-[0.3em] mb-1">Points</span>
-          <span className="text-4xl sm:text-6xl font-black tracking-tighter tabular-nums drop-shadow-md bg-clip-text text-transparent bg-gradient-to-b from-black to-black/60">
-            {score.toLocaleString()}
-          </span>
-        </div>
-        <div className="w-px h-12 bg-black/10" />
-        <div className="flex flex-col items-center">
-          <span className="text-[10px] font-black text-black/30 uppercase tracking-[0.3em] mb-1">Moves</span>
-          <span className={`text-4xl sm:text-6xl font-black tracking-tighter tabular-nums ${moves <= 5 ? 'text-red-600 animate-pulse' : 'text-black/80'}`}>
-            {moves}
-          </span>
-        </div>
-      </div>
-
-      {/* Combo Badge - OVERLAY-LIKE */}
-      <div className={`h-10 flex items-center justify-center mb-4 z-50 transition-all duration-700 ${showCombo ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`}>
-        <div className="px-6 py-2 rounded-full bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white font-black text-sm shadow-xl border border-white/40 italic tracking-tighter animate-bounce">
-          🌈 {combo}x PRISM COMBO!
-        </div>
-      </div>
-
-      {/* Board Container - Prism Glass - Compact */}
-      <div className={`relative p-2 rounded-[40px] border border-white/80 shadow-[0_30px_80px_rgba(0,0,0,0.1)] bg-white/40 backdrop-blur-[100px] ${isShaking ? 'animate-vibration' : ''}`}>
-        <div 
-          className="relative rounded-[32px] bg-white/10 overflow-hidden"
-          style={{ width: gridPx + 16, height: gridPx + 16, padding: 8 }}
-        >
-          {particles.map(p => (
-            <div key={p.id} className="absolute pointer-events-none rounded-sm" style={{ left: p.x+8, top: p.y+8, width: p.size, height: p.size, background: RAINBOW_GRADIENT, backgroundSize: '400% 400%', boxShadow: `0 0 10px ${p.color}`, animation: `burst 1s ease-out forwards, rainbow-fade 1s linear infinite`, '--tx': `${p.dx}px`, '--ty': `${p.dy}px` } as any} />
-          ))}
-
-          {board.map((row, r) => row.map((cell, c) => {
-            const gem = GEMS[cell.type];
-            if (!gem) return null;
-            const isSelected = selected && selected[0] === r && selected[1] === c;
-
-            return (
-              <div
-                key={cell.id}
-                onClick={() => handleCellClick(r, c)}
-                className={`absolute rounded-full cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${cell.falling ? 'animate-land' : ''}`}
-                style={{
-                  width: CELL_SIZE,
-                  height: CELL_SIZE,
-                  left: c * (CELL_SIZE + GAP) + 8,
-                  top: r * (CELL_SIZE + GAP) + 8,
-                  background: gem.gradient,
-                  boxShadow: isSelected 
-                    ? `0 0 0 4px #fff, 0 0 30px ${gem.glow}` 
-                    : `0 8px 15px -6px ${gem.glow}, inset 0 1px 6px rgba(255,255,255,0.4)`,
-                  transform: cell.removing ? 'scale(0) rotate(360deg)' : isSelected ? 'scale(1.2)' : 'scale(1)',
-                  opacity: cell.removing ? 0 : 1,
-                  zIndex: isSelected ? 50 : 1,
-                  filter: (activeProp === 'hammer' || activeProp === 'prism') ? 'brightness(1.3) contrast(1.1)' : 'none'
-                }}
-              />
-            );
-          }))}
-
-          {popups.map(p => (
-            <div key={p.id} className="absolute pointer-events-none z-[100] font-black text-2xl drop-shadow-xl italic" style={{ left: p.x + 8, top: p.y, transform: 'translate(-50%, -50%)', animation: 'popup-float 1.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards', color: p.color }}>{p.text}</div>
-          ))}
-        </div>
-      </div>
-
-      {/* Prop Bar - NEW */}
-      <div className="mt-8 mb-6 flex items-center gap-6 z-50">
-        {[
-          { id: 'hammer', icon: 'handyman', label: '🔨', count: propCounts.hammer },
-          { id: 'prism', icon: 'bolt', label: '🌈', count: propCounts.prism },
-          { id: 'shuffle', icon: 'shuffle', label: '🌀', count: propCounts.shuffle },
-        ].map(p => (
-          <button
-            key={p.id}
-            onClick={() => {
-              if (p.id === 'shuffle') handleShuffle();
-              else setActiveProp(activeProp === p.id ? null : p.id as any);
-            }}
-            disabled={p.count <= 0 || animating}
-            className={`group relative w-16 h-16 flex items-center justify-center transition-all duration-500 ${p.count <= 0 ? 'opacity-30 grayscale' : 'hover:scale-110 active:scale-95'}`}
-          >
-            <div className={`absolute inset-0 animate-blob-morph transition-all duration-500 ${activeProp === p.id ? 'bg-black shadow-[0_0_25px_rgba(0,0,0,0.3)]' : 'bg-white/60 backdrop-blur-3xl border border-white/80 shadow-xl group-hover:bg-white/90'}`} />
-            <div className="relative z-10 flex flex-col items-center">
-              <span className={`material-symbols-outlined text-3xl transition-colors ${activeProp === p.id ? 'text-white' : 'text-black'}`}>
-                {p.icon}
-              </span>
-              <div className={`absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black border-2 border-white shadow-lg transition-colors ${activeProp === p.id ? 'bg-white text-black' : 'bg-black text-white'}`}>
-                {p.count}
+      {/* Stage Logic */}
+      {stage === 'selector' ? (
+        <div className="w-full h-full flex flex-col items-center z-50">
+           <Header title="Game Library" onBack={onBack} />
+           <div className="flex-1 w-full max-w-4xl px-8 flex items-center justify-center">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
+                 {LEVELS.map(l => (
+                    <button key={l.id} onClick={() => startLevel(l.id)} className="w-32 h-32 sm:w-40 sm:h-40 rounded-[48px] bg-white/60 backdrop-blur-3xl border border-white flex flex-col items-center justify-center hover:scale-105 transition-all shadow-xl group">
+                       <span className="text-3xl font-black mb-1 italic opacity-80">{l.id}</span>
+                       <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">{l.title}</span>
+                       <div className="mt-4 px-3 py-1 rounded-full bg-blue-500 text-white text-[9px] font-black">{l.target} PT</div>
+                    </button>
+                 ))}
               </div>
-            </div>
-            {activeProp === p.id && (
-               <div className="absolute -bottom-10 whitespace-nowrap px-4 py-1.5 rounded-full bg-black/80 text-white text-[10px] font-black uppercase tracking-widest animate-fade-in">
-                 Select a Gem
-               </div>
-            )}
-          </button>
-        ))}
-      </div>
+           </div>
+        </div>
+      ) : (
+        <div className="w-full h-full flex flex-col items-center z-50">
+           <div className="w-full flex items-center justify-between px-10 py-8 shrink-0">
+              <button onClick={() => setStage('selector')} className="w-12 h-12 rounded-2xl bg-white/50 border border-white flex items-center justify-center active:scale-90 transition-all shadow-lg">
+                 <span className="material-symbols-outlined text-black font-bold">west</span>
+              </button>
+              <div className="text-center">
+                 <h2 className="text-2xl font-black uppercase tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-600">Prism Level {level.id}</h2>
+                 <div className="flex items-center gap-2 mt-1">
+                    <div className="w-32 h-2 bg-black/5 rounded-full overflow-hidden border border-white/50">
+                       <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-700" style={{ width: `${Math.min(100, (score/level.target)*100)}%` }} />
+                    </div>
+                    <span className="text-[10px] font-black opacity-30">{score}/{level.target}</span>
+                 </div>
+              </div>
+              <div className="w-12" />
+           </div>
 
-      {/* Result Screen - Premium Prism */}
-      {gameResult && (
-        <div className="fixed inset-0 z-[300] flex items-center justify-center bg-white/60 backdrop-blur-[120px] animate-fade-in px-8">
-          <div className="w-full max-w-[400px] bg-white/90 border-4 border-white rounded-[52px] p-12 text-center shadow-[0_50px_100px_rgba(0,0,0,0.2)]">
-            <div className={`w-24 h-24 rounded-full animate-blob-morph flex items-center justify-center mx-auto mb-8 shadow-3xl ${gameResult === 'win' ? 'bg-gradient-to-br from-yellow-400 to-orange-500' : 'bg-gradient-to-br from-red-500 to-pink-600'}`}>
-              <span className="material-symbols-outlined text-white text-5xl">
-                {gameResult === 'win' ? 'verified' : 'error'}
-              </span>
-            </div>
-            
-            <h3 className="text-4xl font-black text-black mb-2 uppercase tracking-tighter italic bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-pink-700">
-              {gameResult === 'win' ? 'VICTORY!' : 'PRISM SHATTERED'}
-            </h3>
-            <p className="text-black/30 text-[10px] font-black uppercase tracking-[0.4em] mb-10">
-              Score: <span className="text-black">{score.toLocaleString()}</span>
-            </p>
+           <div className="flex-1 w-full flex flex-col items-center justify-center min-h-0 p-4">
+              <div className="mb-6 flex gap-12 sm:gap-20">
+                 <Stat label="Moves" val={moves} color={moves <= 5 ? '#ff3b30' : '#000'} />
+                 <Stat label="Score" val={score} color="#007aff" />
+              </div>
 
-            <div className="flex flex-col gap-4">
-              {gameResult === 'win' ? (
-                <>
-                   <div className="bg-black/5 rounded-[24px] p-4 mb-2 flex items-center justify-center gap-6 border border-black/5">
-                      <div className="flex flex-col items-center">
-                        <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-0.5">XP Points</span>
-                        <span className="text-xl font-black text-black">+{level.reward}</span>
-                      </div>
-                      <div className="w-px h-8 bg-black/10" />
-                      <div className="flex flex-col items-center">
-                        <span className="text-[10px] font-black text-purple-600 uppercase tracking-widest mb-0.5">Stardust</span>
-                        <span className="text-xl font-black text-black">+1</span>
-                      </div>
-                   </div>
-                   <button onClick={() => { if (currentLevelId < LEVELS.length) startLevel(currentLevelId + 1); else setStage('selector'); }} className="w-full py-5 bg-black text-white rounded-[24px] font-black text-xl active:scale-[0.96] transition-transform">CONTINUE</button>
-                </>
-              ) : (
-                <button onClick={() => startLevel(currentLevelId)} className="w-full py-5 bg-black text-white rounded-[24px] font-black text-xl active:scale-[0.96] transition-transform">RETRY</button>
-              )}
-              <button onClick={() => setStage('selector')} className="w-full py-3 text-black/40 rounded-[24px] font-black text-[10px] uppercase tracking-widest">Exit</button>
-            </div>
-          </div>
+              {/* Adaptive Board Container */}
+              <div className={`relative aspect-square w-full max-w-[min(90vw,calc(100vh-420px))] bg-white/40 backdrop-blur-3xl border-[1px] border-white/60 rounded-[42px] shadow-2xl p-2 transition-transform ${isShaking ? 'animate-vibration' : ''}`}>
+                 <div className="relative w-full h-full rounded-[38px] overflow-hidden bg-white/10">
+                    {particles.map(p => (
+                       <div key={p.id} className="absolute pointer-events-none rounded-sm bg-blue-500" style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size, background: RAINBOW_GRADIENT, filter: `drop-shadow(0 0 5px ${p.color})`, animation: `gem-burst 0.8s ease-out forwards`, '--dx': `${p.dx}%`, '--dy': `${p.dy}%` } as any} />
+                    ))}
+                    {board.map((row, r) => row.map((cell, c) => {
+                       const gem = GEMS[cell.type]; if (!gem) return null;
+                       const isSelected = selected?.[0] === r && selected?.[1] === c;
+                       return (
+                          <div key={cell.id} onClick={() => handleCellClick(r, c)} className={`absolute w-[12.5%] h-[12.5%] p-[1px] cursor-pointer transition-all duration-500 ${cell.falling ? 'animate-land' : ''}`} style={{ left: `${c * 12.5}%`, top: `${r * 12.5}%`, opacity: cell.removing ? 0 : 1, transform: cell.removing ? 'scale(0) rotate(180deg)' : isSelected ? 'scale(1.15)' : 'scale(1)', zIndex: isSelected ? 50 : 1 }}>
+                             <div className="w-full h-full rounded-2xl relative shadow-md" style={{ background: gem.gradient, border: isSelected ? '3px solid white' : 'none', boxShadow: isSelected ? `0 0 30px ${gem.glow}` : 'none' }}>
+                                <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent rounded-2xl" />
+                                <div className="absolute top-1 left-2 w-2 h-2 bg-white/40 rounded-full blur-[1px]" />
+                             </div>
+                          </div>
+                    )}))}
+                    {popups.map(p => (
+                       <div key={p.id} className="absolute z-[100] font-black text-xl italic pointer-events-none animate-popup" style={{ left: `${p.x}%`, top: `${p.y}%`, color: p.color }}>{p.text}</div>
+                    ))}
+                 </div>
+              </div>
+
+              {/* Prop Bar */}
+              <div className="mt-8 flex gap-6">
+                 <button onClick={() => setActiveProp(activeProp==='hammer' ? null : 'hammer')} className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${activeProp==='hammer' ? 'bg-black text-white' : 'bg-white/60 border border-white text-black'}`}>
+                    <span className="material-symbols-outlined">handyman</span>
+                 </button>
+              </div>
+           </div>
+
+           {gameResult && (
+              <div className="absolute inset-0 z-[200] flex items-center justify-center bg-white/40 backdrop-blur-2xl p-10">
+                 <div className="bg-white/95 rounded-[52px] border-4 border-white p-12 text-center shadow-3xl w-full max-w-sm">
+                    <h3 className="text-5xl font-black italic uppercase tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-600">{gameResult==='win' ? 'Pristine' : 'Fractured'}</h3>
+                    <div className="text-2xl font-black mb-10 tabular-nums">{score} PTS</div>
+                    <button onClick={() => gameResult==='win' ? (currentLevelId < LEVELS.length ? startLevel(currentLevelId+1) : setStage('selector')) : startLevel(currentLevelId)} className="w-full py-5 bg-black text-white rounded-[28px] font-black text-xl active:scale-95 transition-all">
+                       {gameResult==='win' ? 'CONTINUE' : 'RESTORE'}
+                    </button>
+                 </div>
+              </div>
+           )}
         </div>
       )}
 
       <style>{`
-        @keyframes rainbow-fade {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        @keyframes blob-morph {
-          0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1); }
-          50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: scale(1.05); }
-        }
-        @keyframes blob-morph-alt {
-          0%, 100% { border-radius: 40% 60% 60% 40% / 40% 60% 60% 40%; transform: scale(1.1); }
-          50% { border-radius: 60% 40% 40% 60% / 60% 40% 40% 60%; transform: scale(1); }
-        }
-        @keyframes burst {
-          0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
-          100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(720deg); opacity: 0; }
-        }
-        @keyframes land {
-          0% { transform: scale(1.2, 0.8); }
-          50% { transform: scale(0.85, 1.15); }
-          100% { transform: scale(1, 1); }
-        }
-        @keyframes popup-float {
-          0% { transform: translate(-50%, 0) scale(0.5); opacity: 0; }
-          20% { transform: translate(-50%, -40px) scale(1.5); opacity: 1; }
-          100% { transform: translate(-50%, -120px) scale(1); opacity: 0; }
-        }
-        @keyframes vibration {
-          0%, 100% { transform: translate(0, 0); }
-          25% { transform: translate(-8px, 8px) rotate(-1.5deg); }
-          50% { transform: translate(8px, -8px) rotate(1.5deg); }
-          75% { transform: translate(-4px, 4px) rotate(-0.5deg); }
-        }
-        .animate-rainbow-fade { animation: rainbow-fade 10s linear infinite; }
-        .animate-blob-morph { animation: blob-morph 12s ease-in-out infinite; }
-        .animate-blob-morph-alt { animation: blob-morph-alt 15s ease-in-out infinite; }
-        .animate-vibration { animation: vibration 0.4s ease-in-out; }
-        .animate-land { animation: land 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        @keyframes rainbow-fade { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes blob-morph { 0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: rotate(0deg); } 50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: rotate(5deg); } }
+        @keyframes gem-burst { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; } }
+        @keyframes land { 0% { transform: scale(1.3, 0.7); } 50% { transform: scale(0.8, 1.2); } 100% { transform: scale(1, 1); } }
+        @keyframes popup { 0% { transform: translate(-50%, 0) scale(0.5); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(-50%, -100px) scale(1.5); opacity: 0; } }
+        @keyframes vibration { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-4px, 4px); } 50% { transform: translate(4px, -4px); } 75% { transform: translate(-2px, 2px); } }
+        .animate-rainbow-fade { animation: rainbow-fade 12s linear infinite; }
+        .animate-leak { animation: leak 4s infinite alternate ease-in-out; }
+        .animate-vibration { animation: vibration 0.3s ease-in-out; }
+        .animate-land { animation: land 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
+        .animate-popup { animation: popup 1s ease-out forwards; }
       `}</style>
     </div>
   );
 };
+
+const Header = ({ title, onBack }: any) => (
+  <div className="w-full flex items-center justify-between px-10 py-10">
+    <button onClick={onBack} className="w-14 h-14 rounded-3xl bg-white/40 border border-white flex items-center justify-center hover:bg-white shadow-xl transition-all">
+       <span className="material-symbols-outlined text-black font-bold">west</span>
+    </button>
+    <div className="text-center">
+       <h1 className="text-4xl font-black italic uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500">{title}</h1>
+    </div>
+    <div className="w-14" />
+  </div>
+);
+
+const Stat = ({ label, val, color }: any) => (
+   <div className="flex flex-col items-center">
+      <span className="text-[10px] font-black uppercase tracking-widest opacity-30 mb-1">{label}</span>
+      <span className="text-4xl sm:text-6xl font-black tracking-tighter tabular-nums" style={{ color }}>{val}</span>
+   </div>
+);
