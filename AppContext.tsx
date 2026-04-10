@@ -200,11 +200,29 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     const [isCreatorAuthenticated, setIsCreatorAuthenticated] = useState(false);
 
     // Dynamic Data States
-    const [activities, setActivities] = useState<Activity[]>(INITIAL_ACTIVITIES);
-    const [radarData, setRadarData] = useState<TopicMastery[]>(INITIAL_RADAR_DATA);
+    const [activities, setActivities] = useState<Activity[]>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('activities_cache');
+            return saved ? JSON.parse(saved) : INITIAL_ACTIVITIES;
+        }
+        return INITIAL_ACTIVITIES;
+    });
+    const [radarData, setRadarData] = useState<TopicMastery[]>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('radar_data_cache');
+            return saved ? JSON.parse(saved) : INITIAL_RADAR_DATA;
+        }
+        return INITIAL_RADAR_DATA;
+    });
     const [incorrectQuestionIds, setIncorrectQuestionIds] = useState<Set<string>>(new Set());
     const [lineData, setLineData] = useState(INITIAL_LINE_DATA);
-    const [accuracyHistory, setAccuracyHistory] = useState<{ date: string; accuracy: number; totalAttempts: number }[]>([]);
+    const [accuracyHistory, setAccuracyHistory] = useState<{ date: string; accuracy: number; totalAttempts: number }[]>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('accuracy_history_cache');
+            return saved ? JSON.parse(saved) : [];
+        }
+        return [];
+    });
     const [courses, setCourses] = useState(INITIAL_COURSES);
 
     // Lifted Question State
@@ -227,7 +245,13 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     const [friendIds, setFriendIds] = useState<Set<string>>(new Set());
 
     // Cache for section progress to prevent UI lag
-    const [sectionProgressMap, setSectionProgressMap] = useState<Record<string, UserSectionProgress>>({});
+    const [sectionProgressMap, setSectionProgressMap] = useState<Record<string, UserSectionProgress>>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('section_progress_cache');
+            return saved ? JSON.parse(saved) : {};
+        }
+        return {};
+    });
 
     const [userInsights, setUserInsights] = useState<UserInsights | null>(null);
     const [reviewQueue, setReviewQueue] = useState<ReviewQueueItem[]>([]);
@@ -235,7 +259,14 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     const [showPaywall, setShowPaywall] = useState(false);
 
     // Points Economy State
-    const [userPoints, setUserPoints] = useState<{ balance: number; lifetimeEarned: number }>({ balance: 0, lifetimeEarned: 0 });
+    // Points Economy State
+    const [userPoints, setUserPoints] = useState<{ balance: number; lifetimeEarned: number }>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('user_points_cache');
+            return saved ? JSON.parse(saved) : { balance: 0, lifetimeEarned: 0 };
+        }
+        return { balance: 0, lifetimeEarned: 0 };
+    });
     const pointsBalanceRef = React.useRef<HTMLElement>(null);
     const [userPrestige, setUserPrestige] = useState<UserPrestige | null>(null);
 
@@ -519,6 +550,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             }));
 
             setRadarData(newRadarData);
+            localStorage.setItem('radar_data_cache', JSON.stringify(newRadarData));
 
             // Sync recommendation with current mastery if topic matches
             setRecommendation(prev => {
@@ -625,6 +657,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     score: d.score
                 }));
                 setActivities(mappedActivities);
+                localStorage.setItem('activities_cache', JSON.stringify(mappedActivities));
             }
         } catch (error) {
             console.error('fetchRecentActivities error:', error);
@@ -655,6 +688,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     totalAttempts: d.total_attempts
                 }));
                 setAccuracyHistory(mapped);
+                localStorage.setItem('accuracy_history_cache', JSON.stringify(mapped));
             }
         } catch (err) {
             console.error('fetchAccuracyHistory error:', err);
@@ -1825,6 +1859,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                             map[p.section_id] = p;
                         });
                         setSectionProgressMap(map);
+                        localStorage.setItem('section_progress_cache', JSON.stringify(map));
                     }
                 })(),
                 fetchIncorrectQuestions()
@@ -2541,10 +2576,12 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 return;
             }
             if (data) {
-                setUserPoints({
+                const pointsData = {
                     balance: data.balance || 0,
                     lifetimeEarned: data.lifetime_earned || 0
-                });
+                };
+                setUserPoints(pointsData);
+                localStorage.setItem('user_points_cache', JSON.stringify(pointsData));
             }
         } catch (err) {
             console.error('fetchUserPoints error:', err);
@@ -2601,10 +2638,14 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 // ✅ Trigger animation ONLY on successful award
                 triggerCoinAnimation(amount, x, y);
 
-                setUserPoints(prev => ({
-                    balance: data.new_balance,
-                    lifetimeEarned: prev.lifetimeEarned + amount
-                }));
+                setUserPoints(prev => {
+                    const nextData = {
+                        balance: data.new_balance,
+                        lifetimeEarned: prev.lifetimeEarned + (Number(amount) || 0)
+                    };
+                    localStorage.setItem('user_points_cache', JSON.stringify(nextData));
+                    return nextData;
+                });
 
                 setRecentPointsTransaction({ amount, description: description || type });
                 // Auto-clear after animation
@@ -2906,6 +2947,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         sessionStorage.removeItem('streak_checked_today');
 
         setUser(INITIAL_USER); // Reset to empty on logout
+        window.location.reload();
     };
 
     const toggleCourse = (course: CourseType) => {
