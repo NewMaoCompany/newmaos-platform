@@ -108,8 +108,10 @@ export const CoinCollector: React.FC = () => {
 
             if (pointsBalanceRef.current) {
                 const walletRect = pointsBalanceRef.current.getBoundingClientRect();
-                walletX = walletRect.left + walletRect.width / 2;
-                walletY = walletRect.top + walletRect.height / 2;
+                if (walletRect.width > 0) {
+                    walletX = walletRect.left + walletRect.width / 2;
+                    walletY = walletRect.top + walletRect.height / 2;
+                }
             }
 
             // Determine Source and Target based on mode
@@ -157,31 +159,25 @@ export const CoinCollector: React.FC = () => {
             setCoins(prev => [...prev, ...newCoins]);
 
             // Trigger visual feedback (Text/Bump) when animation "Arrives"
-            // For 'spend', we show text at the destination (button)
-            // For 'earn', we show text at the wallet
+            // We show text at the START location (source) as soon as coins burst out
+            const textId = Date.now();
+            setTexts(prev => [...prev, {
+                id: textId,
+                x: startX,
+                y: startY, // Float up from source location
+                text: mode === 'spend' ? `-${amount}` : `+${amount}`
+            }]);
+
             setTimeout(() => {
-                if (mode === 'earn') {
-                    pointsBalanceRef.current?.classList.add('points-bump-active');
-                }
-
-                // Add floating text
-                const textId = Date.now();
-                setTexts(prev => [...prev, {
-                    id: textId,
-                    x: targetX,
-                    y: targetY, // Float up from target
-                    text: mode === 'spend' ? `-${amount}` : `+${amount}`
-                }]);
-
                 // Remove text after animation
-                setTimeout(() => {
-                    setTexts(prev => prev.filter(t => t.id !== textId));
-                    if (mode === 'earn') {
-                        pointsBalanceRef.current?.classList.remove('points-bump-active');
-                    }
-                }, 2000);
+                setTexts(prev => prev.filter(t => t.id !== textId));
 
-            }, 900);
+                if (pointsBalanceRef.current) {
+                    pointsBalanceRef.current.classList.remove('points-bump-active');
+                    void pointsBalanceRef.current.offsetWidth; // trigger reflow
+                    pointsBalanceRef.current.classList.add('points-bump-active');
+                }
+            }, 900); // 900ms = 350ms burst + 550ms fly
 
             // Remove coins after animations complete
             const totalDuration = coinCount * 80 + 1200;

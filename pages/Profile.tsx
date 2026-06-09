@@ -337,7 +337,7 @@ export const Profile = () => {
 
                 {/* Profile Content Card */}
                 <div className="max-w-2xl mx-auto px-4 -mt-20 relative z-10 pb-12">
-                    <div className="bg-white dark:bg-surface-dark rounded-[2rem] shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden">
+                    <div className="bg-white dark:bg-surface-dark rounded-[2rem] shadow-2xl border border-gray-100 dark:border-white/5">
                         {/* Avatar + Name Section */}
                         <div className="flex flex-col items-center pt-0 pb-6 px-6 relative">
                             {/* Avatar */}

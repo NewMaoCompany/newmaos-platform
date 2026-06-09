@@ -1198,16 +1198,18 @@ export const Practice = () => {
             // Award 5 points ONLY on the absolute FIRST attempt ever for this question
             // Never award coins during Start Over sessions
             const isStartOver = effectiveState?.forceStartNew === true;
-            if (attemptNo === 1 && !isStartOver) {
-                setNewlyCorrectFirstAttempts(prev => prev + 1);
+            if (!isStartOver) {
                 // Pre-unlock audio context on user gesture before async
                 try { const ac = new (window.AudioContext || (window as any).webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); ac.close(); } catch (_) { }
                 const x = e ? e.clientX : window.innerWidth / 2;
                 const y = e ? e.clientY : window.innerHeight / 2;
                 // Pass x,y to awardPoints so it triggers coin animation at the correct position
-                // awardPoints internally calls triggerCoinAnimation, so we do NOT call it again in .then()
-                awardPoints(5, 'practice_correct', question.id, 'Correct Answer +5', undefined, x, y).then(() => {
-                    playCoinSound();
+                // Idempotency key `practice_${question.id}` ensures backend gives points ONLY ONCE!
+                awardPoints(5, 'practice_correct', question.id, 'Correct Answer +5', `practice_${question.id}`, x, y).then((res) => {
+                    if (res.success) {
+                        setNewlyCorrectFirstAttempts(prev => prev + 1);
+                        playCoinSound();
+                    }
                     playCorrectSound();
                 });
             } else {
@@ -1288,11 +1290,11 @@ export const Practice = () => {
                         timeSpentSeconds: timePerQuestion,
                         errorTags: isCorrect ? [] : finalErrorTags
                     }).then(res => {
-                        // Return true if it was the FIRST attempt and it is CORRECT
-                        if (res && res.success && res.isCorrect && res.attemptNo === 1) {
-                            return true;
+                        // Bypass attemptNo since backend handles idempotency
+                        if (res && res.success && res.isCorrect) {
+                            return q.id;
                         }
-                        return false;
+                        return null;
                     });
 
                     submissionPromises.push(promise);
@@ -1344,22 +1346,22 @@ export const Practice = () => {
             // Calculate how many were newly correct first attempts by reading the boolean returns
             // Never award coins during Start Over sessions
             const isStartOverBatch = effectiveState?.forceStartNew === true;
-            let newlyCorrectFirstAttempts = 0;
+            let newlyCorrectIds: string[] = [];
             if (!isStartOverBatch) {
                 settledPromises.forEach(result => {
-                    if (result.status === 'fulfilled' && result.value === true) {
-                        newlyCorrectFirstAttempts++;
+                    if (result.status === 'fulfilled' && typeof result.value === 'string') {
+                        newlyCorrectIds.push(result.value);
                     }
                 });
             }
 
-            if (newlyCorrectFirstAttempts > 0) {
-                setNewlyCorrectFirstAttempts(prev => prev + newlyCorrectFirstAttempts);
-                const totalPoints = newlyCorrectFirstAttempts * 5;
+            if (newlyCorrectIds.length > 0) {
+                setNewlyCorrectFirstAttempts(prev => prev + newlyCorrectIds.length);
+                const totalPoints = newlyCorrectIds.length * 5;
                 // Pre-unlock audio context
                 try { const ac = new (window.AudioContext || (window as any).webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); ac.close(); } catch (_) { }
-                // awardPoints internally triggers coin animation, no need to call triggerCoinAnimation again
-                awardPoints(totalPoints, 'practice_batch', `session_${Date.now()}`, `Batch Submit: ${newlyCorrectFirstAttempts} correct`).then(() => {
+                // awardPoints internally triggers coin animation
+                awardPoints(totalPoints, 'practice_batch', algorithmicSessionId, `Batch Submit: ${newlyCorrectIds.length} correct`, `practice_batch_${algorithmicSessionId}`).then(() => {
                     playCoinSound();
                 });
             }
@@ -1635,6 +1637,15 @@ export const Practice = () => {
             isReview: false,
             newlyCorrectFirstAttempts: newlyCorrectFirstAttempts
         });
+
+        // Add 80% Accuracy Bonus
+        const finalScore = questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0;
+        if (finalScore >= 80 && newlyCorrectFirstAttempts > 0) {
+            const bonusCoins = newlyCorrectFirstAttempts * 5; // 2x multiplier basically
+            try { const ac = new (window.AudioContext || (window as any).webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); ac.close(); } catch (_) { }
+            awardPoints(bonusCoins, 'accuracy_bonus', algorithmicSessionId, '80% Accuracy Bonus! (2x)', `practice_accuracy_${algorithmicSessionId}`).then(() => playCoinSound());
+        }
+
         setShowSummary(true);
     };
 

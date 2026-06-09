@@ -324,7 +324,7 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
                 <div className="flex items-center min-h-[40px] shrink-0">
                     <div className="cursor-pointer" onClick={handleUserClick}>
                         {avatar ? (
-                            <img src={avatar} alt={username} className="w-10 h-10 rounded-full hover:opacity-80 transition-opacity shadow-sm border border-gray-100 dark:border-gray-700" />
+                            <img src={avatar} alt={username} className="w-10 h-10 object-cover rounded-full hover:opacity-80 transition-opacity shadow-sm border border-gray-100 dark:border-gray-700" />
                         ) : (
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-sm ${getAvatarColor(message.user_id)} hover:brightness-110 transition-all`}>
                                 {username.charAt(0).toUpperCase()}
@@ -3352,7 +3352,7 @@ export const Forum = () => {
                                                     className={`group flex items-center gap-2 w-full px-3 py-2.5 rounded-xl transition-all ${dm.chat_id && activeChatId === dm.chat_id ? 'bg-primary/10 text-primary dark:text-white dark:bg-white/10' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'}`}
                                                 >
                                                     <div className="relative shrink-0">
-                                                        {dm.user?.avatar_url ? <img src={dm.user.avatar_url} className="w-6 h-6 rounded-full" alt="" /> : <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] font-bold">{dm.user?.name?.charAt(0) || 'U'}</div>}
+                                                        {dm.user?.avatar_url ? <img src={dm.user.avatar_url} className="w-6 h-6 object-cover rounded-full" alt="" /> : <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] font-bold">{dm.user?.name?.charAt(0) || 'U'}</div>}
                                                         {presenceUsers.some(u => u.id === dm.user.id) && (
                                                             <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-white dark:border-black bg-green-500"></div>
                                                         )}
@@ -3395,7 +3395,7 @@ export const Forum = () => {
                         <div className="p-2 border-t border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-black/20 backdrop-blur-md">
                             <div className="flex items-center gap-2 p-2 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
                                 <div className="group relative cursor-pointer shrink-0">
-                                    <img src={user.avatarUrl} alt="User" className="w-9 h-9 rounded-full hover:opacity-80 transition-opacity border border-gray-200 dark:border-gray-700" />
+                                    <img src={user.avatarUrl} alt="User" className="w-9 h-9 object-cover rounded-full hover:opacity-80 transition-opacity border border-gray-200 dark:border-gray-700" />
                                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-zinc-900"></div>
                                 </div>
                                 <div className="flex-1 min-w-0">
