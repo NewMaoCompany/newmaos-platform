@@ -2231,17 +2231,21 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
                 setIsAuthenticated(false);
+                setIsCreatorAuthenticated(false);
                 setUser(INITIAL_USER);
-                localStorage.removeItem('user_profile_cache');
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('user_course_mode');
-                localStorage.removeItem('forum_channels_cache');
-                localStorage.removeItem('forum_activeChannelId');
-                localStorage.removeItem('global_unread_counts');
-                sessionStorage.removeItem('streak_checked_today');
+                setNotifications(INITIAL_NOTIFICATIONS);
+                setSectionProgressMap({});
+                setFriendIds(new Set());
+                // Full storage clear to ensure clean slate
+                localStorage.clear();
+                sessionStorage.clear();
+                sessionStorage.setItem('hasDismissedLoginPrompt', 'true');
             } else if (event === 'SIGNED_IN' && session) {
                 // Always restore full profile from DB (avatar, titles, etc.)
                 restoreSession();
+            } else if (event === 'TOKEN_REFRESHED' && session) {
+                // Keep auth_token in sync with refreshed token
+                localStorage.setItem('auth_token', session.access_token);
             }
         });
 
@@ -2935,19 +2939,24 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         } catch (error) {
             console.error('Error signing out:', error);
         }
-        setIsAuthenticated(false);
-        setIsCreatorAuthenticated(false); // Reset creator access on logout
-        setHasDismissedLoginPrompt(true); // Don't show popup immediately after logout
-        sessionStorage.setItem('hasDismissedLoginPrompt', 'true'); // Persist dismissed state for this session
 
-        // COMPLETE CLEAR OF ALL STORAGE
+        // Reset app state first
+        setIsAuthenticated(false);
+        setIsCreatorAuthenticated(false);
+        setUser(INITIAL_USER);
+        setUserPoints({ balance: 0, lifetimeEarned: 0 });
+        setSectionProgressMap({});
+        setNotifications(INITIAL_NOTIFICATIONS);
+        setFriendIds(new Set());
+
+        // Clear all storage (sessionStorage.clear() already removes streak_checked_today)
         localStorage.clear();
         sessionStorage.clear();
 
-        sessionStorage.removeItem('streak_checked_today');
+        // Mark that the login prompt has been dismissed for this new session
+        sessionStorage.setItem('hasDismissedLoginPrompt', 'true');
 
-        setUser(INITIAL_USER); // Reset to empty on logout
-        window.location.reload();
+        window.location.replace(window.location.origin + '/#/');
     };
 
     const toggleCourse = (course: CourseType) => {

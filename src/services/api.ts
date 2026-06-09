@@ -3,10 +3,8 @@
  * Handles all communication with the backend server
  */
 
-// In production, force use of Railway backend to bypass broken Vercel env var or routing
-// In production, force use of Railway backend to bypass broken Vercel env var or routing
+// In production, force use of Vercel backend to bypass broken Vercel env var or routing
 const isProd = import.meta.env.PROD || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1');
-// FORCE production URL if isProd is true, ignoring VITE_API_URL to avoid misconfiguration
 // FORCE production URL if isProd is true, ignoring VITE_API_URL to avoid misconfiguration
 const API_BASE_URL = isProd
     ? 'https://newmaos-api.vercel.app/api'
@@ -450,10 +448,24 @@ export default {
             // WITH the boundary. If we manually set Content-Type to 'multipart/form-data', it might fail because of missing boundary.
             // So we should probably override the default Content-Type header to undefined/null for this request.
 
-            const token = localStorage.getItem('auth_token') ||
-                JSON.parse(localStorage.getItem(Object.keys(localStorage).find(k => k.includes('-auth-token')) || '') || '{}').access_token;
+            // Use the same robust token extraction as getAuthToken()
+            let token: string | null = null;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.includes('-auth-token')) {
+                    try {
+                        const session = localStorage.getItem(key);
+                        if (session) {
+                            const parsed = JSON.parse(session);
+                            if (parsed.access_token) { token = parsed.access_token; break; }
+                            if (parsed.currentSession?.access_token) { token = parsed.currentSession.access_token; break; }
+                        }
+                    } catch { continue; }
+                }
+            }
+            if (!token) token = localStorage.getItem('auth_token');
 
-            const res = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/upload/image`, {
+            const res = await fetch(`${API_BASE_URL}/upload/image`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

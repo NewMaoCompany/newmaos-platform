@@ -7,6 +7,14 @@ if (!supabaseUrl || !supabaseAnonKey) {
     console.warn('Supabase credentials not configured. Running in offline mode.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+    }
+});
 
 export default supabase;
+

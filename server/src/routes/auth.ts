@@ -276,9 +276,22 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
         const code = generateCode();
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
+        // Read existing metadata (registration data) so we don't wipe it on resend
+        const { data: existingRecord } = await supabaseAdmin
+            .from('verification_codes')
+            .select('metadata')
+            .eq('email', email)
+            .maybeSingle();
+
         await supabaseAdmin
             .from('verification_codes')
-            .upsert({ email, code, expires_at: expiresAt.toISOString() });
+            .upsert({ 
+                email, 
+                code, 
+                expires_at: expiresAt.toISOString(),
+                // Preserve existing registration metadata (name + password) if present
+                metadata: existingRecord?.metadata || null
+            });
 
         try {
             await sendEmail(
