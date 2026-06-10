@@ -1221,7 +1221,8 @@ export const Practice = () => {
                 isCorrect,
                 selectedOptionId: selectedAnswer,
                 timeSpentSeconds: timeSpent,
-                errorTags: isCorrect ? [] : finalErrorTags
+                errorTags: isCorrect ? [] : finalErrorTags,
+                sessionId: effectiveSectionId
             });
 
             if (result.coinsAwarded && result.coinsAwarded > 0) {
@@ -1321,7 +1322,8 @@ export const Practice = () => {
                         isCorrect: isCorrect,
                         selectedOptionId: userAnswer,
                         timeSpentSeconds: timePerQuestion,
-                        errorTags: isCorrect ? [] : finalErrorTags
+                        errorTags: isCorrect ? [] : finalErrorTags,
+                        sessionId: effectiveSectionId
                     }).then(result => {
                         if (result.coinsAwarded && result.coinsAwarded > 0) {
                             setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
@@ -1345,7 +1347,8 @@ export const Practice = () => {
                         isCorrect: false,
                         selectedOptionId: null,
                         timeSpentSeconds: timePerQuestion,
-                        errorTags: q.errorTags || []
+                        errorTags: q.errorTags || [],
+                        sessionId: effectiveSectionId
                     }).then(result => {
                         if (result.coinsAwarded && result.coinsAwarded > 0) {
                             setSessionEarnedCoins(prev => prev + result.coinsAwarded!);

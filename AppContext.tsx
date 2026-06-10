@@ -1070,7 +1070,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 p_selected_option_id: params.selectedOptionId || null,
                 p_answer_numeric: params.answerNumeric || null,
                 p_time_spent_seconds: params.timeSpentSeconds,
-                p_error_tags: params.errorTags
+                p_error_tags: params.errorTags,
+                p_session_id: params.sessionId || null
             });
 
             if (error) {

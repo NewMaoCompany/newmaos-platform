@@ -300,6 +300,7 @@ export interface SubmitAttemptParams {
   answerNumeric?: number;
   timeSpentSeconds: number;
   errorTags: string[];
+  sessionId?: string;
 }
 
 export interface SubmitAttemptResult {

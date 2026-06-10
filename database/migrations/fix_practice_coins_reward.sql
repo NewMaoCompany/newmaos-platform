@@ -9,7 +9,8 @@ CREATE OR REPLACE FUNCTION public.submit_attempt(
     p_selected_option_id TEXT DEFAULT NULL,
     p_answer_numeric NUMERIC DEFAULT NULL,
     p_time_spent_seconds NUMERIC DEFAULT 0,
-    p_error_tags TEXT[] DEFAULT NULL
+    p_error_tags TEXT[] DEFAULT NULL,
+    p_session_id TEXT DEFAULT NULL
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -31,10 +32,7 @@ BEGIN
     FROM public.question_attempts
     WHERE user_id = auth.uid() AND question_id = p_question_id::UUID;
 
-    -- 2. Check if user already answered this correctly in the past
-    SELECT COUNT(*) INTO v_prior_correct_count
-    FROM public.question_attempts
-    WHERE user_id = auth.uid() AND question_id = p_question_id::UUID AND is_correct = true;
+
 
     -- 3. Insert the new attempt
     INSERT INTO public.question_attempts (
@@ -49,9 +47,9 @@ BEGIN
     ) RETURNING id INTO v_attempt_id;
 
     -- 4. Calculate and award coins STRICTLY
-    -- If they got it right NOW, and had ZERO prior correct answers, they earn exactly 5 coins
-    IF p_is_correct = true AND v_prior_correct_count = 0 THEN
-        v_idempotency_key := 'practice_reward_' || auth.uid()::TEXT || '_' || p_question_id;
+    -- They earn exactly 5 coins for a correct answer, deduplicated by session and question
+    IF p_is_correct = true THEN
+        v_idempotency_key := 'practice_reward_' || auth.uid()::TEXT || '_' || COALESCE(p_session_id, CURRENT_DATE::TEXT) || '_' || p_question_id;
 
         -- Ensure user_points exists
         INSERT INTO public.user_points (user_id, balance, lifetime_earned)
@@ -92,5 +90,5 @@ EXCEPTION WHEN OTHERS THEN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION submit_attempt(TEXT, BOOLEAN, TEXT, NUMERIC, NUMERIC, TEXT[]) TO authenticated;
-GRANT EXECUTE ON FUNCTION submit_attempt(TEXT, BOOLEAN, TEXT, NUMERIC, NUMERIC, TEXT[]) TO service_role;
+GRANT EXECUTE ON FUNCTION submit_attempt(TEXT, BOOLEAN, TEXT, NUMERIC, NUMERIC, TEXT[], TEXT) TO authenticated;
+GRANT EXECUTE ON FUNCTION submit_attempt(TEXT, BOOLEAN, TEXT, NUMERIC, NUMERIC, TEXT[], TEXT) TO service_role;
