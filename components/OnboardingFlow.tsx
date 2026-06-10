@@ -39,8 +39,7 @@ export const OnboardingFlow: React.FC = () => {
 
             if (error) {
                 console.error("Failed to update welcome gift status:", error);
-                setIsClaiming(false);
-                return;
+                alert("Profile update failed: " + JSON.stringify(error));
             }
 
             // Award 200 points (this automatically plays animation)
@@ -60,10 +59,12 @@ export const OnboardingFlow: React.FC = () => {
                     }
                 }, 2500);
             } else {
+                alert("awardPoints failed: " + JSON.stringify(result));
                 setIsClaiming(false);
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error("Error claiming gift:", err);
+            alert("Error claiming gift: " + err.message);
             setIsClaiming(false);
         }
     };
