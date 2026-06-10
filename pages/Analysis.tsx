@@ -139,7 +139,7 @@ export const Analysis = () => {
     const {
         user, radarData, accuracyHistory, fetchAccuracyHistory,
         notifications, markNotificationRead, fetchUserPoints, userPoints, triggerCoinAnimation,
-        isPro
+        isPro, markBadgeAsRead
     } = useApp();
     const { showToast } = useToast();
     const navigate = useNavigate();
@@ -181,6 +181,7 @@ export const Analysis = () => {
         fetchStudyTimeHistory('1W');
         fetchProfileData();
         fetchPointsHistory(); // [NEW]
+        markBadgeAsRead('analysis'); // Clear top badge
     }, [user?.id]);
     // Real-time Profile Subscription (Streak Updates)
     useEffect(() => {

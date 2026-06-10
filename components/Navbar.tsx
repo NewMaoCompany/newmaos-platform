@@ -4,7 +4,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useToast } from './Toast';
 import confetti from 'canvas-confetti';
 import { supabase } from '../src/services/supabaseClient';
-import { notificationsApi } from '../src/services/api';
 import { AchievementUnlockModal } from './AchievementUnlockModal';
 import { PointsBalanceBadge, PointsCoin } from './PointsCoin';
 import { PrestigeWidget } from './PrestigeWidget';

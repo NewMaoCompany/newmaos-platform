@@ -747,7 +747,7 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
 };
 
 export const Forum = () => {
-    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markNotificationsByLink } = useApp();
+    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markNotificationsByLink, markBadgeAsRead } = useApp();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
@@ -831,6 +831,7 @@ export const Forum = () => {
             
             // Auto clear forum link notifications when entering Forum
             markNotificationsByLink('/forum');
+            markBadgeAsRead('forum'); // Clear top badge
 
             return () => clearInterval(interval);
         }

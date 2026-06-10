@@ -74,6 +74,7 @@ interface AppContextType {
         checkin: boolean;
     };
     fetchBadgeStatus: () => Promise<void>;
+    markBadgeAsRead: (type: 'analysis' | 'forum' | 'practice') => Promise<void>;
     acceptFriendRequest: (senderId: string) => Promise<{ success: boolean; message?: string }>;
     // Helper for Dashboard
     getCourseMastery: (course: CourseType) => number;
@@ -250,29 +251,91 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         checkin: false
     });
 
-    // Fetch Badges from Backend
+    // Fetch Badges from Backend Dynamically (Since no RPC exists)
     const fetchBadgeStatus = async () => {
         if (!user.id) return;
         try {
-            const { data, error } = await supabase.rpc('get_user_badges', { p_user_id: user.id });
-            if (error) throw error;
-            if (data) {
-                setNavRedDots({
-                    dashboard: data.dashboard,
-                    practice: data.practice,
-                    analysis: data.analysis,
-                    forum: data.forum,
-                    settings: data.settings,
-                    subscription: data.settings, // Settings and Subscription share the same badge logic for now
-                    checkin: data.dashboard // Check-in is mirrored on dashboard
-                });
-                // Also update local welcome gift state if backend says it's claimed
-                if (data.has_claimed_welcome_gift) {
-                    updateUser({ hasClaimedWelcomeGift: true });
-                }
+            // 1. Dashboard (Check-in)
+            // We can just rely on the existing checkinStatus, but wait, checkinStatus is fetched separately.
+            // We will fetch today's checkin explicitly just to be sure.
+            const todayStr = new Date().toISOString().split('T')[0];
+            const { data: checkinData } = await supabase
+                .from('points_ledger')
+                .select('id')
+                .eq('user_id', user.id)
+                .eq('type', 'login_streak')
+                .gte('created_at', `${todayStr}T00:00:00Z`);
+            
+            const hasCheckedIn = checkinData && checkinData.length > 0;
+
+            // 2. Settings (Pro Status)
+            const isProNow = user.subscriptionTier === 'pro';
+
+            // 3. Analysis (Check if any question attempts exist after last viewed timestamp)
+            const lastAnalysisView = user.preferences?.lastAnalysisView || '1970-01-01T00:00:00Z';
+            const { data: latestAttempt } = await supabase
+                .from('question_attempts')
+                .select('created_at')
+                .eq('user_id', user.id)
+                .gt('created_at', lastAnalysisView)
+                .limit(1);
+            
+            const hasNewAnalysis = latestAttempt && latestAttempt.length > 0;
+
+            // 4. Forum (Check for unread activities)
+            const lastForumView = user.preferences?.lastForumView || '1970-01-01T00:00:00Z';
+            const { count: forumUnreadCount } = await supabase
+                .from('activities')
+                .select('id', { count: 'exact', head: true })
+                .eq('user_id', user.id)
+                .in('type', ['forum_reply', 'forum_like', 'forum_mention'])
+                .gt('created_at', lastForumView);
+
+            // 5. Practice (Daily recommendations)
+            // If they haven't viewed practice recommendations today, show badge.
+            const lastPracticeViewStr = user.preferences?.lastPracticeView || '1970-01-01';
+            const lastPracticeViewDate = lastPracticeViewStr.split('T')[0];
+            const hasNewPractice = lastPracticeViewDate < todayStr;
+
+            setNavRedDots({
+                dashboard: !hasCheckedIn,
+                practice: hasNewPractice,
+                analysis: hasNewAnalysis,
+                forum: forumUnreadCount || 0,
+                settings: !isProNow,
+                subscription: !isProNow,
+                checkin: !hasCheckedIn
+            });
+
+            // Update local welcome gift state if it's set in backend (user.has_claimed_welcome_gift)
+            // Wait, we can fetch the user profile just in case it changed
+            const { data: profile } = await supabase.from('user_profiles').select('has_claimed_welcome_gift').eq('id', user.id).single();
+            if (profile && profile.has_claimed_welcome_gift) {
+                updateUser({ hasClaimedWelcomeGift: true });
             }
+
         } catch (err) {
-            console.error('Error fetching badge status:', err);
+            console.error('Error fetching badge status dynamically:', err);
+        }
+    };
+
+    const markBadgeAsRead = async (type: 'analysis' | 'forum' | 'practice') => {
+        if (!user.id) return;
+        try {
+            const now = new Date().toISOString();
+            const prefs = { ...(user.preferences || {}) };
+            
+            if (type === 'analysis') prefs.lastAnalysisView = now;
+            if (type === 'forum') prefs.lastForumView = now;
+            if (type === 'practice') prefs.lastPracticeView = now;
+
+            const { error } = await supabase.from('user_profiles').update({ preferences: prefs }).eq('id', user.id);
+            if (error) throw error;
+            
+            updateUser({ preferences: prefs });
+            await fetchBadgeStatus();
+        } catch (err) {
+            console.error('Error marking badge as read:', err);
         }
     };
 
@@ -2726,6 +2789,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             }
             if (data?.success) {
                 await fetchUserPoints();
+                await fetchBadgeStatus();
                 return {
                     success: true,
                     streak: data.streak,
@@ -3387,6 +3451,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             verifyAccessCode,
             navRedDots,
             fetchBadgeStatus,
+            markBadgeAsRead,
             acceptFriendRequest,
             getCourseMastery,
             getSectionsForTopic,

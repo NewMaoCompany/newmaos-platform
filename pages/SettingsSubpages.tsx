@@ -13,6 +13,7 @@ import { getUniqueTitleStyle } from '../src/utils/titleStyles';
 import { PlanetVisual } from '../components/SpaceVisuals';
 import { PrestigeWidget } from '../components/PrestigeWidget';
 import { ProGateOverlay } from '../components/ProGateOverlay';
+import { ProLockGuard } from '../components/ProLockGuard';
 
 const SubpageLayout = ({ title, children, maxWidth = "max-w-4xl" }: { title: string, children: React.ReactNode, maxWidth?: string }) => {
   const navigate = useNavigate();
@@ -349,7 +350,8 @@ export const ProfileSettings = () => {
         {/* Left Column: Edit Form */}
         <div className="flex-[3] flex flex-col gap-8 order-2 xl:order-1 w-full bg-white dark:bg-surface-dark rounded-3xl p-8">
 
-          <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${!isPro ? 'opacity-50 pointer-events-none' : ''}`}>
+          <ProLockGuard featureName="Avatar Customization">
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${!isPro ? 'opacity-50 ' : ''}`}>
             {/* 1. Avatar Section (Left) */}
             <div className="flex flex-col gap-4">
               <label className="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Avatar Image</label>
@@ -414,8 +416,8 @@ export const ProfileSettings = () => {
                     title={g.name}
                   >
                     <div className="absolute inset-0" style={{ background: g.value, clipPath: 'circle(50% at 50% 50%)' }}></div>
-                    <div className="absolute inset-0 rounded-full pointer-events-none" style={{ border: avatarColor === g.value ? '4px solid white' : '2px solid transparent' }}></div>
-                    {avatarColor === g.value && <div className="absolute inset-[-4px] rounded-full border-2 border-primary pointer-events-none"></div>}
+                    <div className="absolute inset-0 rounded-full " style={{ border: avatarColor === g.value ? '4px solid white' : '2px solid transparent' }}></div>
+                    {avatarColor === g.value && <div className="absolute inset-[-4px] rounded-full border-2 border-primary "></div>}
                   </button>
                 ))}
 
@@ -425,8 +427,8 @@ export const ProfileSettings = () => {
                     className={`w-14 h-14 rounded-full transition-all duration-300 hover:scale-110 shadow-sm relative flex items-center justify-center cursor-pointer ${!GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? 'scale-110' : ''}`}
                   >
                     <div className="absolute inset-0" style={{ background: !GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? avatarColor : 'transparent', clipPath: 'circle(50% at 50% 50%)' }}></div>
-                    <div className="absolute inset-0 rounded-full pointer-events-none" style={{ border: !GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? '4px solid white' : '2px solid rgba(156, 163, 175, 0.5)' }}></div>
-                    {!GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') && <div className="absolute inset-[-4px] rounded-full border-2 border-primary pointer-events-none"></div>}
+                    <div className="absolute inset-0 rounded-full " style={{ border: !GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? '4px solid white' : '2px solid rgba(156, 163, 175, 0.5)' }}></div>
+                    {!GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') && <div className="absolute inset-[-4px] rounded-full border-2 border-primary "></div>}
                     <span className={`material-symbols-outlined text-2xl transition-colors relative z-10 ${!GRADIENTS.find(g => g.value === avatarColor) && !avatarColor.includes('gradient') ? 'text-white drop-shadow-md' : 'text-gray-400'}`}>
                       palette
                     </span>
@@ -445,6 +447,7 @@ export const ProfileSettings = () => {
               </div>
             </div>
           </div>
+          </ProLockGuard>
 
           {!isPro && (
             <div className="mt-4 p-4 bg-primary/10 border border-primary/20 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -552,7 +555,8 @@ export const ProfileSettings = () => {
           <div className="w-full h-px bg-gray-100 dark:bg-gray-800"></div>
 
           {/* 4. Achievement Titles */}
-          <div className={`flex flex-col gap-4 ${!isPro ? 'opacity-50 pointer-events-none' : ''}`}>
+          <ProLockGuard featureName="Identity Titles">
+          <div className={`flex flex-col gap-4 ${!isPro ? 'opacity-50 ' : ''}`}>
             <div className="flex items-center justify-between mb-2">
               <label className="text-sm font-black text-gray-700 dark:text-gray-300 uppercase tracking-widest flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-xl">military_tech</span>
@@ -668,7 +672,7 @@ export const ProfileSettings = () => {
                           <div className={`absolute inset-0 rounded-full border-2 ${isUnlocked
                             ? (isEquipped ? style.border : style.border.replace('border-white/80', 'border-white/30').replace('border-white/60', 'border-white/20'))
                             : 'border-transparent'
-                            } z-30 pointer-events-none ${isEquipped ? 'ring-1 ring-white/20' : ''}`} />
+                            } z-30  ${isEquipped ? 'ring-1 ring-white/20' : ''}`} />
 
                           {/* 5. Lock Overlay */}
                           {!isUnlocked && (
@@ -677,7 +681,7 @@ export const ProfileSettings = () => {
                             </div>
                           )}
                         </button>
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 p-3 bg-gray-900 text-white text-[11px] rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all font-medium w-40 text-center z-[120] translate-y-2 group-hover:translate-y-0 border border-white/10">
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 p-3 bg-gray-900 text-white text-[11px] rounded-xl shadow-2xl opacity-0 group-hover:opacity-100  transition-all font-medium w-40 text-center z-[120] translate-y-2 group-hover:translate-y-0 border border-white/10">
                           <p className="font-bold mb-1 border-b border-white/10 pb-1">{t.name}</p>
                           <p className="opacity-80 leading-relaxed font-normal">{t.description}</p>
                           <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-gray-900"></div>
@@ -744,6 +748,7 @@ export const ProfileSettings = () => {
               </div>
             </div>
           </div>
+          </ProLockGuard>
 
           {!isPro && (
             <div className="mt-4 p-4 bg-primary/10 border border-primary/20 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -775,7 +780,7 @@ export const ProfileSettings = () => {
               <div className="bg-white dark:bg-surface-dark rounded-3xl p-6 shadow-xl w-full border border-gray-100 dark:border-gray-700/50 relative overflow-hidden transition-all duration-300 group hover:shadow-2xl">
 
                 <div
-                  className="absolute top-0 left-0 w-full h-32 pointer-events-none transition-all duration-500 ease-in-out"
+                  className="absolute top-0 left-0 w-full h-32  transition-all duration-500 ease-in-out"
                   style={{
                     background: avatarColor,
                     maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',

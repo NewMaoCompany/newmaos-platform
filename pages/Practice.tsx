@@ -64,7 +64,7 @@ export const Practice = () => {
         isPro,
         sections, incorrectQuestionIds, resetSectionProgress, softResetSectionProgress, getSectionProgressData,
         fetchAllUserProgress, logUserActivity, getUserActivities,
-        awardPoints, triggerCoinAnimation, userPoints, pointsBalanceRef
+        awardPoints, triggerCoinAnimation, userPoints, pointsBalanceRef, markBadgeAsRead
     } = useApp();
     const navigate = useNavigate();
     const { showToast } = useToast();
@@ -115,6 +115,7 @@ export const Practice = () => {
         if (viewState === 'practice') {
             sessionStartTimeRef.current = Date.now();
         }
+        markBadgeAsRead('practice');
     }, [viewState]);
 
     // UNIQUE ID LOGIC: Prefix unit_test with topic to avoid collisions across units
@@ -775,12 +776,40 @@ export const Practice = () => {
 
                 if (!recs || recs.length === 0) {
                     if (isMounted) {
-                        const localQs = getSummaryQuestions();
-                        let selectedQs = [];
+                        let localQs = getSummaryQuestions();
+                        
+                        // If no local questions found, try fetching directly from DB
+                        if (localQs.length === 0) {
+                            console.log('[Practice] RPC empty + getSummaryQuestions empty, trying direct DB fetch...');
+                            let dbQuery = supabase
+                                .from('questions')
+                                .select('id, title, topic, topic_id, sub_topic_id, section_id, course, status, type, difficulty, prompt, prompt_type, options, correct_option_id, explanation, calculator_allowed, latex')
+                                .eq('topic', topicParam)
+                                .eq('status', 'published');
+                            if (subTopicId && subTopicId !== 'unit_test') {
+                                dbQuery = dbQuery.eq('sub_topic_id', subTopicId);
+                            } else if (subTopicId === 'unit_test') {
+                                dbQuery = dbQuery.eq('sub_topic_id', 'unit_test');
+                            }
+                            const { data: dbQs, error: dbErr } = await dbQuery.limit(15);
+                            if (!dbErr && dbQs && dbQs.length > 0) {
+                                localQs = dbQs.map(q => ({
+                                    ...q,
+                                    subTopicId: q.sub_topic_id || q.section_id,
+                                    topicId: q.topic_id || q.topic,
+                                    sectionId: q.section_id || q.sub_topic_id,
+                                    correctOptionId: q.correct_option_id,
+                                    calculatorAllowed: q.calculator_allowed,
+                                })) as Question[];
+                                console.log('[Practice] Direct DB fallback found:', localQs.length, 'questions');
+                            }
+                        }
+
+                        let selectedQs: Question[] = [];
                         if (subTopicId === 'unit_test') {
                             selectedQs = [...localQs].sort(() => 0.5 - Math.random()).slice(0, 15);
                         } else if (subTopicId) {
-                            selectedQs = localQs.slice(0, 5);
+                            selectedQs = localQs.slice(0, 10);
                         } else {
                             selectedQs = localQs.slice(0, 10);
                         }
@@ -794,11 +823,20 @@ export const Practice = () => {
                 const qIds = recs.map((r: any) => r.question_id);
                 const existingMap = new Map([...allQuestions, ...localQuestions].map(q => [q.id, q]));
                 const missingIds = qIds.filter((id: string) => !existingMap.has(id));
+                
+                console.log('[Practice Debug] RPC recs:', recs.length, 'qIds:', qIds, 'missingIds:', missingIds.length);
 
                 if (missingIds.length > 0) {
                     const { data: fetchedData } = await supabase.from('questions').select('*').in('id', missingIds);
                     if (fetchedData) {
-                        fetchedData.forEach(q => existingMap.set(q.id, q as Question));
+                        fetchedData.forEach(q => existingMap.set(q.id, { 
+                            ...q, 
+                            subTopicId: q.sub_topic_id || q.section_id,
+                            topicId: q.topic_id || q.topic,
+                            sectionId: q.section_id || q.sub_topic_id,
+                            correctOptionId: q.correct_option_id,
+                            calculatorAllowed: q.calculator_allowed,
+                        } as Question));
                     }
                 }
 
@@ -808,12 +846,14 @@ export const Practice = () => {
 
                     for (const r of recs) {
                         const q = existingMap.get(r.question_id);
+                        console.log('[Practice Debug] Looking up:', r.question_id, 'found:', !!q);
                         if (q) {
                             finalQuestions.push(q as Question);
                             reasonsMap[q.id] = typeof r.reason_detail === 'string' ? JSON.parse(r.reason_detail) : r.reason_detail;
                         }
                     }
 
+                    console.log('[Practice Debug] finalQuestions:', finalQuestions.length);
                     setQuestions(finalQuestions);
                     setRecommendationReasons(reasonsMap);
                 }
@@ -1642,7 +1682,7 @@ export const Practice = () => {
         // Only award accuracy bonus if they actually earned base coins (meaning they learned something new)
         if (finalScore >= 80 && newlyEarnedBaseCoins > 0) {
             const accuracyBonus = newlyEarnedBaseCoins; // 2x multiplier basically
-            const uniqueBonusKey = `practice_accuracy_${algorithmicSessionId || 'default'}_${Date.now()}`;
+            const uniqueBonusKey = `practice_accuracy_${user?.id}_${algorithmicSessionId || 'default'}_${Date.now()}`;
             const bonusRes = await awardPoints(accuracyBonus, 'accuracy_bonus', algorithmicSessionId || 'bonus', '80% Accuracy Bonus! (2x)', uniqueBonusKey, window.innerWidth / 2, window.innerHeight / 2, true);
             if (bonusRes.success) {
                 totalSessionCoins += accuracyBonus;
@@ -1653,7 +1693,7 @@ export const Practice = () => {
         if (subTopicId === 'unit_test') {
             // 50 Points for completing Unit Test
             const unitTestBonus = 50;
-            const uniqueUnitTestKey = `practice_unittest_${topicParam || 'default'}_${Date.now()}`;
+            const uniqueUnitTestKey = `practice_unittest_${user?.id}_${topicParam || 'default'}_${Date.now()}`;
             const testRes = await awardPoints(unitTestBonus, 'unit_test_complete', topicParam, 'Unit Test Completed', uniqueUnitTestKey, window.innerWidth / 2, window.innerHeight / 2, true);
             if (testRes.success) {
                 totalSessionCoins += unitTestBonus;
@@ -1662,7 +1702,7 @@ export const Practice = () => {
             // 200 Points for 100% Unit Mastery
             if (finalScore === 100) {
                 const masteryBonus = 200;
-                const uniqueMasteryKey = `practice_mastery_${topicParam || 'default'}`; // NO Date.now()! STRICTLY FIRST-TIME MASTERY!
+                const uniqueMasteryKey = `practice_mastery_${user?.id}_${topicParam || 'default'}`; // NO Date.now()! STRICTLY FIRST-TIME MASTERY!
                 
                 // Check if mastery bonus was already given
                 const { data: existingMastery } = await supabase
@@ -2034,6 +2074,10 @@ When you are ready to test your knowledge, click **Start Practice** below. Good 
                             filtered: {questions.length}<br />
                             cleanTopic: {cleanTopic}<br />
                             Example Q Topics: {allQuestions?.slice(0, 3).map(q => q.topic).join(', ')}<br />
+                            Example Q SubTopicIds: {allQuestions?.slice(0, 3).map(q => q.subTopicId).join(', ')}<br />
+                            Example Q Courses: {allQuestions?.slice(0, 3).map(q => q.course).join(', ')}<br />
+                            BothLimits count: {allQuestions?.filter(q => q.topic === 'Both_Limits').length}<br />
+                            BothLimits+1.2: {allQuestions?.filter(q => q.topic === 'Both_Limits' && q.subTopicId === '1.2').length}<br />
                             User Course: {user.currentCourse}
                         </div>
                     </p>

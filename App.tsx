@@ -51,6 +51,7 @@ import { StreakModal } from './components/StreakModal';
 import { CreatorGiftModal } from './components/CreatorGiftModal';
 import { AchievementPopupManager } from './components/AchievementPopupManager';
 import { OnboardingFlow } from './components/OnboardingFlow';
+import { ProGateOverlay } from './components/ProGateOverlay';
 
 // Loading fallback for lazy routes
 const LazyFallback = () => (
@@ -204,11 +205,11 @@ const AppRoutes = () => {
         {isAuthenticated && (
           <>
             <PageLayer active={isAnalysis} zIndex={isAnalysis ? 40 : 10}>
-              <Analysis />
+              {(!isPro && isAnalysis) ? <ProGateOverlay featureName="Analysis" /> : <Analysis />}
             </PageLayer>
 
             <PageLayer active={isForum} zIndex={isForum ? 50 : 10}>
-              <Forum />
+              {(!isPro && isForum) ? <ProGateOverlay featureName="Forum" /> : <Forum />}
             </PageLayer>
 
             <PageLayer active={isSettings} zIndex={isSettings ? 40 : 10}>
