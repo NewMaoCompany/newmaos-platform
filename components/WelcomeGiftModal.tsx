@@ -114,6 +114,7 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed })
                         const rect = giftIcon.getBoundingClientRect();
                         startX = rect.left + rect.width / 2;
                         startY = rect.top + rect.height / 2;
+                    }
                     triggerCoinAnimation(200, startX, startY);
                     fetchUserPoints(); // Add this line to update the balance immediately
                     fireClaimConfetti();
