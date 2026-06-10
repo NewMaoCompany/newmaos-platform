@@ -2754,6 +2754,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     equipped_title_id: newState.equippedTitleId,
                     email_notifications: newState.preferences?.emailNotifications,
                     sound_effects: newState.preferences?.soundEffects,
+                    has_claimed_welcome_gift: newState.hasClaimedWelcomeGift,
                     // Prestige and titles
                     selected_prestige_level: newState.selectedPrestigeLevel,
                     show_prestige: newState.showPrestige,

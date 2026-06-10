@@ -31,16 +31,9 @@ export const OnboardingFlow: React.FC = () => {
         const y = rect.top + rect.height / 2;
 
         try {
-            // Update backend status first
-            const { error } = await supabase
-                .from('user_profiles')
-                .update({ has_claimed_welcome_gift: true })
-                .eq('id', user.id);
+            // Remove direct supabase.update which fails due to RLS.
+            // updateUser() context will sync it to backend API securely.
 
-            if (error) {
-                console.error("Failed to update welcome gift status:", error);
-                alert("Profile update failed: " + JSON.stringify(error));
-            }
 
             // Award 200 points (this automatically plays animation)
             const result = await awardPoints(200, 'manual_adjustment', 'onboarding_gift', 'Welcome Gift', undefined, x, y);
