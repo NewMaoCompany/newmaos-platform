@@ -172,7 +172,10 @@ const RecentSessionCard = ({ session, navigate }: { session: any, navigate: any 
     const reviewHistory = (session.data?.summaryHistory || []).filter((h: any) => h.type !== 'first_attempt');
     const hasHistory = reviewHistory.length > 0;
     const mode = session.data?.sessionMode || 'Adaptive';
-    const displayTopic = session.data?.sessionTopic || session.title || session.section_id.replace(/^([A-Z]{2}_)/, '');
+    const { sections } = useApp();
+    const foundSection = Object.values(sections || {}).flat().find((s: any) => s.id === session.section_id);
+    const resolvedTitle = foundSection?.title || session.title || session.data?.sessionTopic || session.section_id.replace(/^([A-Z]{2}_)/, '');
+    const displayTopic = resolvedTitle;
     const cleanTopic = displayTopic.includes('_') ? displayTopic.split('_')[1] : displayTopic;
     const totalQ = session.data?.questionIds?.length || session.total_questions || 10;
 
