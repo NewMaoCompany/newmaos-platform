@@ -88,32 +88,6 @@ const PageLayer = ({ active, children, zIndex = 0 }: { active: boolean; children
   </div>
 );
 
-const AutoReadHandler = () => {
-  const location = useLocation();
-  const { notifications, markNotificationRead, checkinStatus } = useApp();
-
-  useEffect(() => {
-    const currentPath = location.pathname + location.search;
-
-    // Find unread notifications whose link matches current path
-    const matchingNotifs = notifications.filter(n =>
-      n.unread &&
-      (n.link === currentPath || (n.link === '/dashboard' && location.pathname === '/') || (n.link === '/checkin' && location.pathname.startsWith('/checkin')))
-    );
-
-    // Also include ALL check-in reminders if already checked in
-    const checkinNotifs = checkinStatus === 'checked_in'
-      ? notifications.filter(n => n.unread && (n.link?.includes('/checkin') || n.text?.includes('Daily Check-in')))
-      : [];
-
-    const toMark = [...new Map([...matchingNotifs, ...checkinNotifs].map(n => [n.id, n])).values()];
-    toMark.forEach(n => {
-      markNotificationRead(n.id);
-    });
-  }, [location.pathname, location.search, notifications, markNotificationRead, checkinStatus]);
-
-  return null;
-};
 
 const AppRoutes = () => {
   const { isAuthLoading, isAuthenticated, user, recordLoginStreak, setIsStreakModalOpen } = useApp();
@@ -299,7 +273,6 @@ const App = () => {
       <ErrorBoundary>
         <AppProvider>
           <Router>
-            <AutoReadHandler />
             <CoinCollector />
             <OnboardingFlow />
             <AppRoutes />

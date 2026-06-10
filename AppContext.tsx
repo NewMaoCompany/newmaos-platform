@@ -240,6 +240,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     // Lifted Error Notebook Cache for 0-latency loading
     const [wrongAnswersCache, setWrongAnswersCache] = useState<{ items: any[], lastFetched: number }>({ items: [], lastFetched: 0 });
 
+    const [notifications, setNotifications] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS);
+
     // Persistent Red Dots State (Fetched from Backend RPC)
     const [navRedDots, setNavRedDots] = useState({
         dashboard: false,
