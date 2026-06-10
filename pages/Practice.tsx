@@ -124,7 +124,9 @@ export const Practice = () => {
         effectiveState?.sessionId || `algo_${sessionMode}_${Date.now()}`
     );
     const effectiveSectionId = subTopicId === 'unit_test' ? `${topicParam}_unit_test` : (subTopicId || algorithmicSessionId);
-
+    
+    // Check if this is an algorithmic practice session (no specific subTopicId)
+    const isAlgorithmicPractice = !subTopicId;
 
     // -------------------------------------------------------------------------
     // REFACTOR: Derive Static Data Synchronously to prevent content mismatch flicker
@@ -1168,19 +1170,21 @@ export const Practice = () => {
         const timeSpent = Math.round((Date.now() - startTime) / 1000);
 
         try {
-            const result = await submitAttempt({
-                questionId: question.id,
-                isCorrect: false,
-                selectedOptionId: null,
-                timeSpentSeconds: timeSpent,
-                errorTags: question.errorTags || []
-            });
+            if (!isAlgorithmicPractice) {
+                const result = await submitAttempt({
+                    questionId: question.id,
+                    isCorrect: false,
+                    selectedOptionId: null,
+                    timeSpentSeconds: timeSpent,
+                    errorTags: question.errorTags || []
+                });
 
-            if (result.coinsAwarded && result.coinsAwarded > 0) {
-                setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
-                triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
-                setFloatingReward({ amount: result.coinsAwarded, id: Date.now() });
-                setTimeout(() => setFloatingReward(null), 2000);
+                if (result.coinsAwarded && result.coinsAwarded > 0) {
+                    setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
+                    triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
+                    setFloatingReward({ amount: result.coinsAwarded, id: Date.now() });
+                    setTimeout(() => setFloatingReward(null), 2000);
+                }
             }
         } catch (error) {
             console.error('Failed to submit "show answer" attempt:', error);
@@ -1216,27 +1220,29 @@ export const Practice = () => {
             const finalErrorTags = [...(question.errorTags || [])];
             if (optErrorTag) finalErrorTags.push(optErrorTag);
 
-            const result = await submitAttempt({
-                questionId: question.id,
-                isCorrect,
-                selectedOptionId: selectedAnswer,
-                timeSpentSeconds: timeSpent,
-                errorTags: isCorrect ? [] : finalErrorTags,
-                sessionId: effectiveSectionId
-            });
+            if (!isAlgorithmicPractice) {
+                const result = await submitAttempt({
+                    questionId: question.id,
+                    isCorrect,
+                    selectedOptionId: selectedAnswer,
+                    timeSpentSeconds: timeSpent,
+                    errorTags: isCorrect ? [] : finalErrorTags,
+                    sessionId: effectiveSectionId
+                });
 
-            if (result.coinsAwarded && result.coinsAwarded > 0) {
-                setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
-                triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
-                setFloatingReward({ amount: result.coinsAwarded, id: Date.now() });
-                setTimeout(() => setFloatingReward(null), 2000);
-            }
+                if (result.coinsAwarded && result.coinsAwarded > 0) {
+                    setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
+                    triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
+                    setFloatingReward({ amount: result.coinsAwarded, id: Date.now() });
+                    setTimeout(() => setFloatingReward(null), 2000);
+                }
 
-            if (!result.success) {
-                console.error('Submission failed result:', result);
-                console.error(`Submission failed. Error: ${result.error || 'Unknown'}`);
-            } else {
-                console.log('Submission successful:', result);
+                if (!result.success) {
+                    console.error('Submission failed result:', result);
+                    console.error(`Submission failed. Error: ${result.error || 'Unknown'}`);
+                } else {
+                    console.log('Submission successful:', result);
+                }
             }
         } catch (error: any) {
             console.error('Failed to submit attempt:', error);
@@ -1310,8 +1316,8 @@ export const Practice = () => {
                 // Update local visual state
                 localResults[q.id] = isCorrect ? 'correct' : 'incorrect';
 
-                // Only submit if NOT already submitted individually
-                if (!alreadySubmitted) {
+                // Only submit if NOT already submitted individually and NOT algorithmic
+                if (!alreadySubmitted && !isAlgorithmicPractice) {
                     const selectedOpt = q.options.find(o => o.id === userAnswer);
                     const optErrorTag = selectedOpt?.errorTagId;
                     const finalErrorTags = [...(q.errorTags || [])];
@@ -1340,8 +1346,8 @@ export const Practice = () => {
                 // Unanswered treated as incorrect visually AND submitted as wrong attempt
                 localResults[q.id] = 'incorrect';
 
-                // Only submit if NOT already submitted individually
-                if (!alreadySubmitted) {
+                // Only submit if NOT already submitted individually and NOT algorithmic
+                if (!alreadySubmitted && !isAlgorithmicPractice) {
                     const promise = submitAttempt({
                         questionId: q.id,
                         isCorrect: false,
@@ -1698,6 +1704,30 @@ export const Practice = () => {
             }
         }
         
+        // Algorithmic Daily Practice Bonus (20 coins max once per day)
+        if (isAlgorithmicPractice && questions.length > 0) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            const algoDailyKey = `algo_daily_${user?.id}_${todayStr}`;
+            
+            try {
+                // Check if user already got it today
+                const { data: existingAlgoDaily } = await supabase
+                    .from('points_ledger')
+                    .select('idempotency_key')
+                    .eq('idempotency_key', algoDailyKey)
+                    .maybeSingle();
+                    
+                if (!existingAlgoDaily) {
+                    const algoBonus = 20;
+                    const algoRes = await awardPoints(algoBonus, 'manual_adjustment', 'Algorithmic', 'Daily Algorithmic Practice', algoDailyKey, window.innerWidth / 2, window.innerHeight / 2, true);
+                    if (algoRes.success) {
+                        setSessionEarnedCoins(prev => prev + algoBonus);
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to process algorithmic daily bonus', err);
+            }
+        }
 
         setShowSummary(true);
     };

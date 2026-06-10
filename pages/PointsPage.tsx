@@ -221,6 +221,7 @@ export const PointsPage = () => {
                             onAction={() => navigate('/practice')}
                             details={[
                                 "Earn exactly 5 NMS Points for each question you answer correctly for the first time.",
+                                "Complete a daily Algorithmic Choice practice session: earn 20 NMS Points (once per day).",
                                 "Complete an entire Unit Test for the first time: earn 50 NMS Points.",
                                 "Achieve first-time Unit Mastery (100%): earn 200 NMS Points."
                             ]}
