@@ -20,7 +20,7 @@ const getAuthenticatedClient = (req: Request) => {
 // GET /api/questions - Get questions with optional filters
 router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
-        const { course, topic, subTopicId, difficulty, limit = 10000 } = req.query;
+        const { course, topic, subTopicId, difficulty, limit = 10000, ids } = req.query;
 
         // Use Admin client to bypass RLS issues on production
         // and manually enforce security logic below.
@@ -40,6 +40,14 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
             `)
             .order('created_at', { ascending: true })
             .limit(Number(limit));
+
+        // Filter by specific IDs (for hydration after RPC recommendations)
+        if (ids) {
+            const idList = String(ids).split(',').map(id => id.trim()).filter(Boolean);
+            if (idList.length > 0) {
+                query = query.in('id', idList);
+            }
+        }
 
         if (course) {
             query = query.or(`course.eq.${course},course.eq.Both`);

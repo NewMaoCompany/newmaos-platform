@@ -751,18 +751,29 @@ export const Practice = () => {
                     }
                 }
 
-                // --- NEW: Pro Limit Enforcement ---
+                // Pro Limit Enforcement
                 if (!isPro) {
-                    const { data: limitCheck, error: limitErr } = await supabase.rpc('check_daily_practice_limit');
+                    const { data: limitCheck } = await supabase.rpc('check_daily_practice_limit');
                     if (limitCheck && !limitCheck.allowed) {
                         if (isMounted) {
                             setShowProLimitModal(true);
                             setIsLoadingQuestions(false);
                             setQuestions([]);
                         }
-                        return; // Block fetching
+                        return;
                     }
                 }
+
+                // Helper: fetch via API server (uses admin key, bypasses RLS)
+                const fetchViaApi = async (params: Record<string, any>): Promise<Question[]> => {
+                    try {
+                        const result = await questionsApi.getQuestions(params);
+                        return (result || []) as Question[];
+                    } catch (e) {
+                        console.warn('[Practice] API fetch failed:', e);
+                        return [];
+                    }
+                };
 
                 const { data: recs, error } = await supabase.rpc('generate_practice_recommendations', {
                     p_user_id: user.id,
@@ -775,69 +786,34 @@ export const Practice = () => {
                 if (error) throw error;
 
                 if (!recs || recs.length === 0) {
+                    // RPC returned nothing — fetch directly via API
+                    console.log('[Practice] RPC empty, fetching via API...');
+                    const directQs = await fetchViaApi({
+                        topic: topicParam,
+                        ...(subTopicId && subTopicId !== 'unit_test' ? { subTopicId } : {}),
+                        limit: 15,
+                    });
                     if (isMounted) {
-                        let localQs = getSummaryQuestions();
-                        
-                        // If no local questions found, try fetching directly from DB
-                        if (localQs.length === 0) {
-                            console.log('[Practice] RPC empty + getSummaryQuestions empty, trying direct DB fetch...');
-                            let dbQuery = supabase
-                                .from('questions')
-                                .select('id, title, topic, topic_id, sub_topic_id, section_id, course, status, type, difficulty, prompt, prompt_type, options, correct_option_id, explanation, calculator_allowed, latex')
-                                .eq('topic', topicParam)
-                                .eq('status', 'published');
-                            if (subTopicId && subTopicId !== 'unit_test') {
-                                dbQuery = dbQuery.eq('sub_topic_id', subTopicId);
-                            } else if (subTopicId === 'unit_test') {
-                                dbQuery = dbQuery.eq('sub_topic_id', 'unit_test');
-                            }
-                            const { data: dbQs, error: dbErr } = await dbQuery.limit(15);
-                            if (!dbErr && dbQs && dbQs.length > 0) {
-                                localQs = dbQs.map(q => ({
-                                    ...q,
-                                    subTopicId: q.sub_topic_id || q.section_id,
-                                    topicId: q.topic_id || q.topic,
-                                    sectionId: q.section_id || q.sub_topic_id,
-                                    correctOptionId: q.correct_option_id,
-                                    calculatorAllowed: q.calculator_allowed,
-                                })) as Question[];
-                                console.log('[Practice] Direct DB fallback found:', localQs.length, 'questions');
-                            }
-                        }
-
-                        let selectedQs: Question[] = [];
-                        if (subTopicId === 'unit_test') {
-                            selectedQs = [...localQs].sort(() => 0.5 - Math.random()).slice(0, 15);
-                        } else if (subTopicId) {
-                            selectedQs = localQs.slice(0, 10);
-                        } else {
-                            selectedQs = localQs.slice(0, 10);
-                        }
-                        setQuestions(selectedQs);
+                        const selected = subTopicId === 'unit_test'
+                            ? [...directQs].sort(() => 0.5 - Math.random()).slice(0, 15)
+                            : directQs.slice(0, 10);
+                        setQuestions(selected);
                         setIsLoadingQuestions(false);
                     }
                     return;
                 }
 
-                // Hydrate details
+                // Hydrate RPC results using cache first, then API for misses
                 const qIds = recs.map((r: any) => r.question_id);
                 const existingMap = new Map([...allQuestions, ...localQuestions].map(q => [q.id, q]));
                 const missingIds = qIds.filter((id: string) => !existingMap.has(id));
-                
-                console.log('[Practice Debug] RPC recs:', recs.length, 'qIds:', qIds, 'missingIds:', missingIds.length);
+
+                console.log('[Practice] RPC recs:', recs.length, 'cache hits:', qIds.length - missingIds.length, 'misses:', missingIds.length);
 
                 if (missingIds.length > 0) {
-                    const { data: fetchedData } = await supabase.from('questions').select('*').in('id', missingIds);
-                    if (fetchedData) {
-                        fetchedData.forEach(q => existingMap.set(q.id, { 
-                            ...q, 
-                            subTopicId: q.sub_topic_id || q.section_id,
-                            topicId: q.topic_id || q.topic,
-                            sectionId: q.section_id || q.sub_topic_id,
-                            correctOptionId: q.correct_option_id,
-                            calculatorAllowed: q.calculator_allowed,
-                        } as Question));
-                    }
+                    // Fetch missing IDs via API server (admin key, bypasses RLS)
+                    const fetched = await fetchViaApi({ ids: missingIds, limit: missingIds.length + 1 });
+                    fetched.forEach(q => existingMap.set(q.id, q));
                 }
 
                 if (isMounted) {
@@ -846,61 +822,45 @@ export const Practice = () => {
 
                     for (const r of recs) {
                         const q = existingMap.get(r.question_id);
-                        console.log('[Practice Debug] Looking up:', r.question_id, 'found:', !!q);
                         if (q) {
                             finalQuestions.push(q as Question);
-                            reasonsMap[q.id] = typeof r.reason_detail === 'string' ? JSON.parse(r.reason_detail) : r.reason_detail;
+                            try {
+                                reasonsMap[q.id] = typeof r.reason_detail === 'string' ? JSON.parse(r.reason_detail) : r.reason_detail;
+                            } catch { reasonsMap[q.id] = {}; }
                         }
                     }
 
-                    console.log('[Practice Debug] finalQuestions:', finalQuestions.length);
+                    console.log('[Practice] finalQuestions:', finalQuestions.length);
 
-                    // If RPC returned IDs but none found in allQuestions cache, fetch directly
-                    if (finalQuestions.length === 0 && qIds.length > 0) {
-                        console.log('[Practice] RPC IDs not in cache, fetching directly by ID...');
-                        const { data: directFetch } = await supabase
-                            .from('questions')
-                            .select('id, title, topic, topic_id, sub_topic_id, section_id, course, status, type, difficulty, prompt, prompt_type, options, correct_option_id, explanation, calculator_allowed, latex')
-                            .in('id', qIds)
-                            .eq('status', 'published');
-                        if (directFetch && directFetch.length > 0) {
-                            const mapped = directFetch.map(q => ({
-                                ...q,
-                                subTopicId: q.sub_topic_id || q.section_id,
-                                topicId: q.topic_id || q.topic,
-                                sectionId: q.section_id || q.sub_topic_id,
-                                correctOptionId: q.correct_option_id,
-                                calculatorAllowed: q.calculator_allowed,
-                            })) as Question[];
-                            setQuestions(mapped);
-                        } else {
-                            // Last resort: get any questions for this topic+subtopic
-                            let dbQuery = supabase
-                                .from('questions')
-                                .select('id, title, topic, topic_id, sub_topic_id, section_id, course, status, type, difficulty, prompt, prompt_type, options, correct_option_id, explanation, calculator_allowed, latex')
-                                .eq('topic', topicParam)
-                                .eq('status', 'published');
-                            if (subTopicId && subTopicId !== 'unit_test') dbQuery = dbQuery.eq('sub_topic_id', subTopicId);
-                            const { data: fallbackQs } = await dbQuery.limit(10);
-                            const fallbackMapped = (fallbackQs || []).map(q => ({
-                                ...q,
-                                subTopicId: q.sub_topic_id || q.section_id,
-                                topicId: q.topic_id || q.topic,
-                                sectionId: q.section_id || q.sub_topic_id,
-                                correctOptionId: q.correct_option_id,
-                                calculatorAllowed: q.calculator_allowed,
-                            })) as Question[];
-                            setQuestions(fallbackMapped);
-                        }
+                    if (finalQuestions.length === 0) {
+                        // All RPC IDs still not found — last resort: fetch by topic+subtopic via API
+                        console.log('[Practice] Hydration failed, last resort API fetch...');
+                        const fallback = await fetchViaApi({
+                            topic: topicParam,
+                            ...(subTopicId && subTopicId !== 'unit_test' ? { subTopicId } : {}),
+                            limit: 10,
+                        });
+                        setQuestions(fallback);
                     } else {
                         setQuestions(finalQuestions);
                     }
                     setRecommendationReasons(reasonsMap);
                 }
             } catch (e) {
-                console.error('Recommendations Engine Failed:', e);
-                // Fallback to local if engine fails
-                if (isMounted) setQuestions(getSummaryQuestions().slice(0, 10)); // Just fallback to top 10
+                console.error('[Practice] Engine failed:', e);
+                if (isMounted) {
+                    // Final catch fallback via API
+                    try {
+                        const fallback = await questionsApi.getQuestions({
+                            topic: topicParam,
+                            ...(subTopicId && subTopicId !== 'unit_test' ? { subTopicId } : {}),
+                            limit: 10,
+                        }) as Question[];
+                        setQuestions(fallback || []);
+                    } catch {
+                        setQuestions([]);
+                    }
+                }
             } finally {
                 if (isMounted) setIsLoadingQuestions(false);
             }

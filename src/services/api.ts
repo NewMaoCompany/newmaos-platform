@@ -225,6 +225,7 @@ export const questionsApi = {
         subTopicId?: string;
         difficulty?: number;
         limit?: number;
+        ids?: string[];
     }) {
         const searchParams = new URLSearchParams();
         if (params?.course) searchParams.set('course', params.course);
@@ -232,16 +233,10 @@ export const questionsApi = {
         if (params?.subTopicId) searchParams.set('subTopicId', params.subTopicId);
         if (params?.difficulty) searchParams.set('difficulty', String(params.difficulty));
         if (params?.limit) searchParams.set('limit', String(params.limit));
+        if (params?.ids && params.ids.length > 0) searchParams.set('ids', params.ids.join(','));
 
         const queryString = searchParams.toString();
         const response = await apiRequest<any[]>(`/questions${queryString ? `?${queryString}` : ''}`);
-        if (response && response.length > 0) {
-            console.log('API Questions Debug [0]:', {
-                id: response[0].id,
-                title: response[0].title,
-                status: response[0].status
-            });
-        }
         return response;
     },
 
