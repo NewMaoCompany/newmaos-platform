@@ -202,12 +202,11 @@ export const PointsPage = () => {
                             actionIcon="arrow_forward"
                             onAction={() => navigate('/checkin')}
                             details={[
-                                "Day 1 check-in: earn 10 NMS Points",
-                                "Day 2 check-in: earn 20 NMS Points",
-                                "Day 3 check-in: earn 30 NMS Points",
-                                "Day 4 and beyond: earn 50 NMS Points per day",
-                                "Complete a 7-day streak: bonus +100 NMS Points",
-                                "If your streak breaks, the daily reward resets back to Day 1",
+                                "Base reward starts at 10 points and increases by 5 every 7 days (up to 30 points).",
+                                "Daily multiplier starts at 1.0x and increases by 0.1x every consecutive day (up to 2.0x).",
+                                "Your total reward = Base Reward × Daily Multiplier.",
+                                "Keep your streak alive to maximize both your base and multiplier!",
+                                "If your streak breaks, your daily reward resets to 10 points."
                             ]}
                         />
 
@@ -221,11 +220,9 @@ export const PointsPage = () => {
                             actionIcon="arrow_forward"
                             onAction={() => navigate('/practice')}
                             details={[
-                                "Earn 5 NMS Points for each correct answer in a practice session",
-                                "Accuracy bonus: achieve 80%+ accuracy to get a 2x point multiplier",
-                                "Complete an entire Unit Test: earn 50 NMS Points",
-                                "Achieve first-time Unit Mastery (100%): earn 200 NMS Points",
-                                "Higher difficulty questions give slightly more points",
+                                "Earn exactly 5 NMS Points for each question you answer correctly for the first time.",
+                                "Complete an entire Unit Test for the first time: earn 50 NMS Points.",
+                                "Achieve first-time Unit Mastery (100%): earn 200 NMS Points."
                             ]}
                         />
 
