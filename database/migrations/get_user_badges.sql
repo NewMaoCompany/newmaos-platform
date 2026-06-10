@@ -31,13 +31,17 @@ BEGIN
         v_practice_badge := false;
     END IF;
 
-    -- 4. Analysis Badge: has new question attempts since last analysis view (within 24h)
-    SELECT EXISTS (
-        SELECT 1 FROM public.question_attempts
-        WHERE user_id = p_user_id
-        AND created_at > COALESCE(v_profile.last_analysis_view_time, '1970-01-01'::TIMESTAMPTZ)
-        AND created_at >= NOW() - INTERVAL '24 hours'
-    ) INTO v_analysis_badge;
+    -- 4. Analysis Badge: has new question attempts since last analysis view, but ONLY refreshes at 00:00
+    IF COALESCE(v_profile.last_analysis_view_time, '1970-01-01'::TIMESTAMPTZ) >= CURRENT_DATE THEN
+        v_analysis_badge := false;
+    ELSE
+        SELECT EXISTS (
+            SELECT 1 FROM public.question_attempts
+            WHERE user_id = p_user_id
+            AND created_at > COALESCE(v_profile.last_analysis_view_time, '1970-01-01'::TIMESTAMPTZ)
+            AND created_at < CURRENT_DATE
+        ) INTO v_analysis_badge;
+    END IF;
 
     -- 5. Forum Badge: unread notifications (chats/channels) + unread activities
     SELECT COALESCE(json_object_agg(id, cnt), '{}'::JSON) INTO v_forum_details

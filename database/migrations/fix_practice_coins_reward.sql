@@ -21,7 +21,11 @@ DECLARE
     v_prior_correct_count INT;
     v_coins_awarded INT := 0;
     v_idempotency_key TEXT;
+    v_error_tags_safe UUID[];
 BEGIN
+    -- Handle potentially problematic TEXT[] cast
+    -- (We don't do this here directly, just let insert use COALESCE)
+
     -- 1. Check how many attempts exist
     SELECT COUNT(*) + 1 INTO v_attempt_no
     FROM public.question_attempts
@@ -41,7 +45,7 @@ BEGIN
         auth.uid(), p_question_id::UUID, p_is_correct,
         p_selected_option_id, p_answer_numeric,
         COALESCE(p_time_spent_seconds, 0),
-        COALESCE(p_error_tags, '{}')
+        COALESCE(p_error_tags, '{}'::TEXT[])
     ) RETURNING id INTO v_attempt_id;
 
     -- 4. Calculate and award coins STRICTLY
@@ -56,8 +60,9 @@ BEGIN
 
         -- Insert ledger entry. If it conflicts (somehow already rewarded), do nothing.
         BEGIN
+            -- Using 'practice_complete' as type since 'earned' is not in CHECK constraint
             INSERT INTO public.points_ledger (user_id, amount, type, source_id, description, idempotency_key)
-            VALUES (auth.uid(), 5, 'earned', 'practice_reward', 'Practice Correct Answer', v_idempotency_key);
+            VALUES (auth.uid(), 5, 'practice_complete', 'practice_reward', 'Practice Correct Answer', v_idempotency_key);
 
             -- If insert succeeded, update balance
             UPDATE public.user_points
