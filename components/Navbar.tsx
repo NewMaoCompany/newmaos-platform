@@ -12,22 +12,17 @@ import { AvatarAura } from './AvatarAura';
 
 export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
   const {
-    user, logout, isAuthenticated, isPro, notifications,
-    markAllNotificationsRead, markNotificationRead, markLinkAsRead,
+    user, logout, isAuthenticated, isPro,
     newlyUnlockedTitle, setNewlyUnlockedTitle,
     showPaywall, setShowPaywall, unreadCounts, clearUnread,
     userPoints, pointsBalanceRef, fetchUserPoints, getCheckinStatus, awardPoints,
-    checkinStatus, proUpgradeDismissed, dismissProUpgrade, userPrestige
+    checkinStatus, userPrestige, navRedDots
   } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-
-  const [processingNotifId, setProcessingNotifId] = useState<number | null>(null);
-  const [acceptedNotifIds, setAcceptedNotifIds] = useState<Set<number>>(new Set());
 
   const playSuccessSound = () => {
     if (user.preferences && user.preferences.soundEffects === false) return;
@@ -59,7 +54,6 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
 
 
 
-  const notifRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
   const isActive = (path: string) => location.pathname.startsWith(path);
@@ -91,49 +85,11 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
 
   // Pro upgrade red dot: derived from global state (no local state needed)
 
-  const isNotificationMuted = (n: any) => {
-    // 1. Prefer robust chat_id check if available
-    if (n.chatId) {
-      return mutedChats.has(n.chatId);
-    }
-
-    // 2. Fallback to brittle link parsing (for old notifications)
-    if (!n.link) return false;
-    try {
-      if (n.link.includes('chat_id=')) {
-        const paramString = n.link.includes('?') ? n.link.split('?')[1] : n.link;
-        const urlParams = new URLSearchParams(paramString);
-        const chatId = urlParams.get('chat_id');
-        return chatId ? mutedChats.has(chatId) : false;
-      }
-      return false;
-    } catch { return false; }
-  };
-
-  const visibleNotifications = notifications.filter(n => !isNotificationMuted(n));
-  const checkinUnread = (isAuthenticated && checkinStatus === 'not_checked_in') ? 1 : 0;
-  // Filter out chat notifications and check-in reminders if already checked in or loading
-  const unreadCount = notifications.filter(n => {
-    if (!n.unread || n.chatId || n.channelId || n.type === 'dm') return false;
-    const isCheckin = n.link === '/checkin' || n.text?.includes('Daily Check-in');
-    
-    // Deduplicate: If this is a check-in link, only count it if it's the first unread check-in msg
-    if (isCheckin) {
-      if (checkinStatus !== 'not_checked_in') return false;
-      const firstCheckin = notifications.find(notif => notif.unread && (notif.link === '/checkin' || notif.text?.includes('Daily Check-in')));
-      if (firstCheckin && firstCheckin.id !== n.id) return false;
-    }
-    return true;
-  }).length + checkinUnread;
-  const totalUnreadChatCount = Object.values(unreadCounts).reduce((a, b) => a + b, 0);
-  const totalUnreadCount = unreadCount + totalUnreadChatCount;
+  // Red dots are now globally managed and injected via navRedDots from AppContext
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
-        setShowNotifications(false);
-      }
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setShowProfileMenu(false);
       }
@@ -149,107 +105,17 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
     navigate('/dashboard');
   };
 
-  const handleBellClick = () => {
-    setShowNotifications(!showNotifications);
-  };
 
-  const handleNotificationClick = (id: number, link: string, type?: string) => {
-    // 1. Mark THIS notification as read
-    if (type !== 'gift_claim') {
-      markNotificationRead(id);
-    }
-
-    // 2. Also mark ALL notifications with the same link as read
-    // This ensures that navigating to the target page clears all related notifications
-    if (link) {
-      const sameLink = visibleNotifications.filter(n => n.link === link && n.unread && n.id !== id);
-      sameLink.forEach(n => {
-        if (n.type !== 'gift_claim') {
-          markNotificationRead(n.id);
-        }
-      });
-    }
-
-    // 3. Validate link and clear counts
-    if (!link) {
-      setShowNotifications(false);
-      return;
-    }
-
-    // Preserve the current behavior of clearing unread counts from link params
-    try {
-      if (link.includes('?')) {
-        const queryString = link.split('?')[1];
-        const urlParams = new URLSearchParams(queryString);
-        const chatId = urlParams.get('chat_id');
-        const channelId = urlParams.get('channel_id');
-
-        if (chatId) clearUnread(chatId);
-        if (channelId) clearUnread(channelId);
-      }
-    } catch (e) {
-      console.error('Error parsing notification link:', e);
-    }
-
-    // 4. Navigate with absolute path assurance
-    const targetLink = link.startsWith('/') ? link : `/${link}`;
-    navigate(targetLink);
-    setShowNotifications(false);
-  };
-
-
-
-
-  const handleAcceptFriend = async (e: React.MouseEvent, notifId: number, senderId: string) => {
-    e.stopPropagation();
-    if (processingNotifId === notifId) return;
-    setProcessingNotifId(notifId);
-
-    try {
-      // Call server endpoint which uses supabaseAdmin
-      const result = await notificationsApi.acceptFriend(notifId);
-
-      if (result.success) {
-        showToast('Friend request accepted!', 'success');
-        // Local state for immediate UI update
-        setAcceptedNotifIds(prev => new Set(prev).add(notifId));
-        markNotificationRead(notifId);
-      }
-    } catch (err: any) {
-      console.error('Accept friend error:', err);
-      showToast(err.message || 'Failed to accept request', 'error');
-    } finally {
-      setProcessingNotifId(null);
-    }
-  };
-
-
-  const dashboardUnreadCount = visibleNotifications.filter(n => {
-    if (!n.unread) return false;
-    const isCheckin = n.link === '/checkin' || n.link === '/dashboard' || n.text?.includes('Daily Check-in');
-    if (isCheckin) {
-      // Deduplicate: only count 1 checkin notif, and only if not checked in
-      if (checkinStatus !== 'not_checked_in') return false;
-      const firstCheckin = visibleNotifications.find(notif => notif.unread && (notif.link === '/checkin' || notif.link === '/dashboard' || notif.text?.includes('Daily Check-in')));
-      if (firstCheckin && firstCheckin.id !== n.id) return false;
-    }
-    return isCheckin;
-  }).length + checkinUnread;
-  const analysisUnreadCount = visibleNotifications.filter(n => n.unread && n.link === '/analysis').length;
-  const practiceUnreadCount = visibleNotifications.filter(n => n.unread && n.link?.startsWith('/practice')).length;
-  const settingsUnreadCount = visibleNotifications.filter(n => n.unread && (n.link?.includes('/settings') || n.text?.startsWith('[Membership]'))).length;
-
-  // No more pseudo notifications — all notifications come from the database
-  const allDisplayed = visibleNotifications;
 
   // Update document title with unread count
+  // Update document title with unread forum messages count (if any)
   useEffect(() => {
-    if (totalUnreadCount > 0) {
-      document.title = `(${totalUnreadCount}) NewMaoS`;
+    if (navRedDots.forum > 0) {
+      document.title = `(${navRedDots.forum}) NewMaoS`;
     } else {
       document.title = 'NewMaoS';
     }
-  }, [totalUnreadCount]);
+  }, [navRedDots.forum]);
 
   return (
     <>
@@ -267,98 +133,6 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
               </div>
               <h1 className="text-lg sm:text-xl font-bold tracking-tight text-text-main dark:text-white">NewMaoS</h1>
             </Link>
-
-            {/* Notification Bell - Moved next to Logo */}
-            {isAuthenticated && (
-              <div className="ml-2 sm:ml-4 relative shrink-0" ref={notifRef}>
-                <button
-                  onClick={handleBellClick}
-                  className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${showNotifications ? 'bg-primary/20 text-text-main' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-white/10'}`}
-                >
-                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>notifications</span>
-                  {totalUnreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark transition-transform">
-                      {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
-                    </span>
-                  )}
-                </button>
-
-                {/* Notification Dropdown */}
-                {showNotifications && (
-                  <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-[220px] bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-fade-in origin-top z-50">
-                    <div className="p-3 border-b border-gray-100 dark:border-gray-800/50 flex justify-between items-center">
-                      <span className="text-sm font-bold">Notifications</span>
-                      {totalUnreadCount > 0 && (
-                        <button
-                          onClick={() => {
-                            markAllNotificationsRead();
-                            dismissProUpgrade();
-                          }}
-                          className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors"
-                        >
-                          Mark all read
-                        </button>
-                      )}
-                    </div>
-                    <div className="max-h-[60vh] sm:max-h-[400px] overflow-y-auto scroll-bounce">
-                      {allDisplayed.length > 0 ? (
-                        allDisplayed.map(notif => {
-                          // Parse link for action
-                          let senderId = null;
-                          if (notif.link && notif.link.includes('action=friend_request')) {
-                            const urlParams = new URLSearchParams(notif.link.split('?')[1]);
-                            senderId = urlParams.get('sender_id');
-                          }
-
-                          // Check if item was already accepted (from persistent metadata or session state)
-                          const isAccepted = notif.isAccepted ||
-                            acceptedNotifIds.has(notif.id) ||
-                            (notif.metadata?.accepted === true);
-
-                          return (
-                            <div
-                              key={notif.id}
-                              onClick={() => handleNotificationClick(notif.id, notif.link, notif.type)}
-                              className={`p-3 border-b border-gray-100 dark:border-gray-800/50 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer flex gap-3 ${notif.unread ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''}`}
-                            >
-                              <div className={`mt-1.5 min-w-[8px] h-2 rounded-full ${notif.unread ? 'bg-primary' : 'bg-transparent'}`}></div>
-                              <div className="flex flex-col gap-0.5 w-full">
-                                <p className={`text-[11px] leading-relaxed mb-0.5 ${notif.unread ? 'font-bold text-text-main dark:text-zinc-100' : 'font-medium text-text-secondary dark:text-gray-400'}`}>
-                                  {notif.text}
-                                </p>
-                                {senderId && !isAccepted && (
-                                  <div className="mt-2 flex gap-2">
-                                    <button
-                                      onClick={(e) => senderId && handleAcceptFriend(e, notif.id, senderId)}
-                                      className="px-3 py-1 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold rounded-lg hover:opacity-80 transition-opacity"
-                                    >
-                                      Accept
-                                    </button>
-                                  </div>
-                                )}
-                                {isAccepted && notif.type !== 'gift_claim' && (
-                                  <div className="mt-2">
-                                    <span className="text-[10px] text-green-500 font-bold flex items-center gap-1">
-                                      <span className="material-symbols-outlined text-[12px]">check_circle</span>
-                                      Accepted
-                                    </span>
-                                  </div>
-                                )}
-                                <span className="text-[10px] text-text-secondary dark:text-gray-500">{notif.time}</span>
-                              </div>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="p-8 text-center text-text-secondary dark:text-gray-500 text-xs">
-                          No notifications
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
 
 
@@ -380,87 +154,43 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
               <div className="pointer-events-auto flex items-center gap-1">
                 <Link
                   to="/dashboard"
-                  onClick={() => {
-                    markLinkAsRead('/checkin');
-                    markLinkAsRead('/dashboard');
-                    notifications.filter(n => n.unread && n.text?.includes('Daily Check-in')).forEach(n => markNotificationRead(n.id));
-                  }}
                   className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${location.pathname === '/dashboard' ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
                 >
                   <span>Dashboard</span>
-                  {dashboardUnreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark">
-                      {dashboardUnreadCount > 9 ? '9+' : dashboardUnreadCount}
-                    </span>
+                  {navRedDots.dashboard && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform"></span>
                   )}
                 </Link>
                 <Link to="/practice" className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${isActive('/practice') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
                   <span>Practice</span>
-                  {practiceUnreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
-                      {practiceUnreadCount > 9 ? '9+' : practiceUnreadCount}
+                  {navRedDots.practice && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110"></span>
+                  )}
+                </Link>
+                <Link to={isAuthenticated ? "/analysis" : "/login"} className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+                  <span>Analysis</span>
+                  {!isPro && isAuthenticated && <span className="material-symbols-outlined text-[16px] ml-0.5 opacity-60">lock</span>}
+                  {navRedDots.analysis && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110"></span>
+                  )}
+                </Link>
+                <Link to={isAuthenticated ? "/forum" : "/login"} className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/forum') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
+                  <span>Forum</span>
+                  {!isPro && isAuthenticated && <span className="material-symbols-outlined text-[16px] ml-0.5 opacity-60">lock</span>}
+                  {navRedDots.forum > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
+                      {navRedDots.forum > 99 ? '99+' : navRedDots.forum}
                     </span>
                   )}
                 </Link>
-                {isAuthenticated && isPro ? (
-                  <Link to="/analysis" onClick={() => markLinkAsRead('/analysis')} className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
-                    <span>Analysis</span>
-                    {analysisUnreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
-                        {analysisUnreadCount > 9 ? '9+' : analysisUnreadCount}
-                      </span>
-                    )}
-                  </Link>
-                ) : (
-                  <div
-                    className="relative group cursor-pointer shrink-0"
-                    onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
-                  >
-                    <div className="text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
-                      <span>Analysis</span>
-                      <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
-                    </div>
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
-                      {!isAuthenticated ? "Sign in required" : "Pro Membership required"}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
-                    </div>
-                  </div>
-                )}
-                {isAuthenticated && isPro ? (
-                  <Link to="/forum" className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/forum') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
-                    <span>Forum</span>
-                    {totalUnreadChatCount > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
-                        {totalUnreadChatCount > 99 ? '99+' : totalUnreadChatCount}
-                      </span>
-                    )}
-                  </Link>
-                ) : (
-                  <div
-                    className="relative group cursor-pointer shrink-0"
-                    onClick={() => isAuthenticated ? setShowPaywall(true) : navigate('/login')}
-                  >
-                    <div className="text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-text-secondary dark:text-gray-400 opacity-60 whitespace-nowrap">
-                      <span>Forum</span>
-                      <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
-                    </div>
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[100]">
-                      {!isAuthenticated ? "Sign in required" : "Pro Membership required"}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
-                    </div>
-                  </div>
-                )}
                 {isAuthenticated ? (
                   <Link
                     to="/settings"
-                    onClick={() => markLinkAsRead('/settings')}
                     className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
                   >
                     <span>Settings</span>
-                    {settingsUnreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110">
-                        {settingsUnreadCount > 9 ? '9+' : settingsUnreadCount}
-                      </span>
+                    {navRedDots.settings && (
+                      <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110"></span>
                     )}
                   </Link>
                 ) : (
@@ -604,15 +334,12 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
             {/* Dashboard */}
             <Link
               to="/dashboard"
-              onClick={() => markLinkAsRead('/checkin')}
               className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 relative ${location.pathname === '/dashboard' ? 'text-primary' : 'text-gray-400 dark:text-gray-500'}`}
             >
               <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: location.pathname === '/dashboard' ? "'FILL' 1" : "'FILL' 0" }}>dashboard</span>
               <span className="text-[10px] font-semibold leading-none">Dashboard</span>
-              {dashboardUnreadCount > 0 && (
-                <span className="absolute top-0.5 right-1/4 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-0.5">
-                  {dashboardUnreadCount > 9 ? '9+' : dashboardUnreadCount}
-                </span>
+              {navRedDots.dashboard && (
+                <span className="absolute top-1 right-1/4 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform"></span>
               )}
             </Link>
 
@@ -623,74 +350,52 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
             >
               <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: isActive('/practice') ? "'FILL' 1" : "'FILL' 0" }}>edit_note</span>
               <span className="text-[10px] font-semibold leading-none">Practice</span>
-              {practiceUnreadCount > 0 && (
-                <span className="absolute top-0.5 right-1/4 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-0.5">
-                  {practiceUnreadCount > 9 ? '9+' : practiceUnreadCount}
-                </span>
+              {navRedDots.practice && (
+                <span className="absolute top-1 right-1/4 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform"></span>
               )}
             </Link>
 
             {/* Analysis */}
-            {isPro ? (
-              <Link
-                to="/analysis"
-                onClick={() => markLinkAsRead('/analysis')}
-                className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 relative ${isActive('/analysis') ? 'text-primary' : 'text-gray-400 dark:text-gray-500'}`}
-              >
-                <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: isActive('/analysis') ? "'FILL' 1" : "'FILL' 0" }}>analytics</span>
-                <span className="text-[10px] font-semibold leading-none">Analysis</span>
-                {analysisUnreadCount > 0 && (
-                  <span className="absolute top-0.5 right-1/4 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-0.5">
-                    {analysisUnreadCount > 9 ? '9+' : analysisUnreadCount}
-                  </span>
-                )}
-              </Link>
-            ) : (
-              <button
-                onClick={() => setShowPaywall(true)}
-                className="flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 text-gray-300 dark:text-gray-600"
-              >
-                <span className="material-symbols-outlined text-xl">analytics</span>
-                <span className="text-[10px] font-semibold leading-none flex items-center gap-0.5">Analysis <span className="material-symbols-outlined text-[8px]">lock</span></span>
-              </button>
-            )}
+            <Link
+              to="/analysis"
+              className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 relative ${isActive('/analysis') ? 'text-primary' : 'text-gray-400 dark:text-gray-500'}`}
+            >
+              <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: isActive('/analysis') ? "'FILL' 1" : "'FILL' 0" }}>analytics</span>
+              <span className="text-[10px] font-semibold leading-none flex items-center gap-0.5">
+                Analysis
+                {!isPro && <span className="material-symbols-outlined text-[8px] opacity-60">lock</span>}
+              </span>
+              {navRedDots.analysis && (
+                <span className="absolute top-1 right-1/4 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform"></span>
+              )}
+            </Link>
 
             {/* Forum */}
-            {isPro ? (
-              <Link
-                to="/forum"
-                className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 relative ${isActive('/forum') ? 'text-primary' : 'text-gray-400 dark:text-gray-500'}`}
-              >
-                <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: isActive('/forum') ? "'FILL' 1" : "'FILL' 0" }}>forum</span>
-                <span className="text-[10px] font-semibold leading-none">Forum</span>
-                {totalUnreadChatCount > 0 && (
-                  <span className="absolute top-0.5 right-1/4 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-0.5">
-                    {totalUnreadChatCount > 9 ? '9+' : totalUnreadChatCount}
-                  </span>
-                )}
-              </Link>
-            ) : (
-              <button
-                onClick={() => setShowPaywall(true)}
-                className="flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 text-gray-300 dark:text-gray-600"
-              >
-                <span className="material-symbols-outlined text-xl">forum</span>
-                <span className="text-[10px] font-semibold leading-none flex items-center gap-0.5">Forum <span className="material-symbols-outlined text-[8px]">lock</span></span>
-              </button>
-            )}
+            <Link
+              to="/forum"
+              className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 relative ${isActive('/forum') ? 'text-primary' : 'text-gray-400 dark:text-gray-500'}`}
+            >
+              <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: isActive('/forum') ? "'FILL' 1" : "'FILL' 0" }}>forum</span>
+              <span className="text-[10px] font-semibold leading-none flex items-center gap-0.5">
+                Forum
+                {!isPro && <span className="material-symbols-outlined text-[8px] opacity-60">lock</span>}
+              </span>
+              {navRedDots.forum > 0 && (
+                <span className="absolute top-0.5 right-1/4 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-0.5">
+                  {navRedDots.forum > 99 ? '99+' : navRedDots.forum}
+                </span>
+              )}
+            </Link>
 
             {/* Settings */}
             <Link
               to="/settings"
-              onClick={() => markLinkAsRead('/settings')}
               className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 relative ${isActive('/settings') ? 'text-primary' : 'text-gray-400 dark:text-gray-500'}`}
             >
               <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: isActive('/settings') ? "'FILL' 1" : "'FILL' 0" }}>settings</span>
               <span className="text-[10px] font-semibold leading-none">Settings</span>
-              {settingsUnreadCount > 0 && (
-                <span className="absolute top-0.5 right-1/4 min-w-[14px] h-3.5 flex items-center justify-center bg-red-500 text-white text-[8px] font-black rounded-full px-0.5">
-                  {settingsUnreadCount > 9 ? '9+' : settingsUnreadCount}
-                </span>
+              {navRedDots.settings && (
+                <span className="absolute top-1 right-1/4 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform"></span>
               )}
             </Link>
           </div>

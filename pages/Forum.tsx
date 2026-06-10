@@ -747,7 +747,7 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
 };
 
 export const Forum = () => {
-    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro } = useApp();
+    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markNotificationsByLink } = useApp();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
@@ -828,6 +828,10 @@ export const Forum = () => {
             fetchPendingPoints();
             // Polling as a fallback, but we rely on realtime below
             const interval = setInterval(fetchPendingPoints, 60000);
+            
+            // Auto clear forum link notifications when entering Forum
+            markNotificationsByLink('/forum');
+
             return () => clearInterval(interval);
         }
     }, [user?.id]);

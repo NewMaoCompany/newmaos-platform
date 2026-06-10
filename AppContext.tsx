@@ -16,7 +16,6 @@ interface AppContextType {
     recommendation: Recommendation;
     hasDismissedLoginPrompt: boolean;
     questions: Question[]; // Dynamic Question Bank
-    notifications: AppNotification[]; // Global Notifications
     isCreatorAuthenticated: boolean; // Creator Access State
     topicContent: Record<string, UnitContent>; // Dynamic Content Data
     skills: { id: string; name: string; unit: string; prerequisites: string[] }[]; // Skills for Question Editor
@@ -33,7 +32,7 @@ interface AppContextType {
     // Points Economy
     userPoints: { balance: number; lifetimeEarned: number };
     pointsBalanceRef: React.RefObject<HTMLElement>;
-    awardPoints: (amount: number, type: string, sourceId?: string, description?: string, idempotencyKey?: string, x?: number, y?: number) => Promise<{ success: boolean; newBalance?: number }>;
+    awardPoints: (amount: number, type: string, sourceId?: string, description?: string, idempotencyKey?: string, x?: number, y?: number, suppressAnimation?: boolean) => Promise<{ success: boolean; newBalance?: number }>;
     triggerCoinAnimation: (amount: number, x?: number, y?: number, mode?: 'earn' | 'spend') => void;
     redeemProWithPoints: () => Promise<{ success: boolean; reason?: string; newBalance?: number; shortfall?: number }>;
     performDailyCheckin: () => Promise<{ success: boolean; streakDay?: number; basePoints?: number; bonusPoints?: number; totalPoints?: number; isMilestone?: boolean; reason?: string }>;
@@ -41,7 +40,7 @@ interface AppContextType {
     getCheckinStatus: () => Promise<{ checkedInToday: boolean; currentStreak: number; monthCheckins: number; monthCalendar: any[]; repairCost?: number }>;
     fetchUserPoints: () => Promise<void>;
 
-    login: (email: string, username?: string, id?: string, subscriptionTier?: 'basic' | 'pro', subscriptionPeriodEnd?: string, hasSeenProIntro?: boolean, avatarUrl?: string) => void;
+    login: (email: string, username?: string, id?: string, subscriptionTier?: 'basic' | 'pro', subscriptionPeriodEnd?: string, hasSeenProIntro?: boolean, avatarUrl?: string, hasClaimedWelcomeGift?: boolean) => void;
     logout: () => Promise<void>;
     toggleCourse: (course: CourseType) => void;
     startCourse: (course: CourseType) => void;
@@ -65,10 +64,16 @@ interface AppContextType {
     updateSection: (topicId: string, sectionId: string, data: any) => Promise<void>;
     verifyAccessCode: (code: string) => Promise<{ success: boolean; message?: string }>;
 
-    // Notification Methods
-    markAllNotificationsRead: () => void;
-    markNotificationRead: (id: number) => void;
-    markLinkAsRead: (linkPrefix: string) => void;
+    navRedDots: {
+        dashboard: boolean;
+        practice: boolean;
+        analysis: boolean;
+        forum: number;
+        settings: boolean;
+        subscription: boolean;
+        checkin: boolean;
+    };
+    fetchBadgeStatus: () => Promise<void>;
     acceptFriendRequest: (senderId: string) => Promise<{ success: boolean; message?: string }>;
     // Helper for Dashboard
     getCourseMastery: (course: CourseType) => number;
@@ -234,8 +239,42 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     // Lifted Error Notebook Cache for 0-latency loading
     const [wrongAnswersCache, setWrongAnswersCache] = useState<{ items: any[], lastFetched: number }>({ items: [], lastFetched: 0 });
 
-    // Lifted Notification State
-    const [notifications, setNotifications] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS);
+    // Persistent Red Dots State (Fetched from Backend RPC)
+    const [navRedDots, setNavRedDots] = useState({
+        dashboard: false,
+        practice: false,
+        analysis: false,
+        forum: 0,
+        settings: false,
+        subscription: false,
+        checkin: false
+    });
+
+    // Fetch Badges from Backend
+    const fetchBadgeStatus = async () => {
+        if (!user.id) return;
+        try {
+            const { data, error } = await supabase.rpc('get_user_badges', { p_user_id: user.id });
+            if (error) throw error;
+            if (data) {
+                setNavRedDots({
+                    dashboard: data.dashboard,
+                    practice: data.practice,
+                    analysis: data.analysis,
+                    forum: data.forum,
+                    settings: data.settings,
+                    subscription: data.settings, // Settings and Subscription share the same badge logic for now
+                    checkin: data.dashboard // Check-in is mirrored on dashboard
+                });
+                // Also update local welcome gift state if backend says it's claimed
+                if (data.has_claimed_welcome_gift) {
+                    updateUser({ hasClaimedWelcomeGift: true });
+                }
+            }
+        } catch (err) {
+            console.error('Error fetching badge status:', err);
+        }
+    };
 
     // Skills data for Question Editor
     const [skills, setSkills] = useState<{ id: string; name: string; unit: string; prerequisites: string[] }[]>([]);
@@ -774,59 +813,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         return COURSE_CONTENT_DATA[topicId]?.subTopics || [];
     };
 
-    const fetchNotifications = async () => {
-        try {
-            const data = await notificationsApi.getNotifications();
-            setNotifications(data);
-        } catch (error) {
-            console.error('Failed to fetch notifications:', error);
-        }
-    };
-
-    // Expose fetchNotifications to window for cross-component refresh
-    useEffect(() => {
-        (window as any).__refreshNotifications = fetchNotifications;
-        return () => { delete (window as any).__refreshNotifications; };
-    }, []);
-
-    const markNotificationRead = async (id: number) => {
-        try {
-            await notificationsApi.markAsRead(id);
-            setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
-        } catch (e) {
-            console.error('Failed to mark notification as read:', e);
-        }
-    };
-
-    // Pro Upgrade Dismissal: Computed from notification state
-    // A user "dismissed" pro upgrade if there are NO unread [Membership] notifications
-    const membershipNotifs = notifications.filter(n => n.unread && n.text?.startsWith('[Membership]'));
-    const proUpgradeDismissed = membershipNotifs.length === 0;
-
-    // dismissProUpgrade: Mark all [Membership] notifications as read
-    const dismissProUpgrade = useCallback(() => {
-        membershipNotifs.forEach(n => markNotificationRead(n.id));
-    }, [membershipNotifs, markNotificationRead]);
-
-    const markLinkAsRead = useCallback(async (linkPrefix: string) => {
-        if (!user.id) return;
-
-        // 1. Optimistic local update
-        setNotifications(prev => prev.map(n =>
-            (n.unread && n.link && n.link.startsWith(linkPrefix)) ? { ...n, unread: false } : n
-        ));
-
-        try {
-            // 2. Database update
-            await supabase
-                .from('notifications')
-                .update({ unread: false })
-                .match({ user_id: user.id, unread: true })
-                .like('link', `${linkPrefix}%`);
-        } catch (err) {
-            console.error('Failed to mark link prefix as read:', err);
-        }
-    }, [user.id]);
+    // Note: Old notification system has been removed. Badges are handled via fetchBadgeStatus().
 
     const acceptFriendRequest = async (senderId: string): Promise<{ success: boolean; message?: string }> => {
         if (!user.id) return { success: false, message: 'User not authenticated' };
@@ -844,8 +831,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             if (data?.success) {
                 // Refresh friend list
                 fetchFriends();
-                // Remove friend request notification
-                setNotifications(prev => prev.filter(n => !(n.type === 'friend_request' && n.metadata?.sender_id === senderId)));
+                // We no longer manage local notifications array. Badges will be updated via polling.
+                fetchBadgeStatus();
                 return { success: true };
             } else {
                 return { success: false, message: data?.message || 'Failed to accept friend request' };
@@ -1890,7 +1877,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     fetchRadarData(),
                     fetchLineData(),
                     fetchRecentActivities(),
-                    fetchNotifications(),
+                    fetchBadgeStatus(),
                     getUserInsights(),
                     fetchFriends(),
                     fetchUserPoints(),
@@ -1905,108 +1892,15 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
     }, [user.id, isAuthenticated]);
 
-    // Midnight timer: regenerate system notifications at local midnight
+    // Badge Polling Timer: refresh badges every 5 minutes
     useEffect(() => {
         if (!user.id || !isAuthenticated) return;
 
-        const scheduleMidnight = () => {
-            const now = new Date();
-            const midnight = new Date(now);
-            midnight.setHours(24, 0, 0, 0); // Next midnight local
-            const msUntilMidnight = midnight.getTime() - now.getTime();
+        const intervalId = setInterval(() => {
+            fetchBadgeStatus();
+        }, 5 * 60 * 1000); // 5 minutes
 
-            console.log(`[Midnight Timer] Next notification refresh in ${Math.round(msUntilMidnight / 60000)} minutes`);
-
-            return setTimeout(async () => {
-                console.log('[Midnight Timer] Midnight reached — refreshing notifications & check-in status');
-                try {
-                    await supabase.rpc('generate_system_notifications', { p_user_id: user.id });
-
-                    // Pro upgrade reminder: if user has 199+ points and is NOT Pro
-                    if (!isPro && userPoints.balance >= 199) {
-                        const todayStr = new Date().toLocaleDateString('en-CA');
-                        const { data: existing } = await supabase
-                            .from('notifications')
-                            .select('id')
-                            .eq('user_id', user.id)
-                            .eq('link', '/settings/subscription')
-                            .gte('created_at', todayStr + 'T00:00:00')
-                            .limit(1);
-
-                        if (!existing || existing.length === 0) {
-                            await supabase.from('notifications').insert({
-                                user_id: user.id,
-                                text: '⭐ You have enough NMS Points to unlock Pro! Upgrade now for advanced features.',
-                                link: '/settings/subscription',
-                                type: 'system',
-                                unread: true,
-                            });
-                        }
-                    }
-
-                    await fetchNotifications();
-                    await refreshCheckinStatus();
-                } catch (e) {
-                    console.error('[Midnight Timer] Error:', e);
-                }
-                // Re-schedule for next midnight
-                midnightTimer = scheduleMidnight();
-            }, msUntilMidnight);
-        };
-
-        let midnightTimer = scheduleMidnight();
-        return () => clearTimeout(midnightTimer);
-    }, [user.id, isAuthenticated]);
-
-    // 9 PM timer: create daily Analysis reminder notification
-    useEffect(() => {
-        if (!user.id || !isAuthenticated) return;
-
-        const schedule9PM = () => {
-            const now = new Date();
-            const target = new Date(now);
-            target.setHours(21, 0, 0, 0); // 9 PM local
-            if (now >= target) {
-                // Already past 9 PM today, schedule for tomorrow
-                target.setDate(target.getDate() + 1);
-            }
-            const msUntil9PM = target.getTime() - now.getTime();
-
-            console.log(`[9PM Timer] Next analysis notification in ${Math.round(msUntil9PM / 60000)} minutes`);
-
-            return setTimeout(async () => {
-                console.log('[9PM Timer] 9 PM reached — creating analysis notification');
-                try {
-                    const todayStr = new Date().toLocaleDateString('en-CA');
-                    // Check if today's analysis notification already exists
-                    const { data: existing } = await supabase
-                        .from('notifications')
-                        .select('id')
-                        .eq('user_id', user.id)
-                        .eq('link', '/analysis')
-                        .gte('created_at', todayStr + 'T00:00:00')
-                        .limit(1);
-
-                    if (!existing || existing.length === 0) {
-                        await supabase.from('notifications').insert({
-                            user_id: user.id,
-                            text: '📊 Your daily analysis report is ready. Review your progress now!',
-                            link: '/analysis',
-                            type: 'system',
-                            unread: true,
-                        });
-                    }
-                    await fetchNotifications();
-                } catch (e) {
-                    console.error('[9PM Timer] Error:', e);
-                }
-                // Re-schedule for next day
-                nineTimer = schedule9PM();
-            }, msUntil9PM);
-        };
-
-        let nineTimer = schedule9PM();
-        return () => clearTimeout(nineTimer);
+        return () => clearInterval(intervalId);
     }, [user.id, isAuthenticated]);
 
     const getSectionStatus = (sectionId: string): 'not_started' | 'in_progress' | 'completed' => {
@@ -2163,6 +2057,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                             subscriptionTier: profile?.subscription_tier || 'basic',
                             subscriptionPeriodEnd: profile?.subscription_period_end,
                             hasSeenProIntro: profile?.has_seen_pro_intro || false,
+                            hasClaimedWelcomeGift: profile?.has_claimed_welcome_gift || false,
                             equippedTitle: profile?.equipped_title ? (() => {
                                 const t = Array.isArray(profile.equipped_title) ? profile.equipped_title[0] : profile.equipped_title;
                                 return {
@@ -2490,7 +2385,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         subscriptionTier: 'basic' | 'pro' = 'basic',
         subscriptionPeriodEnd?: string,
         hasSeenProIntro: boolean = false,
-        avatarUrl?: string
+        avatarUrl?: string,
+        hasClaimedWelcomeGift: boolean = false
     ) => {
         setIsAuthenticated(true);
         // Use username if provided, otherwise derive from email
@@ -2511,7 +2407,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 isCreator: isSuperAdmin || prev.isCreator,
                 subscriptionTier: subscriptionTier,
                 subscriptionPeriodEnd: subscriptionPeriodEnd,
-                hasSeenProIntro: hasSeenProIntro
+                hasSeenProIntro: hasSeenProIntro,
+                hasClaimedWelcomeGift: hasClaimedWelcomeGift
             };
             localStorage.setItem('user_profile_cache', JSON.stringify(updatedUser));
             return updatedUser;
@@ -2623,7 +2520,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         description?: string,
         idempotencyKey?: string,
         x?: number,
-        y?: number
+        y?: number,
+        suppressAnimation?: boolean
     ): Promise<{ success: boolean; newBalance?: number }> => {
         if (!user.id || amount <= 0) return { success: false };
         try {
@@ -2639,8 +2537,10 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 p_idempotency_key: idempotencyKey || null
             });
             if (data?.success) {
-                // ✅ Trigger animation ONLY on successful award
-                triggerCoinAnimation(amount, x, y);
+                // ✅ Trigger animation ONLY on successful award, and if not suppressed
+                if (!suppressAnimation) {
+                    triggerCoinAnimation(amount, x, y);
+                }
 
                 setUserPoints(prev => {
                     const nextData = {
@@ -3438,8 +3338,10 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             };
         });
 
-        // 6. Refresh Radar/Mastery from Database to ensure accuracy
-        // 6. Refresh Radar/Mastery from Database to ensure accuracy
+        // 6. Badges are handled persistently now. We can trigger a refresh if needed.
+        fetchBadgeStatus();
+
+        // 7. Refresh Radar/Mastery from Database to ensure accuracy
         fetchRadarData();
         fetchLineData();
         fetchRecentActivities();
@@ -3458,7 +3360,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             recommendation,
             hasDismissedLoginPrompt,
             questions,
-            notifications,
             isCreatorAuthenticated,
             topicContent,
             skills,
@@ -3484,9 +3385,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             updateTopic,
             updateSection,
             verifyAccessCode,
-            markAllNotificationsRead,
-            markNotificationRead,
-            markLinkAsRead,
+            navRedDots,
+            fetchBadgeStatus,
             acceptFriendRequest,
             getCourseMastery,
             getSectionsForTopic,
@@ -3544,8 +3444,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
             checkinStatus,
             refreshCheckinStatus,
-            proUpgradeDismissed,
-            dismissProUpgrade,
             // Prestige
             userPrestige,
             fetchUserPrestige,

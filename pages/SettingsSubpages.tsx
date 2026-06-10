@@ -12,6 +12,7 @@ import { PointsCoin } from '../components/PointsCoin';
 import { getUniqueTitleStyle } from '../src/utils/titleStyles';
 import { PlanetVisual } from '../components/SpaceVisuals';
 import { PrestigeWidget } from '../components/PrestigeWidget';
+import { ProGateOverlay } from '../components/ProGateOverlay';
 
 const SubpageLayout = ({ title, children, maxWidth = "max-w-4xl" }: { title: string, children: React.ReactNode, maxWidth?: string }) => {
   const navigate = useNavigate();
@@ -68,6 +69,7 @@ const GRADIENTS = [
 export const ProfileSettings = () => {
   const { user, updateUser, isPro, setShowPaywall, availableTitles, userPrestige } = useApp();
   const { showToast } = useToast();
+  const [lockedFeature, setLockedFeature] = useState<string | null>(null);
 
   // State from User Context & DB (Initialize with User Context Defaults where possible)
   const [name, setName] = useState(user.name || '');
@@ -336,6 +338,12 @@ export const ProfileSettings = () => {
 
   return (
     <SubpageLayout title="Edit Profile" maxWidth="max-w-[1400px]">
+      {lockedFeature && (
+        <ProGateOverlay 
+          featureName={lockedFeature} 
+          onClose={() => setLockedFeature(null)} 
+        />
+      )}
       <div className="flex flex-col xl:flex-row gap-8 xl:gap-12 relative items-start">
 
         {/* Left Column: Edit Form */}
@@ -445,7 +453,7 @@ export const ProfileSettings = () => {
                 <p className="text-sm font-bold text-primary">Upgrade to Pro to customize your avatar and identity.</p>
               </div>
               <button
-                onClick={() => setShowPaywall(true)}
+                onClick={() => setLockedFeature("Avatar Customization")}
                 className="px-6 py-2 bg-primary text-black rounded-xl font-black text-xs hover:brightness-110 active:scale-95 transition-all w-full sm:w-auto"
               >
                 Learn More
@@ -744,7 +752,7 @@ export const ProfileSettings = () => {
                 <p className="text-sm font-black text-primary uppercase tracking-tight">Upgrade to Pro to unlock achievement titles.</p>
               </div>
               <button
-                onClick={() => setShowPaywall(true)}
+                onClick={() => setLockedFeature("Achievement Titles")}
                 className="px-6 py-2 bg-primary text-black rounded-xl font-black text-xs hover:brightness-110 active:scale-95 transition-all w-full sm:w-auto"
               >
                 Learn More
@@ -1314,10 +1322,11 @@ export const SecuritySettings = () => {
 
 export const SubscriptionSettings = () => {
   const {
-    user, isPro, redeemProWithPoints, setShowPaywall,
+    user, isPro, redeemProWithPoints,
     notifications, markNotificationRead, userPoints, fetchUserPoints,
     dismissProUpgrade, proUpgradeDismissed
   } = useApp();
+  const [lockedFeature, setLockedFeature] = useState<string | null>(null);
   const [isRedeeming, setIsRedeeming] = useState(false);
   const isRedeemingRef = useRef(false);
   const [selectedPreview, setSelectedPreview] = useState<'basic' | 'pro'>(isPro ? 'pro' : 'basic');
@@ -1362,7 +1371,9 @@ export const SubscriptionSettings = () => {
     const result = await redeemProWithPoints();
     if (result.success) {
       showToast('Successfully upgraded to Pro!', 'success');
-      setShowPaywall(true);
+    } else if (!isPro) {
+      setLockedFeature("Advanced Practice History");
+      return;
     } else if (result.reason === 'insufficient_points') {
       setRedeemError(`Need ${result.shortfall?.toLocaleString()} more points`);
     } else if (result.reason === 'already_redeemed_this_month') {
@@ -1389,9 +1400,14 @@ export const SubscriptionSettings = () => {
   };
 
   return (
-    <SubpageLayout title="Subscription">
-      <div className="flex flex-col gap-10">
-
+    <SubpageLayout title="Advanced Data" maxWidth="max-w-[1400px]">
+      {lockedFeature && (
+        <ProGateOverlay 
+          featureName={lockedFeature} 
+          onClose={() => setLockedFeature(null)} 
+        />
+      )}
+      <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto">
         {/* Dual Plan Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 

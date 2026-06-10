@@ -477,6 +477,7 @@ export const Practice = () => {
     const [userAnswers, setUserAnswers] = useState<Record<string, string>>({}); // qId -> selectedOptionId for batch mode
     const [showSummary, setShowSummary] = useState(effectiveState?.showSummary === true);
     const [newlyCorrectFirstAttempts, setNewlyCorrectFirstAttempts] = useState(0);
+    const [sessionEarnedCoins, setSessionEarnedCoins] = useState(0);
 
     // Sync showSummary with location state changes (fixes infinite review loop)
     useEffect(() => {
@@ -1195,27 +1196,9 @@ export const Practice = () => {
             setFeedback('correct');
             setSessionResults(prev => ({ correct: (prev?.correct || 0) + 1, total: prev?.total || 0 }));
 
-            // Award 5 points ONLY on the absolute FIRST attempt ever for this question
-            // Never award coins during Start Over sessions
-            const isStartOver = effectiveState?.forceStartNew === true;
-            if (!isStartOver) {
-                // Pre-unlock audio context on user gesture before async
-                try { const ac = new (window.AudioContext || (window as any).webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); ac.close(); } catch (_) { }
-                const x = e ? e.clientX : window.innerWidth / 2;
-                const y = e ? e.clientY : window.innerHeight / 2;
-                // Pass x,y to awardPoints so it triggers coin animation at the correct position
-                // Idempotency key `practice_${question.id}` ensures backend gives points ONLY ONCE!
-                awardPoints(5, 'practice_correct', question.id, 'Correct Answer +5', `practice_${question.id}`, x, y).then((res) => {
-                    if (res.success) {
-                        setNewlyCorrectFirstAttempts(prev => prev + 1);
-                        playCoinSound();
-                    }
-                    playCorrectSound();
-                });
-            } else {
-                // If they got it right but it's a retry/review/start-over, just play correct sound
-                playCorrectSound();
-            }
+            // We defer coin rewards to finishSession, where we will batch all correctly answered questions
+            // and let the backend idempotency key decide which ones are FIRST-TIME correct.
+            playCorrectSound();
         } else {
             setFeedback('incorrect');
         }
@@ -1343,29 +1326,8 @@ export const Practice = () => {
             const settledPromises = await Promise.allSettled(submissionPromises);
             console.log('✅ Batch attempts settled');
 
-            // Calculate how many were newly correct first attempts by reading the boolean returns
-            // Never award coins during Start Over sessions
-            const isStartOverBatch = effectiveState?.forceStartNew === true;
-            let newlyCorrectIds: string[] = [];
-            if (!isStartOverBatch) {
-                settledPromises.forEach(result => {
-                    if (result.status === 'fulfilled' && typeof result.value === 'string') {
-                        newlyCorrectIds.push(result.value);
-                    }
-                });
-            }
-
-            if (newlyCorrectIds.length > 0) {
-                setNewlyCorrectFirstAttempts(prev => prev + newlyCorrectIds.length);
-                const totalPoints = newlyCorrectIds.length * 5;
-                // Pre-unlock audio context
-                try { const ac = new (window.AudioContext || (window as any).webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); ac.close(); } catch (_) { }
-                // awardPoints internally triggers coin animation
-                awardPoints(totalPoints, 'practice_batch', algorithmicSessionId, `Batch Submit: ${newlyCorrectIds.length} correct`, `practice_batch_${algorithmicSessionId}`).then(() => {
-                    playCoinSound();
-                });
-            }
-
+            // Coin awards are deferred to finishSession where we check all correct answers against backend idempotency
+            
             // 3. Finalize Session (Activity Log) AFTER attempts are secured
             await finishSession(correctCount, allAnswers, localResults);
         } catch (err) {
@@ -1638,13 +1600,97 @@ export const Practice = () => {
             newlyCorrectFirstAttempts: newlyCorrectFirstAttempts
         });
 
+        // ==========================================
+        // 5. Unified Coin Settlement & Animation Sync
+        // ==========================================
+        try { const ac = new (window.AudioContext || (window as any).webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); ac.close(); } catch (_) { }
+
+        // Find all questions answered correctly in this session
+        const correctQuestionIds = Object.keys(finalResults).filter(id => finalResults[id] === 'correct');
+
+        let newlyEarnedBaseCoins = 0;
+        let trulyNewCorrectIds: string[] = [];
+
+        if (correctQuestionIds.length > 0) {
+            // Check the DB to see which questions have ALREADY been rewarded to this user
+            const idempotencyKeys = correctQuestionIds.map(id => `practice_${id}`);
+            const { data: existingTransactions, error: txError } = await supabase
+                .from('points_transactions')
+                .select('idempotency_key')
+                .in('idempotency_key', idempotencyKeys);
+                
+            if (txError) {
+                console.error("Error fetching past point transactions:", txError);
+            }
+
+            const existingKeys = new Set(existingTransactions?.map((t: any) => t.idempotency_key) || []);
+            trulyNewCorrectIds = correctQuestionIds.filter(id => !existingKeys.has(`practice_${id}`));
+
+            // Award points individually to strictly record them in the DB (suppress animations)
+            const coinPromises = trulyNewCorrectIds.map(qId => 
+                awardPoints(5, 'practice_correct', qId, 'Correct Answer +5', `practice_${qId}`, window.innerWidth / 2, window.innerHeight / 2, true)
+            );
+
+            await Promise.all(coinPromises);
+            newlyEarnedBaseCoins = trulyNewCorrectIds.length * 5;
+        }
+        
+        let totalSessionCoins = newlyEarnedBaseCoins;
+
         // Add 80% Accuracy Bonus
         const finalScore = questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0;
-        if (finalScore >= 80 && newlyCorrectFirstAttempts > 0) {
-            const bonusCoins = newlyCorrectFirstAttempts * 5; // 2x multiplier basically
-            try { const ac = new (window.AudioContext || (window as any).webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); ac.close(); } catch (_) { }
-            awardPoints(bonusCoins, 'accuracy_bonus', algorithmicSessionId, '80% Accuracy Bonus! (2x)', `practice_accuracy_${algorithmicSessionId}`).then(() => playCoinSound());
+        
+        // Only award accuracy bonus if they actually earned base coins (meaning they learned something new)
+        if (finalScore >= 80 && newlyEarnedBaseCoins > 0) {
+            const accuracyBonus = newlyEarnedBaseCoins; // 2x multiplier basically
+            const uniqueBonusKey = `practice_accuracy_${algorithmicSessionId || 'default'}_${Date.now()}`;
+            const bonusRes = await awardPoints(accuracyBonus, 'accuracy_bonus', algorithmicSessionId || 'bonus', '80% Accuracy Bonus! (2x)', uniqueBonusKey, window.innerWidth / 2, window.innerHeight / 2, true);
+            if (bonusRes.success) {
+                totalSessionCoins += accuracyBonus;
+            }
         }
+
+        // Add Unit Test and Unit Mastery Bonus
+        if (subTopicId === 'unit_test') {
+            // 50 Points for completing Unit Test
+            const unitTestBonus = 50;
+            const uniqueUnitTestKey = `practice_unittest_${topicParam || 'default'}_${Date.now()}`;
+            const testRes = await awardPoints(unitTestBonus, 'unit_test_complete', topicParam, 'Unit Test Completed', uniqueUnitTestKey, window.innerWidth / 2, window.innerHeight / 2, true);
+            if (testRes.success) {
+                totalSessionCoins += unitTestBonus;
+            }
+
+            // 200 Points for 100% Unit Mastery
+            if (finalScore === 100) {
+                const masteryBonus = 200;
+                const uniqueMasteryKey = `practice_mastery_${topicParam || 'default'}`; // NO Date.now()! STRICTLY FIRST-TIME MASTERY!
+                
+                // Check if mastery bonus was already given
+                const { data: existingMastery } = await supabase
+                    .from('points_transactions')
+                    .select('idempotency_key')
+                    .eq('idempotency_key', uniqueMasteryKey)
+                    .single();
+                    
+                if (!existingMastery) {
+                    const masteryRes = await awardPoints(masteryBonus, 'unit_mastery', topicParam, 'Unit Mastery 100% Achieved', uniqueMasteryKey, window.innerWidth / 2, window.innerHeight / 2, true);
+                    if (masteryRes.success) {
+                        totalSessionCoins += masteryBonus;
+                    }
+                }
+            }
+        }
+        
+        // Force a fresh fetch of the true backend balance to overwrite any race conditions
+        await fetchUserPoints();
+        
+        // Trigger ONE unified coin animation for the total amount on the summary page
+        if (totalSessionCoins > 0) {
+            triggerCoinAnimation(totalSessionCoins, window.innerWidth / 2, window.innerHeight / 2);
+        }
+
+        // Update the state so the SessionSummary UI can display it
+        setSessionEarnedCoins(totalSessionCoins);
 
         setShowSummary(true);
     };
@@ -2053,7 +2099,7 @@ When you are ready to test your knowledge, click **Start Practice** below. Good 
                         summaryHistory={sessionHistory}
                         justCompletedSessionLabel={justCompletedSessionLabel}
                         discussSlug={discussSlug}
-                        coinsEarned={newlyCorrectFirstAttempts * 5}
+                        coinsEarned={sessionEarnedCoins}
                     />
                 </div>
             </div>

@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 
 interface ProGateOverlayProps {
     featureName: string;
+    onClose?: () => void;
 }
 
 /**
  * A full-page overlay that blocks access to Pro-only features.
  * Shows a blurred background hint with a centered "Pro Only" card.
  */
-export const ProGateOverlay: React.FC<ProGateOverlayProps> = ({ featureName }) => {
+export const ProGateOverlay: React.FC<ProGateOverlayProps> = ({ featureName, onClose }) => {
     const navigate = useNavigate();
 
     return (
@@ -25,10 +26,8 @@ export const ProGateOverlay: React.FC<ProGateOverlayProps> = ({ featureName }) =
                     Pro Feature
                 </h2>
 
-                {/* Description */}
                 <p className="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed mb-8">
-                    <strong>{featureName}</strong> is an exclusive feature available to Pro members.
-                    Upgrade your plan to unlock full access.
+                    This feature requires Pro. Please upgrade in Settings → Subscription.
                 </p>
 
                 {/* CTA Buttons */}
@@ -36,11 +35,11 @@ export const ProGateOverlay: React.FC<ProGateOverlayProps> = ({ featureName }) =
                     onClick={() => navigate('/settings/subscription')}
                     className="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-widest bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-xl shadow-amber-500/20 hover:scale-[1.02] active:scale-95 transition-all mb-3"
                 >
-                    Learn More
+                    Upgrade to Pro
                 </button>
 
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => onClose ? onClose() : navigate(-1)}
                     className="w-full py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 >
                     Go Back

@@ -30,6 +30,7 @@ export interface User {
   subscriptionTier?: 'basic' | 'pro';
   subscriptionPeriodEnd?: string;
   hasSeenProIntro?: boolean;
+  hasClaimedWelcomeGift?: boolean;
   stats?: UserProfileStats;
   bio?: string;
   avatarColor?: string;

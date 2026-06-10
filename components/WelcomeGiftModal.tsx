@@ -11,7 +11,7 @@ interface WelcomeGiftModalProps {
 export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed }) => {
     const [isClaiming, setIsClaiming] = useState(false);
     const [claimed, setClaimed] = useState(false);
-    const { user, fetchUserPoints, triggerCoinAnimation } = useApp();
+    const { user, fetchUserPoints, triggerCoinAnimation, setShowPaywall } = useApp();
     const { showToast } = useToast();
     const modalRef = useRef<HTMLDivElement>(null);
 
@@ -116,8 +116,24 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed })
 
                 showToast('🎁 Welcome Gift Claimed! +200 NMS Points!', 'success');
 
-                // Close modal after effects
-                setTimeout(() => onClaimed(), 2800);
+                // Generate persistent upgrade notification
+                try {
+                    await supabase.from('notifications').insert({
+                        user_id: user.id,
+                        text: '[Membership] You have enough coins to upgrade to Pro! Redeem now.',
+                        link: '/settings/subscription',
+                        unread: true,
+                        type: 'system'
+                    });
+                } catch (e) { console.error('Failed to insert upgrade notif', e); }
+
+                // Close modal after effects and popup upgrade paywall
+                setTimeout(() => {
+                    onClaimed();
+                    if (window.location.pathname !== '/settings/subscription') {
+                        setShowPaywall(true);
+                    }
+                }, 2800);
             } else {
                 showToast('Gift already claimed!', 'info');
                 onClaimed();

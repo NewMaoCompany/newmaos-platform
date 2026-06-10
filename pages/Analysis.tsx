@@ -307,6 +307,11 @@ export const Analysis = () => {
         analysisNotifs.forEach(n => markNotificationRead(n.id));
     };
 
+    // Auto-clear analysis notifications when entering this page
+    useEffect(() => {
+        clearAllAnalysisNotifs();
+    }, [notifications, markNotificationRead]);
+
     // --- Metrics & Trends ---
 
     // Accuracy Logic
