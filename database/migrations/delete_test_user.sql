@@ -1,7 +1,7 @@
 -- ============================================================
 -- COMPLETELY DELETE A USER AND ALL THEIR DATA
 -- Run this in Supabase SQL Editor.
--- Replace 'newmao6120@gmail.com' with the email of the user you want to delete.
+-- Replace '27zc0001@wwprsd.org' with the email of the user you want to delete.
 -- ============================================================
 
 DO $$
@@ -11,7 +11,7 @@ BEGIN
     -- 1. Find the user ID by email
     SELECT id INTO v_target_user_id
     FROM auth.users
-    WHERE email = 'newmao6120@gmail.com';
+    WHERE email = '27zc0001@wwprsd.org';
 
     IF v_target_user_id IS NULL THEN
         RAISE EXCEPTION 'User not found. Please check the email.';
@@ -26,7 +26,6 @@ BEGIN
     DELETE FROM public.user_question_state WHERE user_id = v_target_user_id;
     DELETE FROM public.activities WHERE user_id = v_target_user_id;
     DELETE FROM public.user_titles WHERE user_id = v_target_user_id;
-    DELETE FROM public.user_badges WHERE user_id = v_target_user_id;
     DELETE FROM public.forum_posts WHERE author_id = v_target_user_id;
     DELETE FROM public.forum_comments WHERE author_id = v_target_user_id;
     DELETE FROM public.forum_likes WHERE user_id = v_target_user_id;
