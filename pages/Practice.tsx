@@ -1661,7 +1661,7 @@ export const Practice = () => {
                 .single();
 
             if (!existingAlgo) {
-                const algoRes = await awardPoints(20, 'algo_daily', 'algorithm_practice', 'Algorithm Practice Daily Bonus', algoDailyKey, window.innerWidth / 2, window.innerHeight / 2, true);
+                const algoRes = await awardPoints(20, 'manual_adjustment', 'algorithm_practice', 'Algorithm Practice Daily Bonus', algoDailyKey, window.innerWidth / 2, window.innerHeight / 2, true);
                 if (algoRes.success) {
                     totalSessionCoins += 20;
                 }
@@ -1688,7 +1688,7 @@ export const Practice = () => {
 
                 // Award points individually to strictly record them in the DB (suppress animations)
                 const coinPromises = trulyNewCorrectIds.map(qId => 
-                    awardPoints(5, 'practice_correct', qId, 'Correct Answer +5', `practice_${user?.id}_${qId}`, window.innerWidth / 2, window.innerHeight / 2, true)
+                    awardPoints(5, 'manual_adjustment', qId, 'Correct Answer +5', `practice_${user?.id}_${qId}`, window.innerWidth / 2, window.innerHeight / 2, true)
                 );
 
                 await Promise.all(coinPromises);
@@ -1701,7 +1701,7 @@ export const Practice = () => {
             if (finalScore >= 80 && newlyEarnedBaseCoins > 0) {
                 const accuracyBonus = newlyEarnedBaseCoins; // 2x multiplier basically
                 const uniqueBonusKey = `practice_accuracy_${user?.id}_${algorithmicSessionId || 'default'}_${Date.now()}`;
-                const bonusRes = await awardPoints(accuracyBonus, 'accuracy_bonus', algorithmicSessionId || 'bonus', '80% Accuracy Bonus! (2x)', uniqueBonusKey, window.innerWidth / 2, window.innerHeight / 2, true);
+                const bonusRes = await awardPoints(accuracyBonus, 'manual_adjustment', algorithmicSessionId || 'bonus', '80% Accuracy Bonus! (2x)', uniqueBonusKey, window.innerWidth / 2, window.innerHeight / 2, true);
                 if (bonusRes.success) {
                     totalSessionCoins += accuracyBonus;
                 }
@@ -1714,7 +1714,7 @@ export const Practice = () => {
             // 50 Points for completing Unit Test
             const unitTestBonus = 50;
             const uniqueUnitTestKey = `practice_unittest_${user?.id}_${topicParam || 'default'}_${Date.now()}`;
-            const testRes = await awardPoints(unitTestBonus, 'unit_test_complete', topicParam, 'Unit Test Completed', uniqueUnitTestKey, window.innerWidth / 2, window.innerHeight / 2, true);
+            const testRes = await awardPoints(unitTestBonus, 'manual_adjustment', topicParam, 'Unit Test Completed', uniqueUnitTestKey, window.innerWidth / 2, window.innerHeight / 2, true);
             if (testRes.success) {
                 totalSessionCoins += unitTestBonus;
             }
@@ -1732,7 +1732,7 @@ export const Practice = () => {
                     .single();
                     
                 if (!existingMastery) {
-                    const masteryRes = await awardPoints(masteryBonus, 'unit_mastery', topicParam, 'Unit Mastery 100% Achieved', uniqueMasteryKey, window.innerWidth / 2, window.innerHeight / 2, true);
+                    const masteryRes = await awardPoints(masteryBonus, 'manual_adjustment', topicParam, '100% Unit Mastery', uniqueMasteryKey, window.innerWidth / 2, window.innerHeight / 2, true);
                     if (masteryRes.success) {
                         totalSessionCoins += masteryBonus;
                     }
