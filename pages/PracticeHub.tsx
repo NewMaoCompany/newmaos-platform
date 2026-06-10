@@ -370,7 +370,7 @@ const HistoryGroupCard = ({ sectionId, activities }: { sectionId: string, activi
 };
 
 export const PracticeHub = () => {
-    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, notifications, markLinkAsRead, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry } = useApp();
+    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, markLinkAsRead, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry } = useApp();
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isUnitDropdownOpen, setIsUnitDropdownOpen] = useState(false);
@@ -854,7 +854,7 @@ export const PracticeHub = () => {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {topics.map((topic, idx) => {
-                                const hasNotif = notifications.some((n: any) => n.unread && n.link === `/practice/unit/${topic.id}`);
+                                const hasNotif = false;
                                 return (
                                     <UnitCard
                                         key={topic.id}

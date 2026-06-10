@@ -120,6 +120,9 @@ interface AppContextType {
     clearUnread: (id: string) => void;
     checkinStatus: 'checked_in' | 'not_checked_in' | 'loading';
     refreshCheckinStatus: () => Promise<void>;
+    notifications: any[];
+    markNotificationRead: (id: string) => void;
+    markNotificationsByLink: (link: string) => void;
 
     // Pro Upgrade Red Dot
     proUpgradeDismissed: boolean;
@@ -3425,6 +3428,9 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             courses,
             recommendation,
             hasDismissedLoginPrompt,
+            notifications: [],
+            markNotificationRead: () => {},
+            markNotificationsByLink: () => {},
             questions,
             isCreatorAuthenticated,
             topicContent,

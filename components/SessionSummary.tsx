@@ -142,16 +142,16 @@ export const SessionSummary = ({
     const [visibleComments, setVisibleComments] = useState<Record<string, boolean>>({});
 
     // Safety check: Filter results that actually match passed questions
-    const validResults = Object.entries(activeQuestionResults).filter(([qid]) => questions.some(q => q.id === qid));
+    const safeQuestions = questions || [];
+    const validResults = Object.entries(activeQuestionResults).filter(([qid]) => safeQuestions.some(q => q.id === qid));
 
     // Calculate Stats for ACTIVE selection
     // Dynamic Total: Use the actual number of results recorded for this session round.
     // This fixes the bug where Review rounds (subset of questions) incorrectly used the full chapter length.
     const total = selectedHistoryIndex === -1
-        ? (Object.keys(activeQuestionResults).length > 0 ? Object.keys(activeQuestionResults).length : questions.length)
-        : (validResults.length > 0 ? validResults.length : questions.length);
+        ? (Object.keys(activeQuestionResults).length > 0 ? Object.keys(activeQuestionResults).length : safeQuestions.length)
+        : (validResults.length > 0 ? validResults.length : safeQuestions.length);
 
-    // Count correct answers
     const correctCount = selectedHistoryIndex === -1
         ? Object.values(activeQuestionResults).filter(r => r === 'correct' || r === true).length
         : validResults.filter(([, r]) => r === 'correct' || r === true).length;
@@ -206,7 +206,7 @@ export const SessionSummary = ({
 
     const config = getConfig();
 
-    const incorrectQuestions = questions.filter(q => activeQuestionResults[q.id] === 'incorrect' || activeQuestionResults[q.id] === false);
+    const incorrectQuestions = safeQuestions.filter(q => activeQuestionResults[q.id] === 'incorrect' || activeQuestionResults[q.id] === false);
 
     const renderContent = (content: string, type?: 'text' | 'image', options: { noBorder?: boolean } = {}) => {
         if (!content) return null;
@@ -245,7 +245,7 @@ export const SessionSummary = ({
 
                     <div className="space-y-6">
                         {(() => {
-                            const filteredQuestions = questions.filter(q => {
+                            const filteredQuestions = safeQuestions.filter(q => {
                                 const result = activeQuestionResults[q.id];
                                 // ONLY show questions that were part of this specific attempt (active set)
                                 if (result === undefined || result === null) return false;
