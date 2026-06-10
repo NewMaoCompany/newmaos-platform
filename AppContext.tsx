@@ -2332,6 +2332,9 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 return updated;
             });
 
+            // Clear settings red dot immediately
+            setNavRedDots(prev => ({ ...prev, settings: false, subscription: false }));
+
             return true;
         } catch (error) {
             console.error('Failed to claim free pro:', error);
@@ -2458,6 +2461,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     localStorage.setItem('user_profile_cache', JSON.stringify(updated));
                     return updated;
                 });
+                // Immediately clear settings red dot — badge should disappear once Pro is active
+                setNavRedDots(prev => ({ ...prev, settings: false, subscription: false }));
                 return { success: true, newBalance: data.new_balance };
             }
             return { success: false, reason: data?.reason, shortfall: data?.shortfall };
