@@ -299,14 +299,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
     };
 
-    useEffect(() => {
-        if (checkinStatus === 'not_checked_in') {
-            setNavRedDots(prev => ({ ...prev, dashboard: true, checkin: true }));
-        } else if (checkinStatus === 'checked_in') {
-            setNavRedDots(prev => ({ ...prev, dashboard: false, checkin: false }));
-        }
-    }, [checkinStatus]);
-
     const markBadgeAsRead = async (type: 'analysis' | 'forum' | 'practice') => {
         if (!user.id) return;
         try {
@@ -368,6 +360,14 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     const [recentPointsTransaction, setRecentPointsTransaction] = useState<{ amount: number; description: string } | null>(null);
     const [checkinStatus, setCheckinStatus] = useState<'checked_in' | 'not_checked_in' | 'loading'>('loading');
     const [isStreakModalOpen, setIsStreakModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (checkinStatus === 'not_checked_in') {
+            setNavRedDots(prev => ({ ...prev, dashboard: true, checkin: true }));
+        } else if (checkinStatus === 'checked_in') {
+            setNavRedDots(prev => ({ ...prev, dashboard: false, checkin: false }));
+        }
+    }, [checkinStatus]);
 
     const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>(() => {
         if (typeof window !== 'undefined') {
