@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../AppContext';
-import { supabase } from '../src/services/api';
+import { supabase } from '../src/services/supabaseClient';
 
 export const OnboardingFlow: React.FC = () => {
     const { user, isAuthenticated, isPro, updateUser, awardPoints, redeemProWithPoints } = useApp();
