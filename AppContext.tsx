@@ -120,9 +120,6 @@ interface AppContextType {
     clearUnread: (id: string) => void;
     checkinStatus: 'checked_in' | 'not_checked_in' | 'loading';
     refreshCheckinStatus: () => Promise<void>;
-    notifications: any[];
-    markNotificationRead: (id: string) => void;
-    markNotificationsByLink: (link: string) => void;
 
     // Pro Upgrade Red Dot
     proUpgradeDismissed: boolean;
@@ -243,8 +240,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     // Lifted Error Notebook Cache for 0-latency loading
     const [wrongAnswersCache, setWrongAnswersCache] = useState<{ items: any[], lastFetched: number }>({ items: [], lastFetched: 0 });
 
-    const [notifications, setNotifications] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS);
-
     // Persistent Red Dots State (Fetched from Backend RPC)
     const [navRedDots, setNavRedDots] = useState({
         dashboard: false,
@@ -256,69 +251,30 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         checkin: false
     });
 
-    // Fetch Badges from Backend Dynamically (Since no RPC exists)
+    // Fetch Badges from Backend dynamically via RPC
     const fetchBadgeStatus = async () => {
         if (!user.id) return;
         try {
-            // 1. Dashboard (Check-in)
-            // We can just rely on the existing checkinStatus, but wait, checkinStatus is fetched separately.
-            // We will fetch today's checkin explicitly just to be sure.
-            const todayStr = new Date().toISOString().split('T')[0];
-            const { data: checkinData } = await supabase
-                .from('points_ledger')
-                .select('id')
-                .eq('user_id', user.id)
-                .eq('type', 'login_streak')
-                .gte('created_at', `${todayStr}T00:00:00Z`);
-            
-            const hasCheckedIn = checkinData && checkinData.length > 0;
-
-            // 2. Settings (Pro Status)
-            const isProNow = user.subscriptionTier === 'pro';
-
-            // 3. Analysis (Check if any question attempts exist after last viewed timestamp)
-            const lastAnalysisView = user.preferences?.lastAnalysisView || '1970-01-01T00:00:00Z';
-            const { data: latestAttempt } = await supabase
-                .from('question_attempts')
-                .select('created_at')
-                .eq('user_id', user.id)
-                .gt('created_at', lastAnalysisView)
-                .limit(1);
-            
-            const hasNewAnalysis = latestAttempt && latestAttempt.length > 0;
-
-            // 4. Forum (Check for unread activities)
-            const lastForumView = user.preferences?.lastForumView || '1970-01-01T00:00:00Z';
-            const { count: forumUnreadCount } = await supabase
-                .from('activities')
-                .select('id', { count: 'exact', head: true })
-                .eq('user_id', user.id)
-                .in('type', ['forum_reply', 'forum_like', 'forum_mention'])
-                .gt('created_at', lastForumView);
-
-            // 5. Practice (Daily recommendations)
-            // If they haven't viewed practice recommendations today, show badge.
-            const lastPracticeViewStr = user.preferences?.lastPracticeView || '1970-01-01';
-            const lastPracticeViewDate = lastPracticeViewStr.split('T')[0];
-            const hasNewPractice = lastPracticeViewDate < todayStr;
-
-            setNavRedDots({
-                dashboard: !hasCheckedIn,
-                practice: hasNewPractice,
-                analysis: hasNewAnalysis,
-                forum: forumUnreadCount || 0,
-                settings: !isProNow,
-                subscription: !isProNow,
-                checkin: !hasCheckedIn
-            });
-
-            // Update local welcome gift state if it's set in backend (user.has_claimed_welcome_gift)
-            // Wait, we can fetch the user profile just in case it changed
-            const { data: profile } = await supabase.from('user_profiles').select('has_claimed_welcome_gift').eq('id', user.id).single();
-            if (profile && profile.has_claimed_welcome_gift) {
-                updateUser({ hasClaimedWelcomeGift: true });
+            const { data, error } = await supabase.rpc('get_user_badges', { p_user_id: user.id });
+            if (error) {
+                console.error('Error fetching badge status dynamically:', error);
+                return;
             }
+            if (data) {
+                setNavRedDots({
+                    dashboard: data.dashboard,
+                    practice: data.practice,
+                    analysis: data.analysis,
+                    forum: data.forum,
+                    settings: data.settings,
+                    subscription: data.settings,
+                    checkin: data.dashboard
+                });
 
+                if (data.has_claimed_welcome_gift) {
+                    updateUser({ hasClaimedWelcomeGift: true });
+                }
+            }
         } catch (err) {
             console.error('Error fetching badge status dynamically:', err);
         }
@@ -328,16 +284,17 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         if (!user.id) return;
         try {
             const now = new Date().toISOString();
-            const prefs = { ...(user.preferences || {}) };
+            const updates: any = {};
             
-            if (type === 'analysis') prefs.lastAnalysisView = now;
-            if (type === 'forum') prefs.lastForumView = now;
-            if (type === 'practice') prefs.lastPracticeView = now;
+            if (type === 'analysis') updates.last_analysis_view_time = now;
+            if (type === 'forum') updates.last_forum_read_time = now;
+            if (type === 'practice') updates.last_practice_rec_view_time = now;
 
-            const { error } = await supabase.from('user_profiles').update({ preferences: prefs }).eq('id', user.id);
-            if (error) throw error;
+            if (Object.keys(updates).length > 0) {
+                const { error } = await supabase.from('user_profiles').update(updates).eq('id', user.id);
+                if (error) throw error;
+            }
             
-            updateUser({ preferences: prefs });
             await fetchBadgeStatus();
         } catch (err) {
             console.error('Error marking badge as read:', err);
@@ -1007,167 +964,22 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     useEffect(() => {
         if (!user || !isAuthenticated || !user.id) return;
 
-        let generalChannelId: string | undefined;
         let forumSubscription: any;
-        let dmSubscription: any;
-        let userNotifSub: any;
         let titleSub: any;
 
         const setupListener = async () => {
-            // 1. Get 'General' channel ID
-            try {
-                const { data: channels } = await supabase
-                    .from('forum_channels')
-                    .select('id, name')
-                    .ilike('name', 'general')
-                    .single();
-                if (channels) generalChannelId = channels.id;
-            } catch (e) {
-                console.warn('Failed to find General channel for notifications', e);
-            }
-
-            // 2a. Subscribe to forum_messages for in-app notifications
-            forumSubscription = supabase.channel('global-notifications-v1')
+            // Subscribe to activities for forum red dots
+            forumSubscription = supabase.channel('global-activities-v1')
                 .on(
                     'postgres_changes',
-                    { event: 'INSERT', schema: 'public', table: 'forum_messages' },
-                    async (payload: any) => {
-                        const newMsg = payload.new;
-                        if (newMsg.user_id === user.id) return;
-
-                        // Check muted channels
-                        try {
-                            const mutedRaw = localStorage.getItem('forum_muted_channels');
-                            if (mutedRaw) {
-                                const mutedSet = new Set(JSON.parse(mutedRaw));
-                                if (mutedSet.has(newMsg.channel_id)) return;
-                            }
-                        } catch { }
-
-                        let notifText = '';
-                        let senderName = '';
-                        let shouldNotify = false;
-
-                        const { data: senderProfile } = await supabase
-                            .from('user_profiles')
-                            .select('name')
-                            .eq('id', newMsg.user_id)
-                            .single();
-
-                        const rawSenderName = senderProfile?.name || 'Someone';
-                        const isFriend = friendIds.has(newMsg.user_id);
-                        const snippet = newMsg.content.length > 60
-                            ? newMsg.content.substring(0, 60) + '...'
-                            : newMsg.content;
-
-                        if (generalChannelId && newMsg.channel_id === generalChannelId) {
-                            shouldNotify = true;
-                            const channelDisplayName = 'General Community';
-                            if (isFriend) {
-                                notifText = `${rawSenderName} in ${channelDisplayName}: "${snippet}"`;
-                                senderName = rawSenderName;
-                            } else {
-                                notifText = `New message in ${channelDisplayName}: "${snippet}"`;
-                            }
-                        }
-
-                        if (newMsg.reply_to_id) {
-                            const { data: parent } = await supabase
-                                .from('forum_messages')
-                                .select('user_id')
-                                .eq('id', newMsg.reply_to_id)
-                                .single();
-
-                            if (parent && parent.user_id === user.id) {
-                                shouldNotify = true;
-                                notifText = `${rawSenderName} replied to your message: "${snippet}"`;
-                                senderName = rawSenderName;
-                            }
-                        }
-
-                        if (shouldNotify) {
-                            const newNotif: AppNotification = {
-                                id: Date.now(),
-                                text: notifText || 'New notification',
-                                time: 'Just now',
-                                unread: true,
-                                link: `/forum?channel_id=${newMsg.channel_id}&message_id=${newMsg.id}`,
-                                channelId: newMsg.channel_id,
-                                messageId: newMsg.id,
-                                senderName: senderName,
-                                senderId: newMsg.user_id
-                            };
-                            setNotifications(prev => [newNotif, ...prev]);
-                        }
+                    { event: 'INSERT', schema: 'public', table: 'activities', filter: `user_id=eq.${user.id}` },
+                    () => {
+                        fetchBadgeStatus();
                     }
                 )
                 .subscribe();
 
-            // 2b. Subscribe to direct_messages for background alerts
-            dmSubscription = supabase.channel('global-dm-notifications-v2')
-                .on(
-                    'postgres_changes',
-                    { event: 'INSERT', schema: 'public', table: 'direct_messages' },
-                    async (payload: any) => {
-                        const newMsg = payload.new;
-                        if (newMsg.user_id === user.id) return;
-
-                        const { data: senderProfile } = await supabase
-                            .from('user_profiles')
-                            .select('name')
-                            .eq('id', newMsg.user_id)
-                            .single();
-
-                        const rawSenderName = senderProfile?.name || 'Someone';
-                        const snippet = newMsg.content.length > 60
-                            ? newMsg.content.substring(0, 60) + '...'
-                            : newMsg.content;
-
-                        const newNotif: AppNotification = {
-                            id: Date.now(),
-                            text: `${rawSenderName} sent you a message: "${snippet}"`,
-                            time: 'Just now',
-                            unread: true,
-                            link: `/forum?chat_id=${newMsg.chat_id}`,
-                            chatId: newMsg.chat_id,
-                            messageId: newMsg.id,
-                            senderName: rawSenderName,
-                            senderId: newMsg.user_id,
-                            type: 'dm'
-                        };
-                        setNotifications(prev => [newNotif, ...prev]);
-                    }
-                )
-                .subscribe();
-
-            // 3. User notifications
-            userNotifSub = supabase.channel('user-notifications-v1')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: 'INSERT',
-                        schema: 'public',
-                        table: 'notifications',
-                        filter: `user_id=eq.${user.id}`
-                    },
-                    (payload: any) => {
-                        const newNotif = payload.new;
-                        const appNotif: AppNotification = {
-                            id: newNotif.id,
-                            text: newNotif.text,
-                            time: 'Just now',
-                            unread: newNotif.unread,
-                            link: newNotif.link || '/dashboard',
-                            type: newNotif.type,
-                            metadata: newNotif.metadata,
-                            chatId: newNotif.chat_id
-                        };
-                        setNotifications(prev => [appNotif, ...prev]);
-                    }
-                )
-                .subscribe();
-
-            // 4. Achievement unlocks
+            // Achievement unlocks
             titleSub = supabase.channel('achievement-unlocks')
                 .on(
                     'postgres_changes',
@@ -1194,8 +1006,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
         return () => {
             if (forumSubscription) supabase.removeChannel(forumSubscription);
-            if (dmSubscription) supabase.removeChannel(dmSubscription);
-            if (userNotifSub) supabase.removeChannel(userNotifSub);
             if (titleSub) supabase.removeChannel(titleSub);
         };
     }, [user.id, isAuthenticated]);
@@ -1218,35 +1028,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         return times;
     }, [questions, user.currentCourse]);
 
-    const markAllNotificationsRead = async () => {
-        // Skip unclaimed gift_claim notifications — they should only be read after claiming
-        setNotifications(prev => prev.map(n => {
-            if (n.type === 'gift_claim' && !n.metadata?.claimed) return n; // Keep unread
-            return { ...n, unread: false };
-        }));
-        dismissProUpgrade(); // Also dismiss pro upgrade pseudo-notification
-        try {
-            // Mark all non-gift-claim as read on backend
-            // For gift_claim, only mark if already claimed
-            const toMark = notifications.filter(n =>
-                n.unread && (n.type !== 'gift_claim' || n.metadata?.claimed)
-            );
-            if (toMark.length > 0) {
-                await notificationsApi.markAllAsRead();
-                // But re-set unclaimed gift_claim back to unread
-                const unclaimedGifts = notifications.filter(n =>
-                    n.type === 'gift_claim' && n.unread && !n.metadata?.claimed
-                );
-                for (const g of unclaimedGifts) {
-                    try {
-                        await supabase.from('notifications').update({ unread: true }).eq('id', g.id);
-                    } catch { }
-                }
-            }
-        } catch (error) {
-            console.error('Failed to mark all read:', error);
-        }
-    };
+
 
 
 
@@ -2754,6 +2536,9 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 // Refresh points balance
                 await fetchUserPoints();
 
+                // Ensure latest badges are fetched so Dashboard red dot disappears
+                await fetchBadgeStatus();
+
                 // Trigger animation (default to center)
                 triggerCoinAnimation(data.total_points || 20);
 
@@ -3428,9 +3213,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             courses,
             recommendation,
             hasDismissedLoginPrompt,
-            notifications: [],
-            markNotificationRead: () => {},
-            markNotificationsByLink: () => {},
             questions,
             isCreatorAuthenticated,
             topicContent,

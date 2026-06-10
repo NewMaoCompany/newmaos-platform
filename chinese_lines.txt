@@ -1,0 +1,23 @@
+pages/Login.tsx:92:if (msg.includes('密码') || msg.includes('邮箱') || msg.includes('错误') || msg.includes('用户')) {
+pages/Login.tsx:93:if (msg.includes('验证') || msg.includes('verify')) return 'Please verify your email before signing in.';
+pages/Login.tsx:138:errorMessage.includes('验证')) {
+pages/Practice.tsx:513:// User requested: "不需要右上角出现弹窗" (Remove toast)
+pages/Forum.tsx:23:creator_id?: string; // ✅ 添加创建者ID
+pages/Forum.tsx:24:member_count?: number; // ✅ 添加成员数量
+pages/Forum.tsx:58:is_official?: boolean; // ✅ 添加官方标识
+pages/Forum.tsx:288:is_official: isOfficial // ✅ 使用计算后的标识
+pages/Forum.tsx:874:const [joinedChannelIds, setJoinedChannelIds] = useState<Set<string>>(new Set()); // ✅ 追踪已加入频道的ID
+pages/Forum.tsx:1083:// Courses区域状态
+pages/Forum.tsx:1831:// Fetch topic_content for Courses区域
+pages/Forum.tsx:2778:// ✅ 检查普通用户的创建限制（只针对Custom分类）
+pages/Forum.tsx:2806:creator_id: user.id // ✅ 记录创建者
+pages/Forum.tsx:2847:// ✅ 乐观更新：立刻显示频道
+pages/Forum.tsx:2852:setJoinedChannelIds(prev => new Set([...prev, channel.id])); // ✅ 添加到已加入集合
+pages/Forum.tsx:2857:// 后台异步处理加入逻辑
+pages/ResetPassword.tsx:62:if (msg.includes('密码') || msg.includes('邮箱') || msg.includes('错误') || msg.includes('用户')) {
+pages/ResetPassword.tsx:63:if (msg.includes('验证') || msg.includes('verify')) return 'Please verify your email.';
+pages/StaticPages.tsx:451:if (msg.includes('密码') || msg.includes('邮箱') || msg.includes('错误') || msg.includes('用户')) {
+pages/StaticPages.tsx:452:if (msg.includes('验证') || msg.includes('verify')) return 'Please verify your email.';
+pages/VerifyEmail.tsx:52:if (msg.includes('密码') || msg.includes('邮箱') || msg.includes('错误') || msg.includes('用户')) {
+pages/VerifyEmail.tsx:53:if (msg.includes('验证') || msg.includes('verify')) return 'Please verify your email.';
+pages/WrongAnswerBook.tsx:438:// Simple inline filter pills instead of custom dropdowns (化繁为简)
