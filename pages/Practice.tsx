@@ -1647,47 +1647,67 @@ export const Practice = () => {
         let newlyEarnedBaseCoins = 0;
         let trulyNewCorrectIds: string[] = [];
 
-        if (correctQuestionIds.length > 0) {
-            // Check the DB to see which questions have ALREADY been rewarded to this user
-            const idempotencyKeysV1 = correctQuestionIds.map(id => `practice_${id}`);
-            const idempotencyKeysV2 = correctQuestionIds.map(id => `practice_${user?.id}_${id}`);
-            const { data: existingTransactions, error: txError } = await supabase
-                .from('points_transactions')
-                .select('idempotency_key')
-                .in('idempotency_key', [...idempotencyKeysV1, ...idempotencyKeysV2]);
-                
-            if (txError) {
-                console.error("Error fetching past point transactions:", txError);
-            }
-
-            const existingKeys = new Set(existingTransactions?.map((t: any) => t.idempotency_key) || []);
-            trulyNewCorrectIds = correctQuestionIds.filter(id => 
-                !existingKeys.has(`practice_${id}`) && !existingKeys.has(`practice_${user?.id}_${id}`)
-            );
-
-            // Award points individually to strictly record them in the DB (suppress animations)
-            const coinPromises = trulyNewCorrectIds.map(qId => 
-                awardPoints(5, 'practice_correct', qId, 'Correct Answer +5', `practice_${user?.id}_${qId}`, window.innerWidth / 2, window.innerHeight / 2, true)
-            );
-
-            await Promise.all(coinPromises);
-            newlyEarnedBaseCoins = trulyNewCorrectIds.length * 5;
-        }
-        
-        let totalSessionCoins = newlyEarnedBaseCoins;
-
-        // Add 80% Accuracy Bonus
+        let totalSessionCoins = 0;
         const finalScore = questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0;
-        
-        // Only award accuracy bonus if they actually earned base coins (meaning they learned something new)
-        if (finalScore >= 80 && newlyEarnedBaseCoins > 0) {
-            const accuracyBonus = newlyEarnedBaseCoins; // 2x multiplier basically
-            const uniqueBonusKey = `practice_accuracy_${user?.id}_${algorithmicSessionId || 'default'}_${Date.now()}`;
-            const bonusRes = await awardPoints(accuracyBonus, 'accuracy_bonus', algorithmicSessionId || 'bonus', '80% Accuracy Bonus! (2x)', uniqueBonusKey, window.innerWidth / 2, window.innerHeight / 2, true);
-            if (bonusRes.success) {
-                totalSessionCoins += accuracyBonus;
+
+        if (sessionMode === 'Adaptive') {
+            // Adaptive mode ONLY awards 20 coins once per day, regardless of correctness
+            const localDate = new Date().toLocaleDateString('en-CA');
+            const algoDailyKey = `algo_daily_${user?.id}_${localDate}`;
+            const { data: existingAlgo } = await supabase
+                .from('points_ledger')
+                .select('id')
+                .eq('idempotency_key', algoDailyKey)
+                .single();
+
+            if (!existingAlgo) {
+                const algoRes = await awardPoints(20, 'algo_daily', 'algorithm_practice', 'Algorithm Practice Daily Bonus', algoDailyKey, window.innerWidth / 2, window.innerHeight / 2, true);
+                if (algoRes.success) {
+                    totalSessionCoins += 20;
+                }
+            }
+        } else {
+            // Normal base points logic
+            if (correctQuestionIds.length > 0) {
+                // Check the DB to see which questions have ALREADY been rewarded to this user
+                const idempotencyKeysV1 = correctQuestionIds.map(id => `practice_${id}`);
+                const idempotencyKeysV2 = correctQuestionIds.map(id => `practice_${user?.id}_${id}`);
+                const { data: existingTransactions, error: txError } = await supabase
+                    .from('points_ledger')
+                    .select('idempotency_key')
+                    .in('idempotency_key', [...idempotencyKeysV1, ...idempotencyKeysV2]);
+                    
+                if (txError) {
+                    console.error("Error fetching past point transactions:", txError);
+                }
+
+                const existingKeys = new Set(existingTransactions?.map((t: any) => t.idempotency_key) || []);
+                trulyNewCorrectIds = correctQuestionIds.filter(id => 
+                    !existingKeys.has(`practice_${id}`) && !existingKeys.has(`practice_${user?.id}_${id}`)
+                );
+
+                // Award points individually to strictly record them in the DB (suppress animations)
+                const coinPromises = trulyNewCorrectIds.map(qId => 
+                    awardPoints(5, 'practice_correct', qId, 'Correct Answer +5', `practice_${user?.id}_${qId}`, window.innerWidth / 2, window.innerHeight / 2, true)
+                );
+
+                await Promise.all(coinPromises);
+                newlyEarnedBaseCoins = trulyNewCorrectIds.length * 5;
+            }
+            
+            totalSessionCoins += newlyEarnedBaseCoins;
+
+            // Add 80% Accuracy Bonus
+            if (finalScore >= 80 && newlyEarnedBaseCoins > 0) {
+                const accuracyBonus = newlyEarnedBaseCoins; // 2x multiplier basically
+                const uniqueBonusKey = `practice_accuracy_${user?.id}_${algorithmicSessionId || 'default'}_${Date.now()}`;
+                const bonusRes = await awardPoints(accuracyBonus, 'accuracy_bonus', algorithmicSessionId || 'bonus', '80% Accuracy Bonus! (2x)', uniqueBonusKey, window.innerWidth / 2, window.innerHeight / 2, true);
+                if (bonusRes.success) {
+                    totalSessionCoins += accuracyBonus;
+                }
             }
         }
+
 
         // Add Unit Test and Unit Mastery Bonus
         if (subTopicId === 'unit_test') {
@@ -1706,7 +1726,7 @@ export const Practice = () => {
                 
                 // Check if mastery bonus was already given
                 const { data: existingMastery } = await supabase
-                    .from('points_transactions')
+                    .from('points_ledger')
                     .select('idempotency_key')
                     .eq('idempotency_key', uniqueMasteryKey)
                     .single();
@@ -1723,10 +1743,7 @@ export const Practice = () => {
         // Force a fresh fetch of the true backend balance to overwrite any race conditions
         await fetchUserPoints();
         
-        // Trigger ONE unified coin animation for the total amount on the summary page
-        if (totalSessionCoins > 0) {
-            triggerCoinAnimation(totalSessionCoins, window.innerWidth / 2, window.innerHeight / 2);
-        }
+        setSessionEarnedCoins(totalSessionCoins);
 
         // Update the state so the SessionSummary UI can display it
         setSessionEarnedCoins(totalSessionCoins);
