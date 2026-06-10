@@ -426,6 +426,7 @@ export const Practice = () => {
                             // Continue to init new session logic
                             console.log('🔄 [checkProgress] Force Start New: Clearing marks');
                             setMarkedQuestions(new Set());
+                            setSessionEarnedCoins(0);
                         } else {
                             setIsInitializing(false); // Fix: Ensure loading state is cleared
                             return; // Show prompt (since isResuming is false)
@@ -530,6 +531,7 @@ export const Practice = () => {
         setShowSummary(false);
         setSessionResults({ correct: 0, total: 0 });
         setQuestions([]);
+        setSessionEarnedCoins(0);
 
         // Navigate with forceStartNew to trigger DB reset in checkProgress
         navigate('/practice/session', {
