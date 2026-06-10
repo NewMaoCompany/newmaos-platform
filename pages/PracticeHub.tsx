@@ -370,7 +370,7 @@ const HistoryGroupCard = ({ sectionId, activities }: { sectionId: string, activi
 };
 
 export const PracticeHub = () => {
-    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry, clearBadgeLocally, navRedDots } = useApp();
+    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry, clearBadgeLocally, navRedDots, markBadgeAsRead } = useApp();
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isUnitDropdownOpen, setIsUnitDropdownOpen] = useState(false);
@@ -772,7 +772,7 @@ export const PracticeHub = () => {
                                                 const handleSmartClick = (mode: SessionMode, isResuming: boolean, forceStartNew: boolean) => {
                                                     if (isProcessing) return;
                                                     setIsProcessing(true);
-                                                    clearBadgeLocally('practice');
+                                                    markBadgeAsRead('practice');
                                                     navigate('/practice/session', {
                                                     state: {
                                                         topic: recommendation.topic,

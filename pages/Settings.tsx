@@ -7,16 +7,11 @@ import { usersApi } from '../src/services/api';
 export const Settings = () => {
     const {
         user, updateUser, toggleCourse, logout, isPro,
-         userPoints
+         userPoints, navRedDots
     } = useApp();
     const navigate = useNavigate();
 
-    // Red dot for Subscription based on isPro status (as requested, only disappears when successfully subscribed)
-    const hasSettingsAlert = !isPro;
-
-    const clearAllSettingsNotifs = () => {
-        // Red dots are now managed by backend/isPro state
-    };
+    const hasSettingsAlert = navRedDots.subscription;
 
     // Local state for toggles
     const [preferences, setPreferences] = useState(user.preferences);
@@ -143,10 +138,7 @@ export const Settings = () => {
                                 <span className="material-symbols-outlined text-gray-400 text-lg">chevron_right</span>
                             </div>
                             <div
-                                onClick={() => {
-                                    clearAllSettingsNotifs();
-                                    navigate('/settings/subscription');
-                                }}
+                                onClick={() => navigate('/settings/subscription')}
                                 className="flex items-center justify-between p-4 px-6 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer group/row"
                             >
                                 <div className="flex items-center gap-3 relative">

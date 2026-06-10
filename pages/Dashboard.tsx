@@ -45,7 +45,7 @@ const CourseCard = ({
   onSelect: () => void;
   onStart: (e: React.MouseEvent) => void;
 }) => {
-  const { user, courses, getSectionStatus, getSectionProgressData, sections } = useApp();
+  const { user, courses, getSectionStatus, getSectionProgressData, sections, navRedDots } = useApp();
   const course = courses[type];
   const isActive = user.currentCourse === type;
   const [progress, setProgress] = useState(0);
@@ -161,7 +161,7 @@ const CourseCard = ({
 };
 
 export const Dashboard = () => {
-  const { user, courses, toggleCourse, startCourse, lineData, isAuthenticated, isAuthLoading, hasDismissedLoginPrompt, dismissLoginPrompt, getCourseMastery, performDailyCheckin, getCheckinStatus, checkinStatus } = useApp();
+  const { user, courses, toggleCourse, startCourse, lineData, isAuthenticated, isAuthLoading, hasDismissedLoginPrompt, dismissLoginPrompt, getCourseMastery, performDailyCheckin, getCheckinStatus, checkinStatus, navRedDots } = useApp();
   const navigate = useNavigate();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [todayIndex, setTodayIndex] = useState(0);
@@ -169,7 +169,7 @@ export const Dashboard = () => {
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(() => localStorage.getItem('privacy_agreed_2026') === 'true');
 
   // Red dot driven by check-in status (unified source of truth)
-  const needsCheckin = isAuthenticated && checkinStatus === 'not_checked_in';
+  const needsCheckin = isAuthenticated && navRedDots.dashboard;
 
   // Trigger login modal ONLY after auth loading completes and user is NOT authenticated
   useEffect(() => {
