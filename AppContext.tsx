@@ -1088,6 +1088,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 attemptId: data?.attempt_id,
                 attemptNo: data?.attempt_no,
                 isCorrect: data?.is_correct,
+                coinsAwarded: data?.coins_awarded ?? 0,
                 error: data?.error
             };
 
@@ -1105,6 +1106,11 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                         return next;
                     });
                 }
+            }
+
+            if (result.coinsAwarded && result.coinsAwarded > 0) {
+                // Background fetch to sync balance
+                fetchUserPoints();
             }
 
             return result as SubmitAttemptResult;

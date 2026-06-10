@@ -479,6 +479,7 @@ export const Practice = () => {
     const [showSummary, setShowSummary] = useState(effectiveState?.showSummary === true);
     const [newlyCorrectFirstAttempts, setNewlyCorrectFirstAttempts] = useState(0);
     const [sessionEarnedCoins, setSessionEarnedCoins] = useState(0);
+    const [floatingReward, setFloatingReward] = useState<{ amount: number; id: number } | null>(null);
 
     // Sync showSummary with location state changes (fixes infinite review loop)
     useEffect(() => {
@@ -1165,13 +1166,20 @@ export const Practice = () => {
         const timeSpent = Math.round((Date.now() - startTime) / 1000);
 
         try {
-            await submitAttempt({
+            const result = await submitAttempt({
                 questionId: question.id,
                 isCorrect: false,
                 selectedOptionId: null,
                 timeSpentSeconds: timeSpent,
                 errorTags: question.errorTags || []
             });
+
+            if (result.coinsAwarded && result.coinsAwarded > 0) {
+                setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
+                triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
+                setFloatingReward({ amount: result.coinsAwarded, id: Date.now() });
+                setTimeout(() => setFloatingReward(null), 2000);
+            }
         } catch (error) {
             console.error('Failed to submit "show answer" attempt:', error);
         } finally {
@@ -1200,8 +1208,6 @@ export const Practice = () => {
         const startTime = questionStartTimeRef.current || Date.now();
         const timeSpent = Math.round((Date.now() - startTime) / 1000);
 
-        let attemptNo = 0;
-
         try {
             const selectedOpt = question.options.find(o => o.id === selectedAnswer);
             const optErrorTag = selectedOpt?.errorTagId;
@@ -1216,12 +1222,18 @@ export const Practice = () => {
                 errorTags: isCorrect ? [] : finalErrorTags
             });
 
+            if (result.coinsAwarded && result.coinsAwarded > 0) {
+                setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
+                triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
+                setFloatingReward({ amount: result.coinsAwarded, id: Date.now() });
+                setTimeout(() => setFloatingReward(null), 2000);
+            }
+
             if (!result.success) {
                 console.error('Submission failed result:', result);
                 console.error(`Submission failed. Error: ${result.error || 'Unknown'}`);
             } else {
                 console.log('Submission successful:', result);
-                attemptNo = result.attemptNo || 0;
             }
         } catch (error: any) {
             console.error('Failed to submit attempt:', error);
@@ -1308,22 +1320,17 @@ export const Practice = () => {
                         selectedOptionId: userAnswer,
                         timeSpentSeconds: timePerQuestion,
                         errorTags: isCorrect ? [] : finalErrorTags
-                    }).then(res => {
-                        // Bypass attemptNo since backend handles idempotency
-                        if (res && res.success && res.isCorrect) {
-                            return q.id;
+                    }).then(result => {
+                        if (result.coinsAwarded && result.coinsAwarded > 0) {
+                            setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
+                            triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
                         }
-                        return null;
                     });
 
                     submissionPromises.push(promise);
                 } else {
                     // Already submitted individually, preserve existing result
                     localResults[q.id] = questionResults[q.id];
-                    if (questionResults[q.id] === 'correct') {
-                        // Ensure correctCount includes individually submitted correct answers
-                        // (already counted above if userAnswer matches correctOptionId)
-                    }
                 }
             } else {
                 // Unanswered treated as incorrect visually AND submitted as wrong attempt
@@ -1337,7 +1344,12 @@ export const Practice = () => {
                         selectedOptionId: null,
                         timeSpentSeconds: timePerQuestion,
                         errorTags: q.errorTags || []
-                    }).then(() => false);
+                    }).then(result => {
+                        if (result.coinsAwarded && result.coinsAwarded > 0) {
+                            setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
+                            triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
+                        }
+                    });
                     submissionPromises.push(promise);
                 }
             }
@@ -1647,68 +1659,7 @@ export const Practice = () => {
         let newlyEarnedBaseCoins = 0;
         let trulyNewCorrectIds: string[] = [];
 
-        let totalSessionCoins = 0;
         const finalScore = questions.length > 0 ? Math.round((finalCorrectCount / questions.length) * 100) : 0;
-
-        if (sessionMode === 'Adaptive') {
-            // Adaptive mode ONLY awards 20 coins once per day, regardless of correctness
-            const localDate = new Date().toLocaleDateString('en-CA');
-            const algoDailyKey = `algo_daily_${user?.id}_${localDate}`;
-            const { data: existingAlgo } = await supabase
-                .from('points_ledger')
-                .select('id')
-                .eq('idempotency_key', algoDailyKey)
-                .single();
-
-            if (!existingAlgo) {
-                const algoRes = await awardPoints(20, 'manual_adjustment', 'algorithm_practice', 'Algorithm Practice Daily Bonus', algoDailyKey, window.innerWidth / 2, window.innerHeight / 2, true);
-                if (algoRes.success) {
-                    totalSessionCoins += 20;
-                }
-            }
-        } else {
-            // Normal base points logic
-            if (correctQuestionIds.length > 0) {
-                // Check the DB to see which questions have ALREADY been rewarded to this user
-                const idempotencyKeysV1 = correctQuestionIds.map(id => `practice_${id}`);
-                const idempotencyKeysV2 = correctQuestionIds.map(id => `practice_${user?.id}_${id}`);
-                const { data: existingTransactions, error: txError } = await supabase
-                    .from('points_ledger')
-                    .select('idempotency_key')
-                    .in('idempotency_key', [...idempotencyKeysV1, ...idempotencyKeysV2]);
-                    
-                if (txError) {
-                    console.error("Error fetching past point transactions:", txError);
-                }
-
-                const existingKeys = new Set(existingTransactions?.map((t: any) => t.idempotency_key) || []);
-                trulyNewCorrectIds = correctQuestionIds.filter(id => 
-                    !existingKeys.has(`practice_${id}`) && !existingKeys.has(`practice_${user?.id}_${id}`)
-                );
-
-                // Award points individually - only count actually-successful awards
-                const coinResults = await Promise.all(
-                    trulyNewCorrectIds.map(qId =>
-                        awardPoints(5, 'manual_adjustment', qId, 'Correct Answer +5', `practice_${user?.id}_${qId}`, window.innerWidth / 2, window.innerHeight / 2, true)
-                    )
-                );
-
-                // Only count points that were ACTUALLY awarded (not duplicates blocked by DB)
-                newlyEarnedBaseCoins = coinResults.filter(r => r.success).length * 5;
-            }
-            
-            totalSessionCoins += newlyEarnedBaseCoins;
-
-            // Add 80% Accuracy Bonus
-            if (finalScore >= 80 && newlyEarnedBaseCoins > 0) {
-                const accuracyBonus = newlyEarnedBaseCoins; // 2x multiplier basically
-                const uniqueBonusKey = `practice_accuracy_${user?.id}_${algorithmicSessionId || 'default'}_${Date.now()}`;
-                const bonusRes = await awardPoints(accuracyBonus, 'manual_adjustment', algorithmicSessionId || 'bonus', '80% Accuracy Bonus! (2x)', uniqueBonusKey, window.innerWidth / 2, window.innerHeight / 2, true);
-                if (bonusRes.success) {
-                    totalSessionCoins += accuracyBonus;
-                }
-            }
-        }
 
 
         // Add Unit Test and Unit Mastery Bonus
@@ -1718,7 +1669,7 @@ export const Practice = () => {
             const uniqueUnitTestKey = `practice_unittest_${user?.id}_${topicParam || 'default'}_${Date.now()}`;
             const testRes = await awardPoints(unitTestBonus, 'manual_adjustment', topicParam, 'Unit Test Completed', uniqueUnitTestKey, window.innerWidth / 2, window.innerHeight / 2, true);
             if (testRes.success) {
-                totalSessionCoins += unitTestBonus;
+                setSessionEarnedCoins(prev => prev + unitTestBonus);
             }
 
             // 200 Points for 100% Unit Mastery
@@ -1736,13 +1687,13 @@ export const Practice = () => {
                 if (!existingMastery) {
                     const masteryRes = await awardPoints(masteryBonus, 'manual_adjustment', topicParam, '100% Unit Mastery', uniqueMasteryKey, window.innerWidth / 2, window.innerHeight / 2, true);
                     if (masteryRes.success) {
-                        totalSessionCoins += masteryBonus;
+                        setSessionEarnedCoins(prev => prev + masteryBonus);
                     }
                 }
             }
         }
         
-        setSessionEarnedCoins(totalSessionCoins);
+
         setShowSummary(true);
     };
 
@@ -2229,7 +2180,16 @@ When you are ready to test your knowledge, click **Start Practice** below. Good 
             </header>
 
             <main className="flex-grow flex justify-center pt-6 pb-24 px-4 sm:px-6 relative overflow-y-auto scroll-bounce">
-                <div className="w-full max-w-[1600px] flex gap-6">
+                {floatingReward && (
+                    <div key={floatingReward.id} className="fixed top-[20%] left-1/2 -translate-x-1/2 z-[100] animate-bounce-up pointer-events-none flex flex-col items-center">
+                        <div className="bg-primary text-black font-black text-4xl px-8 py-4 rounded-full shadow-2xl flex items-center gap-3 border-4 border-white/20">
+                            <span>+{floatingReward.amount}</span>
+                            <span className="material-symbols-outlined fill-current text-3xl">toll</span>
+                        </div>
+                        <span className="text-primary font-bold text-lg mt-2 drop-shadow-md">Coins Earned!</span>
+                    </div>
+                )}
+                <div className="w-full max-w-[1600px] flex gap-6 relative">
 
                     <div className="flex-1 flex flex-col gap-6">
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-1">
