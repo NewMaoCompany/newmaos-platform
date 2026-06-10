@@ -854,7 +854,47 @@ export const Practice = () => {
                     }
 
                     console.log('[Practice Debug] finalQuestions:', finalQuestions.length);
-                    setQuestions(finalQuestions);
+
+                    // If RPC returned IDs but none found in allQuestions cache, fetch directly
+                    if (finalQuestions.length === 0 && qIds.length > 0) {
+                        console.log('[Practice] RPC IDs not in cache, fetching directly by ID...');
+                        const { data: directFetch } = await supabase
+                            .from('questions')
+                            .select('id, title, topic, topic_id, sub_topic_id, section_id, course, status, type, difficulty, prompt, prompt_type, options, correct_option_id, explanation, calculator_allowed, latex')
+                            .in('id', qIds)
+                            .eq('status', 'published');
+                        if (directFetch && directFetch.length > 0) {
+                            const mapped = directFetch.map(q => ({
+                                ...q,
+                                subTopicId: q.sub_topic_id || q.section_id,
+                                topicId: q.topic_id || q.topic,
+                                sectionId: q.section_id || q.sub_topic_id,
+                                correctOptionId: q.correct_option_id,
+                                calculatorAllowed: q.calculator_allowed,
+                            })) as Question[];
+                            setQuestions(mapped);
+                        } else {
+                            // Last resort: get any questions for this topic+subtopic
+                            let dbQuery = supabase
+                                .from('questions')
+                                .select('id, title, topic, topic_id, sub_topic_id, section_id, course, status, type, difficulty, prompt, prompt_type, options, correct_option_id, explanation, calculator_allowed, latex')
+                                .eq('topic', topicParam)
+                                .eq('status', 'published');
+                            if (subTopicId && subTopicId !== 'unit_test') dbQuery = dbQuery.eq('sub_topic_id', subTopicId);
+                            const { data: fallbackQs } = await dbQuery.limit(10);
+                            const fallbackMapped = (fallbackQs || []).map(q => ({
+                                ...q,
+                                subTopicId: q.sub_topic_id || q.section_id,
+                                topicId: q.topic_id || q.topic,
+                                sectionId: q.section_id || q.sub_topic_id,
+                                correctOptionId: q.correct_option_id,
+                                calculatorAllowed: q.calculator_allowed,
+                            })) as Question[];
+                            setQuestions(fallbackMapped);
+                        }
+                    } else {
+                        setQuestions(finalQuestions);
+                    }
                     setRecommendationReasons(reasonsMap);
                 }
             } catch (e) {
