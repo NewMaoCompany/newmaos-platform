@@ -161,7 +161,7 @@ const CourseCard = ({
 };
 
 export const Dashboard = () => {
-  const { user, courses, toggleCourse, startCourse, lineData, isAuthenticated, isAuthLoading, hasDismissedLoginPrompt, dismissLoginPrompt, getCourseMastery, performDailyCheckin, getCheckinStatus, checkinStatus, notifications, markNotificationRead } = useApp();
+  const { user, courses, toggleCourse, startCourse, lineData, isAuthenticated, isAuthLoading, hasDismissedLoginPrompt, dismissLoginPrompt, getCourseMastery, performDailyCheckin, getCheckinStatus, checkinStatus } = useApp();
   const navigate = useNavigate();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [todayIndex, setTodayIndex] = useState(0);
@@ -449,8 +449,6 @@ export const Dashboard = () => {
           {/* Prominent Daily Check-in Button */}
           <div
             onClick={() => {
-              // Mark all check-in notifications as read (clears all red dots)
-              notifications.filter(n => n.unread && n.link === '/checkin').forEach(n => markNotificationRead(n.id));
               navigate('/checkin');
             }}
             className={`w-full rounded-[28px] p-5 sm:p-6 border shadow-sm transition-[box-shadow,transform,colors] flex items-center justify-between group animate-fade-in relative ${checkinStatus === 'checked_in'

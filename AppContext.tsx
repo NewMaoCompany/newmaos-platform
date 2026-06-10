@@ -2547,7 +2547,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 sessionStorage.setItem('streak_checked_today', 'true');
 
                 // Clear any check-in notifications (Deduplication fix)
-                notifications.filter(n => n.unread && (n.link === '/checkin' || n.text?.includes('Daily Check-in'))).forEach(n => markNotificationRead(n.id));
 
                 return {
                     success: true,

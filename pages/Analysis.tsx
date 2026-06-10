@@ -138,7 +138,7 @@ const fillDataGaps = (data: { date: string; value: number }[], range: '1W' | '1M
 export const Analysis = () => {
     const {
         user, radarData, accuracyHistory, fetchAccuracyHistory,
-        notifications, markNotificationRead, fetchUserPoints, userPoints, triggerCoinAnimation,
+        fetchUserPoints, userPoints, triggerCoinAnimation,
         isPro, markBadgeAsRead
     } = useApp();
     const { showToast } = useToast();
@@ -300,19 +300,6 @@ export const Analysis = () => {
         fetchStudyTimeHistory(range);
     };
 
-    // --- Notification Tracking (unified: all cards share one notification) ---
-    const analysisNotifs = notifications.filter(n => n.unread && n.link === '/analysis');
-    const hasAnalysisNotif = analysisNotifs.length > 0;
-
-    const clearAllAnalysisNotifs = () => {
-        analysisNotifs.forEach(n => markNotificationRead(n.id));
-    };
-
-    // Auto-clear analysis notifications when entering this page
-    useEffect(() => {
-        clearAllAnalysisNotifs();
-    }, [notifications, markNotificationRead]);
-
     // --- Metrics & Trends ---
 
     // Accuracy Logic
@@ -403,10 +390,10 @@ export const Analysis = () => {
 
                     {/* Accuracy Rate Chart */}
                     <div
-                        onClick={() => clearAllAnalysisNotifs()}
+                        
                         className="lg:col-span-2 bg-white dark:bg-surface-dark rounded-3xl border border-gray-100 dark:border-gray-800 p-8 flex flex-col shadow-sm relative group/chart cursor-pointer transition-all hover:border-primary/30"
                     >
-                        {hasAnalysisNotif && (
+                        {false && (
                             <span className="absolute top-6 left-6 w-2.5 h-2.5 bg-red-500 rounded-full shadow-lg shadow-red-500/50 animate-pulse z-30"></span>
                         )}
 
@@ -496,10 +483,10 @@ export const Analysis = () => {
 
                     {/* Unit Mastery Radar */}
                     <div
-                        onClick={() => clearAllAnalysisNotifs()}
+                        
                         className="bg-white dark:bg-surface-dark rounded-3xl border border-gray-100 dark:border-gray-800 p-8 flex flex-col shadow-sm relative group/chart cursor-pointer transition-all hover:border-primary/30"
                     >
-                        {hasAnalysisNotif && (
+                        {false && (
                             <span className="absolute top-6 left-6 w-2.5 h-2.5 bg-red-500 rounded-full shadow-lg shadow-red-500/50 animate-pulse z-30"></span>
                         )}
                         <div className="flex justify-between items-center mb-6">
@@ -529,10 +516,10 @@ export const Analysis = () => {
 
                     {/* Study Time Chart */}
                     <div
-                        onClick={() => clearAllAnalysisNotifs()}
+                        
                         className="lg:col-span-2 bg-white dark:bg-surface-dark rounded-3xl border border-gray-100 dark:border-gray-800 p-8 flex flex-col shadow-sm relative group/chart cursor-pointer transition-all hover:border-primary/30"
                     >
-                        {hasAnalysisNotif && (
+                        {false && (
                             <span className="absolute top-6 left-6 w-2.5 h-2.5 bg-red-500 rounded-full shadow-lg shadow-red-500/50 animate-pulse z-30"></span>
                         )}
 
@@ -621,10 +608,10 @@ export const Analysis = () => {
 
                     {/* Points History Chart */}
                     <div
-                        onClick={() => clearAllAnalysisNotifs()}
+                        
                         className="bg-white dark:bg-surface-dark rounded-3xl border border-gray-100 dark:border-gray-800 p-8 flex flex-col shadow-sm relative group/chart cursor-pointer transition-all hover:border-primary/30"
                     >
-                        {hasAnalysisNotif && (
+                        {false && (
                             <span className="absolute top-6 left-6 w-2.5 h-2.5 bg-red-500 rounded-full shadow-lg shadow-red-500/50 animate-pulse z-30"></span>
                         )}
 
