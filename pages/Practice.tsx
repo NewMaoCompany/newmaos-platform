@@ -789,7 +789,7 @@ export const Practice = () => {
                     // RPC returned nothing — fetch directly via API
                     console.log('[Practice] RPC empty, fetching via API...');
                     const directQs = await fetchViaApi({
-                        topic: topicParam,
+                        topic: mappedTopicId,
                         ...(subTopicId && subTopicId !== 'unit_test' ? { subTopicId } : {}),
                         limit: 15,
                     });

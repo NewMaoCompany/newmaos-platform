@@ -11,7 +11,7 @@ export const OnboardingFlow: React.FC = () => {
     useEffect(() => {
         // Only run for authenticated users who haven't claimed the gift
         if (!isAuthenticated || !user?.id) return;
-        if (user.hasClaimedWelcomeGift) return;
+        if (user.hasClaimedWelcomeGift || localStorage.getItem(`welcome_claimed_${user.id}`)) return;
 
         // Start step 1 after 1.5 seconds
         const timer = setTimeout(() => {
@@ -38,12 +38,14 @@ export const OnboardingFlow: React.FC = () => {
             // Award 200 points (this automatically plays animation)
             const result = await awardPoints(200, 'manual_adjustment', 'onboarding_gift', 'Welcome Gift', undefined, x, y);
 
-            if (result.success) {
-                // Update local context
+            if (result.success || result.message === 'Already processed') {
+                // Update local context and localStorage fallback
                 updateUser({ hasClaimedWelcomeGift: true });
+                localStorage.setItem(`welcome_claimed_${user.id}`, 'true');
 
                 // Hide current popup
                 setStep('hidden');
+                setIsClaiming(false);
 
                 // Wait 2.5 seconds (allow animation to finish), then show Pro upgrade popup
                 setTimeout(() => {
