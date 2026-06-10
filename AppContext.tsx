@@ -257,20 +257,38 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         if (!user.id) return;
         try {
             const { data, error } = await supabase.rpc('get_user_badges', { p_user_id: user.id });
+            const { data: profile } = await supabase.from('user_profiles').select('last_practice_rec_view_time, is_pro').eq('id', user.id).single();
+            
             if (error) {
                 console.error('Error fetching badge status dynamically:', error);
                 return;
             }
+
+            let practiceBadge = false;
+            let settingsBadge = false;
+
+            if (profile) {
+                settingsBadge = !profile.is_pro;
+                if (!profile.last_practice_rec_view_time) {
+                    practiceBadge = true;
+                } else {
+                    // Check local timezone date
+                    const lastViewLocal = new Date(profile.last_practice_rec_view_time).toLocaleDateString('en-CA');
+                    const todayLocal = new Date().toLocaleDateString('en-CA');
+                    practiceBadge = lastViewLocal < todayLocal;
+                }
+            }
+
             if (data) {
-                setNavRedDots({
-                    dashboard: data.dashboard,
-                    practice: data.practice,
+                setNavRedDots(prev => ({
+                    dashboard: prev.dashboard, // Let checkinStatus handle dashboard
+                    practice: practiceBadge,
                     analysis: data.analysis,
                     forum: data.forum,
-                    settings: data.settings,
-                    subscription: data.settings,
-                    checkin: data.dashboard
-                });
+                    settings: settingsBadge,
+                    subscription: settingsBadge,
+                    checkin: prev.checkin
+                }));
 
                 if (data.has_claimed_welcome_gift) {
                     updateUser({ hasClaimedWelcomeGift: true });
@@ -280,6 +298,14 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             console.error('Error fetching badge status dynamically:', err);
         }
     };
+
+    useEffect(() => {
+        if (checkinStatus === 'not_checked_in') {
+            setNavRedDots(prev => ({ ...prev, dashboard: true, checkin: true }));
+        } else if (checkinStatus === 'checked_in') {
+            setNavRedDots(prev => ({ ...prev, dashboard: false, checkin: false }));
+        }
+    }, [checkinStatus]);
 
     const markBadgeAsRead = async (type: 'analysis' | 'forum' | 'practice') => {
         if (!user.id) return;

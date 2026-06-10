@@ -370,7 +370,7 @@ const HistoryGroupCard = ({ sectionId, activities }: { sectionId: string, activi
 };
 
 export const PracticeHub = () => {
-    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry, clearBadgeLocally } = useApp();
+    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry, clearBadgeLocally, navRedDots } = useApp();
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isUnitDropdownOpen, setIsUnitDropdownOpen] = useState(false);
@@ -801,27 +801,43 @@ export const PracticeHub = () => {
                                             return (
                                                 <div className="flex items-center gap-2 shrink-0">
                                                     {buttonState === 'NOT_STARTED' && (
-                                                        <button
-                                                            onClick={(e) => { e.preventDefault(); handleSmartClick(recommendation.mode, false, false); }}
-                                                            className="bg-black hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-xl transition-all flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-                                                        >
-                                                            Start <span className="material-symbols-outlined text-[20px]">play_arrow</span>
-                                                        </button>
+                                                        <div className="relative">
+                                                            <button
+                                                                onClick={(e) => { e.preventDefault(); handleSmartClick(recommendation.mode, false, false); }}
+                                                                className="bg-black hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-xl transition-all flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                                                            >
+                                                                Start <span className="material-symbols-outlined text-[20px]">play_arrow</span>
+                                                            </button>
+                                                            {navRedDots.practice && (
+                                                                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     )}
 
                                                     {buttonState === 'IN_PROGRESS' && (
-                                                        <button
-                                                            onClick={(e) => { e.preventDefault(); handleSmartClick(progressData?.sessionMode || recommendation.mode, true, false); }}
-                                                            className="bg-black hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-xl transition-all flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-                                                        >
-                                                             Resume {(() => {
-                                                                 const sessionData = mainProgress?.data;
-                                                                 const totalQuestionsCount = sessionData?.questionIds?.length || mainProgress?.total_questions || 10;
-                                                                 const answeredCount = sessionData?.userAnswers ? Object.keys(sessionData.userAnswers).length : (sessionData?.questionResults ? Object.keys(sessionData.questionResults).length : 0);
-                                                                 const pct = Math.round((answeredCount / totalQuestionsCount) * 100);
-                                                                 return `• ${pct}%`;
-                                                             })()} <span className="material-symbols-outlined text-[20px]">history</span>
-                                                        </button>
+                                                        <div className="relative">
+                                                            <button
+                                                                onClick={(e) => { e.preventDefault(); handleSmartClick(progressData?.sessionMode || recommendation.mode, true, false); }}
+                                                                className="bg-black hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-xl transition-all flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                                                            >
+                                                                 Resume {(() => {
+                                                                     const sessionData = mainProgress?.data;
+                                                                     const totalQuestionsCount = sessionData?.questionIds?.length || mainProgress?.total_questions || 10;
+                                                                     const answeredCount = sessionData?.userAnswers ? Object.keys(sessionData.userAnswers).length : (sessionData?.questionResults ? Object.keys(sessionData.questionResults).length : 0);
+                                                                     const pct = Math.round((answeredCount / totalQuestionsCount) * 100);
+                                                                     return `• ${pct}%`;
+                                                                 })()} <span className="material-symbols-outlined text-[20px]">history</span>
+                                                            </button>
+                                                            {navRedDots.practice && (
+                                                                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     )}
 
                                                     {buttonState === 'COMPLETED' && (
