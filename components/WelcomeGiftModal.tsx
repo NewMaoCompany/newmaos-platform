@@ -11,7 +11,7 @@ interface WelcomeGiftModalProps {
 export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed }) => {
     const [isClaiming, setIsClaiming] = useState(false);
     const [claimed, setClaimed] = useState(false);
-    const { user, updateUser, triggerCoinAnimation, setShowPaywall } = useApp();
+    const { user, updateUser, triggerCoinAnimation, setShowPaywall, fetchUserPoints } = useApp();
     const { showToast } = useToast();
     const modalRef = useRef<HTMLDivElement>(null);
 
@@ -114,8 +114,8 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed })
                         const rect = giftIcon.getBoundingClientRect();
                         startX = rect.left + rect.width / 2;
                         startY = rect.top + rect.height / 2;
-                    }
                     triggerCoinAnimation(200, startX, startY);
+                    fetchUserPoints(); // Add this line to update the balance immediately
                     fireClaimConfetti();
                     showToast('🎁 Welcome Gift Claimed! +200 NMS Points!', 'success');
                 } else {
