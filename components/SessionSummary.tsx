@@ -38,8 +38,6 @@ export const SessionSummary = ({
     discussSlug = null,
     coinsEarned = 0
 }: SessionSummaryProps) => {
-    const { triggerCoinAnimation } = useApp();
-    const hasFiredCoinAnimation = useRef(false);
     // Determine default selection:
     // Use justCompletedSessionLabel to find and auto-select the session that was just completed
     const getDefaultIndex = () => {
@@ -108,24 +106,6 @@ export const SessionSummary = ({
         }
     }, [justCompletedSessionLabel, summaryHistory, initialQuestionResults]);
 
-    // Auto-trigger coin animation when Summary page loads with earned coins
-    useEffect(() => {
-        if (coinsEarned > 0 && !hasFiredCoinAnimation.current) {
-            hasFiredCoinAnimation.current = true;
-            // Delay to let DOM fully render (pointsBalanceRef needs to be available)
-            const timer = setTimeout(() => {
-                const icon = document.getElementById('summary-coins-icon');
-                let startX, startY;
-                if (icon) {
-                    const rect = icon.getBoundingClientRect();
-                    startX = rect.left + rect.width / 2;
-                    startY = rect.top + rect.height / 2;
-                }
-                triggerCoinAnimation(coinsEarned, startX, startY);
-            }, 800);
-            return () => clearTimeout(timer);
-        }
-    }, [coinsEarned, triggerCoinAnimation]);
 
     // Derived Data based on selection
     const activeUserAnswers = selectedHistoryIndex === -1
