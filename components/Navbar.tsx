@@ -168,42 +168,29 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
                 </Link>
                 <Link to={isAuthenticated ? "/analysis" : "/login"} className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/analysis') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
                   <span>Analysis</span>
-                  {!isPro && isAuthenticated && <span className="material-symbols-outlined text-[16px] ml-0.5 opacity-60">lock</span>}
+                  {!isPro && <span className="material-symbols-outlined text-[16px] ml-0.5 opacity-60">lock</span>}
                   {navRedDots.analysis && (
                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110"></span>
                   )}
                 </Link>
                 <Link to={isAuthenticated ? "/forum" : "/login"} className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 relative whitespace-nowrap ${isActive('/forum') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}>
                   <span>Forum</span>
-                  {!isPro && isAuthenticated && <span className="material-symbols-outlined text-[16px] ml-0.5 opacity-60">lock</span>}
+                  {!isPro && <span className="material-symbols-outlined text-[16px] ml-0.5 opacity-60">lock</span>}
                   {navRedDots.forum > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-2 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
                       {navRedDots.forum > 99 ? '99+' : navRedDots.forum}
                     </span>
                   )}
                 </Link>
-                {isAuthenticated ? (
-                  <Link
-                    to="/settings"
-                    className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
-                  >
-                    <span>Settings</span>
-                    {navRedDots.settings && (
-                      <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110"></span>
-                    )}
-                  </Link>
-                ) : (
-                  <div className="relative group shrink-0">
-                    <div className="text-sm font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-text-secondary dark:text-gray-400 cursor-not-allowed opacity-60 whitespace-nowrap">
-                      <span>Settings</span>
-                      <span className="material-symbols-outlined text-[16px] ml-0.5">lock</span>
-                    </div>
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                      Sign in required
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
-                    </div>
-                  </div>
-                )}
+                <Link
+                  to={isAuthenticated ? "/settings" : "/login"}
+                  className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
+                >
+                  <span>Settings</span>
+                  {navRedDots.settings && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110"></span>
+                  )}
+                </Link>
               </div>
             </div>
           )}
