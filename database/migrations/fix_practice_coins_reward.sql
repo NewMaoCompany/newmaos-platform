@@ -31,9 +31,10 @@ BEGIN
     SELECT COUNT(*) + 1 INTO v_attempt_no
     FROM public.question_attempts
     WHERE user_id = auth.uid() AND question_id = p_question_id::UUID;
-
-
-
+    -- 2. Check if user already answered this correctly in the past
+    SELECT COUNT(*) INTO v_prior_correct_count
+    FROM public.question_attempts
+    WHERE user_id = auth.uid() AND question_id = p_question_id::UUID AND is_correct = true;
     -- 3. Insert the new attempt
     INSERT INTO public.question_attempts (
         user_id, question_id, is_correct,
@@ -47,9 +48,9 @@ BEGIN
     ) RETURNING id INTO v_attempt_id;
 
     -- 4. Calculate and award coins STRICTLY
-    -- They earn exactly 5 coins for a correct answer, deduplicated by session and question
-    IF p_is_correct = true THEN
-        v_idempotency_key := 'practice_reward_' || auth.uid()::TEXT || '_' || COALESCE(p_session_id, CURRENT_DATE::TEXT) || '_' || p_question_id;
+    -- If they got it right NOW, and had ZERO prior correct answers, they earn exactly 5 coins
+    IF p_is_correct = true AND v_prior_correct_count = 0 THEN
+        v_idempotency_key := 'practice_reward_' || auth.uid()::TEXT || '_' || p_question_id;
 
         -- Ensure user_points exists
         INSERT INTO public.user_points (user_id, balance, lifetime_earned)
