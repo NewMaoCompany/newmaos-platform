@@ -44,7 +44,7 @@ export const OnboardingFlow: React.FC = () => {
             }
 
             // Award 200 points (this automatically plays animation)
-            const result = await awardPoints(200, 'Welcome Gift', 'onboarding_gift', 'Newcomer gift package', undefined, x, y);
+            const result = await awardPoints(200, 'manual_adjustment', 'onboarding_gift', 'Welcome Gift', undefined, x, y);
 
             if (result.success) {
                 // Update local context
