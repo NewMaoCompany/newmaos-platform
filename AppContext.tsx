@@ -252,12 +252,19 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         checkin: false
     });
 
+    // Track "Analysis viewed today" to prevent race conditions where fetchBadgeStatus
+    // might re-set analysis badge to true after markBadgeAsRead clears it.
+    const analysisViewedTodayRef = React.useRef<string>(''); // stores 'YYYY-MM-DD' if viewed today
+
     // Fetch Badges from Backend dynamically via RPC
     const fetchBadgeStatus = async () => {
         if (!user.id) return;
         try {
             const { data, error } = await supabase.rpc('get_user_badges', { p_user_id: user.id });
-            const { data: profile } = await supabase.from('user_profiles').select('last_practice_rec_view_time, is_pro').eq('id', user.id).single();
+            const { data: profile } = await supabase.from('user_profiles')
+                .select('last_practice_rec_view_time, last_analysis_view_time, is_pro')
+                .eq('id', user.id)
+                .single();
             
             if (error) {
                 console.error('Error fetching badge status dynamically:', error);
@@ -266,16 +273,46 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
             let practiceBadge = false;
             let settingsBadge = false;
+            let analysisBadge = false;
 
             if (profile) {
                 settingsBadge = !profile.is_pro;
+
+                // Practice badge: hasn't viewed today
                 if (!profile.last_practice_rec_view_time) {
                     practiceBadge = true;
                 } else {
-                    // Check local timezone date
                     const lastViewLocal = new Date(profile.last_practice_rec_view_time).toLocaleDateString('en-CA');
                     const todayLocal = new Date().toLocaleDateString('en-CA');
                     practiceBadge = lastViewLocal < todayLocal;
+                }
+
+                // Analysis badge: only if there are question_attempts TODAY that are newer than last view time
+                // We check this via a targeted query instead of relying on buggy RPC
+                const todayLocal = new Date().toLocaleDateString('en-CA');
+
+                // If user has viewed Analysis today (in-memory ref), never show badge — prevents race condition
+                // where completePractice's fetchBadgeStatus() re-enables badge after user viewed Analysis.
+                if (analysisViewedTodayRef.current === todayLocal) {
+                    analysisBadge = false;
+                } else {
+                    const todayStartUTC = new Date();
+                    todayStartUTC.setHours(0, 0, 0, 0); // start of today local time
+                    const lastAnalysisView = profile.last_analysis_view_time
+                        ? new Date(profile.last_analysis_view_time)
+                        : new Date(0);
+                    // Only show badge if last view was before today (i.e., user hasn't opened Analysis today)
+                    const lastViewLocal = new Date(lastAnalysisView).toLocaleDateString('en-CA');
+                    if (lastViewLocal < todayLocal) {
+                        // Check if they actually did any practice today
+                        const { data: attemptsToday } = await supabase
+                            .from('question_attempts')
+                            .select('id')
+                            .eq('user_id', user.id)
+                            .gte('created_at', todayStartUTC.toISOString())
+                            .limit(1);
+                        analysisBadge = !!(attemptsToday && attemptsToday.length > 0);
+                    }
                 }
             }
 
@@ -283,7 +320,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 setNavRedDots(prev => ({
                     dashboard: prev.dashboard, // Let checkinStatus handle dashboard
                     practice: practiceBadge,
-                    analysis: data.analysis,
+                    analysis: analysisBadge,
                     forum: data.forum,
                     settings: settingsBadge,
                     subscription: settingsBadge,
@@ -301,11 +338,17 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
     const markBadgeAsRead = async (type: 'analysis' | 'forum' | 'practice') => {
         if (!user.id) return;
+        // Immediately clear local badge so UI feels instant
+        setNavRedDots(prev => ({ ...prev, [type]: type === 'forum' ? 0 : false }));
         try {
             const now = new Date().toISOString();
             const updates: any = {};
             
-            if (type === 'analysis') updates.last_analysis_view_time = now;
+            if (type === 'analysis') {
+                updates.last_analysis_view_time = now;
+                // Mark in-memory ref so fetchBadgeStatus won't re-enable this badge today
+                analysisViewedTodayRef.current = new Date().toLocaleDateString('en-CA');
+            }
             if (type === 'forum') updates.last_forum_read_time = now;
             if (type === 'practice') updates.last_practice_rec_view_time = now;
 
@@ -314,7 +357,11 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 if (error) throw error;
             }
             
-            await fetchBadgeStatus();
+            // For analysis: skip fetchBadgeStatus to prevent race condition.
+            // The in-memory ref above protects against concurrent fetchBadgeStatus calls.
+            if (type !== 'analysis') {
+                await fetchBadgeStatus();
+            }
         } catch (err) {
             console.error('Error marking badge as read:', err);
         }
