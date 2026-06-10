@@ -2112,7 +2112,11 @@ When you are ready to test your knowledge, click **Start Practice** below. Good 
                     <div className="flex items-center gap-4 sm:gap-6 shrink-0">
                         <PointsBalanceBadge
                             balance={userPoints.balance}
-                            onClick={() => navigate('/points?from=practice', { state: { ...effectiveState, showSummary: true } })}
+                            onClick={() => {
+                                // Persist showSummary in history so that navigate(-1) from wallet returns here correctly
+                                navigate(location.pathname, { state: { ...effectiveState, showSummary: true }, replace: true });
+                                setTimeout(() => navigate('/points?from=practice'), 0);
+                            }}
                             ref={pointsBalanceRef as React.Ref<HTMLButtonElement>}
                         />
                         <button onClick={handleExitRequest} className="group flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors">

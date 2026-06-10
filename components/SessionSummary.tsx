@@ -197,7 +197,7 @@ export const SessionSummary = ({
 
     if (viewMode === 'review') {
         return (
-            <div className="min-h-screen max-h-screen overflow-y-auto bg-gray-50 dark:bg-black p-4 md:p-8 animate-fade-in flex flex-col items-center">
+            <div className="w-full bg-transparent p-4 md:p-8 animate-fade-in flex flex-col items-center">
                 <div className="w-full max-w-3xl pb-10">
                     <div className="mb-6 flex items-center justify-between">
                         <button
@@ -275,6 +275,26 @@ export const SessionSummary = ({
                                                     {renderContent(q.prompt, q.promptType, { noBorder: true })}
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        {/* Display all options so the user can review the full question context */}
+                                        <div className="flex flex-col gap-2 ml-12 mb-6">
+                                            {q.options.map((opt) => {
+                                                const isUserChoice = opt.id === userAnswerId;
+                                                const isCorrect = opt.id === q.correctOptionId;
+                                                return (
+                                                    <div key={opt.id} className={`p-3 rounded-xl border text-sm flex gap-3 ${isCorrect ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-900/30' : isUserChoice ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900/30' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-gray-800'}`}>
+                                                        <div className={`font-bold ${isCorrect ? 'text-green-600' : isUserChoice ? 'text-red-500' : 'text-gray-500'}`}>
+                                                            {opt.id}
+                                                        </div>
+                                                        <div className="text-gray-800 dark:text-gray-200">
+                                                            {renderContent(opt.value || (opt as any).text || '', opt.type, { noBorder: true })}
+                                                        </div>
+                                                        {isCorrect && <span className="material-symbols-outlined text-green-600 text-sm ml-auto">check_circle</span>}
+                                                        {isUserChoice && !isCorrect && <span className="material-symbols-outlined text-red-500 text-sm ml-auto">cancel</span>}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-12">
