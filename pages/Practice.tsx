@@ -821,20 +821,7 @@ export const Practice = () => {
 
         return () => { isMounted = false; };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [topicParam, subTopicId, user?.id, sessionMode, effectiveState?.isResuming, showSummary, effectiveSectionId]);
-
-    // NEW: Handle late-loading questions for Summary view to prevent "No Questions Available" bug
-    useEffect(() => {
-        const isSummary = sessionMode === 'Summary' || showSummary;
-        // If we are in summary view for a chapter, and questions array is empty (failed to populate on mount because global questions weren't ready)
-        if (isSummary && subTopicId && questions.length === 0 && (allQuestions.length > 0 || localQuestions.length > 0)) {
-            const summaryQuestions = getSummaryQuestions();
-            if (summaryQuestions.length > 0) {
-                setQuestions(summaryQuestions);
-                setIsLoadingQuestions(false);
-            }
-        }
-    }, [allQuestions.length, localQuestions.length, sessionMode, showSummary, subTopicId, questions.length, getSummaryQuestions]);
+    }, [topicParam, subTopicId, user?.id, sessionMode, effectiveState?.isResuming, showSummary, effectiveSectionId, allQuestions.length, localQuestions.length]);
 
     // --- Dynamic Time Calculation ---
     const dynamicEstimatedMinutes = React.useMemo(() => {
