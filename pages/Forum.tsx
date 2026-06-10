@@ -2240,8 +2240,9 @@ export const Forum = () => {
                 .gt('last_seen_at', new Date(Date.now() - 60000).toISOString());
 
             if (error) {
-                console.error('[Presence] Fetch initial error:', error);
-                showToast(`Presence Fetch Error: ${error.message}`, 'error');
+                console.warn('[Presence] Fetch initial error (non-critical):', error.message);
+                // AbortError happens when component unmounts during fetch - not user-facing
+                return;
             }
 
             if (data) {
