@@ -1895,7 +1895,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     const [profileResult, statsResult, titlesResult] = await Promise.all([
                         supabase
                             .from('user_profiles')
-                            .select('is_creator, name, avatar_url, subscription_tier, subscription_period_end, has_seen_pro_intro, bio, avatar_color, show_name, show_email, show_bio, streak_days, equipped_title_id, equipped_title:titles(*), locked_practice_mode, practice_mode_locked_at')
+                            .select('is_creator, name, avatar_url, subscription_tier, subscription_period_end, has_seen_pro_intro, bio, avatar_color, show_name, show_email, show_bio, streak_days, equipped_title_id, equipped_title:titles(*), locked_practice_mode, practice_mode_locked_at, has_claimed_welcome_gift')
                             .eq('id', session.user.id)
                             .single(),
                         supabase.rpc('get_user_stats', { target_user_id: session.user.id }),

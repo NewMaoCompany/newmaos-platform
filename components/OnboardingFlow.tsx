@@ -36,10 +36,15 @@ export const OnboardingFlow: React.FC = () => {
 
 
             // Award 200 points (this automatically plays animation)
-            const result = await awardPoints(200, 'manual_adjustment', 'onboarding_gift', 'Welcome Gift', undefined, x, y);
+            // idempotency key is global per user → DB-level guarantee of one-time only
+            const result = await awardPoints(200, 'manual_adjustment', 'onboarding_gift', 'Welcome Gift', `welcome_gift_${user.id}`, x, y);
 
-            if (result.success || result.message === 'Already processed') {
-                // Update local context and localStorage fallback
+            // result.success=true  → first-time claim, coins awarded
+            // result.reason==='duplicate' → already claimed before (idempotency block), just close
+            const alreadyClaimed = (result as any).reason === 'duplicate';
+
+            if (result.success || alreadyClaimed) {
+                // Update local context and localStorage fallback so modal won't reappear this session
                 updateUser({ hasClaimedWelcomeGift: true });
                 localStorage.setItem(`welcome_claimed_${user.id}`, 'true');
 
@@ -54,7 +59,7 @@ export const OnboardingFlow: React.FC = () => {
                     }
                 }, 2500);
             } else {
-                alert("awardPoints failed: " + JSON.stringify(result));
+                console.error("awardPoints failed:", result);
                 setIsClaiming(false);
             }
         } catch (err: any) {

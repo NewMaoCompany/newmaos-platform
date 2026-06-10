@@ -187,50 +187,17 @@ export const Dashboard = () => {
   }, [isAuthenticated, isAuthLoading, hasDismissedLoginPrompt]);
 
   // Welcome Gift Logic: Show if user is authenticated and hasn't claimed yet
+  // user.hasClaimedWelcomeGift is now reliably loaded from user_profiles at login
   useEffect(() => {
     if (isAuthLoading || !isAuthenticated || !user?.id) return;
+    if (user.hasClaimedWelcomeGift || localStorage.getItem(`welcome_claimed_${user.id}`)) return;
 
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    let cancelled = false;
+    const timer = setTimeout(() => {
+      setShowWelcomeGift(true);
+    }, 1500);
 
-    const checkWelcomeGift = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('points_ledger')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('description', 'Welcome Gift')
-          .limit(1);
-
-        if (cancelled) return;
-
-        if (error) {
-          console.error('Welcome gift check error:', error);
-          // On error, default to showing the popup (better to show twice than never)
-          timer = setTimeout(() => { if (!cancelled) setShowWelcomeGift(true); }, 1500);
-          return;
-        }
-
-        // If no "Welcome Gift" transaction found, show the modal
-        if (!data || data.length === 0) {
-          timer = setTimeout(() => { if (!cancelled) setShowWelcomeGift(true); }, 1500);
-        }
-      } catch (err) {
-        console.error('Welcome gift check exception:', err);
-        // On exception, still show the popup
-        if (!cancelled) {
-          timer = setTimeout(() => { if (!cancelled) setShowWelcomeGift(true); }, 1500);
-        }
-      }
-    };
-
-    checkWelcomeGift();
-
-    return () => {
-      cancelled = true;
-      if (timer) clearTimeout(timer);
-    };
-  }, [isAuthenticated, isAuthLoading, user?.id]);
+    return () => clearTimeout(timer);
+  }, [isAuthenticated, isAuthLoading, user?.id, user?.hasClaimedWelcomeGift]);
 
   // Determine current day of the week (0=Sun, 1=Mon... 6=Sat) on mount
   useEffect(() => {

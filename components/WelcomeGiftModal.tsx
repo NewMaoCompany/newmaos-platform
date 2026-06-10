@@ -11,7 +11,7 @@ interface WelcomeGiftModalProps {
 export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed }) => {
     const [isClaiming, setIsClaiming] = useState(false);
     const [claimed, setClaimed] = useState(false);
-    const { user, fetchUserPoints, triggerCoinAnimation, setShowPaywall } = useApp();
+    const { user, updateUser, triggerCoinAnimation, setShowPaywall } = useApp();
     const { showToast } = useToast();
     const modalRef = useRef<HTMLDivElement>(null);
 
@@ -93,51 +93,37 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed })
 
             if (error) throw error;
 
-            if (data?.success) {
+            if (data?.success || data?.reason === 'already_claimed') {
                 setClaimed(true);
 
-                // Use the SAME coin animation as Forum claim
-                // triggerCoinAnimation dispatches 'coin-collect' event
-                const giftIcon = document.getElementById('welcome-gift-icon');
-                let startX = window.innerWidth / 2;
-                let startY = window.innerHeight / 2;
-                if (giftIcon) {
-                    const rect = giftIcon.getBoundingClientRect();
-                    startX = rect.left + rect.width / 2;
-                    startY = rect.top + rect.height / 2;
+                // Mark as claimed in local context and backend
+                updateUser({ hasClaimedWelcomeGift: true });
+                localStorage.setItem(`welcome_claimed_${user.id}`, 'true');
+
+                if (data?.success) {
+                    // Only show animation if actually first-time
+                    const giftIcon = document.getElementById('welcome-gift-icon');
+                    let startX = window.innerWidth / 2;
+                    let startY = window.innerHeight / 2;
+                    if (giftIcon) {
+                        const rect = giftIcon.getBoundingClientRect();
+                        startX = rect.left + rect.width / 2;
+                        startY = rect.top + rect.height / 2;
+                    }
+                    triggerCoinAnimation(200, startX, startY);
+                    fireClaimConfetti();
+                    showToast('🎁 Welcome Gift Claimed! +200 NMS Points!', 'success');
+                } else {
+                    showToast('Gift already claimed!', 'info');
                 }
-                triggerCoinAnimation(200, startX, startY);
 
-                // Fire big confetti
-                fireClaimConfetti();
-
-                // Refresh points balance
-                await fetchUserPoints();
-
-                showToast('🎁 Welcome Gift Claimed! +200 NMS Points!', 'success');
-
-                // Generate persistent upgrade notification
-                try {
-                    await supabase.from('notifications').insert({
-                        user_id: user.id,
-                        text: '[Membership] You have enough coins to upgrade to Pro! Redeem now.',
-                        link: '/settings/subscription',
-                        unread: true,
-                        type: 'system'
-                    });
-                } catch (e) { console.error('Failed to insert upgrade notif', e); }
-
-                // Close modal after effects and popup upgrade paywall
+                // Close modal after brief pause
                 setTimeout(() => {
                     onClaimed();
-                    if (window.location.pathname !== '/settings/subscription') {
+                    if (data?.success && window.location.pathname !== '/settings/subscription') {
                         setShowPaywall(true);
                     }
                 }, 2800);
-            } else {
-                showToast('Gift already claimed!', 'info');
-                onClaimed();
-            }
         } catch (err: any) {
             console.error('Failed to claim welcome gift:', err);
             showToast('Failed to claim gift. Please try again.', 'error');
