@@ -90,7 +90,7 @@ const PageLayer = ({ active, children, zIndex = 0 }: { active: boolean; children
 
 
 const AppRoutes = () => {
-  const { isAuthLoading, isAuthenticated, user, recordLoginStreak, setIsStreakModalOpen } = useApp();
+  const { isAuthLoading, isAuthenticated, user, isPro, recordLoginStreak, setIsStreakModalOpen } = useApp();
   const location = useLocation();
   const path = location.pathname;
 

@@ -3,12 +3,9 @@
  * Handles all communication with the backend server
  */
 
-// In production, force use of Vercel backend to bypass broken Vercel env var or routing
-const isProd = import.meta.env.PROD || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1');
-// FORCE production URL if isProd is true, ignoring VITE_API_URL to avoid misconfiguration
-const API_BASE_URL = isProd
-    ? 'https://newmaos-api.vercel.app/api'
-    : '/api';
+// Use relative URL by default, and rely on Vite proxy in dev, and Vercel rewrites in prod.
+// This allows local network testing (e.g. from mobile devices) to work properly.
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Helper to get auth token from Supabase session
 const getAuthToken = (): string | null => {

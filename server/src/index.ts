@@ -95,7 +95,7 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Not found' });
 });
 
-app.listen(Number(PORT), 'localhost', () => {
+app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
     console.log(`📋 API endpoints available at http://localhost:${PORT}/api`);
 });
