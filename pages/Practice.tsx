@@ -775,7 +775,16 @@ export const Practice = () => {
 
                 if (!recs || recs.length === 0) {
                     if (isMounted) {
-                        setQuestions([]);
+                        const localQs = getSummaryQuestions();
+                        let selectedQs = [];
+                        if (subTopicId === 'unit_test') {
+                            selectedQs = [...localQs].sort(() => 0.5 - Math.random()).slice(0, 15);
+                        } else if (subTopicId) {
+                            selectedQs = localQs.slice(0, 5);
+                        } else {
+                            selectedQs = localQs.slice(0, 10);
+                        }
+                        setQuestions(selectedQs);
                         setIsLoadingQuestions(false);
                     }
                     return;
@@ -1600,22 +1609,25 @@ export const Practice = () => {
 
         if (correctQuestionIds.length > 0) {
             // Check the DB to see which questions have ALREADY been rewarded to this user
-            const idempotencyKeys = correctQuestionIds.map(id => `practice_${id}`);
+            const idempotencyKeysV1 = correctQuestionIds.map(id => `practice_${id}`);
+            const idempotencyKeysV2 = correctQuestionIds.map(id => `practice_${user?.id}_${id}`);
             const { data: existingTransactions, error: txError } = await supabase
                 .from('points_transactions')
                 .select('idempotency_key')
-                .in('idempotency_key', idempotencyKeys);
+                .in('idempotency_key', [...idempotencyKeysV1, ...idempotencyKeysV2]);
                 
             if (txError) {
                 console.error("Error fetching past point transactions:", txError);
             }
 
             const existingKeys = new Set(existingTransactions?.map((t: any) => t.idempotency_key) || []);
-            trulyNewCorrectIds = correctQuestionIds.filter(id => !existingKeys.has(`practice_${id}`));
+            trulyNewCorrectIds = correctQuestionIds.filter(id => 
+                !existingKeys.has(`practice_${id}`) && !existingKeys.has(`practice_${user?.id}_${id}`)
+            );
 
             // Award points individually to strictly record them in the DB (suppress animations)
             const coinPromises = trulyNewCorrectIds.map(qId => 
-                awardPoints(5, 'practice_correct', qId, 'Correct Answer +5', `practice_${qId}`, window.innerWidth / 2, window.innerHeight / 2, true)
+                awardPoints(5, 'practice_correct', qId, 'Correct Answer +5', `practice_${user?.id}_${qId}`, window.innerWidth / 2, window.innerHeight / 2, true)
             );
 
             await Promise.all(coinPromises);
