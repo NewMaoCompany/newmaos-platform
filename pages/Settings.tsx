@@ -7,7 +7,7 @@ import { usersApi } from '../src/services/api';
 export const Settings = () => {
     const {
         user, updateUser, toggleCourse, logout, isPro,
-         userPoints, proUpgradeDismissed
+         userPoints
     } = useApp();
     const navigate = useNavigate();
 

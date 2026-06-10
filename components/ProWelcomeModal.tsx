@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti';
 import { PointsCoin } from './PointsCoin';
 
 export const ProWelcomeModal = () => {
-    const { user, isPro, markProIntroSeen, redeemProWithPoints, showPaywall, setShowPaywall, userPoints, isStreakModalOpen, triggerCoinAnimation, markNotificationsByPrefix } = useApp();
+    const { user, isPro, markProIntroSeen, redeemProWithPoints, showPaywall, setShowPaywall, userPoints, isStreakModalOpen, triggerCoinAnimation } = useApp();
     const [isVisible, setIsVisible] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
     const [isRedeeming, setIsRedeeming] = useState(false);
@@ -100,11 +100,6 @@ export const ProWelcomeModal = () => {
 
             // Play celebration effects immediately
             playSuccessSound();
-
-            // Clear the insistent Upgrade Notification
-            try {
-                markNotificationsByPrefix('[Membership]');
-            } catch (e) { console.error('Failed to clear upgrade notif', e); }
 
             confetti({
                 particleCount: 200,

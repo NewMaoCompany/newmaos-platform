@@ -906,7 +906,7 @@ export const PracticeHub = () => {
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform relative">
                                         <span className="material-symbols-outlined text-[22px]">menu_book</span>
-                                        {isAuthenticated && incorrectQuestionIds.length > 0 && (
+                                        {isAuthenticated && incorrectQuestionIds.size > 0 && (
                                             <span className="absolute -top-1 -right-1 flex h-3 w-3">
                                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 border border-white dark:border-surface-dark shadow-sm"></span>

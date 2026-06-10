@@ -122,10 +122,6 @@ interface AppContextType {
     checkinStatus: 'checked_in' | 'not_checked_in' | 'loading';
     refreshCheckinStatus: () => Promise<void>;
 
-    // Pro Upgrade Red Dot
-    proUpgradeDismissed: boolean;
-    dismissProUpgrade: () => void;
-
     // Modal Orchestration
     isStreakModalOpen: boolean;
     setIsStreakModalOpen: (isOpen: boolean) => void;
@@ -2056,7 +2052,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                 setIsAuthenticated(false);
                 setIsCreatorAuthenticated(false);
                 setUser(INITIAL_USER);
-                setNotifications(INITIAL_NOTIFICATIONS);
                 setSectionProgressMap({});
                 setFriendIds(new Set());
                 // Full storage clear to ensure clean slate
@@ -2779,7 +2774,6 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         setUser(INITIAL_USER);
         setUserPoints({ balance: 0, lifetimeEarned: 0 });
         setSectionProgressMap({});
-        setNotifications(INITIAL_NOTIFICATIONS);
         setFriendIds(new Set());
 
         // Clear all storage (sessionStorage.clear() already removes streak_checked_today)

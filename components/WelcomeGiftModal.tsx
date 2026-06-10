@@ -124,6 +124,7 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed })
                         setShowPaywall(true);
                     }
                 }, 2800);
+            }
         } catch (err: any) {
             console.error('Failed to claim welcome gift:', err);
             showToast('Failed to claim gift. Please try again.', 'error');

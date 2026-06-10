@@ -1686,13 +1686,15 @@ export const Practice = () => {
                     !existingKeys.has(`practice_${id}`) && !existingKeys.has(`practice_${user?.id}_${id}`)
                 );
 
-                // Award points individually to strictly record them in the DB (suppress animations)
-                const coinPromises = trulyNewCorrectIds.map(qId => 
-                    awardPoints(5, 'manual_adjustment', qId, 'Correct Answer +5', `practice_${user?.id}_${qId}`, window.innerWidth / 2, window.innerHeight / 2, true)
+                // Award points individually - only count actually-successful awards
+                const coinResults = await Promise.all(
+                    trulyNewCorrectIds.map(qId =>
+                        awardPoints(5, 'manual_adjustment', qId, 'Correct Answer +5', `practice_${user?.id}_${qId}`, window.innerWidth / 2, window.innerHeight / 2, true)
+                    )
                 );
 
-                await Promise.all(coinPromises);
-                newlyEarnedBaseCoins = trulyNewCorrectIds.length * 5;
+                // Only count points that were ACTUALLY awarded (not duplicates blocked by DB)
+                newlyEarnedBaseCoins = coinResults.filter(r => r.success).length * 5;
             }
             
             totalSessionCoins += newlyEarnedBaseCoins;

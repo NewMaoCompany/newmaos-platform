@@ -35,10 +35,11 @@ BEGIN
     END IF;
 
     -- 4. Analysis Badge
-    -- Check if there are ANY question attempts strictly newer than their last view time
+    -- Only show if user has done practice TODAY and hasn't viewed Analysis since then
     SELECT EXISTS (
         SELECT 1 FROM public.question_attempts 
         WHERE user_id = p_user_id 
+        AND DATE(created_at AT TIME ZONE 'UTC') = CURRENT_DATE
         AND created_at > COALESCE(v_profile.last_analysis_view_time, '1970-01-01'::TIMESTAMPTZ)
     ) INTO v_analysis_badge;
 

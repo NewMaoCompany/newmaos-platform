@@ -423,7 +423,7 @@ export const Dashboard = () => {
               : 'bg-white dark:bg-surface-dark border-white dark:border-white/5 hover:shadow-md cursor-pointer'
               }`}
           >
-            {needsCheckin && checkinStatus !== 'checked_in' && (
+            {needsCheckin && (
               <div className="absolute top-4 right-4 flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>

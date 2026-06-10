@@ -1328,15 +1328,14 @@ export const SecuritySettings = () => {
 export const SubscriptionSettings = () => {
   const {
     user, isPro, redeemProWithPoints,
-    userPoints, fetchUserPoints,
-    dismissProUpgrade, proUpgradeDismissed
+    userPoints, fetchUserPoints
   } = useApp();
   const [lockedFeature, setLockedFeature] = useState<string | null>(null);
   const [isRedeeming, setIsRedeeming] = useState(false);
   const isRedeemingRef = useRef(false);
   const [selectedPreview, setSelectedPreview] = useState<'basic' | 'pro'>(isPro ? 'pro' : 'basic');
   const [redeemError, setRedeemError] = useState<string | null>(null);
-  const needsProUpgrade = !isPro && userPoints.balance >= 199 && !proUpgradeDismissed;
+  const needsProUpgrade = !isPro && userPoints.balance >= 199;
   const [ledger, setLedger] = useState<any[]>([]);
   const { showToast } = useToast();
 

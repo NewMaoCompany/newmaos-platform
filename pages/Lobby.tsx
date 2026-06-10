@@ -139,7 +139,7 @@ const AppIcon = ({
 
 export const Lobby = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, userPoints, userPrestige, checkinStatus, userBadges } = useApp();
+  const { isAuthenticated, userPoints, userPrestige, checkinStatus, navRedDots } = useApp();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -147,13 +147,13 @@ export const Lobby = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Use global userBadges from useApp instead of filtering local notifications
-  const unreadCount = userBadges ? (
-    (userBadges.dashboard ? 1 : 0) + 
-    (userBadges.practice ? 1 : 0) + 
-    (userBadges.analysis ? 1 : 0) + 
-    (userBadges.forum || 0) + 
-    (userBadges.settings ? 1 : 0)
+  // Use global navRedDots from useApp instead of filtering local notifications
+  const unreadCount = navRedDots ? (
+    (navRedDots.dashboard ? 1 : 0) + 
+    (navRedDots.practice ? 1 : 0) + 
+    (navRedDots.analysis ? 1 : 0) + 
+    (navRedDots.forum || 0) + 
+    (navRedDots.settings ? 1 : 0)
   ) : 0;
 
 
