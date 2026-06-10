@@ -75,6 +75,7 @@ interface AppContextType {
     };
     fetchBadgeStatus: () => Promise<void>;
     markBadgeAsRead: (type: 'analysis' | 'forum' | 'practice') => Promise<void>;
+    clearBadgeLocally: (type: keyof AppContextType['navRedDots']) => void;
     acceptFriendRequest: (senderId: string) => Promise<{ success: boolean; message?: string }>;
     // Helper for Dashboard
     getCourseMastery: (course: CourseType) => number;
@@ -299,6 +300,10 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         } catch (err) {
             console.error('Error marking badge as read:', err);
         }
+    };
+
+    const clearBadgeLocally = (type: keyof AppContextType['navRedDots']) => {
+        setNavRedDots(prev => ({ ...prev, [type]: type === 'forum' ? 0 : false }));
     };
 
     // Skills data for Question Editor
@@ -2522,6 +2527,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
 
     const performDailyCheckin = useCallback(async () => {
         if (!user.id) return { success: false, reason: 'not_authenticated' };
+        // Instantly clear red dot for fast UI response
+        clearBadgeLocally('dashboard');
         try {
             const localDate = new Date().toLocaleDateString('en-CA');
             const { data, error } = await supabase.rpc('perform_daily_checkin', {
@@ -3242,6 +3249,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             navRedDots,
             fetchBadgeStatus,
             markBadgeAsRead,
+            clearBadgeLocally,
             acceptFriendRequest,
             getCourseMastery,
             getSectionsForTopic,

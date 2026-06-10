@@ -370,7 +370,7 @@ const HistoryGroupCard = ({ sectionId, activities }: { sectionId: string, activi
 };
 
 export const PracticeHub = () => {
-    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry } = useApp();
+    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry, clearBadgeLocally } = useApp();
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isUnitDropdownOpen, setIsUnitDropdownOpen] = useState(false);
@@ -769,10 +769,11 @@ export const PracticeHub = () => {
                                                 }
                                             }
 
-                                            const handleSmartClick = (mode: SessionMode, isResuming: boolean, forceStartNew: boolean) => {
-                                                if (isProcessing) return;
-                                                setIsProcessing(true);
-                                                navigate('/practice/session', {
+                                                const handleSmartClick = (mode: SessionMode, isResuming: boolean, forceStartNew: boolean) => {
+                                                    if (isProcessing) return;
+                                                    setIsProcessing(true);
+                                                    clearBadgeLocally('practice');
+                                                    navigate('/practice/session', {
                                                     state: {
                                                         topic: recommendation.topic,
                                                         mode: mode,
