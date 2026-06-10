@@ -370,7 +370,7 @@ const HistoryGroupCard = ({ sectionId, activities }: { sectionId: string, activi
 };
 
 export const PracticeHub = () => {
-    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, markLinkAsRead, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry } = useApp();
+    const { user, activities, courses, recommendation, setSessionMode, setRecommendationTopic, radarData, topicContent, sections, getSectionStatus, sectionProgressMap, saveSectionProgress, isAuthenticated, incorrectQuestionIds, lockPracticeMode, isModeLocked, lockedModeExpiry } = useApp();
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isUnitDropdownOpen, setIsUnitDropdownOpen] = useState(false);
@@ -461,7 +461,8 @@ export const PracticeHub = () => {
     }, []);
 
     const handleTopicClick = (topicId: string) => {
-        markLinkAsRead(`/practice/unit/${topicId}`);
+        // Link tracking removed during notification refactor
+
         navigate(`/practice/unit/${topicId}`);
     };
 
