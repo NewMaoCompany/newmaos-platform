@@ -1740,14 +1740,7 @@ export const Practice = () => {
             }
         }
         
-        // Force a fresh fetch of the true backend balance to overwrite any race conditions
-        await fetchUserPoints();
-        
         setSessionEarnedCoins(totalSessionCoins);
-
-        // Update the state so the SessionSummary UI can display it
-        setSessionEarnedCoins(totalSessionCoins);
-
         setShowSummary(true);
     };
 
