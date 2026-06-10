@@ -10,7 +10,7 @@ import confetti from 'canvas-confetti';
 export type DayState = 'checked' | 'missed' | 'future' | 'before_registration' | 'today_missed';
 
 export const CheckinPage = () => {
-    const { user, isAuthenticated, performDailyCheckin, getCheckinStatus, fetchUserPoints, triggerCoinAnimation, notifications, markNotificationRead, refreshCheckinStatus } = useApp();
+    const { user, isAuthenticated, performDailyCheckin, getCheckinStatus, fetchUserPoints, triggerCoinAnimation, refreshCheckinStatus } = useApp();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const [checkinData, setCheckinData] = useState<any>(null);
@@ -121,10 +121,8 @@ export const CheckinPage = () => {
 
     // Auto-clear check-in notifications when entering this page
     useEffect(() => {
-        notifications
-            .filter(n => n.unread && n.link === '/checkin')
-            .forEach(n => markNotificationRead(n.id));
-    }, [notifications, markNotificationRead]);
+        // Red dots are now managed by backend
+    }, []);
 
     const handleRepair = async (dayToRepair: number) => {
         if (isRepairing) return;

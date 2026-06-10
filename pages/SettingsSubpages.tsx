@@ -1328,7 +1328,7 @@ export const SecuritySettings = () => {
 export const SubscriptionSettings = () => {
   const {
     user, isPro, redeemProWithPoints,
-    notifications, markNotificationRead, userPoints, fetchUserPoints,
+    userPoints, fetchUserPoints,
     dismissProUpgrade, proUpgradeDismissed
   } = useApp();
   const [lockedFeature, setLockedFeature] = useState<string | null>(null);
@@ -1343,16 +1343,13 @@ export const SubscriptionSettings = () => {
   const PRO_COST = 199;
   const canAfford = userPoints.balance >= PRO_COST;
 
-  const membershipNotifs = notifications.filter(n => n.unread && n.text?.startsWith('[Membership]'));
-  const hasMembershipAlert = membershipNotifs.length > 0;
+  // Red dot for Pro upgrade is now managed by isPro state.
+  const hasMembershipAlert = !isPro;
 
-  // Auto-dismiss: When user enters Subscription page, mark [Membership] notifications as read
-  // This makes the red dot disappear on Settings menu and notification dropdown
+  // Red dot disappears only when successfully subscribed.
   useEffect(() => {
-    if (hasMembershipAlert) {
-      membershipNotifs.forEach(n => markNotificationRead(n.id));
-    }
-  }, [hasMembershipAlert]);
+    // Legacy auto-dismiss logic removed
+  }, []);
 
   // Fetch recent ledger
   useEffect(() => {
@@ -1461,10 +1458,7 @@ export const SubscriptionSettings = () => {
           <div
             onClick={() => {
               setSelectedPreview('pro');
-              // Dismiss: Mark all [Membership] notifications as read when clicking the Pro card
-              if (hasMembershipAlert) {
-                membershipNotifs.forEach(n => markNotificationRead(n.id));
-              }
+              // Legacy dismiss removed
             }}
             className={`relative p-8 rounded-[2.5rem] border-2 transition-all duration-500 flex flex-col group cursor-pointer hover:scale-[1.02] ${selectedPreview === 'pro' ? 'border-primary ring-4 ring-primary/10' : 'border-black/5 dark:border-white/10'} ${isPro ? 'bg-primary/5 shadow-2xl shadow-primary/20' : 'bg-white dark:bg-white/5'}`}>
             {/* Red dot for Pro upgrade nudge */}

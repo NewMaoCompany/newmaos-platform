@@ -7,16 +7,15 @@ import { usersApi } from '../src/services/api';
 export const Settings = () => {
     const {
         user, updateUser, toggleCourse, logout, isPro,
-        notifications, markNotificationRead, userPoints, proUpgradeDismissed
+         userPoints, proUpgradeDismissed
     } = useApp();
     const navigate = useNavigate();
 
-    // Unified notification-driven red dot for Subscription
-    const settingsNotifs = notifications.filter(n => n.unread && (n.link?.includes('/settings') || n.text?.startsWith('[Membership]')));
-    const hasSettingsAlert = settingsNotifs.length > 0;
+    // Red dot for Subscription based on isPro status (as requested, only disappears when successfully subscribed)
+    const hasSettingsAlert = !isPro;
 
     const clearAllSettingsNotifs = () => {
-        settingsNotifs.forEach(n => markNotificationRead(n.id));
+        // Red dots are now managed by backend/isPro state
     };
 
     // Local state for toggles

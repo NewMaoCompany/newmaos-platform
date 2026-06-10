@@ -139,7 +139,7 @@ const AppIcon = ({
 
 export const Lobby = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, notifications, userPoints, userPrestige, checkinStatus } = useApp();
+  const { isAuthenticated, userPoints, userPrestige, checkinStatus, userBadges } = useApp();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -147,18 +147,14 @@ export const Lobby = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const unreadCount = notifications.filter(n => {
-    if (!n.unread) return false;
-    const isCheckin = n.link?.includes('/checkin') || n.text?.includes('Daily Check-in');
-    
-    // Deduplicate and filter based on checkinStatus
-    if (isCheckin) {
-      if (checkinStatus !== 'not_checked_in') return false;
-      const firstCheckin = notifications.find(notif => notif.unread && (notif.link?.includes('/checkin') || notif.text?.includes('Daily Check-in')));
-      if (firstCheckin && firstCheckin.id !== n.id) return false;
-    }
-    return true;
-  }).length;
+  // Use global userBadges from useApp instead of filtering local notifications
+  const unreadCount = userBadges ? (
+    (userBadges.dashboard ? 1 : 0) + 
+    (userBadges.practice ? 1 : 0) + 
+    (userBadges.analysis ? 1 : 0) + 
+    (userBadges.forum || 0) + 
+    (userBadges.settings ? 1 : 0)
+  ) : 0;
 
 
   return (
