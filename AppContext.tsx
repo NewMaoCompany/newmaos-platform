@@ -1732,8 +1732,17 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                         localStorage.setItem('section_progress_cache', JSON.stringify(map));
                     }
                 })(),
-                fetchIncorrectQuestions()
+                fetchIncorrectQuestions(),
+                fetchRadarData(),
+                fetchLineData(),
+                fetchBadgeStatus(),
+                getUserInsights(),
+                fetchUserPrestige()
             ]);
+
+            // Trigger UI to fetch any newly unlocked achievements
+            window.dispatchEvent(new Event('refreshAchievements'));
+
         } catch (error) {
             console.error('fetchAllUserProgress error:', error);
         }

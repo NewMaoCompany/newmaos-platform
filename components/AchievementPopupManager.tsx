@@ -78,6 +78,11 @@ export const AchievementPopupManager: React.FC = () => {
         if (!isPro) {
             setHasFetched(false);
         }
+
+        // Listen for manual refresh events (e.g., after practice completes)
+        const handleRefresh = () => fetchUnnotified();
+        window.addEventListener('refreshAchievements', handleRefresh);
+        return () => window.removeEventListener('refreshAchievements', handleRefresh);
     }, [isPro, user?.id, hasFetched, fetchUnnotified]);
 
     // Dequeue: show next popup from queue
