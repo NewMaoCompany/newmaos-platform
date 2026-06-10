@@ -187,6 +187,7 @@ export const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
                   className={`shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg relative whitespace-nowrap ${isActive('/settings') ? 'text-text-main dark:text-white bg-primary/15 font-bold' : 'text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
                 >
                   <span>Settings</span>
+                  {!isAuthenticated && <span className="material-symbols-outlined text-[16px] ml-0.5 opacity-60">lock</span>}
                   {navRedDots.settings && (
                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform group-hover:scale-110"></span>
                   )}

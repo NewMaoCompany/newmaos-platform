@@ -88,6 +88,11 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed })
         // Pre-warm audio context during user gesture
         window.dispatchEvent(new Event('audio-unlock'));
 
+        // Safety timeout: always unblock button after 10s
+        const safetyTimer = setTimeout(() => {
+            setIsClaiming(false);
+        }, 10000);
+
         try {
             const { data, error } = await supabase.rpc('claim_welcome_gift');
 
@@ -118,16 +123,24 @@ export const WelcomeGiftModal: React.FC<WelcomeGiftModalProps> = ({ onClaimed })
                 }
 
                 // Close modal after brief pause
+                clearTimeout(safetyTimer);
                 setTimeout(() => {
                     onClaimed();
                     if (data?.success && window.location.pathname !== '/settings/subscription') {
                         setShowPaywall(true);
                     }
                 }, 2800);
+            } else {
+                // RPC returned unexpected data — unblock button
+                console.warn('claim_welcome_gift returned unexpected result:', data);
+                showToast('Something went wrong. Please try again.', 'error');
+                clearTimeout(safetyTimer);
+                setIsClaiming(false);
             }
         } catch (err: any) {
             console.error('Failed to claim welcome gift:', err);
             showToast('Failed to claim gift. Please try again.', 'error');
+            clearTimeout(safetyTimer);
             setIsClaiming(false);
         }
     };

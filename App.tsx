@@ -50,7 +50,7 @@ import { ProWelcomeModal } from './components/ProWelcomeModal';
 import { StreakModal } from './components/StreakModal';
 import { CreatorGiftModal } from './components/CreatorGiftModal';
 import { AchievementPopupManager } from './components/AchievementPopupManager';
-import { OnboardingFlow } from './components/OnboardingFlow';
+
 import { ProGateOverlay } from './components/ProGateOverlay';
 
 // Loading fallback for lazy routes
@@ -274,7 +274,7 @@ const App = () => {
         <AppProvider>
           <Router>
             <CoinCollector />
-            <OnboardingFlow />
+
             <AppRoutes />
             <ProWelcomeModal />
             <AchievementPopupManager />
