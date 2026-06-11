@@ -977,8 +977,8 @@ export const Forum = () => {
     }, [location.search, channels]);
 
     // --- DM States ---
-    const [viewMode, setViewMode] = useState<'channel' | 'dm'>(() => {
-        try { return (localStorage.getItem('forum_viewMode') as 'channel' | 'dm') || 'channel'; } catch { return 'channel'; }
+    const [viewMode, setViewMode] = useState<'channel' | 'dm' | 'friendRequests'>(() => {
+        try { return (localStorage.getItem('forum_viewMode') as 'channel' | 'dm' | 'friendRequests') || 'channel'; } catch { return 'channel'; }
     });
     const [activeChatId, setActiveChatId] = useState<string | null>(() => {
         try { return localStorage.getItem('forum_activeChatId') || null; } catch { return null; }
@@ -1276,7 +1276,7 @@ export const Forum = () => {
                 if (selectedUserProfile) checkFriendStatus();
             })
             .on('postgres_changes', {
-                event: 'UPDATE',
+                event: '*',
                 schema: 'public',
                 table: 'friend_requests',
                 filter: `sender_id=eq.${user.id}` // My sent requests being accepted/rejected
@@ -1652,22 +1652,41 @@ export const Forum = () => {
     }, [viewMode, user?.id]); // Added user.id to dependencies
 
     // Fetch user's friends
+    const [pendingRequests, setPendingRequests] = useState<any[]>([]);
+
     const fetchFriends = async () => {
         if (!user) return;
         try {
-            const { data, error } = await supabase
-                .from('friend_requests')
-                .select('sender_id, receiver_id')
-                .eq('status', 'accepted')
-                .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
+            const [friendsRes, pendingRes] = await Promise.all([
+                supabase
+                    .from('friend_requests')
+                    .select('sender_id, receiver_id')
+                    .eq('status', 'accepted')
+                    .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`),
+                supabase
+                    .from('friend_requests')
+                    .select('id, sender_id, created_at, sender:user_profiles!sender_id(name, avatar_url, is_official, equipped_title:titles(name, category, threshold))')
+                    .eq('receiver_id', user.id)
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false })
+            ]);
 
-            if (error) throw error;
+            if (friendsRes.error) throw friendsRes.error;
+            if (pendingRes.error) throw pendingRes.error;
 
             // Extract IDs of friends
-            const friendIds = data.map((req: any) =>
+            const friendIds = friendsRes.data.map((req: any) =>
                 req.sender_id === user.id ? req.receiver_id : req.sender_id
             );
             setFriends(friendIds);
+
+            const formattedRequests = pendingRes.data.map((req: any) => ({
+                id: req.id,
+                sender_id: req.sender_id,
+                created_at: req.created_at,
+                user: req.sender
+            }));
+            setPendingRequests(formattedRequests);
         } catch (err) {
             console.error('Error fetching friends:', err);
         }
@@ -1812,7 +1831,9 @@ export const Forum = () => {
                 });
             }
 
-            if (friendIds.length === 0) {
+            const allUserIdsToFetch = new Set([...friendIds, ...Array.from(existingChatsMap.keys())]);
+
+            if (allUserIdsToFetch.size === 0) {
                 setDmChats([]);
                 return;
             }
@@ -1820,7 +1841,7 @@ export const Forum = () => {
             const { data: profiles } = await supabase
                 .from('user_profiles')
                 .select('id, name, avatar_url, is_official, equipped_title:titles(name, category, threshold)')
-                .in('id', friendIds);
+                .in('id', Array.from(allUserIdsToFetch));
 
             const combined = profiles?.map((profile: any) => ({
                 chat_id: existingChatsMap.get(profile.id) || null,
@@ -2297,8 +2318,8 @@ export const Forum = () => {
                                                     user:user_profiles!user_id(name, avatar_url, is_official, equipped_title:titles(name, category, threshold))
                                                     `)
                 .eq('current_context_id', contextId)
-                // Relaxed filter: 1 minute (60000ms) - just enough for 2 heartbeats
-                .gt('last_seen_at', new Date(Date.now() - 60000).toISOString());
+                // Relaxed filter: 5 minutes (300000ms) to bypass severe clock skew issues
+                .gt('last_seen_at', new Date(Date.now() - 300000).toISOString());
 
             if (error) {
                 console.warn('[Presence] Fetch initial error (non-critical):', error.message);
@@ -3537,8 +3558,98 @@ export const Forum = () => {
 
                 {/* 2. Main Chat Area & Member Sidebar */}
                 <div className={`flex-1 flex min-h-0 bg-white/50 dark:bg-black/20 relative backdrop-blur-sm overflow-hidden`}>
+                    {/* Friend Requests View */}
+                    {viewMode === 'friendRequests' && (
+                        <div className="flex-1 flex flex-col min-h-0 bg-white/50 dark:bg-black/20 overflow-y-auto custom-scrollbar p-6 md:p-12">
+                            <div className="max-w-3xl w-full mx-auto animate-fade-in-up">
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="w-12 h-12 rounded-2xl bg-primary/20 text-primary flex items-center justify-center">
+                                        <span className="material-symbols-outlined text-2xl">group_add</span>
+                                    </div>
+                                    <div>
+                                        <h2 className="text-2xl md:text-3xl font-black text-text-main dark:text-white tracking-tight">Friend Requests</h2>
+                                        <p className="text-text-secondary dark:text-gray-400 font-medium">Manage your incoming network connections.</p>
+                                    </div>
+                                </div>
+                                
+                                {pendingRequests.length === 0 ? (
+                                    <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-gray-200 dark:border-gray-800 rounded-3xl p-12 text-center shadow-sm">
+                                        <span className="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-700 mb-4">person_search</span>
+                                        <h3 className="text-xl font-bold text-gray-400 dark:text-gray-500 mb-2">No pending requests</h3>
+                                        <p className="text-sm text-gray-400 dark:text-gray-600">You don't have any incoming friend requests at the moment.</p>
+                                    </div>
+                                ) : (
+                                    <div className="grid gap-4">
+                                        {pendingRequests.map(req => (
+                                            <div key={req.id} className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border border-gray-100 dark:border-gray-800/80 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-all group">
+                                                <div className="flex items-center gap-4 min-w-0 flex-1 cursor-pointer" onClick={() => handleProfileClick(req.user)}>
+                                                    <div className="relative shrink-0">
+                                                        <div className="w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden ring-4 ring-white dark:ring-zinc-900 group-hover:ring-primary/20 transition-all">
+                                                            {req.user?.avatar_url ? (
+                                                                <img src={req.user.avatar_url} alt={req.user?.name} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center text-xl font-bold text-gray-400">
+                                                                    {req.user?.name?.charAt(0).toUpperCase()}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2 flex-wrap">
+                                                            <h4 className="text-base font-bold text-text-main dark:text-white truncate">{req.user?.name || 'Unknown User'}</h4>
+                                                            {req.user?.equipped_title && (
+                                                                <TitleBadge title={req.user.equipped_title} size="xs" />
+                                                            )}
+                                                        </div>
+                                                        <p className="text-xs text-text-secondary dark:text-gray-500 flex items-center gap-1 mt-1">
+                                                            <span className="material-symbols-outlined text-[14px]">schedule</span>
+                                                            Received {new Date(req.created_at).toLocaleDateString()}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
+                                                    <button
+                                                        onClick={async (e) => {
+                                                            e.stopPropagation();
+                                                            try {
+                                                                await api.users.acceptFriendRequest(req.sender_id);
+                                                                showToast('Friend request accepted!', 'success');
+                                                                setPendingRequests(prev => prev.filter(p => p.id !== req.id));
+                                                                fetchFriends(); // Trigger global refresh
+                                                            } catch (err: any) {
+                                                                showToast(err.message || 'Failed to accept', 'error');
+                                                            }
+                                                        }}
+                                                        className="flex-1 md:flex-none px-6 py-2.5 bg-green-500 hover:bg-green-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-green-500/20 transition-all active:scale-95"
+                                                    >
+                                                        Accept
+                                                    </button>
+                                                    <button
+                                                        onClick={async (e) => {
+                                                            e.stopPropagation();
+                                                            try {
+                                                                await supabase.from('friend_requests').delete().eq('id', req.id);
+                                                                showToast('Request declined', 'success');
+                                                                setPendingRequests(prev => prev.filter(p => p.id !== req.id));
+                                                            } catch (err) {
+                                                                showToast('Failed to decline', 'error');
+                                                            }
+                                                        }}
+                                                        className="flex-1 md:flex-none px-6 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 text-sm font-bold rounded-xl transition-all active:scale-95"
+                                                    >
+                                                        Decline
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Chat Column */}
-                    <div className="flex-1 flex flex-col min-h-0 min-w-0 border-r border-gray-200/50 dark:border-gray-800/50 relative">
+                    <div className={`flex-1 flex flex-col min-h-0 min-w-0 border-r border-gray-200/50 dark:border-gray-800/50 relative ${viewMode === 'friendRequests' ? 'hidden' : ''}`}>
                         {/* Header */}
                         <div className="min-h-[4rem] px-4 md:px-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between shrink-0 bg-white/80 dark:bg-black/40 backdrop-blur-xl z-40 relative">
                             <div className="flex items-center gap-3 overflow-hidden py-2 max-w-[60%]">
@@ -3838,7 +3949,7 @@ export const Forum = () => {
 
                             {/* Member Sidebar Panel - Static Layout to push content */}
                             {showMemberSidebar && (
-                                <div className="w-64 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl animate-fade-in-left border-l border-gray-200 dark:border-gray-800 flex flex-col flex-shrink-0">
+                                <div className={`w-64 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl animate-fade-in-left border-l border-gray-200 dark:border-gray-800 flex flex-col flex-shrink-0 ${viewMode === 'friendRequests' ? 'hidden' : ''}`}>
                                     <div className="h-14 px-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800/50 flex-shrink-0">
                                         <h3 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                                             Online — {presenceUsers.length + (user ? 1 : 0)}
