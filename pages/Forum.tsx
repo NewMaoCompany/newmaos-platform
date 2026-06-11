@@ -80,7 +80,7 @@ const ChannelItem = ({ name, isActive, onClick, rightElement, unreadCount = 0 }:
             <span className={`text-sm font-medium truncate ${isActive ? 'font-bold' : ''}`}>{name}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-            {unreadCount > 0 && !isActive && (
+            {unreadCount > 0 && (
                 <div className="min-w-[16px] h-[16px] flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
                     {unreadCount > 99 ? '99+' : unreadCount}
                 </div>
@@ -1974,6 +1974,9 @@ export const Forum = () => {
                         }
                     } catch {}
 
+                    mapped.forEach((m: any) => {
+                        if (m.user_id && m.user) profileCache.current.set(m.user_id, m.user);
+                    });
                     setMessages(mapped);
                     localStorage.setItem(cacheKey, JSON.stringify(mapped));
                 } else {
@@ -2037,6 +2040,9 @@ export const Forum = () => {
                         }
                     } catch {}
 
+                    mapped.forEach((m: any) => {
+                        if (m.user_id && m.user) profileCache.current.set(m.user_id, m.user);
+                    });
                     setMessages(mapped);
                     localStorage.setItem(cacheKey, JSON.stringify(mapped));
                 }
@@ -3411,7 +3417,7 @@ export const Forum = () => {
                                                     <div className="flex-1 min-w-0">
                                                         <span className={`block text-sm truncate text-left w-full ${dm.chat_id && activeChatId === dm.chat_id ? 'font-bold' : 'font-medium'}`}>{dm.user?.name || 'User'}</span>
                                                     </div>
-                                                    {dm.chat_id && unreadCounts[dm.chat_id] > 0 && activeChatId !== dm.chat_id && (
+                                                    {dm.chat_id && unreadCounts[dm.chat_id] > 0 && (
                                                         <div className="min-w-[16px] h-[16px] shrink-0 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
                                                             {unreadCounts[dm.chat_id] > 99 ? '99+' : unreadCounts[dm.chat_id]}
                                                         </div>
