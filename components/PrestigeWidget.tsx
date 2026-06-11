@@ -37,7 +37,7 @@ export const PrestigeWidget = ({
         const combinedClasses = className || defaultScale;
 
         return (
-            <div className={`w-full py-8 -my-4 px-4 ${wide ? 'flex justify-center' : ''}`} style={{ overflow: 'visible' }}>
+            <div className={`w-full py-8 -my-4 px-4 flex justify-center`} style={{ overflow: 'visible' }}>
                 <div className={`relative ${combinedClasses} ${wide ? 'w-full max-w-2xl' : 'max-w-fit'} shrink-0`}>
                     {/* The Pill Container — NO backdrop-filter to avoid implicit overflow clipping of AvatarAura effects */}
                     <div
