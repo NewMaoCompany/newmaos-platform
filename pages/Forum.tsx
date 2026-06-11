@@ -1001,10 +1001,10 @@ export const Forum = () => {
         if (id && unreadCounts[id]) {
             clearUnread(id);
         }
-        // intentionally omitting unreadCounts so we don't clear newly arrived messages instantly 
-        // if the user is already in the channel. The user wants to see the red dot until they manually clear it.
+        // intentionally omitting unreadCounts and clearUnread so we don't clear newly arrived messages instantly 
+        // if the user is already in the channel. The user wants to see the red dot until they manually click it again.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeChannelId, activeChatId, viewMode, clearUnread]);
+    }, [activeChannelId, activeChatId, viewMode]);
 
     // Handle new unread counts properly
     useEffect(() => {
