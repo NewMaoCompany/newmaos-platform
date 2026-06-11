@@ -1366,6 +1366,36 @@ export const Forum = () => {
         });
     };
 
+    const handleCloseChat = async (chatId: string, event: React.MouseEvent) => {
+        event.stopPropagation();
+        setConfirmModal({
+            isOpen: true,
+            title: 'Close Chat?',
+            message: 'Are you sure you want to close this chat? Your message history will be hidden until you message them again.',
+            onConfirm: async () => {
+                try {
+                    const { error } = await supabase
+                        .from('dm_participations')
+                        .delete()
+                        .eq('chat_id', chatId)
+                        .eq('user_id', user?.id);
+
+                    if (error) throw error;
+
+                    fetchDMs();
+                    if (activeChatId === chatId) {
+                        setActiveChatId(null);
+                        setViewMode('channel');
+                        setActiveSidebarSection('Channels');
+                    }
+                } catch (error: any) {
+                    console.error('Error closing chat:', error);
+                    showToast('Failed to close chat', 'error');
+                }
+            }
+        });
+    };
+
     const handleDeleteChannel = async (channel: Channel, event: React.MouseEvent) => {
         event.stopPropagation();
         const isOwner = channel.creator_id === user?.id;
@@ -3489,15 +3519,22 @@ export const Forum = () => {
                                                         </div>
                                                     )}
 
-                                                    {/* Delete Friend Button */}
                                                     {/* Action Buttons: Remove Friend (if friend) OR Close Chat (if not friend) */}
-                                                    {friends.includes(dm.user.id) && (
+                                                    {friends.includes(dm.user.id) ? (
                                                         <div
                                                             onClick={(e) => handleRemoveFriend(dm.user.id, e)}
-                                                            className="text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10 opacity-0 group-hover:opacity-100 transition-all cursor-pointer ml-auto"
+                                                            className="text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10 opacity-30 group-hover:opacity-100 transition-all cursor-pointer ml-auto"
                                                             title="Remove Friend"
                                                         >
                                                             <span className="material-symbols-outlined text-[16px]">person_remove</span>
+                                                        </div>
+                                                    ) : (
+                                                        <div
+                                                            onClick={(e) => dm.chat_id && handleCloseChat(dm.chat_id, e)}
+                                                            className="text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10 opacity-30 group-hover:opacity-100 transition-all cursor-pointer ml-auto"
+                                                            title="Close Chat"
+                                                        >
+                                                            <span className="material-symbols-outlined text-[16px]">close</span>
                                                         </div>
                                                     )}
                                                 </button>
