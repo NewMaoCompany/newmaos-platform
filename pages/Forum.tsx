@@ -3623,7 +3623,7 @@ export const Forum = () => {
 
                                     {/* Root Input Area — Flex layout below chat */}
                                     {(activeChannelId || activeChatId) && (
-                                        <div className="px-4 md:px-6 pb-4 md:pb-4 pt-2 z-10 sticky bottom-0 bg-white/50 dark:bg-black/20 backdrop-blur-md mb-16 md:mb-0">
+                                        <div className="px-4 md:px-6 pb-4 md:pb-4 pt-2 z-30 sticky bottom-0 bg-white/50 dark:bg-black/20 backdrop-blur-md mb-16 md:mb-0">
                                             {activeChannel?.category === 'Information' && user?.email !== 'newmao6120@gmail.com' ? (
                                                 <div
                                                     className="relative bg-gray-50/50 dark:bg-white/5 rounded-xl px-4 py-3 border border-dashed border-gray-200 dark:border-gray-800 cursor-pointer hover:border-primary/50 transition-colors flex items-center justify-center gap-3 group group-hover:bg-white/10"
