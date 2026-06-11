@@ -395,11 +395,11 @@ export const Profile = () => {
                                 })()}
 
                                 {/* Prestige Widget */}
-                                {prestige && profile.show_prestige !== false && (
+                                {(prestige || profile.selected_prestige_level) && profile.show_prestige !== false && (
                                     <div className="mt-1 transform hover:scale-[1.02] transition-transform duration-300 relative z-20 w-full flex justify-center overflow-visible">
                                         <PrestigeWidget
                                             compact={true}
-                                            prestigeData={(profile.selected_prestige_level && profile.selected_prestige_level !== prestige.planet_level)
+                                            prestigeData={(profile.selected_prestige_level && profile.selected_prestige_level !== prestige?.planet_level)
                                                 ? { ...prestige, planet_level: profile.selected_prestige_level, star_level: 4, current_stardust: 0 }
                                                 : prestige
                                             }

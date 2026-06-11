@@ -3457,18 +3457,24 @@ export const Forum = () => {
                                 <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden text-gray-500 mr-1 shrink-0">
                                     <span className="material-symbols-outlined">menu</span>
                                 </button>
-                                <span className="text-gray-300 text-2xl font-light shrink-0">#</span>
+                                {viewMode === 'channel' && (
+                                    <span className="text-gray-300 text-2xl font-light shrink-0">#</span>
+                                )}
                                 <div className="flex flex-col justify-center flex-1 min-w-0">
                                     {isLoadingChannels ? (
                                         <HeaderSkeleton />
                                     ) : (
                                         <>
-                                            <h3 className="font-bold text-base flex items-center gap-2 text-text-main dark:text-white leading-tight overflow-hidden min-w-0">
-                                                <span className="truncate max-w-[60%]">{displayChannelName}</span>
+                                            <div className="flex items-center gap-2 overflow-hidden w-full">
+                                                <h3 className="font-bold text-base text-text-main dark:text-white leading-tight truncate shrink">
+                                                    {displayChannelName}
+                                                </h3>
                                                 {viewMode === 'dm' && activeDmChat?.user?.equipped_title && (
-                                                    <div className="shrink-0"><TitleBadge title={activeDmChat.user.equipped_title} size="sm" /></div>
+                                                    <div className="shrink-0 max-w-[50%] overflow-hidden pb-0.5">
+                                                        <TitleBadge title={activeDmChat.user.equipped_title} size="sm" />
+                                                    </div>
                                                 )}
-                                            </h3>
+                                            </div>
                                             <span className="text-xs text-text-secondary dark:text-gray-400 hidden sm:block truncate max-w-md mt-0.5">
                                                 {displayChannelDesc}
                                             </span>
