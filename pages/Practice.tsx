@@ -704,7 +704,12 @@ export const Practice = () => {
                     if (isMounted) setIsLoadingQuestions(false);
                     return;
                 }
-                // If algorithmic summary, fall through to load the specific saved question IDs
+                // If algorithmic summary, check if we already have questions loaded from the active session
+                if (!subTopicId && questions.length > 0) {
+                    if (isMounted) setIsLoadingQuestions(false);
+                    return;
+                }
+                // If algorithmic summary but questions are empty (e.g. page reload), fall through to load the specific saved question IDs
             }
 
             // Scenario 1: Resuming an active session OR loading Summary
