@@ -77,6 +77,7 @@ interface AppContextType {
     markBadgeAsRead: (type: 'analysis' | 'forum' | 'practice') => Promise<void>;
     clearBadgeLocally: (type: keyof AppContextType['navRedDots']) => void;
     acceptFriendRequest: (senderId: string) => Promise<{ success: boolean; message?: string }>;
+    sendGlobalBroadcast: (event: string, payload: any) => void;
     // Helper for Dashboard
     getCourseMastery: (course: CourseType) => number;
     getSectionsForTopic: (topicId: string) => any[];
@@ -401,6 +402,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
     };
 
+    const globalChannelRef = useRef<any>(null);
+
     // Global Message Subscriptions for Unread Badges
     useEffect(() => {
         if (!user?.id || !isAuthenticated) return;
@@ -445,12 +448,27 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     fetchBadgeStatus();
                 }
             })
-            .subscribe();
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    globalChannelRef.current = channel;
+                }
+            });
 
         return () => {
+            globalChannelRef.current = null;
             supabase.removeChannel(channel);
         };
     }, [user?.id, isAuthenticated]);
+
+    const sendGlobalBroadcast = (event: string, payload: any) => {
+        if (globalChannelRef.current) {
+            globalChannelRef.current.send({
+                type: 'broadcast',
+                event: event,
+                payload: payload
+            });
+        }
+    };
 
     // Global Midnight Refresh Interval
     useEffect(() => {
@@ -3328,6 +3346,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             fetchBadgeStatus,
             markBadgeAsRead,
             clearBadgeLocally,
+            sendGlobalBroadcast,
             acceptFriendRequest,
             getCourseMastery,
             getSectionsForTopic,

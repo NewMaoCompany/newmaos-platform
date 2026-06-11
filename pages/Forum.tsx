@@ -351,18 +351,20 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
                             return (
                                 <div className={`flex flex-col ${isRightAligned ? 'items-end' : 'items-start'}`}>
                                     {/* Name & Title Header - Always visible even for emojis */}
-                                    <div className={`flex items-center gap-3.5 mb-1.5 ${isRightAligned ? 'flex-row-reverse' : ''}`}>
+                                    <div className={`flex items-center gap-2 mb-1.5`}>
                                         <span
                                             className="text-[14px] font-black text-text-main dark:text-white shrink-0 hover:text-primary transition-colors cursor-pointer"
                                             onClick={handleUserClick}
                                         >
                                             {username}
                                         </span>
-                                        {equippedTitle && (
-                                            <TitleBadge title={equippedTitle} size="xs" />
-                                        )}
                                         {isOfficial && (
-                                            <span className="text-[8px] bg-primary text-white px-2.5 py-1 rounded-[6px] font-black tracking-widest ring-1 ring-primary/20 shrink-0 shadow-sm">OFFICIAL</span>
+                                            <span className="text-[8px] bg-primary text-white px-2 py-0.5 rounded font-black tracking-widest ring-1 ring-primary/20 shrink-0 shadow-sm">OFFICIAL</span>
+                                        )}
+                                        {equippedTitle && (
+                                            <div className="shrink-0 max-w-[150px] overflow-hidden">
+                                                <TitleBadge title={equippedTitle} size="xs" />
+                                            </div>
                                         )}
                                     </div>
                                     <div className={`flex items-end gap-2 ${isRightAligned ? 'flex-row-reverse' : ''}`}>
@@ -747,7 +749,7 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
 };
 
 export const Forum = () => {
-    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markBadgeAsRead } = useApp();
+    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markBadgeAsRead, sendGlobalBroadcast } = useApp();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
@@ -2543,14 +2545,10 @@ export const Forum = () => {
                     .select('id')
                     .single();
                 if (error) throw error;
-                // Replace temp ID with real UUID immediately
+                    // Replace temp ID with real UUID immediately
                 if (inserted?.id) {
                     setMessages(prev => prev.map(m => m.id === tempId ? { ...m, id: inserted.id } : m));
-                    supabase.channel('global-chat-notifications').send({
-                        type: 'broadcast',
-                        event: 'new_channel_msg',
-                        payload: { channel_id: activeChannelId, user_id: user.id }
-                    });
+                    sendGlobalBroadcast('new_channel_msg', { channel_id: activeChannelId, user_id: user.id });
                 }
             } else {
                 const { data: inserted, error } = await supabase
@@ -2565,11 +2563,7 @@ export const Forum = () => {
                 if (error) throw error;
                 if (inserted?.id) {
                     setMessages(prev => prev.map(m => m.id === tempId ? { ...m, id: inserted.id } : m));
-                    supabase.channel('global-chat-notifications').send({
-                        type: 'broadcast',
-                        event: 'new_dm',
-                        payload: { chat_id: activeChatId, user_id: user.id }
-                    });
+                    sendGlobalBroadcast('new_dm', { chat_id: activeChatId, user_id: user.id });
                 }
             }
         } catch (err: any) {
