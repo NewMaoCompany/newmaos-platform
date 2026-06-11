@@ -1885,14 +1885,13 @@ export const Forum = () => {
         fetchTopics();
     }, []);
 
-    // Scroll to bottom when messages change
+    // Scroll to bottom when messages count changes or channel switches
     useEffect(() => {
         if (isLoadingMessages || !location.pathname.startsWith('/forum')) return;
 
-        // Only auto-scroll to bottom if we are ALREADY near the bottom
-        // Or if it's the initial load
+        // Auto-scroll to bottom on initial load, channel switch, or new message
         scrollToBottom(true);
-    }, [messages, activeChannelId, isLoadingMessages, location.pathname]);
+    }, [messages.length, activeChannelId, activeChatId, isLoadingMessages, location.pathname]);
 
     // Force scroll when Forum becomes visible
     useEffect(() => {
