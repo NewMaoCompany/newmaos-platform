@@ -316,7 +316,7 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
 
 
     return (
-        <div id={`msg-${message.id}`} className={`flex flex-col group ${isRightAligned ? 'items-end' : 'items-start'}`}>
+        <div id={`msg-${message.id}`} className={`message-row-scroll-target flex flex-col group ${isRightAligned ? 'items-end' : 'items-start'}`}>
             {/* Main Message Block */}
             <div className={`flex items-start gap-4 relative mb-8 ${message.is_pinned ? 'bg-yellow-50 dark:bg-yellow-900/10 p-2 rounded-lg border-l-2 border-yellow-500' : ''} ${isRightAligned ? 'flex-row-reverse' : ''}`}>
 
@@ -1588,12 +1588,17 @@ export const Forum = () => {
             }
 
             // 3. If no matching temp message, just append
+            const isFromMe = enrichedMsg.user_id === user?.id;
+            const chatEl = chatContainerRef.current;
+            const isNearBottom = chatEl ? (chatEl.scrollHeight - chatEl.scrollTop - chatEl.clientHeight < 200) : true;
+            
+            if (isFromMe || isNearBottom) {
+                // Use a slight delay to allow the DOM to render the new message
+                setTimeout(() => scrollToBottom(true), 100);
+            }
+            
             return [...prev, enrichedMsg];
         });
-
-        if (!enrichedMsg.reply_to_id) {
-            scrollToBottom(true);
-        }
     };
 
 
@@ -2051,7 +2056,27 @@ export const Forum = () => {
                 console.error('Error fetching messages:', err);
             } finally {
                 setIsLoadingMessages(false);
-                scrollToBottom();
+                const pendingUnreadStr = sessionStorage.getItem('forum_pending_unread_scroll');
+                if (pendingUnreadStr) {
+                    const pendingUnread = parseInt(pendingUnreadStr, 10);
+                    sessionStorage.removeItem('forum_pending_unread_scroll');
+                    
+                    // Use setTimeout to ensure DOM is fully rendered before scrolling
+                    setTimeout(() => {
+                        const messageRows = document.querySelectorAll('.message-row-scroll-target');
+                        if (messageRows.length > 0 && pendingUnread > 0) {
+                            const targetIndex = Math.max(0, messageRows.length - pendingUnread);
+                            const targetEl = messageRows[targetIndex];
+                            if (targetEl) {
+                                targetEl.scrollIntoView({ behavior: 'auto', block: 'center' });
+                                return;
+                            }
+                        }
+                        scrollToBottom();
+                    }, 50);
+                } else {
+                    scrollToBottom();
+                }
             }
         };
 
@@ -3306,7 +3331,16 @@ export const Forum = () => {
                                                     channels.filter(c => ['User', 'Official', 'Custom'].includes(c.category) && String(c.creator_id).toLowerCase() === String(user?.id).toLowerCase()).slice(0, 10).map(channel => (
                                                         <ChannelItem key={channel.id} name={channel.name} isActive={activeChannelId === channel.id}
                                                             unreadCount={unreadCounts[channel.id] || 0}
-                                                            onClick={() => { clearUnread(channel.id); setActiveSidebarSection('Channels'); setViewMode('channel'); setActiveChannelId(channel.id); setActiveChatId(null); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
+                                                            onClick={() => { 
+                                                                const unread = unreadCounts[channel.id] || 0;
+                                                                if (unread > 0) sessionStorage.setItem('forum_pending_unread_scroll', unread.toString());
+                                                                clearUnread(channel.id); 
+                                                                setActiveSidebarSection('Channels'); 
+                                                                setViewMode('channel'); 
+                                                                setActiveChannelId(channel.id); 
+                                                                setActiveChatId(null); 
+                                                                if (window.innerWidth < 768) setIsSidebarOpen(false); 
+                                                            }}
                                                             rightElement={
                                                                 <button
                                                                     onClick={(e) => handleDeleteChannel(channel, e)}
@@ -3332,7 +3366,16 @@ export const Forum = () => {
                                                     channels.filter(c => ['User', 'Official', 'Custom'].includes(c.category) && String(c.creator_id).toLowerCase() !== String(user?.id).toLowerCase() && joinedChannelIds.has(c.id)).map(channel => (
                                                         <ChannelItem key={channel.id} name={channel.name} isActive={activeChannelId === channel.id}
                                                             unreadCount={unreadCounts[channel.id] || 0}
-                                                            onClick={() => { clearUnread(channel.id); setActiveSidebarSection('Channels'); setViewMode('channel'); setActiveChannelId(channel.id); setActiveChatId(null); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
+                                                            onClick={() => { 
+                                                                const unread = unreadCounts[channel.id] || 0;
+                                                                if (unread > 0) sessionStorage.setItem('forum_pending_unread_scroll', unread.toString());
+                                                                clearUnread(channel.id); 
+                                                                setActiveSidebarSection('Channels'); 
+                                                                setViewMode('channel'); 
+                                                                setActiveChannelId(channel.id); 
+                                                                setActiveChatId(null); 
+                                                                if (window.innerWidth < 768) setIsSidebarOpen(false); 
+                                                            }}
                                                             rightElement={
                                                                 <button
                                                                     onClick={(e) => handleDeleteChannel(channel, e)}
@@ -3397,6 +3440,8 @@ export const Forum = () => {
                                                     onClick={() => {
                                                         setActiveSidebarSection('PrivateMessages');
                                                         if (dm.chat_id) {
+                                                            const unread = unreadCounts[dm.chat_id] || 0;
+                                                            if (unread > 0) sessionStorage.setItem('forum_pending_unread_scroll', unread.toString());
                                                             clearUnread(dm.chat_id);
                                                             setViewMode('dm');
                                                             setActiveChatId(dm.chat_id);
