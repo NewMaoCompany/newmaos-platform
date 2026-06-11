@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS public.algorithmic_question_state (
 
 -- Enable RLS
 ALTER TABLE public.algorithmic_question_state ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can manage their own algorithmic question state" ON public.algorithmic_question_state;
 CREATE POLICY "Users can manage their own algorithmic question state"
     ON public.algorithmic_question_state
     FOR ALL
