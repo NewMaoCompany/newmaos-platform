@@ -747,7 +747,7 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
 };
 
 export const Forum = () => {
-    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markBadgeAsRead, sendGlobalBroadcast, fetchBadgeStatus, navRedDots } = useApp();
+    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markBadgeAsRead, sendGlobalBroadcast, fetchBadgeStatus } = useApp();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
@@ -977,13 +977,9 @@ export const Forum = () => {
     }, [location.search, channels]);
 
     // --- DM States ---
-    const [viewMode, setViewMode] = useState<'channel' | 'dm' | 'friendRequests' | 'inbox'>(() => {
-        try { return (localStorage.getItem('forum_viewMode') as 'channel' | 'dm' | 'friendRequests' | 'inbox') || 'channel'; } catch { return 'channel'; }
+    const [viewMode, setViewMode] = useState<'channel' | 'dm' | 'friendRequests'>(() => {
+        try { return (localStorage.getItem('forum_viewMode') as 'channel' | 'dm' | 'friendRequests') || 'channel'; } catch { return 'channel'; }
     });
-    
-    // --- Inbox States ---
-    const [inboxNotifications, setInboxNotifications] = useState<any[]>([]);
-    const [isLoadingInbox, setIsLoadingInbox] = useState(false);
     const [activeChatId, setActiveChatId] = useState<string | null>(() => {
         try { return localStorage.getItem('forum_activeChatId') || null; } catch { return null; }
     });
@@ -1646,7 +1642,6 @@ export const Forum = () => {
 
         setupRealtime();
         fetchFriends(); // Initial fetch
-        fetchInboxNotifications();
 
         return () => {
             if (subscription) supabase.removeChannel(subscription);
@@ -1655,42 +1650,6 @@ export const Forum = () => {
 
     // Fetch user's friends
     const [pendingRequests, setPendingRequests] = useState<any[]>([]);
-
-    const fetchInboxNotifications = async () => {
-        if (!user?.id) return;
-        setIsLoadingInbox(true);
-        try {
-            const { data, error } = await supabase
-                .from('notifications')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', { ascending: false })
-                .limit(50);
-                
-            if (error) throw error;
-            if (data) {
-                // Filter out standard chat messages. Only keep activity (likes, replies, system)
-                const filtered = data.filter(n => {
-                    if (n.type === 'channel_message' || n.type === 'dm') return false;
-                    
-                    // Fallback for old notifications without type
-                    if (!n.type) {
-                        const txt = n.text || '';
-                        // Explicit activities
-                        if (txt.includes(' replied to ') || txt.includes(' liked your ') || txt.includes(' sent you a ')) return true;
-                        // Looks like a standard message "[Channel] User: msg" or "User: msg"
-                        if (txt.includes(': ')) return false; 
-                    }
-                    return true;
-                });
-                setInboxNotifications(filtered);
-            }
-        } catch (err) {
-            console.error('Failed to fetch inbox notifications:', err);
-        } finally {
-            setIsLoadingInbox(false);
-        }
-    };
 
     const fetchFriends = async () => {
         if (!user) return;
@@ -3592,32 +3551,6 @@ export const Forum = () => {
                             </div>
                         )}
 
-                        {/* Activity Inbox Button */}
-                        {isAuthenticated && (
-                            <div className="mb-4 px-2">
-                                <button
-                                    onClick={() => {
-                                        setActiveSidebarSection('Inbox');
-                                        setViewMode('inbox');
-                                        setActiveChatId(null);
-                                        setActiveChannelId(null);
-                                        if (window.innerWidth < 768) setIsSidebarOpen(false);
-                                    }}
-                                    className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl transition-all ${activeSidebarSection === 'Inbox' ? 'bg-primary/10 text-primary font-bold dark:text-white dark:bg-white/10' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'}`}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-[16px]">inbox</span>
-                                        <span className="text-[10px] font-black uppercase tracking-widest">Activity Inbox</span>
-                                    </div>
-                                    {inboxNotifications.filter(n => n.unread).length > 0 && (
-                                        <div className="min-w-[16px] h-[16px] flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform">
-                                            {inboxNotifications.filter(n => n.unread).length > 99 ? '99+' : inboxNotifications.filter(n => n.unread).length}
-                                        </div>
-                                    )}
-                                </button>
-                            </div>
-                        )}
-
                     </div>
 
                     {/* User Mini Profile - Fixed at bottom */}
@@ -3757,77 +3690,9 @@ export const Forum = () => {
                             </div>
                         </div>
                     )}
-                    
-                    {/* Inbox View */}
-                    {viewMode === 'inbox' && (
-                        <div className="flex-1 flex flex-col min-h-0 bg-white/50 dark:bg-black/20 overflow-y-auto custom-scrollbar p-6 md:p-12">
-                            <div className="max-w-3xl w-full mx-auto animate-fade-in-up">
-                                <div className="flex items-center gap-4 mb-8">
-                                    <div className="w-12 h-12 rounded-2xl bg-primary/20 text-primary flex items-center justify-center">
-                                        <span className="material-symbols-outlined text-2xl">inbox</span>
-                                    </div>
-                                    <div>
-                                        <h2 className="text-2xl md:text-3xl font-black text-text-main dark:text-white tracking-tight">Activity Inbox</h2>
-                                        <p className="text-text-secondary dark:text-gray-400 font-medium">View your latest mentions, replies, and system interactions.</p>
-                                    </div>
-                                </div>
-                                
-                                {isLoadingInbox ? (
-                                    <div className="flex justify-center p-12">
-                                        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                                    </div>
-                                ) : inboxNotifications.length === 0 ? (
-                                    <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-gray-200 dark:border-gray-800 rounded-3xl p-12 text-center shadow-sm">
-                                        <div className="w-20 h-20 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <span className="material-symbols-outlined text-4xl text-gray-300 dark:text-gray-600">done_all</span>
-                                        </div>
-                                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">You're all caught up!</h3>
-                                        <p className="text-sm text-gray-400 dark:text-gray-500">No new activity to show right now.</p>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-3">
-                                        {inboxNotifications.map((notification) => (
-                                            <div 
-                                                key={notification.id}
-                                                onClick={async () => {
-                                                    if (notification.unread) {
-                                                        try {
-                                                            await supabase.from('notifications').update({ unread: false }).eq('id', notification.id);
-                                                            setInboxNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, unread: false } : n));
-                                                            fetchBadgeStatus(); // Refresh global badge
-                                                        } catch (err) {
-                                                            console.error('Failed to mark read', err);
-                                                        }
-                                                    }
-                                                    if (notification.link) {
-                                                        navigate(notification.link);
-                                                    }
-                                                }}
-                                                className={`p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 ${
-                                                    notification.unread 
-                                                    ? 'bg-white dark:bg-surface-dark border-primary/30 shadow-md ring-1 ring-primary/20' 
-                                                    : 'bg-gray-50/50 dark:bg-white/5 border-gray-100 dark:border-gray-800/50 opacity-70 hover:opacity-100 hover:bg-white dark:hover:bg-surface-dark'
-                                                }`}
-                                            >
-                                                <div className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1.5 ${notification.unread ? 'bg-primary animate-pulse' : 'bg-transparent'}`} />
-                                                <div className="flex-1 min-w-0">
-                                                    <p className={`text-base leading-relaxed ${notification.unread ? 'text-gray-900 dark:text-white font-semibold' : 'text-gray-600 dark:text-gray-400 font-medium'}`}>
-                                                        {notification.text}
-                                                    </p>
-                                                    <span className="text-xs text-gray-400 dark:text-gray-500 mt-2 block font-medium">
-                                                        {new Date(notification.created_at).toLocaleString()}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
 
                     {/* Chat Column */}
-                    <div className={`flex-1 flex flex-col min-h-0 min-w-0 border-r border-gray-200/50 dark:border-gray-800/50 relative ${(viewMode === 'friendRequests' || viewMode === 'inbox') ? 'hidden' : ''}`}>
+                    <div className={`flex-1 flex flex-col min-h-0 min-w-0 border-r border-gray-200/50 dark:border-gray-800/50 relative ${viewMode === 'friendRequests' ? 'hidden' : ''}`}>
                         {/* Header */}
                         <div className="min-h-[4rem] px-4 md:px-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between shrink-0 bg-white/80 dark:bg-black/40 backdrop-blur-xl z-40 relative">
                             <div className="flex items-center gap-3 overflow-hidden py-2 max-w-[60%]">
@@ -4125,7 +3990,7 @@ export const Forum = () => {
 
                             {/* Member Sidebar Panel - Static Layout to push content */}
                             {showMemberSidebar && (
-                                <div className={`w-64 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl animate-fade-in-left border-l border-gray-200 dark:border-gray-800 flex flex-col flex-shrink-0 ${(viewMode === 'friendRequests' || viewMode === 'inbox') ? 'hidden' : ''}`}>
+                                <div className={`w-64 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl animate-fade-in-left border-l border-gray-200 dark:border-gray-800 flex flex-col flex-shrink-0 ${viewMode === 'friendRequests' ? 'hidden' : ''}`}>
                                     <div className="h-14 px-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800/50 flex-shrink-0">
                                         <h3 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                                             Online — {presenceUsers.length + (user ? 1 : 0)}

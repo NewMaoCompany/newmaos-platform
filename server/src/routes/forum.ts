@@ -78,34 +78,14 @@ router.post('/messages', authMiddleware, async (req: Request, res: Response): Pr
                     .eq('type', 'comment_received')
                     .eq('source_id', insertedMessage.id);
 
-                // Enforce limit: Only the first 5 messages posted today by the author can earn reply coins
-                const parentDate = new Date(parentMsg.created_at);
-                const todayMidnight = new Date();
-                todayMidnight.setHours(0, 0, 0, 0);
-
-                if (parentDate >= todayMidnight) {
-                    // It was posted today. Is it among their first 5 messages today?
-                    const { data: todayMessages } = await supabaseAdmin
-                        .from('forum_messages')
-                        .select('id')
-                        .eq('user_id', parentMsg.user_id)
-                        .gte('created_at', todayMidnight.toISOString())
-                        .order('created_at', { ascending: true })
-                        .limit(5);
-                    
-                    const isEligible = todayMessages && todayMessages.some(m => m.id === replyToId);
-                    
-                    if (isEligible) {
-                        // Award 10 NMS Points for receiving a reply
-                        await supabaseAdmin.from('pending_points').insert({
-                            user_id: parentMsg.user_id,
-                            amount: 10,
-                            type: 'reply',
-                            source_id: insertedMessage.id,
-                            description: 'Received a reply to your message'
-                        });
-                    }
-                }
+                // Award 10 NMS Points for receiving a reply
+                await supabaseAdmin.from('pending_points').insert({
+                    user_id: parentMsg.user_id,
+                    amount: 10,
+                    type: 'reply',
+                    source_id: insertedMessage.id,
+                    description: 'Received a reply to your message'
+                });
             }
         }
 
@@ -186,48 +166,14 @@ router.post('/reward-like', authMiddleware, async (req: Request, res: Response):
             return;
         }
 
-        // Enforce limit: Only the first 5 messages posted today by the author can earn like coins
-        const { data: messageInfo } = await supabaseAdmin
-            .from('forum_messages')
-            .select('created_at')
-            .eq('id', messageId)
-            .single();
-
-        if (messageInfo) {
-            const msgDate = new Date(messageInfo.created_at);
-            const todayMidnight = new Date();
-            todayMidnight.setHours(0, 0, 0, 0);
-
-            if (msgDate >= todayMidnight) {
-                // It was posted today. Is it among their first 5 messages today?
-                const { data: todayMessages } = await supabaseAdmin
-                    .from('forum_messages')
-                    .select('id')
-                    .eq('user_id', authorId)
-                    .gte('created_at', todayMidnight.toISOString())
-                    .order('created_at', { ascending: true })
-                    .limit(5);
-                
-                const isEligible = todayMessages && todayMessages.some(m => m.id === messageId);
-                
-                if (isEligible) {
-                    // 4. Award 5 NMS Points
-                    await supabaseAdmin.from('pending_points').insert({
-                        user_id: authorId,
-                        amount: 5,
-                        type: 'like',
-                        source_id: sourceId,
-                        description: 'Received a like on your forum message'
-                    });
-                } else {
-                    res.json({ success: true, ignored: true, reason: 'daily_limit_exceeded' });
-                    return;
-                }
-            } else {
-                res.json({ success: true, ignored: true, reason: 'not_posted_today' });
-                return;
-            }
-        }
+        // 4. Award 5 NMS Points
+        await supabaseAdmin.from('pending_points').insert({
+            user_id: authorId,
+            amount: 5,
+            type: 'like',
+            source_id: sourceId,
+            description: 'Received a like on your forum message'
+        });
 
         res.json({ success: true });
     } catch (error) {
