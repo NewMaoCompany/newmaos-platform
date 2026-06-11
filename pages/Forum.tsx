@@ -3508,6 +3508,32 @@ export const Forum = () => {
                             </div>
                         )}
 
+                        {/* Friend Requests Button */}
+                        {isAuthenticated && (
+                            <div className="mb-4 px-2">
+                                <button
+                                    onClick={() => {
+                                        setActiveSidebarSection('FriendRequests');
+                                        setViewMode('friendRequests');
+                                        setActiveChatId(null);
+                                        setActiveChannelId(null);
+                                        if (window.innerWidth < 768) setIsSidebarOpen(false);
+                                    }}
+                                    className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl transition-all ${activeSidebarSection === 'FriendRequests' ? 'bg-primary/10 text-primary font-bold dark:text-white dark:bg-white/10' : 'text-text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'}`}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <span className="material-symbols-outlined text-[16px]">group_add</span>
+                                        <span className="text-[10px] font-black uppercase tracking-widest">Friend Requests</span>
+                                    </div>
+                                    {pendingRequests.length > 0 && (
+                                        <div className="min-w-[16px] h-[16px] flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform">
+                                            {pendingRequests.length > 99 ? '99+' : pendingRequests.length}
+                                        </div>
+                                    )}
+                                </button>
+                            </div>
+                        )}
+
                     </div>
 
                     {/* User Mini Profile - Fixed at bottom */}
