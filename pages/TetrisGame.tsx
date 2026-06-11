@@ -22,6 +22,12 @@ export const TetrisGame = () => {
   const [activePiece, setActivePiece] = useState<any>(null);
   const [pos, setPos] = useState({ x: 3, y: 0 });
   const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
+
+  useEffect(() => {
+    const savedBest = localStorage.getItem('arcade_tetris_best');
+    if (savedBest) setBestScore(parseInt(savedBest, 10));
+  }, []);
   const [gameOver, setGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [pulse, setPulse] = useState(false);
@@ -81,7 +87,17 @@ export const TetrisGame = () => {
         while (filtered.length < ROWS) filtered.unshift(Array(COLS).fill(''));
         setGrid(filtered);
         if (cleared > 0) {
-            setScore(s => s + [0, 100, 300, 700, 1500][cleared]);
+            setScore(s => {
+              const newScore = s + [0, 100, 300, 700, 1500][cleared];
+              setBestScore(prev => {
+                if (newScore > prev) {
+                  localStorage.setItem('arcade_tetris_best', newScore.toString());
+                  return newScore;
+                }
+                return prev;
+              });
+              return newScore;
+            });
             setPulse(true);
             setTimeout(() => setPulse(false), 300);
         }
@@ -162,8 +178,12 @@ export const TetrisGame = () => {
           <p className="text-[9px] font-bold opacity-40 uppercase tracking-[0.5em]">Command Center v0.42</p>
         </div>
         
-        <div className="flex flex-col items-end gap-1 px-3 sm:px-6 py-2 border border-cyan-500/20 bg-cyan-500/10 backdrop-blur-sm min-w-[120px]">
-           <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Cargo_Mass</span>
+        <div className="flex flex-col items-end opacity-80">
+           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#AF52DE]">Best Record</span>
+           <span className="text-xl sm:text-2xl font-black tabular-nums transition-all duration-300 text-purple-300">{bestScore.toLocaleString()}</span>
+        </div>
+        <div className="flex flex-col items-end text-white">
+           <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Score</span>
            <span className="text-xl sm:text-3xl font-black tabular-nums transition-all duration-300">{score.toLocaleString()}</span>
         </div>
       </div>

@@ -38,6 +38,24 @@ const GAMES = [
     color: '#AF52DE',
     path: '/games/tetris',
     description: 'Command center stable. Cargo stabilization active.'
+  },
+  {
+    id: 'memory',
+    title: 'Memory Matrix',
+    subtitle: 'Neural Link',
+    icon: 'memory',
+    color: '#00f2ff',
+    path: '/games/memory',
+    description: 'Establish sequence protocol. Test your cortical limits.'
+  },
+  {
+    id: 'minesweeper',
+    title: 'Neon Mines',
+    subtitle: 'Cyber Sweeper',
+    icon: 'crisis_alert',
+    color: '#00ff88',
+    path: '/games/minesweeper',
+    description: 'Defuse the glowing grid. Logic is your only shield.'
   }
 ];
 

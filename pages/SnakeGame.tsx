@@ -14,6 +14,12 @@ export const SnakeGame = () => {
   const [direction, setDirection] = useState(INITIAL_DIRECTION);
   const [food, setFood] = useState({ x: 5, y: 5 });
   const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
+
+  useEffect(() => {
+    const savedBest = localStorage.getItem('arcade_snake_best');
+    if (savedBest) setBestScore(parseInt(savedBest, 10));
+  }, []);
   const [gameOver, setGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [glitch, setGlitch] = useState(false);
@@ -65,7 +71,17 @@ export const SnakeGame = () => {
       const newSnake = [newHead, ...prevSnake];
 
       if (newHead.x === food.x && newHead.y === food.y) {
-        setScore(s => s + 50);
+        setScore(s => {
+          const newScore = s + 50;
+          setBestScore(prev => {
+            if (newScore > prev) {
+              localStorage.setItem('arcade_snake_best', newScore.toString());
+              return newScore;
+            }
+            return prev;
+          });
+          return newScore;
+        });
         setFood(generateFood(newSnake));
         triggerGlitch();
       } else {
@@ -121,10 +137,15 @@ export const SnakeGame = () => {
         </button>
         <div className="text-center">
           <h2 className={`text-xl sm:text-3xl font-black uppercase tracking-[0.3em] transition-all ${glitch ? 'translate-x-1 skew-x-12' : 'translate-x-0'}`}>Snake.exe</h2>
-          <div className="flex items-center justify-center gap-3 mt-1">
-             <div className="h-[2px] w-8 bg-cyan-500/20" />
-             <span className="text-xs sm:text-sm font-bold tabular-nums text-pink-500 drop-shadow-[0_0_8px_#ff00ff]">{score.toString().padStart(6, '0')}</span>
-             <div className="h-[2px] w-8 bg-cyan-500/20" />
+          <div className="flex gap-6 items-center px-4 py-2 border border-[#00f2ff]/30 bg-[#00f2ff]/5 rounded-full backdrop-blur-md">
+             <div className="flex items-center gap-2">
+               <span className="material-symbols-outlined text-sm text-[#00f2ff]">analytics</span>
+               <span className="text-xs sm:text-sm font-bold tabular-nums text-[#00f2ff] drop-shadow-[0_0_8px_#00f2ff]">BEST: {bestScore.toString().padStart(6, '0')}</span>
+             </div>
+             <div className="flex items-center gap-2">
+               <span className="material-symbols-outlined text-sm text-pink-500">data_array</span>
+               <span className="text-xs sm:text-sm font-bold tabular-nums text-pink-500 drop-shadow-[0_0_8px_#ff00ff]">{score.toString().padStart(6, '0')}</span>
+             </div>
           </div>
         </div>
         <div className="hidden sm:block w-14" />

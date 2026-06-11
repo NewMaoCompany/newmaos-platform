@@ -112,7 +112,10 @@ router.get('/', optionalAuthMiddleware, async (req: Request, res: Response): Pro
             }
         }
 
-        if (shouldFilterDrafts) {
+        // If they requested specific IDs (e.g. for hydration of practice recommendations), 
+        // we allow bypassing the draft filter since UUIDs are unguessable and it means 
+        // the recommendation engine already approved them.
+        if (shouldFilterDrafts && !ids) {
             query = query.eq('status', 'published');
         }
 

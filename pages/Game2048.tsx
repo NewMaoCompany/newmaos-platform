@@ -10,8 +10,14 @@ export const Game2048 = () => {
   const [board, setBoard] = useState<Tile[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const [bestScore, setBestScore] = useState(0);
   const [petals, setPetals] = useState<{ id: number; x: number; delay: number; duration: number; size: number }[]>([]);
   const nextIdRef = useRef(1);
+
+  useEffect(() => {
+    const savedBest = localStorage.getItem('arcade_2048_best');
+    if (savedBest) setBestScore(parseInt(savedBest, 10));
+  }, []);
 
   // Sakura Petals Generator
   useEffect(() => {
@@ -90,7 +96,17 @@ export const Game2048 = () => {
         });
       }
       if (!moved) return prevBoard;
-      setScore(s => s + scoreGain.val);
+      setScore(s => {
+        const newScore = s + scoreGain.val;
+        setBestScore(prevBest => {
+          if (newScore > prevBest) {
+            localStorage.setItem('arcade_2048_best', newScore.toString());
+            return newScore;
+          }
+          return prevBest;
+        });
+        return newScore;
+      });
       const withNew = spawnTile(newBoard);
       return withNew;
     });
@@ -159,7 +175,10 @@ export const Game2048 = () => {
           <h2 className="text-3xl sm:text-5xl font-light italic text-[#3E2723] tracking-tighter drop-shadow-sm">Washi Fusion</h2>
           <div className="mt-4 flex flex-col items-center gap-1">
              <div className="h-[0.5px] w-12 bg-[#3E2723]/10" />
-             <span className="text-xs font-bold tabular-nums opacity-60 mt-1">{score.toLocaleString()} Essence</span>
+             <div className="flex gap-4">
+                <span className="text-xs font-bold tabular-nums opacity-60 mt-1">Score: {score.toLocaleString()}</span>
+                <span className="text-xs font-bold tabular-nums opacity-80 mt-1 text-[#D7CCC8] bg-[#4D3636] px-2 py-0.5 rounded-full shadow-inner">Best: {bestScore.toLocaleString()}</span>
+             </div>
           </div>
         </div>
         

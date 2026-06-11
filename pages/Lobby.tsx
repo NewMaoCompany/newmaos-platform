@@ -204,12 +204,10 @@ export const Lobby = () => {
               </div>
 
               <div className="shrink-0 flex flex-col justify-center">
-                <button 
-                  onClick={() => navigate('/checkin')}
-                  className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center border border-white/40 active:scale-90 transition-all hover:bg-white/30 backdrop-blur-md shadow-lg"
+                <div 
+                  className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center border border-white/40 backdrop-blur-md shadow-lg"
                 >
-                  <span className="material-symbols-outlined text-white text-2xl">chevron_right</span>
-                </button>
+                </div>
               </div>
             </div>
           </Widget>

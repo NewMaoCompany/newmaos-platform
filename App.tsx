@@ -40,6 +40,8 @@ const SnakeGame = React.lazy(() => import('./pages/SnakeGame').then(m => ({ defa
 const Game2048 = React.lazy(() => import('./pages/Game2048').then(m => ({ default: m.Game2048 })));
 const TetrisGame = React.lazy(() => import('./pages/TetrisGame').then(m => ({ default: m.TetrisGame })));
 const MatchGameWrapper = React.lazy(() => import('./pages/MatchGame').then(m => ({ default: m.MatchGame })));
+const MemoryGame = React.lazy(() => import('./pages/MemoryGame').then(m => ({ default: m.MemoryGame })));
+const MinesweeperGame = React.lazy(() => import('./pages/MinesweeperGame').then(m => ({ default: m.MinesweeperGame })));
 
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -238,6 +240,8 @@ const AppRoutes = () => {
             <Route path="/games/snake" element={<SnakeGame />} />
             <Route path="/games/2048" element={<Game2048 />} />
             <Route path="/games/tetris" element={<TetrisGame />} />
+            <Route path="/games/memory" element={<MemoryGame />} />
+            <Route path="/games/minesweeper" element={<MinesweeperGame />} />
 
             {/* Static Pages */}
             <Route path="/privacy" element={<Privacy />} />

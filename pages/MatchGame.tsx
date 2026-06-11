@@ -57,6 +57,12 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
   const [board, setBoard] = useState<Cell[][]>(() => createBoard());
   const [selected, setSelected] = useState<[number, number] | null>(null);
   const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
+
+  useEffect(() => {
+    const savedBest = localStorage.getItem('arcade_match3_best');
+    if (savedBest) setBestScore(parseInt(savedBest, 10));
+  }, []);
   const [moves, setMoves] = useState(30);
   const [combo, setCombo] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -133,7 +139,17 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
     setBoard(nb);
     addScorePopup(avgR/count, avgC/count, `+${points}`, firstCol);
     await new Promise(res => setTimeout(res, 400));
-    setScore(s => s + points);
+    setScore(s => {
+      const newScore = s + points;
+      setBestScore(prev => {
+        if (newScore > prev) {
+          localStorage.setItem('arcade_match3_best', newScore.toString());
+          return newScore;
+        }
+        return prev;
+      });
+      return newScore;
+    });
 
     // Cascade
     const afterCascade = cloneBoard(nb);
@@ -243,6 +259,8 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
               <div className="mb-6 flex gap-12 sm:gap-20">
                  <Stat label="Moves" val={moves} color={moves <= 5 ? '#ff3b30' : '#000'} />
                  <Stat label="Score" val={score} color="#007aff" />
+                 <div className="w-[1px] h-10 bg-white/10" />
+                 <Stat label="Best" val={bestScore} color="#ff00ff" />
               </div>
 
               {/* Adaptive Board Container */}
