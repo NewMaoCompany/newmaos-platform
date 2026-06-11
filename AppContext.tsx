@@ -433,10 +433,45 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         const channel = supabase.channel('global-chat-notifications')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'forum_messages' }, (payload) => handleNewMsg(payload, 'channel'))
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages' }, (payload) => handleNewMsg(payload, 'dm'))
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, (payload) => {
+                if (payload.new.user_id === user.id && payload.new.unread) {
+                    fetchBadgeStatus();
+                }
+            })
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'activities' }, (payload) => {
+                if (payload.new.user_id === user.id) {
+                    fetchBadgeStatus();
+                }
+            })
             .subscribe();
 
         return () => {
             supabase.removeChannel(channel);
+        };
+    }, [user?.id, isAuthenticated]);
+
+    // Global Midnight Refresh Interval
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        
+        let lastDate = new Date().toLocaleDateString('en-CA');
+        
+        const checkMidnight = () => {
+            const currentDate = new Date().toLocaleDateString('en-CA');
+            if (currentDate !== lastDate) {
+                console.log('Midnight Rollover Detected!');
+                lastDate = currentDate;
+                fetchBadgeStatus();
+                refreshCheckinStatus();
+            }
+        };
+
+        const interval = setInterval(checkMidnight, 60000);
+        window.addEventListener('focus', checkMidnight);
+        
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener('focus', checkMidnight);
         };
     }, [user?.id, isAuthenticated]);
 

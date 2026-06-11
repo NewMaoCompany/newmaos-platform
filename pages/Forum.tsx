@@ -2083,9 +2083,10 @@ export const Forum = () => {
             .on('postgres_changes', {
                 event: 'INSERT',
                 schema: 'public',
-                table: isChannel ? 'forum_messages' : 'direct_messages',
-                filter: `${isChannel ? 'channel_id' : 'chat_id'}=eq.${targetId}`
+                table: isChannel ? 'forum_messages' : 'direct_messages'
             }, async (payload) => {
+                const targetProp = isChannel ? payload.new.channel_id : payload.new.chat_id;
+                if (targetProp !== targetId) return;
                 console.log('[Realtime] New Message:', payload.new);
                 handleNewMessage(payload.new, isChannel ? 'channel' : 'dm');
             })
@@ -2093,9 +2094,11 @@ export const Forum = () => {
             .on('postgres_changes', {
                 event: 'DELETE',
                 schema: 'public',
-                table: isChannel ? 'forum_messages' : 'direct_messages',
-                filter: `${isChannel ? 'channel_id' : 'chat_id'}=eq.${targetId}`
+                table: isChannel ? 'forum_messages' : 'direct_messages'
             }, (payload) => {
+                // For DELETE, old record might only have id depending on REPLICA IDENTITY
+                // If it has channel_id/chat_id, check it. Otherwise, just try to remove it
+                // from local state since it won't hurt if it's not in the list
                 console.log('[Realtime] Message Deleted:', payload.old);
                 const deletedId = (payload.old as any)?.id;
                 if (deletedId) {
@@ -2106,9 +2109,10 @@ export const Forum = () => {
             .on('postgres_changes', {
                 event: 'UPDATE',
                 schema: 'public',
-                table: isChannel ? 'forum_messages' : 'direct_messages',
-                filter: `${isChannel ? 'channel_id' : 'chat_id'}=eq.${targetId}`
+                table: isChannel ? 'forum_messages' : 'direct_messages'
             }, (payload) => {
+                const targetProp = isChannel ? payload.new.channel_id : payload.new.chat_id;
+                if (targetProp !== targetId) return;
                 console.log('[Realtime] Message Updated:', payload.new);
                 const updated = payload.new as any;
                 if (updated?.id) {

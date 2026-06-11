@@ -465,7 +465,7 @@ export const PracticeHub = () => {
 
     const handleTopicClick = (topicId: string) => {
         // Link tracking removed during notification refactor
-
+        markBadgeAsRead('practice');
         navigate(`/practice/unit/${topicId}`);
     };
 
@@ -875,7 +875,7 @@ export const PracticeHub = () => {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {topics.map((topic, idx) => {
-                                const hasNotif = false;
+                                const hasNotif = navRedDots.practice;
                                 return (
                                     <UnitCard
                                         key={topic.id}
