@@ -1510,7 +1510,12 @@ export const Forum = () => {
 
     const scrollToBottom = (smooth = false) => {
         requestAnimationFrame(() => {
-            chatEndRef.current?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' });
+            if (chatContainerRef.current) {
+                chatContainerRef.current.scrollTo({
+                    top: chatContainerRef.current.scrollHeight,
+                    behavior: smooth ? 'smooth' : 'auto'
+                });
+            }
         });
     };
 
@@ -1844,11 +1849,11 @@ export const Forum = () => {
 
     // Scroll to bottom when messages change
     useEffect(() => {
-        if (!chatEndRef.current || isLoadingMessages || !location.pathname.startsWith('/forum')) return;
+        if (isLoadingMessages || !location.pathname.startsWith('/forum')) return;
 
         // Only auto-scroll to bottom if we are ALREADY near the bottom
         // Or if it's the initial load
-        chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        scrollToBottom(true);
     }, [messages, activeChannelId, isLoadingMessages, location.pathname]);
 
     // Force scroll when Forum becomes visible
