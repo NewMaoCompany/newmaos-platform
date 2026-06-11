@@ -1346,6 +1346,35 @@ export const Forum = () => {
 
                     if (error) throw error;
 
+                    // Hide the chat by removing both users from direct_chat_participants
+                    // We need to find their common chat_id
+                    const { data: myParticipations } = await supabase
+                        .from('direct_chat_participants')
+                        .select('chat_id')
+                        .eq('user_id', user?.id);
+                    
+                    if (myParticipations && myParticipations.length > 0) {
+                        const myChatIds = myParticipations.map(p => p.chat_id);
+                        const { data: theirParticipations } = await supabase
+                            .from('direct_chat_participants')
+                            .select('chat_id')
+                            .eq('user_id', friendId)
+                            .in('chat_id', myChatIds);
+                        
+                        if (theirParticipations && theirParticipations.length > 0) {
+                            const commonChatId = theirParticipations[0].chat_id;
+                            await supabase
+                                .from('direct_chat_participants')
+                                .delete()
+                                .eq('chat_id', commonChatId); // Delete for BOTH users
+                                
+                            if (activeChatId === commonChatId) {
+                                setActiveChatId(null);
+                                setViewMode('channel');
+                            }
+                        }
+                    }
+
                     showToast('Friend removed', 'success');
 
                     // Update local state
