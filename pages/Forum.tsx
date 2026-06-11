@@ -1668,7 +1668,23 @@ export const Forum = () => {
                 .limit(50);
                 
             if (error) throw error;
-            if (data) setInboxNotifications(data);
+            if (data) {
+                // Filter out standard chat messages. Only keep activity (likes, replies, system)
+                const filtered = data.filter(n => {
+                    if (n.type === 'channel_message' || n.type === 'dm') return false;
+                    
+                    // Fallback for old notifications without type
+                    if (!n.type) {
+                        const txt = n.text || '';
+                        // Explicit activities
+                        if (txt.includes(' replied to ') || txt.includes(' liked your ') || txt.includes(' sent you a ')) return true;
+                        // Looks like a standard message "[Channel] User: msg" or "User: msg"
+                        if (txt.includes(': ')) return false; 
+                    }
+                    return true;
+                });
+                setInboxNotifications(filtered);
+            }
         } catch (err) {
             console.error('Failed to fetch inbox notifications:', err);
         } finally {
@@ -3593,9 +3609,9 @@ export const Forum = () => {
                                         <span className="material-symbols-outlined text-[16px]">inbox</span>
                                         <span className="text-[10px] font-black uppercase tracking-widest">Activity Inbox</span>
                                     </div>
-                                    {Math.max(0, navRedDots.forum - pendingRequests.length) > 0 && (
+                                    {inboxNotifications.filter(n => n.unread).length > 0 && (
                                         <div className="min-w-[16px] h-[16px] flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark transition-transform">
-                                            {Math.max(0, navRedDots.forum - pendingRequests.length) > 99 ? '99+' : Math.max(0, navRedDots.forum - pendingRequests.length)}
+                                            {inboxNotifications.filter(n => n.unread).length > 99 ? '99+' : inboxNotifications.filter(n => n.unread).length}
                                         </div>
                                     )}
                                 </button>
