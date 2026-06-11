@@ -252,7 +252,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
     const fetchBadgeStatus = async () => {
         if (!user.id) return;
         try {
-            const { data, error } = await supabase.rpc('get_user_badges', { p_user_id: user.id });
+            const localDate = new Date().toLocaleDateString('en-CA');
+            const { data, error } = await supabase.rpc('get_user_badges', { p_user_id: user.id, p_client_date: localDate });
             
             if (error) {
                 console.error('Error fetching badge status dynamically:', error);
