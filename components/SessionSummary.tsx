@@ -197,8 +197,8 @@ export const SessionSummary = ({
 
     if (viewMode === 'review') {
         return (
-            <div className="w-full bg-transparent p-4 md:p-8 animate-fade-in flex flex-col items-center">
-                <div className="w-full max-w-3xl pb-2">
+            <div className="w-full bg-transparent p-4 md:p-8 animate-fade-in">
+                <div className="w-full max-w-3xl mx-auto pb-2">
                     <div className="mb-6 flex items-center justify-between">
                         <button
                             onClick={() => setViewMode('overview')}
