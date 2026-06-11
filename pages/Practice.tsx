@@ -2177,7 +2177,7 @@ When you are ready to test your knowledge, click **Start Practice** below. Good 
                     </div>
                 </header>
 
-                <div className="flex-grow flex flex-col pb-24">
+                <div className="flex-grow flex flex-col">
                     <SessionSummary
                         questions={questions}
                         userAnswers={userAnswers}
