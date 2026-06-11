@@ -724,9 +724,13 @@ export const Practice = () => {
                         const missingIds = targetIds.filter(id => !existingMap.has(id));
 
                         if (missingIds.length > 0) {
-                            const { data: fetchedData } = await supabase.from('questions').select('*').in('id', missingIds);
-                            if (fetchedData) {
-                                fetchedData.forEach(q => existingMap.set(q.id, q as Question));
+                            try {
+                                const fetchedData = await questionsApi.getQuestions({ ids: missingIds, limit: missingIds.length });
+                                if (fetchedData) {
+                                    fetchedData.forEach((q: Question) => existingMap.set(q.id, q));
+                                }
+                            } catch (e) {
+                                console.warn('[Practice] Failed to hydrate via API:', e);
                             }
                         }
 
