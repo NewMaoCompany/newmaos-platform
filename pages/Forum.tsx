@@ -402,7 +402,7 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
                             <span className="material-symbols-outlined text-[14px]">chat_bubble_outline</span>
                             Reply
                         </button>
-                        {onTogglePin && !isDM && (
+                        {onTogglePin && (
                             <button
                                 onClick={() => onTogglePin(message.id)}
                                 className={`text-xs font-medium flex items-center gap-1 transition-colors ${message.is_pinned ? 'text-amber-500 hover:text-red-500' : 'text-gray-400 hover:text-amber-500'}`}
@@ -2922,12 +2922,21 @@ export const Forum = () => {
         const newPinned = !msg.is_pinned;
         try {
             const table = viewMode === 'channel' ? 'forum_messages' : 'direct_messages';
-            const { error } = await supabase
+            const { data, error } = await supabase
                 .from(table)
                 .update({ is_pinned: newPinned })
-                .eq('id', messageId);
+                .eq('id', messageId)
+                .select();
             if (error) throw error;
-            setMessages(prev => prev.map(m => m.id === messageId ? { ...m, is_pinned: newPinned } : m));
+            if (!data || data.length === 0) throw new Error('You may not have permission to pin/unpin this message (RLS Policy).');
+            
+            setMessages(prev => {
+                const next = prev.map(m => m.id === messageId ? { ...m, is_pinned: newPinned } : m);
+                const targetId = viewMode === 'channel' ? activeChannelId : activeChatId;
+                const cacheKey = `forum_messages_${viewMode}_${targetId}`;
+                localStorage.setItem(cacheKey, JSON.stringify(next));
+                return next;
+            });
             showToast(newPinned ? 'Message pinned!' : 'Message unpinned', 'success');
         } catch (err) {
             console.error('Failed to toggle pin:', err);
