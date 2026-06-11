@@ -747,7 +747,7 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
 };
 
 export const Forum = () => {
-    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markBadgeAsRead, sendGlobalBroadcast } = useApp();
+    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markBadgeAsRead, sendGlobalBroadcast, fetchBadgeStatus } = useApp();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
@@ -3655,8 +3655,8 @@ export const Forum = () => {
                                                             try {
                                                                 await api.users.acceptFriendRequest(req.sender_id);
                                                                 showToast('Friend request accepted!', 'success');
-                                                                setPendingRequests(prev => prev.filter(p => p.id !== req.id));
-                                                                fetchFriends(); // Trigger global refresh
+                                                                setPendingRequests(prev => prev.filter(p => p.id !== req.id)); fetchBadgeStatus();
+                                                                fetchFriends(); fetchBadgeStatus(); // Trigger global refresh
                                                             } catch (err: any) {
                                                                 showToast(err.message || 'Failed to accept', 'error');
                                                             }
@@ -3671,7 +3671,7 @@ export const Forum = () => {
                                                             try {
                                                                 await supabase.from('friend_requests').delete().eq('id', req.id);
                                                                 showToast('Request declined', 'success');
-                                                                setPendingRequests(prev => prev.filter(p => p.id !== req.id));
+                                                                setPendingRequests(prev => prev.filter(p => p.id !== req.id)); fetchBadgeStatus();
                                                             } catch (err) {
                                                                 showToast('Failed to decline', 'error');
                                                             }

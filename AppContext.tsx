@@ -254,7 +254,13 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         if (!user.id) return;
         try {
             const localDate = new Date().toLocaleDateString('en-CA');
-            const { data, error } = await supabase.rpc('get_user_badges', { p_user_id: user.id, p_client_date: localDate });
+            const [badgeRes, pendingRes] = await Promise.all([
+                supabase.rpc('get_user_badges', { p_user_id: user.id, p_client_date: localDate }),
+                supabase.from('friend_requests').select('*', { count: 'exact', head: true }).eq('receiver_id', user.id).eq('status', 'pending')
+            ]);
+            
+            const { data, error } = badgeRes;
+            const { count: pendingCount } = pendingRes;
             
             if (error) {
                 console.error('Error fetching badge status dynamically:', error);
@@ -266,7 +272,7 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
                     dashboard: data.dashboard,
                     practice: data.practice,
                     analysis: data.analysis,
-                    forum: data.forum,
+                    forum: (data.forum || 0) + (pendingCount || 0),
                     settings: data.settings,
                     subscription: data.settings,
                     checkin: data.dashboard // Assuming checkin inside Dashboard follows the same badge
