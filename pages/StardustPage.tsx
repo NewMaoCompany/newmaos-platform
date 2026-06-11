@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../AppContext';
 import { Navbar } from '../components/Navbar';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useToast } from '../components/Toast';
 
 // Expandable detail card component
 const EarningCard = ({
@@ -87,12 +88,45 @@ const EarningCard = ({
 };
 
 export const StardustPage = () => {
-    const { userPrestige, user } = useApp();
+    const { userPrestige, user, purchaseStardust } = useApp();
     const navigate = useNavigate();
     const location = useLocation();
+    const { showToast } = useToast();
+
+    // Exchange Modal State
+    const [showExchange, setShowExchange] = useState(false);
+    const [exchangeAmount, setExchangeAmount] = useState('100');
+    const [isExchanging, setIsExchanging] = useState(false);
 
     // Check if user came from Prestige page
     const fromPrestige = location.state?.from === 'prestige';
+
+    const handleExchange = async () => {
+        const amount = parseInt(exchangeAmount, 10);
+        if (isNaN(amount) || amount <= 0) {
+            showToast('Please enter a valid amount', 'error');
+            return;
+        }
+        if (amount > (user?.coins_balance || 0)) {
+            showToast('Insufficient NMS Points (Coins)', 'error');
+            return;
+        }
+
+        setIsExchanging(true);
+        try {
+            const { success, message } = await purchaseStardust(amount);
+            if (success) {
+                showToast('Exchange successful!', 'success');
+                setShowExchange(false);
+            } else {
+                showToast(message || 'Exchange failed', 'error');
+            }
+        } catch (e: any) {
+            showToast('Error during exchange', 'error');
+        } finally {
+            setIsExchanging(false);
+        }
+    };
 
     return (
         <div className="h-screen bg-surface-light dark:bg-surface-dark text-text-main dark:text-gray-100 flex flex-col overflow-hidden">
@@ -148,62 +182,88 @@ export const StardustPage = () => {
                         </div>
                     </div>
 
-                    {/* Earning Cards Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                        <EarningCard
-                            icon="restart_alt"
-                            iconBg="bg-amber-100 dark:bg-amber-900/30"
-                            iconColor="text-amber-600 dark:text-amber-400"
-                            title="Prestige Reset"
-                            description="Reset your progress in a mastered unit to convert knowledge into pure Stardust."
-                            actionLabel="Go to Units"
-                            actionIcon="arrow_forward"
-                            onAction={() => navigate('/practice')}
-                            details={[
-                                "Requires 100% Mastery in a Unit or Topic",
-                                "Performing a Prestige Reset grants large amounts of Stardust based on difficulty",
-                                "Resetting allows you to re-master content for even greater rewards",
-                                "The higher your current planet level, the more Stardust you gain per reset",
-                            ]}
-                        />
-
+                    {/* Earning Cards */}
+                    <div className="grid grid-cols-1 gap-4 items-start">
                         <EarningCard
                             icon="shopping_bag"
                             iconBg="bg-blue-100 dark:bg-blue-900/30"
                             iconColor="text-blue-600 dark:text-blue-400"
                             title="Exchange Points"
                             description="Trade your accumulated NMS Points for Stardust in the cosmic marketplace."
-                            actionLabel="Go to Market"
-                            actionIcon="storefront"
-                            onAction={() => navigate('/prestige')}
+                            actionLabel="Exchange Now"
+                            actionIcon="swap_horiz"
+                            onAction={() => setShowExchange(true)}
                             details={[
                                 "Exchange Rate varies based on market conditions and your level",
-                                "Use the 'Buy Stardust' panel on the Prestige main screen",
                                 "Efficient way to convert daily activity points into progression currency",
                                 "Bulk purchases may offer slight bonuses at higher levels",
-                            ]}
-                        />
-
-                        <EarningCard
-                            icon="emoji_events"
-                            iconBg="bg-pink-100 dark:bg-pink-900/30"
-                            iconColor="text-pink-600 dark:text-pink-400"
-                            title="Special Events"
-                            description="Participate in limited-time community challenges and seasonal events."
-                            actionLabel="View Forum"
-                            actionIcon="forum"
-                            onAction={() => navigate('/forum')}
-                            details={[
-                                "Weekly challenges often reward Stardust for completion",
-                                "Top leaderboard positions grant Stardust caches",
-                                "Seasonal events (like Exam Prep Week) have boosted Stardust drop rates",
-                                "Check the Forum announcements for active events",
                             ]}
                         />
                     </div>
 
                 </div>
             </div>
+
+            {/* Exchange Modal */}
+            {showExchange && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white dark:bg-zinc-900 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl border border-gray-100 dark:border-white/10" onClick={e => e.stopPropagation()}>
+                        <div className="p-6 border-b border-gray-100 dark:border-white/5">
+                            <div className="flex items-center justify-between mb-2">
+                                <h3 className="text-lg font-black text-text-main dark:text-white">Exchange Points</h3>
+                                <button onClick={() => setShowExchange(false)} className="text-gray-400 hover:text-text-main dark:hover:text-white">
+                                    <span className="material-symbols-outlined">close</span>
+                                </button>
+                            </div>
+                            <p className="text-xs text-gray-500">Trade your NMS Points (Coins) for pure Stardust.</p>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div className="bg-gray-50 dark:bg-black/20 rounded-xl p-4 flex items-center justify-between border border-gray-100 dark:border-white/5">
+                                <div className="flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-amber-500 text-xl">monetization_on</span>
+                                    <span className="text-sm font-bold text-gray-600 dark:text-gray-300">Your Points</span>
+                                </div>
+                                <span className="text-lg font-black text-text-main dark:text-white">{(user?.coins_balance || 0).toLocaleString()}</span>
+                            </div>
+                            
+                            <div>
+                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Amount to Exchange</label>
+                                <div className="relative">
+                                    <input 
+                                        type="number" 
+                                        value={exchangeAmount}
+                                        onChange={e => setExchangeAmount(e.target.value)}
+                                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-lg font-black text-text-main dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="0"
+                                        min="1"
+                                    />
+                                    <button 
+                                        onClick={() => setExchangeAmount(String(user?.coins_balance || 0))}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-md"
+                                    >
+                                        MAX
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={handleExchange}
+                                disabled={isExchanging}
+                                className="w-full mt-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition-all disabled:opacity-50 flex justify-center items-center gap-2"
+                            >
+                                {isExchanging ? (
+                                    <span className="material-symbols-outlined animate-spin">refresh</span>
+                                ) : (
+                                    <>
+                                        <span className="material-symbols-outlined text-sm">swap_horiz</span>
+                                        Confirm Exchange
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
