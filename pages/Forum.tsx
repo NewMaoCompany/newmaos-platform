@@ -1366,7 +1366,8 @@ export const Forum = () => {
                             await supabase
                                 .from('direct_chat_participants')
                                 .delete()
-                                .eq('chat_id', commonChatId); // Delete for BOTH users
+                                .eq('chat_id', commonChatId)
+                                .eq('user_id', user?.id); // Delete ONLY for current user to avoid RLS block
                                 
                             if (activeChatId === commonChatId) {
                                 setActiveChatId(null);
