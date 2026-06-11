@@ -758,8 +758,6 @@ export const Forum = () => {
     const [pendingPoints, setPendingPoints] = useState<{ amount: number; count: number; details: any[] }>({ amount: 0, count: 0, details: [] });
     const [isClaimingPoints, setIsClaimingPoints] = useState(false);
     const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
-    const [isSending, setIsSending] = useState(false);
-    const isSendingRef = useRef(false);
 
 
     // Fetch pending points from database
@@ -2503,9 +2501,7 @@ export const Forum = () => {
     };
 
     const sendMessageInternal = async (content: string) => {
-        if (!content.trim() || (!activeChannelId && !activeChatId) || !user || isSendingRef.current) return;
-        isSendingRef.current = true;
-        setIsSending(true);
+        if (!content.trim() || (!activeChannelId && !activeChatId) || !user) return;
 
         const isChannel = viewMode === 'channel';
         const timestamp = new Date().toISOString();
@@ -2581,9 +2577,6 @@ export const Forum = () => {
             setMessages(prev => prev.filter(m => m.id !== tempId));
             // Restore text if it was a failed text message
             if (content === inputText) setInputText(content);
-        } finally {
-            isSendingRef.current = false;
-            setIsSending(false);
         }
     };
 
@@ -2974,8 +2967,9 @@ export const Forum = () => {
             return;
         }
         try {
+            const table = viewMode === 'channel' ? 'forum_messages' : 'direct_messages';
             const { error } = await supabase
-                .from('forum_messages')
+                .from(table)
                 .delete()
                 .eq('id', messageId);
             if (error) throw error;
@@ -3368,7 +3362,7 @@ export const Forum = () => {
                                                         )}
                                                     </div>
                                                     <div className="flex-1 flex items-center gap-1.5 min-w-0">
-                                                        <span className={`text-sm truncate text-left ${dm.chat_id && activeChatId === dm.chat_id ? 'font-bold' : 'font-medium'}`}>{dm.user?.name || 'User'}</span>
+                                                        <span className={`text-sm truncate text-left flex-1 min-w-0 ${dm.chat_id && activeChatId === dm.chat_id ? 'font-bold' : 'font-medium'}`}>{dm.user?.name || 'User'}</span>
                                                         {dm.user?.equipped_title && (
                                                             <div className="shrink-0"><TitleBadge title={dm.user.equipped_title} size="xs" /></div>
                                                         )}
@@ -3462,8 +3456,8 @@ export const Forum = () => {
                                         <HeaderSkeleton />
                                     ) : (
                                         <>
-                                            <h3 className="font-bold text-base flex items-center gap-2 text-text-main dark:text-white leading-tight overflow-hidden">
-                                                <span className="truncate">{displayChannelName}</span>
+                                            <h3 className="font-bold text-base flex items-center gap-2 text-text-main dark:text-white leading-tight overflow-hidden min-w-0">
+                                                <span className="truncate flex-1 min-w-0">{displayChannelName}</span>
                                                 {viewMode === 'dm' && activeDmChat?.user?.equipped_title && (
                                                     <div className="shrink-0"><TitleBadge title={activeDmChat.user.equipped_title} size="sm" /></div>
                                                 )}
@@ -3634,7 +3628,7 @@ export const Forum = () => {
                                                     {/* Send Button */}
                                                     <button
                                                         onClick={handleSendMessage}
-                                                        disabled={!inputText.trim() || isUploading || isSending}
+                                                        disabled={!inputText.trim() || isUploading}
                                                         className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-white px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-primary/20 hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:scale-100 disabled:shadow-none transition-all duration-300 flex items-center gap-2 group/send"
                                                     >
                                                         <span className="text-sm font-bold tracking-tight">Send</span>
