@@ -202,13 +202,6 @@ export const Lobby = () => {
               <div className="flex-1 min-w-0">
                 <MiniCalendar />
               </div>
-
-              <div className="shrink-0 flex flex-col justify-center">
-                <div 
-                  className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center border border-white/40 backdrop-blur-md shadow-lg"
-                >
-                </div>
-              </div>
             </div>
           </Widget>
 
