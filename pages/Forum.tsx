@@ -1812,7 +1812,13 @@ export const Forum = () => {
     // Fetch DM Chats
     const fetchDMs = async () => {
         if (!user?.id) return;
-        setIsLoadingDMs(true);
+        
+        // Prevent flashing on background refreshes
+        setDmChats(prev => {
+            if (prev.length === 0) setIsLoadingDMs(true);
+            return prev;
+        });
+
         try {
             const [friendRequestsRes, participationsRes] = await Promise.all([
                 supabase
@@ -3775,16 +3781,7 @@ export const Forum = () => {
                                     {/* Messages Area */}
                                     <div className="flex-1 overflow-y-auto px-4 md:px-6 custom-scrollbar flex flex-col pt-4 pb-4 scroll-bounce">
                                         <div className="scroll-bounce-inner flex flex-col min-h-[101%]">
-                                            {viewMode === 'dm' && dmChats.find(c => c.chat_id === activeChatId) && !friends.includes(dmChats.find(c => c.chat_id === activeChatId)!.user.id) && (
-                                                <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-xl p-3 mb-6 flex flex-col items-center justify-center text-center">
-                                                    <span className="material-symbols-outlined text-red-400 text-3xl mb-2">person_off</span>
-                                                    <p className="text-red-500 font-bold text-sm">This friend has been deleted.</p>
-                                                    <p className="text-red-400/80 text-xs mt-1">You can no longer send messages to this user.</p>
-                                                </div>
-                                            )}
-                                            {isLoadingChannels || isLoadingMessages ? (
-                                                <ChatSkeleton />
-                                            ) : (!activeChannelId && !activeChatId) ? (
+                                            {messages.length === 0 && !isLoadingMessages ? (
                                                 <div className="flex flex-col items-center justify-center flex-1 text-gray-300 dark:text-white/20">
                                                     <span className="material-symbols-outlined text-6xl mb-4">forum</span>
                                                     <p className="font-bold text-lg text-gray-400">Select a channel or conversation to start chatting</p>
@@ -3836,11 +3833,6 @@ export const Forum = () => {
                                                 >
                                                     <span className="material-symbols-outlined text-lg text-gray-400 group-hover:text-primary transition-colors">lock_person</span>
                                                     <span className="text-sm font-medium text-gray-400 group-hover:text-gray-300 transition-colors">#{displayChannelName} is restricted to administrators only.</span>
-                                                </div>
-                                            ) : viewMode === 'dm' && dmChats.find(c => c.chat_id === activeChatId) && !friends.includes(dmChats.find(c => c.chat_id === activeChatId)!.user.id) ? (
-                                                <div className="relative bg-gray-50/50 dark:bg-white/5 rounded-xl px-4 py-3 border border-dashed border-gray-200 dark:border-gray-800 flex items-center justify-center gap-3">
-                                                    <span className="material-symbols-outlined text-lg text-gray-400">person_off</span>
-                                                    <span className="text-sm font-medium text-gray-400">This friend has been deleted. You cannot reply.</span>
                                                 </div>
                                             ) : (
                                                 <div className="relative bg-white dark:bg-surface-dark rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-gray-200/50 dark:border-gray-700/50 ring-0 outline-none focus-within:ring-1 focus-within:ring-amber-200">
