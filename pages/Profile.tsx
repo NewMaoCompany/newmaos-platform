@@ -70,7 +70,7 @@ export const Profile = () => {
             try {
                 const { data: extraData } = await supabase
                     .from('user_profiles')
-                    .select('bio, avatar_color, streak_days, last_login_at, equipped_title_id, show_prestige, selected_prestige_level, equipped_title:titles(*)')
+                    .select('bio, show_name, show_email, show_bio, avatar_color, streak_days, last_login_at, equipped_title_id, selected_prestige_level, equipped_title:titles(*)')
                     .eq('id', userId)
                     .maybeSingle();
 
@@ -294,7 +294,7 @@ export const Profile = () => {
     }
 
     const isOwner = currentUser?.id === profile.id;
-    const displayName = profile.name || 'Anonymous User';
+    const displayName = (profile.show_name !== false || isOwner) ? (profile.name || 'Anonymous User') : 'Hidden User';
     const bgColor = profile.avatar_color || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
     const isOfficial = profile.is_official || false;
 
@@ -416,7 +416,7 @@ export const Profile = () => {
                                 )}
 
                                 {/* Bio */}
-                                {profile.bio && (
+                                {profile.bio && (profile.show_bio !== false || isOwner) && (
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium italic px-6 leading-relaxed text-center max-w-md">
                                         "{profile.bio}"
                                     </p>
