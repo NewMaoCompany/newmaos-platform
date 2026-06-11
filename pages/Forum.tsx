@@ -362,9 +362,7 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
                                             <span className="text-[8px] bg-primary text-white px-2 py-0.5 rounded font-black tracking-widest ring-1 ring-primary/20 shrink-0 shadow-sm">OFFICIAL</span>
                                         )}
                                         {equippedTitle && (
-                                            <div className="shrink-0 max-w-[150px] overflow-hidden">
-                                                <TitleBadge title={equippedTitle} size="xs" />
-                                            </div>
+                                            <TitleBadge title={equippedTitle} size="xs" />
                                         )}
                                     </div>
                                     <div className={`flex items-end gap-2 ${isRightAligned ? 'flex-row-reverse' : ''}`}>
@@ -3464,9 +3462,7 @@ export const Forum = () => {
                                                     {displayChannelName}
                                                 </h3>
                                                 {viewMode === 'dm' && activeDmChat?.user?.equipped_title && (
-                                                    <div className="shrink-0 max-w-[50%] overflow-hidden pb-0.5">
-                                                        <TitleBadge title={activeDmChat.user.equipped_title} size="sm" />
-                                                    </div>
+                                                    <TitleBadge title={activeDmChat.user.equipped_title} size="sm" />
                                                 )}
                                             </div>
                                             <span className="text-xs text-text-secondary dark:text-gray-400 hidden sm:block truncate max-w-md mt-0.5">
