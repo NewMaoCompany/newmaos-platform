@@ -1509,14 +1509,20 @@ export const Forum = () => {
     }, [activeChannelId]);
 
     const scrollToBottom = (smooth = false) => {
-        requestAnimationFrame(() => {
+        const doScroll = () => {
             if (chatContainerRef.current) {
                 chatContainerRef.current.scrollTo({
                     top: chatContainerRef.current.scrollHeight,
                     behavior: smooth ? 'smooth' : 'auto'
                 });
             }
-        });
+        };
+        
+        // Use multiple retries to guarantee scrolling as React renders and images load
+        requestAnimationFrame(doScroll);
+        setTimeout(doScroll, 50);
+        setTimeout(doScroll, 150);
+        setTimeout(doScroll, 300);
     };
 
     // --- In-memory Profile Cache for new messages ---
@@ -1590,11 +1596,11 @@ export const Forum = () => {
             // 3. If no matching temp message, just append
             const isFromMe = enrichedMsg.user_id === user?.id;
             const chatEl = chatContainerRef.current;
-            const isNearBottom = chatEl ? (chatEl.scrollHeight - chatEl.scrollTop - chatEl.clientHeight < 200) : true;
+            const isNearBottom = chatEl ? (chatEl.scrollHeight - chatEl.scrollTop - chatEl.clientHeight < 400) : true;
             
+            // Auto scroll if user sent it, or if they are near bottom, OR if they just switched to this chat
             if (isFromMe || isNearBottom) {
-                // Use a slight delay to allow the DOM to render the new message
-                setTimeout(() => scrollToBottom(true), 100);
+                scrollToBottom(true);
             }
             
             return [...prev, enrichedMsg];

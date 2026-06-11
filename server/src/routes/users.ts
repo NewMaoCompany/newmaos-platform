@@ -353,17 +353,35 @@ router.post('/friend-request/accept', authMiddleware, async (req: Request, res: 
             return;
         }
 
-        // 2. Award 10 NMS Points to both users
+        // Cleanup: Database trigger inserts duplicate 'friend_added', we must remove them
+        await supabaseAdmin.from('pending_points').delete()
+            .eq('type', 'friend_added')
+            .in('user_id', [userId, senderId])
+            .in('source_id', [userId.toString(), senderId.toString()]);
+
+        // 2. Award 10 NMS Points to both users ONLY IF they haven't been friends before
         const friendshipSourceId = [userId, senderId].sort().join('_');
         
-        const { data: existingReward } = await supabaseAdmin
+        // Check pending points
+        const { data: existingPending } = await supabaseAdmin
             .from('pending_points')
             .select('id')
             .eq('source_id', friendshipSourceId)
             .eq('type', 'friend')
             .limit(1);
 
-        if (!existingReward || existingReward.length === 0) {
+        // Check points ledger for historical claims to prevent infinite farming
+        const { data: existingLedger } = await supabaseAdmin
+            .from('points_ledger')
+            .select('id')
+            .eq('source_id', friendshipSourceId)
+            .eq('type', 'friend')
+            .limit(1);
+
+        const hasPending = existingPending && existingPending.length > 0;
+        const hasLedger = existingLedger && existingLedger.length > 0;
+
+        if (!hasPending && !hasLedger) {
             await supabaseAdmin.from('pending_points').insert([
                 {
                     user_id: userId,
@@ -379,6 +397,12 @@ router.post('/friend-request/accept', authMiddleware, async (req: Request, res: 
                     source_id: friendshipSourceId,
                     description: 'Added a new friend on the platform'
                 }
+            ]);
+            
+            // Also insert directly to points_ledger to ensure permanent history record
+            await supabaseAdmin.from('points_ledger').insert([
+                 { user_id: userId, amount: 0, type: 'friend', source_id: friendshipSourceId, description: 'Friendship historical record', idempotency_key: `hist_friend_${userId}_${friendshipSourceId}` },
+                 { user_id: senderId, amount: 0, type: 'friend', source_id: friendshipSourceId, description: 'Friendship historical record', idempotency_key: `hist_friend_${senderId}_${friendshipSourceId}` }
             ]);
         }
 

@@ -57,7 +57,7 @@ router.post('/messages', authMiddleware, async (req: Request, res: Response): Pr
         if (replyToId) {
             const { data: parentMsg } = await supabaseAdmin
                 .from('forum_messages')
-                .select('user_id')
+                .select('user_id, created_at')
                 .eq('id', replyToId)
                 .single();
 
@@ -73,14 +73,39 @@ router.post('/messages', authMiddleware, async (req: Request, res: Response): Pr
                     link: channelId ? `/forum?channel_id=${channelId}` : '/forum'
                 });
 
-                // Award 10 NMS Points for receiving a reply
-                await supabaseAdmin.from('pending_points').insert({
-                    user_id: parentMsg.user_id,
-                    amount: 10,
-                    type: 'reply',
-                    source_id: insertedMessage.id,
-                    description: 'Received a reply to your message'
-                });
+                // Cleanup: The database trigger inserted 'comment_received' into pending_points, we must remove it to avoid double-awarding
+                await supabaseAdmin.from('pending_points').delete()
+                    .eq('type', 'comment_received')
+                    .eq('source_id', insertedMessage.id);
+
+                // Enforce limit: Only the first 5 messages posted today by the author can earn reply coins
+                const parentDate = new Date(parentMsg.created_at);
+                const todayMidnight = new Date();
+                todayMidnight.setHours(0, 0, 0, 0);
+
+                if (parentDate >= todayMidnight) {
+                    // It was posted today. Is it among their first 5 messages today?
+                    const { data: todayMessages } = await supabaseAdmin
+                        .from('forum_messages')
+                        .select('id')
+                        .eq('user_id', parentMsg.user_id)
+                        .gte('created_at', todayMidnight.toISOString())
+                        .order('created_at', { ascending: true })
+                        .limit(5);
+                    
+                    const isEligible = todayMessages && todayMessages.some(m => m.id === replyToId);
+                    
+                    if (isEligible) {
+                        // Award 10 NMS Points for receiving a reply
+                        await supabaseAdmin.from('pending_points').insert({
+                            user_id: parentMsg.user_id,
+                            amount: 10,
+                            type: 'reply',
+                            source_id: insertedMessage.id,
+                            description: 'Received a reply to your message'
+                        });
+                    }
+                }
             }
         }
 
@@ -114,6 +139,12 @@ router.post('/reward-like', authMiddleware, async (req: Request, res: Response):
             return;
         }
 
+        // Cleanup: Database trigger auto-inserts 'like_received'. We must remove it to control rewards manually and prevent double-awarding
+        await supabaseAdmin.from('pending_points').delete()
+            .eq('type', 'like_received')
+            .eq('source_id', messageId)
+            .eq('user_id', authorId);
+
         // 2. Verify the like actually exists to prevent abuse
         const { data: reaction } = await supabaseAdmin
             .from('message_reactions')
@@ -142,14 +173,61 @@ router.post('/reward-like', authMiddleware, async (req: Request, res: Response):
             return;
         }
 
-        // 4. Award 5 NMS Points
-        await supabaseAdmin.from('pending_points').insert({
-            user_id: authorId,
-            amount: 5,
-            type: 'like',
-            source_id: sourceId,
-            description: 'Received a like on your forum message'
-        });
+        // Check if message was already awarded in ledger (if claimed quickly)
+        const { data: existingLedger } = await supabaseAdmin
+            .from('points_ledger')
+            .select('id')
+            .eq('source_id', sourceId)
+            .eq('type', 'like')
+            .maybeSingle();
+
+        if (existingLedger) {
+            res.json({ success: true, ignored: true, reason: 'already_awarded_ledger' });
+            return;
+        }
+
+        // Enforce limit: Only the first 5 messages posted today by the author can earn like coins
+        const { data: messageInfo } = await supabaseAdmin
+            .from('forum_messages')
+            .select('created_at')
+            .eq('id', messageId)
+            .single();
+
+        if (messageInfo) {
+            const msgDate = new Date(messageInfo.created_at);
+            const todayMidnight = new Date();
+            todayMidnight.setHours(0, 0, 0, 0);
+
+            if (msgDate >= todayMidnight) {
+                // It was posted today. Is it among their first 5 messages today?
+                const { data: todayMessages } = await supabaseAdmin
+                    .from('forum_messages')
+                    .select('id')
+                    .eq('user_id', authorId)
+                    .gte('created_at', todayMidnight.toISOString())
+                    .order('created_at', { ascending: true })
+                    .limit(5);
+                
+                const isEligible = todayMessages && todayMessages.some(m => m.id === messageId);
+                
+                if (isEligible) {
+                    // 4. Award 5 NMS Points
+                    await supabaseAdmin.from('pending_points').insert({
+                        user_id: authorId,
+                        amount: 5,
+                        type: 'like',
+                        source_id: sourceId,
+                        description: 'Received a like on your forum message'
+                    });
+                } else {
+                    res.json({ success: true, ignored: true, reason: 'daily_limit_exceeded' });
+                    return;
+                }
+            } else {
+                res.json({ success: true, ignored: true, reason: 'not_posted_today' });
+                return;
+            }
+        }
 
         res.json({ success: true });
     } catch (error) {
