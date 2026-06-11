@@ -433,6 +433,8 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         const channel = supabase.channel('global-chat-notifications')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'forum_messages' }, (payload) => handleNewMsg(payload, 'channel'))
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages' }, (payload) => handleNewMsg(payload, 'dm'))
+            .on('broadcast', { event: 'new_dm' }, (payload) => handleNewMsg({ new: payload.payload }, 'dm'))
+            .on('broadcast', { event: 'new_channel_msg' }, (payload) => handleNewMsg({ new: payload.payload }, 'channel'))
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, (payload) => {
                 if (payload.new.user_id === user.id && payload.new.unread) {
                     fetchBadgeStatus();

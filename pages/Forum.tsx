@@ -402,7 +402,7 @@ const ThreadedMessageRow = ({ message, onProfileClick, onReplySubmit, onTogglePi
                             <span className="material-symbols-outlined text-[14px]">chat_bubble_outline</span>
                             Reply
                         </button>
-                        {onTogglePin && (
+                        {onTogglePin && !isDM && (
                             <button
                                 onClick={() => onTogglePin(message.id)}
                                 className={`text-xs font-medium flex items-center gap-1 transition-colors ${message.is_pinned ? 'text-amber-500 hover:text-red-500' : 'text-gray-400 hover:text-amber-500'}`}
@@ -2546,6 +2546,11 @@ export const Forum = () => {
                 // Replace temp ID with real UUID immediately
                 if (inserted?.id) {
                     setMessages(prev => prev.map(m => m.id === tempId ? { ...m, id: inserted.id } : m));
+                    supabase.channel('global-chat-notifications').send({
+                        type: 'broadcast',
+                        event: 'new_channel_msg',
+                        payload: { channel_id: activeChannelId, user_id: user.id }
+                    });
                 }
             } else {
                 const { data: inserted, error } = await supabase
@@ -2560,6 +2565,11 @@ export const Forum = () => {
                 if (error) throw error;
                 if (inserted?.id) {
                     setMessages(prev => prev.map(m => m.id === tempId ? { ...m, id: inserted.id } : m));
+                    supabase.channel('global-chat-notifications').send({
+                        type: 'broadcast',
+                        event: 'new_dm',
+                        payload: { chat_id: activeChatId, user_id: user.id }
+                    });
                 }
             }
         } catch (err: any) {
@@ -2929,7 +2939,7 @@ export const Forum = () => {
             showToast(newPinned ? 'Message pinned!' : 'Message unpinned', 'success');
         } catch (err) {
             console.error('Failed to toggle pin:', err);
-            showToast('Failed to update pin', 'error');
+            showToast(`Failed to update pin: ${err.message || JSON.stringify(err)}`, 'error');
         }
     };
 
@@ -3361,11 +3371,8 @@ export const Forum = () => {
                                                             <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-white dark:border-black bg-green-500"></div>
                                                         )}
                                                     </div>
-                                                    <div className="flex-1 flex items-center gap-1.5 min-w-0">
-                                                        <span className={`text-sm truncate text-left flex-1 min-w-0 ${dm.chat_id && activeChatId === dm.chat_id ? 'font-bold' : 'font-medium'}`}>{dm.user?.name || 'User'}</span>
-                                                        {dm.user?.equipped_title && (
-                                                            <div className="shrink-0"><TitleBadge title={dm.user.equipped_title} size="xs" /></div>
-                                                        )}
+                                                    <div className="flex-1 min-w-0">
+                                                        <span className={`block text-sm truncate text-left w-full ${dm.chat_id && activeChatId === dm.chat_id ? 'font-bold' : 'font-medium'}`}>{dm.user?.name || 'User'}</span>
                                                     </div>
                                                     {dm.chat_id && unreadCounts[dm.chat_id] > 0 && activeChatId !== dm.chat_id && (
                                                         <div className="min-w-[16px] h-[16px] shrink-0 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
@@ -3457,7 +3464,7 @@ export const Forum = () => {
                                     ) : (
                                         <>
                                             <h3 className="font-bold text-base flex items-center gap-2 text-text-main dark:text-white leading-tight overflow-hidden min-w-0">
-                                                <span className="truncate flex-1 min-w-0">{displayChannelName}</span>
+                                                <span className="truncate max-w-[60%]">{displayChannelName}</span>
                                                 {viewMode === 'dm' && activeDmChat?.user?.equipped_title && (
                                                     <div className="shrink-0"><TitleBadge title={activeDmChat.user.equipped_title} size="sm" /></div>
                                                 )}
