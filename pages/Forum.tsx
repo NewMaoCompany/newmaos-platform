@@ -1005,7 +1005,7 @@ export const Forum = () => {
         }
     }, [activeChannelId, activeChatId, viewMode, unreadCounts, clearUnread]);
 
-    // Cleanup Ghost Notifications
+    // Handle new unread counts properly
     useEffect(() => {
         if (isLoadingChannels || isLoadingDMs) return;
 
@@ -1017,20 +1017,21 @@ export const Forum = () => {
         });
 
         // Find keys in unreadCounts that are NOT in validIds
-        let hasChanges = false;
+        let hasUnknownIds = false;
         Object.keys(unreadCounts).forEach(key => {
-            if (!validIds.has(key)) {
-                console.log(`🧹 Removing ghost notification for ID: ${key}`);
-                clearUnread(key);
-                hasChanges = true;
+            if (!validIds.has(key) && unreadCounts[key] > 0) {
+                console.log(`🔍 Detected unknown chat ID: ${key}. Refreshing lists to see if it's a new DM...`);
+                hasUnknownIds = true;
             }
         });
 
-        if (hasChanges) {
-            console.log('✨ Cleanup complete: Ghost notifications removed.');
+        if (hasUnknownIds) {
+            // Re-fetch DMs and Channels to discover the new chat
+            fetchDMs();
+            // Don't auto-clear it, as it's likely a new message from someone!
         }
 
-    }, [isLoadingChannels, isLoadingDMs, channels, dmChats, unreadCounts, clearUnread]);
+    }, [isLoadingChannels, isLoadingDMs, channels, dmChats, unreadCounts]);
 
     // Sidebar State — Channels and Private Messages open by default, Courses collapsed
     const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({
@@ -2925,8 +2926,9 @@ export const Forum = () => {
         if (!msg) return;
         const newPinned = !msg.is_pinned;
         try {
+            const table = viewMode === 'channel' ? 'forum_messages' : 'direct_messages';
             const { error } = await supabase
-                .from('forum_messages')
+                .from(table)
                 .update({ is_pinned: newPinned })
                 .eq('id', messageId);
             if (error) throw error;
@@ -3368,11 +3370,11 @@ export const Forum = () => {
                                                     <div className="flex-1 flex items-center gap-1.5 min-w-0">
                                                         <span className={`text-sm truncate text-left ${dm.chat_id && activeChatId === dm.chat_id ? 'font-bold' : 'font-medium'}`}>{dm.user?.name || 'User'}</span>
                                                         {dm.user?.equipped_title && (
-                                                            <TitleBadge title={dm.user.equipped_title} size="xs" />
+                                                            <div className="shrink-0"><TitleBadge title={dm.user.equipped_title} size="xs" /></div>
                                                         )}
                                                     </div>
                                                     {dm.chat_id && unreadCounts[dm.chat_id] > 0 && activeChatId !== dm.chat_id && (
-                                                        <div className="min-w-[16px] h-[16px] flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
+                                                        <div className="min-w-[16px] h-[16px] shrink-0 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full px-1 shadow-sm ring-1 ring-white dark:ring-surface-dark group-hover:scale-110 transition-transform">
                                                             {unreadCounts[dm.chat_id] > 99 ? '99+' : unreadCounts[dm.chat_id]}
                                                         </div>
                                                     )}
@@ -3450,20 +3452,20 @@ export const Forum = () => {
                     <div className="flex-1 flex flex-col min-h-0 min-w-0 border-r border-gray-200/50 dark:border-gray-800/50 relative">
                         {/* Header */}
                         <div className="min-h-[4rem] px-4 md:px-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between shrink-0 bg-white/80 dark:bg-black/40 backdrop-blur-xl z-40 relative">
-                            <div className="flex items-center gap-3 overflow-hidden py-2">
-                                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden text-gray-500 mr-1">
+                            <div className="flex items-center gap-3 overflow-hidden py-2 max-w-[60%]">
+                                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden text-gray-500 mr-1 shrink-0">
                                     <span className="material-symbols-outlined">menu</span>
                                 </button>
-                                <span className="text-gray-300 text-2xl font-light">#</span>
-                                <div className="flex flex-col justify-center flex-1">
+                                <span className="text-gray-300 text-2xl font-light shrink-0">#</span>
+                                <div className="flex flex-col justify-center flex-1 min-w-0">
                                     {isLoadingChannels ? (
                                         <HeaderSkeleton />
                                     ) : (
                                         <>
-                                            <h3 className="font-bold text-base truncate flex items-center gap-2 text-text-main dark:text-white leading-tight">
-                                                {displayChannelName}
+                                            <h3 className="font-bold text-base flex items-center gap-2 text-text-main dark:text-white leading-tight overflow-hidden">
+                                                <span className="truncate">{displayChannelName}</span>
                                                 {viewMode === 'dm' && activeDmChat?.user?.equipped_title && (
-                                                    <TitleBadge title={activeDmChat.user.equipped_title} size="sm" />
+                                                    <div className="shrink-0"><TitleBadge title={activeDmChat.user.equipped_title} size="sm" /></div>
                                                 )}
                                             </h3>
                                             <span className="text-xs text-text-secondary dark:text-gray-400 hidden sm:block truncate max-w-md mt-0.5">
