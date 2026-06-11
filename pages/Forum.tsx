@@ -2667,7 +2667,7 @@ export const Forum = () => {
 
             // Handle specifically the message limit error
             if (err.message && err.message.includes('Non-friends can only send 1')) {
-                showToast(err.message, 'error');
+                showToast('You cannot send messages to this user because you are no longer friends.', 'error');
             } else {
                 console.error("Full error object:", err);
                 showToast(`Failed to send: ${err.message || 'Unknown error'}`, 'error');
