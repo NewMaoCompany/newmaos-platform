@@ -486,8 +486,8 @@ export const PrestigePage = () => {
 
                                     {/* PLANET NAME - Visually Centered (Compensating for letter spacing) */}
                                     <div className={`text-center transition-all duration-700 ${distance === 0 ? 'opacity-100 translate-y-[20%] scale-100' : 'opacity-0 translate-y-4 scale-95'} ${!isUnlocked ? 'grayscale brightness-75' : ''} pointer-events-none absolute -top-16 sm:-top-24 w-full flex flex-col items-center justify-center pl-[0.2em]`}>
-                                        <div className="relative w-full overflow-hidden">
-                                            <h2 className="text-3xl sm:text-5xl md:text-8xl font-black uppercase tracking-[0.25em] sm:tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/70 to-white/10 drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] font-mono leading-none mr-[-0.25em] sm:mr-[-0.4em] whitespace-nowrap">
+                                        <div className="relative w-full overflow-visible">
+                                            <h2 className="text-3xl sm:text-5xl md:text-8xl font-black uppercase tracking-[0.25em] sm:tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white/70 to-white/10 drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] font-mono leading-normal pt-2 pb-2 mr-[-0.25em] sm:mr-[-0.4em] whitespace-nowrap">
                                                 {name}
                                             </h2>
                                         </div>
