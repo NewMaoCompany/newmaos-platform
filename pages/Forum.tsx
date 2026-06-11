@@ -1346,36 +1346,6 @@ export const Forum = () => {
 
                     if (error) throw error;
 
-                    // Hide the chat by removing both users from direct_chat_participants
-                    // We need to find their common chat_id
-                    const { data: myParticipations } = await supabase
-                        .from('direct_chat_participants')
-                        .select('chat_id')
-                        .eq('user_id', user?.id);
-                    
-                    if (myParticipations && myParticipations.length > 0) {
-                        const myChatIds = myParticipations.map(p => p.chat_id);
-                        const { data: theirParticipations } = await supabase
-                            .from('direct_chat_participants')
-                            .select('chat_id')
-                            .eq('user_id', friendId)
-                            .in('chat_id', myChatIds);
-                        
-                        if (theirParticipations && theirParticipations.length > 0) {
-                            const commonChatId = theirParticipations[0].chat_id;
-                            await supabase
-                                .from('direct_chat_participants')
-                                .delete()
-                                .eq('chat_id', commonChatId)
-                                .eq('user_id', user?.id); // Delete ONLY for current user to avoid RLS block
-                                
-                            if (activeChatId === commonChatId) {
-                                setActiveChatId(null);
-                                setViewMode('channel');
-                            }
-                        }
-                    }
-
                     showToast('Friend removed', 'success');
 
                     // Update local state
@@ -1861,9 +1831,7 @@ export const Forum = () => {
                 });
             }
 
-            const allUserIdsToFetch = new Set([...friendIds, ...Array.from(existingChatsMap.keys())]);
-
-            if (allUserIdsToFetch.size === 0) {
+            if (friendIds.length === 0) {
                 setDmChats([]);
                 return;
             }
@@ -1871,7 +1839,7 @@ export const Forum = () => {
             const { data: profiles } = await supabase
                 .from('user_profiles')
                 .select('id, name, avatar_url, is_official, equipped_title:titles(name, category, threshold)')
-                .in('id', Array.from(allUserIdsToFetch));
+                .in('id', friendIds);
 
             const combined = profiles?.map((profile: any) => ({
                 chat_id: existingChatsMap.get(profile.id) || null,
@@ -3519,14 +3487,17 @@ export const Forum = () => {
                                                         </div>
                                                     )}
 
-                                                    {/* Action Buttons: Remove Friend / Chat */}
-                                                    <div
-                                                        onClick={(e) => handleRemoveFriend(dm.user.id, e)}
-                                                        className="text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10 opacity-30 group-hover:opacity-100 transition-all cursor-pointer ml-auto"
-                                                        title="Remove Friend"
-                                                    >
-                                                        <span className="material-symbols-outlined text-[16px]">person_remove</span>
-                                                    </div>
+                                                    {/* Delete Friend Button */}
+                                                    {/* Action Buttons: Remove Friend (if friend) OR Close Chat (if not friend) */}
+                                                    {friends.includes(dm.user.id) && (
+                                                        <div
+                                                            onClick={(e) => handleRemoveFriend(dm.user.id, e)}
+                                                            className="text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10 opacity-0 group-hover:opacity-100 transition-all cursor-pointer ml-auto"
+                                                            title="Remove Friend"
+                                                        >
+                                                            <span className="material-symbols-outlined text-[16px]">person_remove</span>
+                                                        </div>
+                                                    )}
                                                 </button>
                                             ))
                                         )}
