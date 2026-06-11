@@ -192,7 +192,7 @@ export const getUniqueTitleStyle = (category: string, threshold: number): TitleS
             text: category === 'influence' ? 'text-black' : 'text-white',
             glow: 'shadow-primary/60 animate-pulse-neon',
             animation: 'animate-pulse-slow',
-            extraClasses: 'mesh-liquid overflow-hidden !border-opacity-100 shimmer-sweep'
+            extraClasses: 'mesh-liquid overflow-hidden !border-opacity-100 shimmer-sweep mx-2'
         };
     }
 
@@ -204,7 +204,7 @@ export const getUniqueTitleStyle = (category: string, threshold: number): TitleS
             text: baseStyle.text!,
             glow: 'shadow-primary/40 animate-pulse',
             animation: 'animate-pulse',
-            extraClasses: 'shimmer-sweep scale-105 overflow-hidden'
+            extraClasses: 'shimmer-sweep scale-105 overflow-hidden mx-1'
         };
     }
 

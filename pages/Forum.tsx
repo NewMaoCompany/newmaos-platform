@@ -3458,7 +3458,7 @@ export const Forum = () => {
                                     ) : (
                                         <>
                                             <div className="flex items-center gap-2 overflow-hidden w-full">
-                                                <h3 className="font-bold text-base text-text-main dark:text-white leading-tight truncate shrink">
+                                                <h3 className="font-bold text-base text-text-main dark:text-white leading-tight truncate shrink min-w-0">
                                                     {displayChannelName}
                                                 </h3>
                                                 {viewMode === 'dm' && activeDmChat?.user?.equipped_title && (
