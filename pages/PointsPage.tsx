@@ -241,7 +241,7 @@ export const PointsPage = () => {
                                 "Receive a reply to your message: earn 10 NMS Points",
                                 "Add a new friend on the platform: earn 10 NMS Points (both users)",
                                 "Points from community engagement appear as a 'Claim Gold' button in the Forum",
-
+                                "Limit: You can earn a maximum of 100 NMS Points per day from forum interactions (likes and replies).",
                                 "Limit: Repeatedly adding and removing the same friend will not generate points (to prevent farming).",
                                 "Note: self-likes do not generate NMS Points",
                             ]}

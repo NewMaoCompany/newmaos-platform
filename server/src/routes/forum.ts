@@ -4,6 +4,33 @@ import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
 
+const checkForumDailyLimit = async (userId: string, requestedAmount: number): Promise<boolean> => {
+    const todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0, 0);
+
+    // Sum from pending_points
+    const { data: pending } = await supabaseAdmin
+        .from('pending_points')
+        .select('amount')
+        .eq('user_id', userId)
+        .in('type', ['like', 'reply'])
+        .gte('created_at', todayMidnight.toISOString());
+
+    // Sum from points_ledger
+    const { data: ledger } = await supabaseAdmin
+        .from('points_ledger')
+        .select('amount')
+        .eq('user_id', userId)
+        .in('type', ['like', 'reply'])
+        .gte('created_at', todayMidnight.toISOString());
+
+    let totalEarned = 0;
+    if (pending) totalEarned += pending.reduce((sum, row) => sum + row.amount, 0);
+    if (ledger) totalEarned += ledger.reduce((sum, row) => sum + row.amount, 0);
+
+    return (totalEarned + requestedAmount) <= 100;
+};
+
 // POST /api/forum/messages - Add a new discussion message
 router.post('/messages', authMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
@@ -78,14 +105,18 @@ router.post('/messages', authMiddleware, async (req: Request, res: Response): Pr
                     .eq('type', 'comment_received')
                     .eq('source_id', insertedMessage.id);
 
-                // Award 10 NMS Points for receiving a reply
-                await supabaseAdmin.from('pending_points').insert({
-                    user_id: parentMsg.user_id,
-                    amount: 10,
-                    type: 'reply',
-                    source_id: insertedMessage.id,
-                    description: 'Received a reply to your message'
-                });
+                // Check limit
+                const isWithinLimit = await checkForumDailyLimit(parentMsg.user_id, 10);
+                if (isWithinLimit) {
+                    // Award 10 NMS Points for receiving a reply
+                    await supabaseAdmin.from('pending_points').insert({
+                        user_id: parentMsg.user_id,
+                        amount: 10,
+                        type: 'reply',
+                        source_id: insertedMessage.id,
+                        description: 'Received a reply to your message'
+                    });
+                }
             }
         }
 
@@ -166,14 +197,20 @@ router.post('/reward-like', authMiddleware, async (req: Request, res: Response):
             return;
         }
 
-        // 4. Award 5 NMS Points
-        await supabaseAdmin.from('pending_points').insert({
-            user_id: authorId,
-            amount: 5,
-            type: 'like',
-            source_id: sourceId,
-            description: 'Received a like on your forum message'
-        });
+        // 4. Check global limit and award 5 NMS Points
+        const isWithinLimit = await checkForumDailyLimit(authorId, 5);
+        if (isWithinLimit) {
+            await supabaseAdmin.from('pending_points').insert({
+                user_id: authorId,
+                amount: 5,
+                type: 'like',
+                source_id: sourceId,
+                description: 'Received a like on your forum message'
+            });
+        } else {
+            res.json({ success: true, ignored: true, reason: 'daily_forum_limit_exceeded' });
+            return;
+        }
 
         res.json({ success: true });
     } catch (error) {

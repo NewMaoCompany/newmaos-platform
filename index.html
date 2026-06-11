@@ -223,6 +223,31 @@
       background: transparent !important;
     }
 
+    /* Custom Scrollbar specifically for enabled containers */
+    .custom-scrollbar {
+      scrollbar-width: thin !important;
+      scrollbar-color: rgba(150, 150, 150, 0.4) transparent !important;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px !important;
+      height: 6px !important;
+      background: transparent !important;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent !important;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(150, 150, 150, 0.4) !important;
+      border-radius: 10px !important;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(150, 150, 150, 0.6) !important;
+    }
+
     /* Scroll containers — bounce disabled globally */
     .scroll-bounce {
       overflow-y: auto !important;

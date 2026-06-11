@@ -1591,8 +1591,16 @@ export const Forum = () => {
             }
 
             // 3. If no matching temp message, just append
-            // Always auto-scroll when a new message arrives or we switch to this chat
-            scrollToBottom(true);
+            const messagesContainer = document.getElementById('messages-scroll-container');
+            let isNearBottom = true;
+            if (messagesContainer) {
+                const { scrollTop, scrollHeight, clientHeight } = messagesContainer;
+                isNearBottom = scrollHeight - scrollTop - clientHeight < 150;
+            }
+
+            if (isNearBottom) {
+                scrollToBottom(true);
+            }
             
             return [...prev, enrichedMsg];
         });
@@ -1897,7 +1905,7 @@ export const Forum = () => {
 
         // Auto-scroll to bottom on initial load, channel switch, or new message
         scrollToBottom(true);
-    }, [messages.length, activeChannelId, activeChatId, isLoadingMessages, location.pathname]);
+    }, [activeChannelId, activeChatId, isLoadingMessages, location.pathname]);
 
     // Force scroll when Forum becomes visible
     useEffect(() => {
@@ -2627,7 +2635,9 @@ export const Forum = () => {
         };
 
         setMessages(prev => [...prev, optimisticMsg]);
-        scrollToBottom();
+        if (!wasReplying) {
+            scrollToBottom();
+        }
 
         try {
             if (isChannel) {
@@ -3779,7 +3789,7 @@ export const Forum = () => {
                                 {/* Inner Column for Messages + Input */}
                                 <div className="flex-1 flex flex-col relative overflow-hidden min-w-0">
                                     {/* Messages Area */}
-                                    <div className="flex-1 overflow-y-auto px-4 md:px-6 custom-scrollbar flex flex-col pt-4 pb-4 scroll-bounce">
+                                    <div id="messages-scroll-container" className="flex-1 overflow-y-auto px-4 md:px-6 custom-scrollbar flex flex-col pt-4 pb-4 scroll-bounce">
                                         <div className="scroll-bounce-inner flex flex-col min-h-[101%]">
                                             {messages.length === 0 && !isLoadingMessages ? (
                                                 <div className="flex flex-col items-center justify-center flex-1 text-gray-300 dark:text-white/20">
