@@ -1510,11 +1510,8 @@ export const Forum = () => {
 
     const scrollToBottom = (smooth = false) => {
         const doScroll = () => {
-            if (chatContainerRef.current) {
-                chatContainerRef.current.scrollTo({
-                    top: chatContainerRef.current.scrollHeight,
-                    behavior: smooth ? 'smooth' : 'auto'
-                });
+            if (chatEndRef.current) {
+                chatEndRef.current.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'end' });
             }
         };
         
@@ -1594,14 +1591,8 @@ export const Forum = () => {
             }
 
             // 3. If no matching temp message, just append
-            const isFromMe = enrichedMsg.user_id === user?.id;
-            const chatEl = chatContainerRef.current;
-            const isNearBottom = chatEl ? (chatEl.scrollHeight - chatEl.scrollTop - chatEl.clientHeight < 400) : true;
-            
-            // Auto scroll if user sent it, or if they are near bottom, OR if they just switched to this chat
-            if (isFromMe || isNearBottom) {
-                scrollToBottom(true);
-            }
+            // Always auto-scroll when a new message arrives or we switch to this chat
+            scrollToBottom(true);
             
             return [...prev, enrichedMsg];
         });
@@ -3785,6 +3776,13 @@ export const Forum = () => {
                                     {/* Messages Area */}
                                     <div className="flex-1 overflow-y-auto px-4 md:px-6 custom-scrollbar flex flex-col pt-4 pb-4 scroll-bounce">
                                         <div className="scroll-bounce-inner flex flex-col min-h-[101%]">
+                                            {viewMode === 'dm' && dmChats.find(c => c.chat_id === activeChatId) && !friends.includes(dmChats.find(c => c.chat_id === activeChatId)!.user.id) && (
+                                                <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-xl p-3 mb-6 flex flex-col items-center justify-center text-center">
+                                                    <span className="material-symbols-outlined text-red-400 text-3xl mb-2">person_off</span>
+                                                    <p className="text-red-500 font-bold text-sm">This friend has been deleted.</p>
+                                                    <p className="text-red-400/80 text-xs mt-1">You can no longer send messages to this user.</p>
+                                                </div>
+                                            )}
                                             {isLoadingChannels || isLoadingMessages ? (
                                                 <ChatSkeleton />
                                             ) : (!activeChannelId && !activeChatId) ? (
@@ -3839,6 +3837,11 @@ export const Forum = () => {
                                                 >
                                                     <span className="material-symbols-outlined text-lg text-gray-400 group-hover:text-primary transition-colors">lock_person</span>
                                                     <span className="text-sm font-medium text-gray-400 group-hover:text-gray-300 transition-colors">#{displayChannelName} is restricted to administrators only.</span>
+                                                </div>
+                                            ) : viewMode === 'dm' && dmChats.find(c => c.chat_id === activeChatId) && !friends.includes(dmChats.find(c => c.chat_id === activeChatId)!.user.id) ? (
+                                                <div className="relative bg-gray-50/50 dark:bg-white/5 rounded-xl px-4 py-3 border border-dashed border-gray-200 dark:border-gray-800 flex items-center justify-center gap-3">
+                                                    <span className="material-symbols-outlined text-lg text-gray-400">person_off</span>
+                                                    <span className="text-sm font-medium text-gray-400">This friend has been deleted. You cannot reply.</span>
                                                 </div>
                                             ) : (
                                                 <div className="relative bg-white dark:bg-surface-dark rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-gray-200/50 dark:border-gray-700/50 ring-0 outline-none focus-within:ring-1 focus-within:ring-amber-200">
