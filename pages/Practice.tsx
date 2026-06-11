@@ -1194,6 +1194,14 @@ export const Practice = () => {
                     setFloatingReward({ amount: result.coinsAwarded, id: Date.now() });
                     setTimeout(() => setFloatingReward(null), 2000);
                 }
+            } else {
+                await supabase.rpc('submit_algorithmic_attempt', {
+                    p_question_id: question.id,
+                    p_is_correct: false,
+                    p_selected_option_id: null,
+                    p_time_spent_seconds: timeSpent,
+                    p_session_id: effectiveSectionId
+                });
             }
         } catch (error) {
             console.error('Failed to submit "show answer" attempt:', error);
@@ -1252,6 +1260,14 @@ export const Practice = () => {
                 } else {
                     console.log('Submission successful:', result);
                 }
+            } else {
+                await supabase.rpc('submit_algorithmic_attempt', {
+                    p_question_id: question.id,
+                    p_is_correct: isCorrect,
+                    p_selected_option_id: selectedAnswer,
+                    p_time_spent_seconds: timeSpent,
+                    p_session_id: effectiveSectionId
+                });
             }
         } catch (error: any) {
             console.error('Failed to submit attempt:', error);
@@ -1325,28 +1341,39 @@ export const Practice = () => {
                 // Update local visual state
                 localResults[q.id] = isCorrect ? 'correct' : 'incorrect';
 
-                // Only submit if NOT already submitted individually and NOT algorithmic
-                if (!alreadySubmitted && !isAlgorithmicPractice) {
+                // Only submit if NOT already submitted individually
+                if (!alreadySubmitted) {
                     const selectedOpt = q.options.find(o => o.id === userAnswer);
                     const optErrorTag = selectedOpt?.errorTagId;
                     const finalErrorTags = [...(q.errorTags || [])];
                     if (optErrorTag) finalErrorTags.push(optErrorTag);
 
-                    const promise = submitAttempt({
-                        questionId: q.id,
-                        isCorrect: isCorrect,
-                        selectedOptionId: userAnswer,
-                        timeSpentSeconds: timePerQuestion,
-                        errorTags: isCorrect ? [] : finalErrorTags,
-                        sessionId: effectiveSectionId
-                    }).then(result => {
-                        if (result.coinsAwarded && result.coinsAwarded > 0) {
-                            setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
-                            triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
-                        }
-                    });
+                    if (!isAlgorithmicPractice) {
+                        const promise = submitAttempt({
+                            questionId: q.id,
+                            isCorrect: isCorrect,
+                            selectedOptionId: userAnswer,
+                            timeSpentSeconds: timePerQuestion,
+                            errorTags: isCorrect ? [] : finalErrorTags,
+                            sessionId: effectiveSectionId
+                        }).then(result => {
+                            if (result.coinsAwarded && result.coinsAwarded > 0) {
+                                setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
+                                triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
+                            }
+                        });
 
-                    submissionPromises.push(promise);
+                        submissionPromises.push(promise);
+                    } else {
+                        const promise = supabase.rpc('submit_algorithmic_attempt', {
+                            p_question_id: q.id,
+                            p_is_correct: isCorrect,
+                            p_selected_option_id: userAnswer,
+                            p_time_spent_seconds: timePerQuestion,
+                            p_session_id: effectiveSectionId
+                        });
+                        submissionPromises.push(promise);
+                    }
                 } else {
                     // Already submitted individually, preserve existing result
                     localResults[q.id] = questionResults[q.id];
@@ -1355,22 +1382,32 @@ export const Practice = () => {
                 // Unanswered treated as incorrect visually AND submitted as wrong attempt
                 localResults[q.id] = 'incorrect';
 
-                // Only submit if NOT already submitted individually and NOT algorithmic
-                if (!alreadySubmitted && !isAlgorithmicPractice) {
-                    const promise = submitAttempt({
-                        questionId: q.id,
-                        isCorrect: false,
-                        selectedOptionId: null,
-                        timeSpentSeconds: timePerQuestion,
-                        errorTags: q.errorTags || [],
-                        sessionId: effectiveSectionId
-                    }).then(result => {
-                        if (result.coinsAwarded && result.coinsAwarded > 0) {
-                            setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
-                            triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
-                        }
-                    });
-                    submissionPromises.push(promise);
+                if (!alreadySubmitted) {
+                    if (!isAlgorithmicPractice) {
+                        const promise = submitAttempt({
+                            questionId: q.id,
+                            isCorrect: false,
+                            selectedOptionId: null,
+                            timeSpentSeconds: timePerQuestion,
+                            errorTags: q.errorTags || [],
+                            sessionId: effectiveSectionId
+                        }).then(result => {
+                            if (result.coinsAwarded && result.coinsAwarded > 0) {
+                                setSessionEarnedCoins(prev => prev + result.coinsAwarded!);
+                                triggerCoinAnimation(result.coinsAwarded, window.innerWidth / 2, window.innerHeight / 2, 'earn');
+                            }
+                        });
+                        submissionPromises.push(promise);
+                    } else {
+                        const promise = supabase.rpc('submit_algorithmic_attempt', {
+                            p_question_id: q.id,
+                            p_is_correct: false,
+                            p_selected_option_id: null,
+                            p_time_spent_seconds: timePerQuestion,
+                            p_session_id: effectiveSectionId
+                        });
+                        submissionPromises.push(promise);
+                    }
                 }
             }
         }
