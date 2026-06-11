@@ -1517,83 +1517,77 @@ export const Forum = () => {
     // --- In-memory Profile Cache for new messages ---
     const profileCache = useRef<Map<string, any>>(new Map());
 
-    const handleNewMessage = (newMsg: any, type: 'channel' | 'dm') => {
+    const handleNewMessage = async (newMsg: any, type: 'channel' | 'dm') => {
         // Fetch sender info if not present (Realtime payload only has user_id)
-        let userProfile: any = profileCache.current.get(newMsg.user_id);
+        let userProfile: any = { name: 'Unknown User', avatarUrl: undefined };
 
-        const enrichAndSet = (profileToUse: any) => {
-            const enrichedMsg: Message = {
-                ...newMsg,
-                user: profileToUse
-            };
-
-            // Proactively refresh pending points if this looks like a gift message
-            if (enrichedMsg.metadata?.giftCode || enrichedMsg.metadata?.giftType) {
-                setTimeout(() => {
-                    fetchPendingPoints();
-                }, 500);
-            }
-
-            setMessages(prev => {
-                // 1. Check if message ID already exists (prevent duplicates from real-time)
-                if (prev.some(m => m.id === enrichedMsg.id)) {
-                    // Update the user profile if it changed from placeholder to real
-                    return prev.map(m => m.id === enrichedMsg.id ? { ...m, user: profileToUse } : m);
+        try {
+            if (newMsg.user_id) {
+                // Check cache first
+                if (profileCache.current.has(newMsg.user_id)) {
+                    userProfile = profileCache.current.get(newMsg.user_id);
+                } else {
+                    const { data: u } = await supabase
+                        .from('user_profiles')
+                        .select('name, avatar_url, is_official, show_name, equipped_title:titles(name, category, threshold)')
+                        .eq('id', newMsg.user_id)
+                        .single();
+                    if (u) {
+                        const isVisible = u.show_name ?? true;
+                        userProfile = {
+                            name: isVisible ? (u.name || 'User') : 'Anonymous',
+                            avatarUrl: isVisible ? u.avatar_url : undefined,
+                            is_official: isVisible ? (u.is_official || false) : false,
+                            equipped_title: isVisible ? u.equipped_title : null,
+                            email: 'hidden'
+                        };
+                        // Save to cache
+                        profileCache.current.set(newMsg.user_id, userProfile);
+                    }
                 }
-
-                // 2. Optimistic UI replacement
-                const tempIndex = prev.findIndex(m =>
-                    m.id.startsWith('temp-') &&
-                    m.user_id === enrichedMsg.user_id &&
-                    m.content === enrichedMsg.content
-                );
-
-                if (tempIndex !== -1) {
-                    const updated = [...prev];
-                    updated[tempIndex] = enrichedMsg;
-                    return updated;
-                }
-
-                return [...prev, enrichedMsg];
-            });
-
-            if (type === 'channel' && viewMode === 'channel' && activeChannelId === newMsg.channel_id) {
-                scrollToBottom();
-            } else if (type === 'dm' && viewMode === 'dm' && activeChatId === newMsg.chat_id) {
-                scrollToBottom();
             }
+        } catch (e) {
+            console.error('Error fetching user for new message:', e);
+        }
+
+        const enrichedMsg: Message = {
+            ...newMsg,
+            user: userProfile
         };
 
-        if (userProfile) {
-            enrichAndSet(userProfile);
-        } else {
-            // Render immediately with a placeholder
-            enrichAndSet({ name: 'Loading...', avatarUrl: undefined });
-            
-            // Then fetch and update in background
-            if (newMsg.user_id) {
-                supabase
-                    .from('user_profiles')
-                    .select('name, avatar_url, is_official, show_name, equipped_title:titles(name, category, threshold)')
-                    .eq('id', newMsg.user_id)
-                    .single()
-                    .then(({ data: u }) => {
-                        if (u) {
-                            const isVisible = u.show_name ?? true;
-                            const newProfile = {
-                                name: isVisible ? (u.name || 'User') : 'Anonymous',
-                                avatarUrl: isVisible ? u.avatar_url : undefined,
-                                is_official: isVisible ? (u.is_official || false) : false,
-                                equipped_title: isVisible ? u.equipped_title : null,
-                                email: 'hidden'
-                            };
-                            profileCache.current.set(newMsg.user_id, newProfile);
-                            // Re-run to update the message with real profile
-                            enrichAndSet(newProfile);
-                        }
-                    })
-                    .catch(e => console.error('Error fetching user for new message:', e));
+        // Proactively refresh pending points if this looks like a gift message
+        // Added 500ms delay to ensure DB triggers have finished inserting the reward
+        if (enrichedMsg.metadata?.giftCode || enrichedMsg.metadata?.giftType) {
+            setTimeout(() => {
+                fetchPendingPoints();
+            }, 500);
+        }
+
+        setMessages(prev => {
+            // 1. Check if message ID already exists (prevent duplicates from real-time)
+            if (prev.some(m => m.id === enrichedMsg.id)) return prev;
+
+            // 2. Optimistic UI replacement: 
+            // Look for a temporary message from the same user with the same content
+            // and replace it with the real message from the server.
+            const tempIndex = prev.findIndex(m =>
+                m.id.startsWith('temp-') &&
+                m.user_id === enrichedMsg.user_id &&
+                m.content === enrichedMsg.content
+            );
+
+            if (tempIndex !== -1) {
+                const updated = [...prev];
+                updated[tempIndex] = enrichedMsg;
+                return updated;
             }
+
+            // 3. If no matching temp message, just append
+            return [...prev, enrichedMsg];
+        });
+
+        if (!enrichedMsg.reply_to_id) {
+            scrollToBottom(true);
         }
     };
 
