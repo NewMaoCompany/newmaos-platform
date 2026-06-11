@@ -747,7 +747,7 @@ const ChannelBrowseModal = ({ isOpen, onClose, onJoin, preloadedChannels, curren
 };
 
 export const Forum = () => {
-    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markBadgeAsRead, sendGlobalBroadcast, fetchBadgeStatus } = useApp();
+    const { user, isAuthenticated, isAuthLoading, unreadCounts, clearUnread, userPoints, fetchUserPoints, triggerCoinAnimation, isPro, markBadgeAsRead, sendGlobalBroadcast, fetchBadgeStatus, navRedDots } = useApp();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
