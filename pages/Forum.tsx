@@ -1952,6 +1952,18 @@ export const Forum = () => {
                             } : { name: 'User', avatarUrl: undefined }
                         };
                     });
+                    // Apply local independent pins
+                    try {
+                        const targetId = viewMode === 'channel' ? activeChannelId : activeChatId;
+                        const localPinsKey = `forum_pinned_messages_${user?.id}_${targetId}`;
+                        const localPins = JSON.parse(localStorage.getItem(localPinsKey) || '[]');
+                        if (Array.isArray(localPins)) {
+                            mapped.forEach((m: any) => {
+                                m.is_pinned = localPins.includes(m.id);
+                            });
+                        }
+                    } catch {}
+
                     setMessages(mapped);
                     localStorage.setItem(cacheKey, JSON.stringify(mapped));
                 } else {
@@ -2002,6 +2014,18 @@ export const Forum = () => {
                             });
                         }
                     }
+
+                    // Apply local independent pins
+                    try {
+                        const targetId = viewMode === 'channel' ? activeChannelId : activeChatId;
+                        const localPinsKey = `forum_pinned_messages_${user?.id}_${targetId}`;
+                        const localPins = JSON.parse(localStorage.getItem(localPinsKey) || '[]');
+                        if (Array.isArray(localPins)) {
+                            mapped.forEach((m: any) => {
+                                m.is_pinned = localPins.includes(m.id);
+                            });
+                        }
+                    } catch {}
 
                     setMessages(mapped);
                     localStorage.setItem(cacheKey, JSON.stringify(mapped));
@@ -2104,19 +2128,14 @@ export const Forum = () => {
                     setMessages(prev => prev.filter(m => m.id !== deletedId));
                 }
             })
-            // 3. MESSAGES (UPDATE - PINS)
+            // 3. MESSAGES (UPDATE - IGNORE PINS FOR LOCAL INDEPENDENCE)
             .on('postgres_changes', {
                 event: 'UPDATE',
                 schema: 'public',
-                table: isChannel ? 'forum_messages' : 'direct_messages'
+                table: viewMode === 'channel' ? 'forum_messages' : 'direct_messages',
+                filter: viewMode === 'channel' ? `channel_id=eq.${activeChannelId}` : `chat_id=eq.${activeChatId}`
             }, (payload) => {
-                const targetProp = isChannel ? payload.new.channel_id : payload.new.chat_id;
-                if (targetProp !== targetId) return;
-                console.log('[Realtime] Message Updated:', payload.new);
-                const updated = payload.new as any;
-                if (updated?.id) {
-                    setMessages(prev => prev.map(m => m.id === updated.id ? { ...m, is_pinned: updated.is_pinned } : m));
-                }
+                // Pin logic is now local, so we don't update is_pinned from remote
             })
             // 4. REACTIONS (INSERT - LIKE)
             .on('postgres_changes', {
@@ -2915,30 +2934,36 @@ export const Forum = () => {
         setActiveSidebarSection(cat);
     };
 
-    // Pin/Unpin a message
+    // Pin/Unpin a message (Independent per user via localStorage)
     const handleTogglePin = async (messageId: string) => {
         const msg = messages.find(m => m.id === messageId);
         if (!msg) return;
         const newPinned = !msg.is_pinned;
         try {
-            const table = viewMode === 'channel' ? 'forum_messages' : 'direct_messages';
-            const { data, error } = await supabase
-                .from(table)
-                .update({ is_pinned: newPinned })
-                .eq('id', messageId)
-                .select();
-            if (error) throw error;
-            if (!data || data.length === 0) throw new Error('You may not have permission to pin/unpin this message (RLS Policy).');
+            // Save independent pin locally instead of modifying global database state
+            const targetId = viewMode === 'channel' ? activeChannelId : activeChatId;
+            const cacheKey = `forum_pinned_messages_${user?.id}_${targetId}`;
             
+            let localPins: string[] = [];
+            try {
+                localPins = JSON.parse(localStorage.getItem(cacheKey) || '[]');
+            } catch {}
+
+            if (newPinned && !localPins.includes(messageId)) {
+                localPins.push(messageId);
+            } else if (!newPinned) {
+                localPins = localPins.filter(id => id !== messageId);
+            }
+            localStorage.setItem(cacheKey, JSON.stringify(localPins));
+
             setMessages(prev => {
                 const next = prev.map(m => m.id === messageId ? { ...m, is_pinned: newPinned } : m);
-                const targetId = viewMode === 'channel' ? activeChannelId : activeChatId;
-                const cacheKey = `forum_messages_${viewMode}_${targetId}`;
-                localStorage.setItem(cacheKey, JSON.stringify(next));
+                const messageCacheKey = `forum_messages_${viewMode}_${targetId}`;
+                localStorage.setItem(messageCacheKey, JSON.stringify(next));
                 return next;
             });
-            showToast(newPinned ? 'Message pinned!' : 'Message unpinned', 'success');
-        } catch (err) {
+            showToast(newPinned ? 'Message pinned locally!' : 'Message unpinned', 'success');
+        } catch (err: any) {
             console.error('Failed to toggle pin:', err);
             showToast(`Failed to update pin: ${err.message || JSON.stringify(err)}`, 'error');
         }
@@ -3050,27 +3075,27 @@ export const Forum = () => {
 
     // Collect "Custom" or other channels for the bottom list
     const announcementsChannel = channels.find(c => c.category === 'Information' && c.name.toLowerCase().includes('announcement'));
-    const announcementUnread = announcementsChannel ? (unreadCounts[announcementsChannel.id] || 0) : 0;
+    const announcementUnread = announcementsChannel && !mutedChannels.has(announcementsChannel.id) ? (unreadCounts[announcementsChannel.id] || 0) : 0;
     const generalChannel = channels.find(c => c.category === 'Community' && c.name.toLowerCase() === 'general');
-    const generalUnread = generalChannel ? (unreadCounts[generalChannel.id] || 0) : 0;
+    const generalUnread = generalChannel && !mutedChannels.has(generalChannel.id) ? (unreadCounts[generalChannel.id] || 0) : 0;
 
 
     // Calculate unread counts for sidebar sections
     const coursesUnread = (groupedChannels['Courses'] || [])
-        .reduce((sum, ch) => sum + (unreadCounts[ch.id] || 0), 0);
+        .reduce((sum, ch) => sum + (!mutedChannels.has(ch.id) ? (unreadCounts[ch.id] || 0) : 0), 0);
 
     const myChannelsUnread = channels
         .filter(c => ['User', 'Official', 'Custom'].includes(c.category) && String(c.creator_id).toLowerCase() === String(user?.id).toLowerCase())
-        .reduce((sum, ch) => sum + (unreadCounts[ch.id] || 0), 0);
+        .reduce((sum, ch) => sum + (!mutedChannels.has(ch.id) ? (unreadCounts[ch.id] || 0) : 0), 0);
 
     const joinedChannelsUnread = channels
         .filter(c => ['User', 'Official', 'Custom'].includes(c.category) && String(c.creator_id).toLowerCase() !== String(user?.id).toLowerCase() && joinedChannelIds.has(c.id))
-        .reduce((sum, ch) => sum + (unreadCounts[ch.id] || 0), 0);
+        .reduce((sum, ch) => sum + (!mutedChannels.has(ch.id) ? (unreadCounts[ch.id] || 0) : 0), 0);
 
     const channelsTotalUnread = myChannelsUnread + joinedChannelsUnread;
 
     const dmTotalUnread = dmChats.reduce((sum, chat) => {
-        return sum + (chat.chat_id ? (unreadCounts[chat.chat_id] || 0) : 0);
+        return sum + (chat.chat_id && !mutedChats.has(chat.chat_id) ? (unreadCounts[chat.chat_id] || 0) : 0);
     }, 0);
 
     return (

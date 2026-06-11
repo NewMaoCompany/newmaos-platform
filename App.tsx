@@ -83,7 +83,7 @@ const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
 // PageLayer component now removes the inactive page from document flow using `hidden` to fix the view duplication bug
 const PageLayer = ({ active, children, zIndex = 0 }: { active: boolean; children: React.ReactNode; zIndex?: number }) => (
   <div
-    className={`absolute inset-0 ${active ? 'opacity-100 pointer-events-auto flex animate-page-in' : 'opacity-0 pointer-events-none hidden'}`}
+    className={`absolute inset-0 transition-opacity duration-300 ${active ? 'opacity-100 pointer-events-auto flex' : 'opacity-0 pointer-events-none hidden'}`}
     style={{ zIndex }}
   >
     {children}
@@ -201,7 +201,7 @@ const AppRoutes = () => {
       {!isAuthenticated && (isAnalysis || isForum || isSettings) && <Navigate to="/login" replace />}
 
       {/* Sub-Routes & Non-Main Pages Layer (Always visible if NOT on a main page layer) */}
-      <div className={`absolute inset-0 z-[60] overflow-y-auto ${isOnMainPage ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 pointer-events-auto flex flex-col animate-page-in'}`}>
+      <div className={`absolute inset-0 z-[60] overflow-y-auto transition-opacity duration-300 ${isOnMainPage ? 'opacity-0 pointer-events-none hidden' : 'opacity-100 pointer-events-auto flex flex-col'}`}>
         <Suspense fallback={<LazyFallback />}>
           <Routes>
             {/* Auth Pages (Always visible if not on main page) */}
