@@ -1335,11 +1335,11 @@ export const SubscriptionSettings = () => {
   const isRedeemingRef = useRef(false);
   const [selectedPreview, setSelectedPreview] = useState<'basic' | 'pro'>(isPro ? 'pro' : 'basic');
   const [redeemError, setRedeemError] = useState<string | null>(null);
-  const needsProUpgrade = !isPro && userPoints.balance >= 199;
+  const needsProUpgrade = !isPro && userPoints.balance >= 19;
   const [ledger, setLedger] = useState<any[]>([]);
   const { showToast } = useToast();
 
-  const PRO_COST = 199;
+  const PRO_COST = 19;
   const canAfford = userPoints.balance >= PRO_COST;
 
   // Red dot for Pro upgrade is now managed by isPro state.

@@ -266,9 +266,11 @@ export const TextbookViewer = () => {
                                     <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto font-medium mb-6 leading-relaxed">
                                         {!isAuthenticated 
                                             ? `Sign in to access Unit ${book.unitNumber} and start tracking your progress.`
-                                            : isFirstBookFree 
-                                                ? `Your first textbook is free! Claim Unit ${book.unitNumber} now to unlock full access.`
-                                                : `You've already used your free claim. Unlock Unit ${book.unitNumber} for 19 coins to keep reading.`
+                                            : purchasedBookCount === null
+                                                ? `Checking unit access status...`
+                                                : isFirstBookFree 
+                                                    ? `Your first textbook is free! Claim Unit ${book.unitNumber} now to unlock full access.`
+                                                    : `You've already used your free claim. Unlock Unit ${book.unitNumber} for ${DOWNLOAD_COST} coins to keep reading.`
                                         }
                                     </p>
                                     
