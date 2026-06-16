@@ -125,6 +125,19 @@ export const TopicDetail = () => {
         const progress = getSectionProgressData(effectiveId);
         const progressData = progress?.data;
         const status = getSectionStatus(effectiveId);
+        const firstAttempt = progressData?.firstAttempt;
+
+        // Ensure isResuming is only true if the UI actually showed a "Resume" or "In Progress" button
+        let buttonState: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' = 'NOT_STARTED';
+        if (firstAttempt && firstAttempt.status !== 'not_started') {
+            if (firstAttempt.status === 'in_progress') buttonState = 'IN_PROGRESS';
+            else if (firstAttempt.status === 'completed') buttonState = 'COMPLETED';
+        }
+        if (buttonState === 'NOT_STARTED' && progress && !firstAttempt) {
+            const hasLegacyData = progress.correct_questions > 0 || (progressData?.userAnswers && Object.keys(progressData.userAnswers).length > 0);
+            if (status === 'completed') buttonState = 'COMPLETED';
+            else if (hasLegacyData || status === 'in_progress') buttonState = 'IN_PROGRESS';
+        }
 
         // Determine isResuming accurately by looking explicitly at the relevant mode
         let isResuming = false;
@@ -132,10 +145,9 @@ export const TopicDetail = () => {
             if (effectiveMode === 'Review') {
                 isResuming = progressData?.review?.status === 'in_progress';
             } else if (effectiveMode === 'Adaptive' || !effectiveMode) {
-                // If it's adaptive, we resume if firstAttempt is in progress. 
-                // Legacy fallback: if firstAttempt doesn't exist, we resume if global status is in_progress
-                isResuming = progressData?.firstAttempt?.status === 'in_progress' ||
-                    (!progressData?.firstAttempt && status === 'in_progress');
+                // If it's adaptive, we resume ONLY if the button State was IN_PROGRESS 
+                // This strictly syncs the UI "Start" vs "Resume" with the actual page skip logic
+                isResuming = buttonState === 'IN_PROGRESS';
             }
         }
 
@@ -438,11 +450,11 @@ export const TopicDetail = () => {
                                                                 <>
                                                                     <div className="h-8 px-4 rounded-full bg-[#fce01a] flex items-center gap-2 transition-all shadow-md hover:bg-[#e6c818]">
                                                                         <span className="text-[11px] font-black uppercase text-gray-900 tracking-widest pt-0.5">
-                                                                            {!isAuthenticated ? 'Sign In' : (isFirstBookFree ? 'Claim Free' : 'Go to Unlock')}
+                                                                            {!isAuthenticated ? 'Sign In' : (hasAnyPurchase === null ? 'Checking...' : (isFirstBookFree ? 'Claim Free' : 'Go to Unlock'))}
                                                                         </span>
                                                                         <span className="material-symbols-outlined text-[15px] text-gray-900">arrow_forward</span>
                                                                     </div>
-                                                                    {isAuthenticated && !isFirstBookFree && (
+                                                                    {isAuthenticated && hasAnyPurchase !== null && !isFirstBookFree && (
                                                                         <span className="text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
                                                                             <PointsCoin size="sm" />
                                                                             {UNLOCK_COST} coins

@@ -80,7 +80,21 @@
       },
     }
   </script>
+  <script>
+    // Prevent Flash of Unstyled Text (FOUT) for Material Symbols
+    document.fonts.ready.then(function() {
+      document.body.classList.add('fonts-loaded');
+    });
+  </script>
   <style>
+    /* Prevent FOUT on Material Symbols */
+    body:not(.fonts-loaded) .material-symbols-outlined {
+      color: transparent !important;
+    }
+    .material-symbols-outlined {
+      transition: color 0.15s ease-in;
+    }
+
     /* Fluid Proportional Scaling */
     /* Standard Font Size Reset */
     html {
