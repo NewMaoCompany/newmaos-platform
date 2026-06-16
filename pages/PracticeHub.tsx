@@ -794,7 +794,8 @@ export const PracticeHub = () => {
                                                             mode: mode,
                                                             sessionId: mainProgress?.section_id,
                                                             isResuming,
-                                                            forceStartNew
+                                                            forceStartNew,
+                                                            skipLesson: true // Algorithm recommendations should skip intro
                                                         }
                                                     });
                                                     setTimeout(() => setIsProcessing(false), 500);

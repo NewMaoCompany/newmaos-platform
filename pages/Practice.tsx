@@ -102,7 +102,7 @@ export const Practice = () => {
     // If subTopicId exists AND it is NOT 'unit_test', we start in 'Lesson' view, otherwise 'Practice'
     // Exception: If Resuming or Force Start, skip lesson
     const [viewState, setViewState] = useState<'lesson' | 'practice'>(
-        effectiveState?.isResuming === true || !subTopicId
+        effectiveState?.isResuming === true || effectiveState?.skipLesson === true || !subTopicId
             ? 'practice'
             : 'lesson'
     );
@@ -293,7 +293,7 @@ export const Practice = () => {
         setMarkedQuestions(new Set());
         setQuestionResults({});
         setSessionHistory([]);
-        setViewState(effectiveState?.isResuming === true || !subTopicId ? 'practice' : 'lesson');
+        setViewState(effectiveState?.isResuming === true || effectiveState?.skipLesson === true || !subTopicId ? 'practice' : 'lesson');
         setIsInitializing(true);
         // Note: We don't return null; we let it render with static data (which is correct)
     }
