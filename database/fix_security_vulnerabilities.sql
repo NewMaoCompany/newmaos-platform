@@ -36,3 +36,30 @@ ALTER VIEW public.v_error_cluster_map SET (security_invoker = on);
 ALTER VIEW public.v_question_profiles SET (security_invoker = on);
 ALTER VIEW public.vw_research_skill_aggregation SET (security_invoker = on);
 ALTER VIEW public.vw_research_prediction_calibration SET (security_invoker = on);
+
+-- 5. Enable RLS on additional tables reported by Security Advisor
+ALTER TABLE public.points_ledger ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.skill_clusters ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.error_tag_clusters ENABLE ROW LEVEL SECURITY;
+
+-- 6. Create policies for the new tables
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'points_ledger' AND policyname = 'Users can view own ledger entries'
+    ) THEN
+        CREATE POLICY "Users can view own ledger entries" ON public.points_ledger FOR SELECT USING (auth.uid() = user_id);
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'skill_clusters' AND policyname = 'Anyone can view skill clusters'
+    ) THEN
+        CREATE POLICY "Anyone can view skill clusters" ON public.skill_clusters FOR SELECT USING (true);
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'error_tag_clusters' AND policyname = 'Anyone can view error tag clusters'
+    ) THEN
+        CREATE POLICY "Anyone can view error tag clusters" ON public.error_tag_clusters FOR SELECT USING (true);
+    END IF;
+END $$;
