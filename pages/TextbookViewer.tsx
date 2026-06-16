@@ -24,7 +24,7 @@ export const TextbookViewer = () => {
     const book: TextbookInfo | undefined = books.find(b => b.unitNumber === unitNum);
 
     const downloadKey = `book_downloaded_${course}_${unitNum}`;
-    const DOWNLOAD_COST = 19;
+    const DOWNLOAD_COST = 9;
 
     // --- Strict Guest Access Guard ---
     useEffect(() => {

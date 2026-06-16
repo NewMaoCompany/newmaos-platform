@@ -17,7 +17,7 @@ const TETROMINOS = {
 
 export const TetrisGame = () => {
   const navigate = useNavigate();
-  const { awardPoints } = useApp();
+  const { awardPoints, spendPoints, saveGameStats } = useApp();
   const [grid, setGrid] = useState<string[][]>(Array(ROWS).fill(null).map(() => Array(COLS).fill('')));
   const [activePiece, setActivePiece] = useState<any>(null);
   const [pos, setPos] = useState({ x: 3, y: 0 });
@@ -40,12 +40,14 @@ export const TetrisGame = () => {
     const newPos = { x: Math.floor((COLS - piece.shape[0].length) / 2), y: 0 };
     if (checkCollision(newPos, piece.shape, grid)) {
         setGameOver(true);
-        if (score > 500) awardPoints(Math.floor(score / 50), 'Played Tetris: Orbital HUD');
+        const earned = score > 500 ? Math.floor(score / 50) : 0;
+        if (earned > 0) awardPoints(earned, 'Played Tetris: Orbital HUD');
+        saveGameStats('tetris', { high_score: score, coins_earned: earned });
     } else {
         setActivePiece(piece);
         setPos(newPos);
     }
-  }, [grid, score, awardPoints]);
+  }, [grid, score, awardPoints, saveGameStats]);
 
   const checkCollision = (p: { x: number; y: number }, shape: number[][], currentGrid: string[][]) => {
     for (let r = 0; r < shape.length; r++) {
@@ -139,6 +141,15 @@ export const TetrisGame = () => {
       setGameOver(false);
       setGameStarted(true);
       spawnPiece();
+  };
+
+  const handleStart = async () => {
+      const res = await spendPoints(10, 'tetris_game');
+      if (!res.success) {
+         alert("Not enough coins to play! (Cost: 10 Coins)");
+         return;
+      }
+      startGame();
   };
 
   return (
@@ -255,10 +266,10 @@ export const TetrisGame = () => {
                     <div className="w-12 h-12 border-2 border-cyan-300 animate-spin" style={{ animationDuration: '1s', animationDirection: 'reverse' }} />
                  </div>
                  <button 
-                   onClick={startGame}
+                   onClick={handleStart}
                    className="px-12 py-4 border border-cyan-500/50 text-cyan-400 font-black text-sm uppercase tracking-[0.5em] hover:bg-cyan-400/20 active:scale-95 transition-all shadow-[0_0_30px_rgba(0,242,255,0.2)]"
                 >
-                   Initiate Stack
+                   Initiate Stack (10 Coins)
                 </button>
               </div>
           )}
@@ -274,10 +285,10 @@ export const TetrisGame = () => {
                 </div>
 
                 <button 
-                   onClick={startGame}
+                   onClick={handleStart}
                    className="px-14 py-5 bg-white text-black font-black text-xs uppercase tracking-[0.4em] shadow-[0_20px_50px_rgba(0,0,0,0.5)] active:scale-95 transition-all w-full"
                 >
-                   Stabilize Hull
+                   Stabilize Hull (10 Coins)
                 </button>
               </div>
           )}

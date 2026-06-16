@@ -10,7 +10,7 @@ export const ProWelcomeModal = () => {
     const [isRedeeming, setIsRedeeming] = useState(false);
     const [redeemError, setRedeemError] = useState<string | null>(null);
 
-    const PRO_COST = 199;
+    const PRO_COST = 19;
     const canAfford = userPoints.balance >= PRO_COST;
     const shortfall = PRO_COST - userPoints.balance;
 

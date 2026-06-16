@@ -51,7 +51,7 @@ const createBoard = (): Cell[][] => {
 const cloneBoard = (b: Cell[][]): Cell[][] => b.map(row => row.map(cell => ({ ...cell })));
 
 export const MatchGame = ({ onBack }: { onBack: () => void }) => {
-  const { awardPoints, saveSectionProgress, sectionProgressMap } = useApp();
+  const { awardPoints, spendPoints, saveGameStats, saveSectionProgress, sectionProgressMap } = useApp();
   const [stage, setStage] = useState<'selector' | 'game'>('selector');
   const [currentLevelId, setCurrentLevelId] = useState(1);
   const [board, setBoard] = useState<Cell[][]>(() => createBoard());
@@ -203,12 +203,25 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
     setMoves(LEVELS.find(l => l.id === id)!.moves); setGameResult(null); setStage('game'); setPropCounts({ hammer: 1, prism: 1, shuffle: 1 });
   };
 
+  const handleStartLevel = async (id: number) => {
+    const res = await spendPoints(5, `match3_lvl_${id}`);
+    if (!res.success) {
+      alert("Not enough coins to play! (Cost: 5 Coins)");
+      return;
+    }
+    startLevel(id);
+  };
+
   useEffect(() => {
     if (score >= level.target && !animating && !gameResult) {
       setGameResult('win'); awardPoints(level.reward, 'game_win', `match3_${currentLevelId}`, 'Cleared Match 3');
       saveSectionProgress(`match3_lvl_${currentLevelId}`, { completed: 1 });
-    } else if (moves <= 0 && score < level.target && !animating && !gameResult) setGameResult('lose');
-  }, [score, moves, animating, level, gameResult, currentLevelId, awardPoints, saveSectionProgress]);
+      saveGameStats('match3', { high_score: score, coins_earned: level.reward });
+    } else if (moves <= 0 && score < level.target && !animating && !gameResult) {
+      setGameResult('lose');
+      saveGameStats('match3', { high_score: score, coins_earned: 0 });
+    }
+  }, [score, moves, animating, level, gameResult, currentLevelId, awardPoints, saveSectionProgress, saveGameStats]);
 
   const countMatched = (m: boolean[][]) => m.flat().filter(x => x).length;
 
@@ -226,11 +239,15 @@ export const MatchGame = ({ onBack }: { onBack: () => void }) => {
            <div className="flex-1 w-full max-w-4xl px-8 flex items-center justify-center">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
                  {LEVELS.map(l => (
-                    <button key={l.id} onClick={() => startLevel(l.id)} className="w-32 h-32 sm:w-44 sm:h-44 rounded-[42px] bg-white/60 backdrop-blur-3xl border border-white flex flex-col items-center justify-center hover:scale-105 transition-all shadow-xl group overflow-hidden">
+                    <button key={l.id} onClick={() => handleStartLevel(l.id)} className="w-32 h-32 sm:w-44 sm:h-44 rounded-[42px] bg-white/60 backdrop-blur-3xl border border-white flex flex-col items-center justify-center hover:scale-105 transition-all shadow-xl group overflow-hidden relative">
                        <span className="text-4xl sm:text-6xl font-black mb-1 italic opacity-80 pr-3 bg-clip-text text-transparent bg-gradient-to-b from-black to-black/40">{l.id}</span>
-                       <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 mb-5">{l.title}</span>
-                       <div className="px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 text-[10px] font-black tracking-tight shadow-inner">
+                       <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 mb-2">{l.title}</span>
+                       <div className="px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 text-[10px] font-black tracking-tight shadow-inner mb-1">
                           {l.target.toLocaleString()} PT
+                       </div>
+                       <div className="absolute bottom-3 flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                          <span className="material-symbols-outlined text-[10px] text-amber-500">monetization_on</span>
+                          <span className="text-[9px] font-black text-amber-600">5 COINS</span>
                        </div>
                     </button>
                  ))}

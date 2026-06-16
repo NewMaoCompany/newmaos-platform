@@ -42,6 +42,10 @@ const TetrisGame = React.lazy(() => import('./pages/TetrisGame').then(m => ({ de
 const MatchGameWrapper = React.lazy(() => import('./pages/MatchGame').then(m => ({ default: m.MatchGame })));
 const MemoryGame = React.lazy(() => import('./pages/MemoryGame').then(m => ({ default: m.MemoryGame })));
 const MinesweeperGame = React.lazy(() => import('./pages/MinesweeperGame').then(m => ({ default: m.MinesweeperGame })));
+const NeonKnight = React.lazy(() => import('./pages/NeonKnight').then(m => ({ default: m.NeonKnight })));
+const GardenDefenders = React.lazy(() => import('./pages/GardenDefenders').then(m => ({ default: m.GardenDefenders })));
+const SkyRoller = React.lazy(() => import('./pages/SkyRoller').then(m => ({ default: m.SkyRoller })));
+const BrawlArena = React.lazy(() => import('./pages/BrawlArena').then(m => ({ default: m.BrawlArena })));
 
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -242,6 +246,10 @@ const AppRoutes = () => {
             <Route path="/games/tetris" element={<TetrisGame />} />
             <Route path="/games/memory" element={<MemoryGame />} />
             <Route path="/games/minesweeper" element={<MinesweeperGame />} />
+            <Route path="/games/neon-knight" element={<NeonKnight />} />
+            <Route path="/games/defenders" element={<GardenDefenders />} />
+            <Route path="/games/sky-roller" element={<SkyRoller />} />
+            <Route path="/games/brawl-arena" element={<BrawlArena />} />
 
             {/* Static Pages */}
             <Route path="/privacy" element={<Privacy />} />

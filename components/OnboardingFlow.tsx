@@ -158,7 +158,7 @@ export const OnboardingFlow: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-bold text-gray-600 dark:text-gray-300">Cost:</span>
                             <div className="flex items-center gap-1 font-black text-lg text-text-main dark:text-white">
-                                199 <span className="material-symbols-outlined text-yellow-500 text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>toll</span>
+                                19 <span className="material-symbols-outlined text-yellow-500 text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>toll</span>
                             </div>
                         </div>
                         <div className="text-xs text-purple-600 dark:text-purple-400 font-medium">
@@ -176,7 +176,7 @@ export const OnboardingFlow: React.FC = () => {
                                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                             ) : (
                                 <>
-                                    <span>Upgrade Now (199 Coins)</span>
+                                    <span>Upgrade Now (19 Coins)</span>
                                     <span className="material-symbols-outlined text-[18px]">lock_open</span>
                                 </>
                             )}

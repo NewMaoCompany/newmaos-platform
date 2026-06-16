@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useApp } from '../AppContext';
 
 export const MemoryGame = () => {
   const navigate = useNavigate();
+  const { awardPoints, spendPoints, saveGameStats } = useApp();
   const [sequence, setSequence] = useState<number[]>([]);
   const [playerSequence, setPlayerSequence] = useState<number[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -45,6 +47,15 @@ export const MemoryGame = () => {
     playSequence([firstStep]);
   };
 
+  const handleStart = async () => {
+    const res = await spendPoints(5, 'memory_game');
+    if (!res.success) {
+      alert("Not enough coins to play! (Cost: 5 Coins)");
+      return;
+    }
+    startGame();
+  };
+
   const handleButtonClick = (index: number) => {
     if (!isPlaying || isShowingSequence || gameOver) return;
 
@@ -60,6 +71,9 @@ export const MemoryGame = () => {
       setGameOver(true);
       setIsPlaying(false);
       saveHighScore(score);
+      const earned = score > 3 ? Math.floor(score / 3) : 0;
+      if (earned > 0) awardPoints(earned, 'Played Memory Matrix');
+      saveGameStats('memory', { high_score: score, coins_earned: earned });
       return;
     }
 
@@ -109,16 +123,16 @@ export const MemoryGame = () => {
         </div>
 
         {!isPlaying && !gameOver && (
-          <button onClick={startGame} className="mt-12 px-12 py-4 bg-gradient-to-r from-[#00f2ff] to-[#ec4899] rounded-full font-black tracking-widest uppercase shadow-[0_0_20px_rgba(0,242,255,0.3)] hover:scale-105 active:scale-95 transition-all">
-            Initialize Sequence
+          <button onClick={handleStart} className="mt-12 px-12 py-4 bg-gradient-to-r from-[#00f2ff] to-[#ec4899] rounded-full font-black tracking-widest uppercase shadow-[0_0_20px_rgba(0,242,255,0.3)] hover:scale-105 active:scale-95 transition-all">
+            Initialize Sequence (5 Coins)
           </button>
         )}
 
         {gameOver && (
           <div className="mt-8 flex flex-col items-center animate-fade-in">
             <h3 className="text-2xl font-bold text-red-500 mb-4 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">SEQUENCE FAILED</h3>
-            <button onClick={startGame} className="px-8 py-3 border border-white/20 rounded-full hover:bg-white/10 transition-all uppercase tracking-widest text-sm">
-              Reboot System
+            <button onClick={handleStart} className="px-8 py-3 border border-white/20 rounded-full hover:bg-white/10 transition-all uppercase tracking-widest text-sm">
+              Reboot System (5 Coins)
             </button>
           </div>
         )}

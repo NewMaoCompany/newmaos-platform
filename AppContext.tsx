@@ -39,6 +39,9 @@ interface AppContextType {
     recordLoginStreak: () => Promise<{ success: boolean; streak?: number; points?: number; reason?: string }>;
     getCheckinStatus: () => Promise<{ checkedInToday: boolean; currentStreak: number; monthCheckins: number; monthCalendar: any[]; repairCost?: number }>;
     fetchUserPoints: () => Promise<void>;
+    spendPoints: (amount: number, type: string) => Promise<{ success: boolean; newBalance?: number; reason?: string }>;
+    fetchGameStats: (gameId: string) => Promise<any>;
+    saveGameStats: (gameId: string, updates: { high_score?: number; coins_earned?: number; stardust_earned?: number }) => Promise<boolean>;
 
     login: (email: string, username?: string, id?: string, subscriptionTier?: 'basic' | 'pro', subscriptionPeriodEnd?: string, hasSeenProIntro?: boolean, avatarUrl?: string, hasClaimedWelcomeGift?: boolean) => void;
     logout: () => Promise<void>;
@@ -2519,6 +2522,71 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
         }
     };
 
+    const spendPoints = async (amount: number, type: string): Promise<{ success: boolean; newBalance?: number; reason?: string }> => {
+        if (!user.id || amount <= 0) return { success: false, reason: 'invalid_amount' };
+        try {
+            const { data, error } = await supabase.rpc('spend_points', { p_amount: amount, p_type: type });
+            if (error) {
+                console.error('spendPoints RPC error:', error);
+                return { success: false, reason: error.message };
+            }
+            if (data?.success) {
+                setUserPoints(prev => {
+                    const nextData = {
+                        ...prev,
+                        balance: data.new_balance
+                    };
+                    localStorage.setItem('user_points_cache', JSON.stringify(nextData));
+                    return nextData;
+                });
+                return { success: true, newBalance: data.new_balance };
+            }
+            return { success: false, reason: data?.reason };
+        } catch (err: any) {
+            console.error('spendPoints error:', err);
+            return { success: false, reason: err.message };
+        }
+    };
+
+    const fetchGameStats = async (gameId: string) => {
+        if (!user.id) return null;
+        try {
+            const { data, error } = await supabase
+                .from('game_stats')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('game_id', gameId)
+                .single();
+            if (error && error.code !== 'PGRST116') throw error;
+            return data;
+        } catch (err) {
+            console.error('fetchGameStats error:', err);
+            return null;
+        }
+    };
+
+    const saveGameStats = async (gameId: string, updates: { high_score?: number; coins_earned?: number; stardust_earned?: number }) => {
+        if (!user.id) return false;
+        try {
+            const existing = await fetchGameStats(gameId);
+            const { data, error } = await supabase.from('game_stats').upsert({
+                user_id: user.id,
+                game_id: gameId,
+                high_score: updates.high_score !== undefined ? Math.max(updates.high_score, existing?.high_score || 0) : (existing?.high_score || 0),
+                total_played: (existing?.total_played || 0) + 1,
+                coins_earned: (existing?.coins_earned || 0) + (updates.coins_earned || 0),
+                stardust_earned: (existing?.stardust_earned || 0) + (updates.stardust_earned || 0),
+                last_played: new Date().toISOString()
+            }, { onConflict: 'user_id, game_id' });
+            
+            if (error) throw error;
+            return true;
+        } catch (err) {
+            console.error('saveGameStats error:', err);
+            return false;
+        }
+    };
+
     const redeemProWithPoints = async (): Promise<{ success: boolean; reason?: string; newBalance?: number; shortfall?: number }> => {
         if (!user.id) return { success: false, reason: 'not_authenticated' };
         try {
@@ -3398,6 +3466,9 @@ export const AppProvider = ({ children }: React.PropsWithChildren) => {
             userPoints,
             pointsBalanceRef,
             awardPoints,
+            spendPoints,
+            fetchGameStats,
+            saveGameStats,
             triggerCoinAnimation,
             redeemProWithPoints,
             performDailyCheckin,

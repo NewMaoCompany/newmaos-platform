@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useApp } from '../AppContext';
 
 type Cell = { row: number; col: number; isMine: boolean; isRevealed: boolean; isFlagged: boolean; neighborMines: number };
 
 export const MinesweeperGame = () => {
   const navigate = useNavigate();
+  const { awardPoints, spendPoints, saveGameStats } = useApp();
   const [board, setBoard] = useState<Cell[][]>([]);
   const [gameOver, setGameOver] = useState(false);
   const [gameWon, setGameWon] = useState(false);
@@ -60,6 +62,15 @@ export const MinesweeperGame = () => {
     setIsPlaying(false);
   }, [rows, cols, mineCount]);
 
+  const handleStart = async () => {
+    const res = await spendPoints(10, 'minesweeper_game');
+    if (!res.success) {
+      alert("Not enough coins to play! (Cost: 10 Coins)");
+      return;
+    }
+    initBoard();
+  };
+
   useEffect(() => { initBoard(); }, [initBoard]);
 
   useEffect(() => {
@@ -82,6 +93,7 @@ export const MinesweeperGame = () => {
       setBoard(newBoard);
       setGameOver(true);
       setIsPlaying(false);
+      saveGameStats('minesweeper', { high_score: 0, coins_earned: 0 });
       return;
     }
 
@@ -112,6 +124,8 @@ export const MinesweeperGame = () => {
         setBestTime(time);
         localStorage.setItem('arcade_minesweeper_best', time.toString());
       }
+      awardPoints(50, 'Cleared Neon Mines');
+      saveGameStats('minesweeper', { high_score: time, coins_earned: 50 });
     }
   };
 
@@ -146,8 +160,15 @@ export const MinesweeperGame = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center w-full z-10 p-4">
-        <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 shadow-[0_0_40px_rgba(0,255,136,0.05)] p-4 sm:p-6 inline-block">
+      <div className="flex-1 flex flex-col items-center justify-center w-full z-10 p-4 relative">
+        {(!isPlaying && !gameOver && !gameWon && time === 0) && (
+           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
+             <button onClick={handleStart} className="px-12 py-4 bg-[#00ff88]/10 border border-[#00ff88]/50 text-[#00ff88] font-black uppercase tracking-widest hover:bg-[#00ff88]/20 transition-all shadow-[0_0_30px_rgba(0,255,136,0.2)]">
+               Initialize Grid (10 Coins)
+             </button>
+           </div>
+        )}
+        <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 shadow-[0_0_40px_rgba(0,255,136,0.05)] p-4 sm:p-6 inline-block relative z-10">
           {board.map((row, r) => (
             <div key={r} className="flex">
               {row.map((cell, c) => (
@@ -178,8 +199,8 @@ export const MinesweeperGame = () => {
             <h3 className={`text-3xl font-black tracking-widest mb-4 uppercase drop-shadow-lg ${gameWon ? 'text-[#00ff88]' : 'text-red-500'}`}>
               {gameWon ? 'SYSTEM CLEARED' : 'CRITICAL FAILURE'}
             </h3>
-            <button onClick={initBoard} className="px-8 py-3 bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all uppercase tracking-widest text-sm font-bold">
-              Restart Mission
+            <button onClick={handleStart} className="px-8 py-3 bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all uppercase tracking-widest text-sm font-bold">
+              Restart Mission (10 Coins)
             </button>
           </div>
         )}

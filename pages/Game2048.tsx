@@ -6,10 +6,11 @@ type Tile = { id: number; value: number; row: number; col: number; mergedFrom?: 
 
 export const Game2048 = () => {
   const navigate = useNavigate();
-  const { awardPoints } = useApp();
+  const { awardPoints, spendPoints, saveGameStats } = useApp();
   const [board, setBoard] = useState<Tile[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
   const [bestScore, setBestScore] = useState(0);
   const [petals, setPetals] = useState<{ id: number; x: number; delay: number; duration: number; size: number }[]>([]);
   const nextIdRef = useRef(1);
@@ -53,9 +54,15 @@ export const Game2048 = () => {
     setGameOver(false);
   }, [spawnTile]);
 
-  useEffect(() => {
+  const handleStart = async () => {
+    const res = await spendPoints(5, '2048_game');
+    if (!res.success) {
+      alert("Not enough coins to play! (Cost: 5 Coins)");
+      return;
+    }
     initGame();
-  }, [initGame]);
+    setGameStarted(true);
+  };
 
   const move = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
     if (gameOver) return;
@@ -105,15 +112,36 @@ export const Game2048 = () => {
           }
           return prevBest;
         });
+        });
         return newScore;
       });
+      
+      const newOccupiedCount = newBoard.length;
+      if (newOccupiedCount >= 16) {
+         // Check if no valid moves left
+         let canMove = false;
+         for (let r=0; r<4; r++) {
+             for (let c=0; c<4; c++) {
+                 const val = newBoard.find(t => t.row === r && t.col === c)?.value;
+                 if (c < 3 && newBoard.find(t => t.row === r && t.col === c+1)?.value === val) canMove = true;
+                 if (r < 3 && newBoard.find(t => t.row === r+1 && t.col === c)?.value === val) canMove = true;
+             }
+         }
+         if (!canMove) {
+             setGameOver(true);
+             saveGameStats('2048', { high_score: scoreGain.val, coins_earned: Math.floor(scoreGain.val / 500) });
+             if (scoreGain.val >= 500) awardPoints(Math.floor(scoreGain.val / 500), 'Played 2048');
+         }
+      }
+
       const withNew = spawnTile(newBoard);
       return withNew;
     });
-  }, [gameOver, spawnTile]);
+  }, [gameOver, spawnTile, gameStarted, score, saveGameStats, awardPoints]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
+      if (!gameStarted) return;
       if (e.key === 'ArrowUp') move('up');
       if (e.key === 'ArrowDown') move('down');
       if (e.key === 'ArrowLeft') move('left');
@@ -230,16 +258,28 @@ export const Game2048 = () => {
             })}
           </div>
 
-          {/* Zen Game Over */}
           {gameOver && (
             <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#F9F7F2]/90 backdrop-blur-md animate-fade-in p-10 text-center">
                 <span className="text-[11px] font-black text-[#8D7B68] uppercase tracking-[0.6em] mb-4">Harmony Disturbed</span>
                 <h3 className="text-4xl sm:text-6xl font-light italic text-[#3E2723] mb-12">The Cycle Concludes</h3>
                 <button 
-                   onClick={initGame}
+                   onClick={handleStart}
                    className="px-14 py-5 border-[0.5px] border-[#3E2723]/30 rounded-full font-bold text-[10px] uppercase tracking-[0.4em] hover:bg-[#3E2723] hover:text-white transition-all shadow-sm active:scale-95"
                 >
-                   Begin Mediation
+                   Begin Mediation (5 Coins)
+                </button>
+            </div>
+          )}
+
+          {!gameStarted && !gameOver && (
+            <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#F9F7F2]/90 backdrop-blur-md animate-fade-in p-10 text-center">
+                <span className="text-[11px] font-black text-[#8D7B68] uppercase tracking-[0.6em] mb-4">Seek Balance</span>
+                <h3 className="text-4xl sm:text-6xl font-light italic text-[#3E2723] mb-12">Combine & Meditate</h3>
+                <button 
+                   onClick={handleStart}
+                   className="px-14 py-5 border-[0.5px] border-[#3E2723]/30 rounded-full font-bold text-[10px] uppercase tracking-[0.4em] hover:bg-[#3E2723] hover:text-white transition-all shadow-sm active:scale-95"
+                >
+                   Begin Mediation (5 Coins)
                 </button>
             </div>
           )}

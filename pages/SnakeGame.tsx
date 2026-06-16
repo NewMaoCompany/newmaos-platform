@@ -9,7 +9,7 @@ const BASE_SPEED = 140;
 
 export const SnakeGame = () => {
   const navigate = useNavigate();
-  const { awardPoints } = useApp();
+  const { awardPoints, spendPoints, saveGameStats } = useApp();
   const [snake, setSnake] = useState(INITIAL_SNAKE);
   const [direction, setDirection] = useState(INITIAL_DIRECTION);
   const [food, setFood] = useState({ x: 5, y: 5 });
@@ -54,6 +54,15 @@ export const SnakeGame = () => {
     setGameStarted(true);
   };
 
+  const handleStart = async () => {
+    const res = await spendPoints(5, 'snake_game');
+    if (!res.success) {
+      alert("Not enough coins to play! (Cost: 5 Coins)");
+      return;
+    }
+    resetGame();
+  };
+
   const moveSnake = useCallback(() => {
     setSnake(prevSnake => {
       const head = prevSnake[0];
@@ -64,7 +73,9 @@ export const SnakeGame = () => {
 
       if (prevSnake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
         setGameOver(true);
-        if (score > 100) awardPoints(Math.floor(score / 10), 'Played Snake: Hyper-Noir');
+        const earned = score > 100 ? Math.floor(score / 10) : 0;
+        if (earned > 0) awardPoints(earned, 'Played Snake: Hyper-Noir');
+        saveGameStats('snake', { high_score: score, coins_earned: earned });
         return prevSnake;
       }
 
@@ -210,11 +221,11 @@ export const SnakeGame = () => {
                    </p>
                 </div>
                 <button 
-                   onClick={resetGame}
+                   onClick={handleStart}
                    className="px-12 py-4 border border-cyan-500/50 text-cyan-400 font-black text-sm uppercase tracking-[0.5em] hover:bg-cyan-500/10 active:scale-95 transition-all shadow-[0_0_30px_rgba(0,242,255,0.1)] relative overflow-hidden group"
                 >
                    <div className="absolute inset-0 bg-cyan-500/10 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500" />
-                   <span className="relative">Boot Sequence</span>
+                   <span className="relative">Boot Sequence (5 Coins)</span>
                 </button>
              </div>
           )}
@@ -230,10 +241,10 @@ export const SnakeGame = () => {
                 </div>
 
                 <button 
-                   onClick={resetGame}
+                   onClick={handleStart}
                    className="px-14 py-5 bg-white text-black font-black text-xs uppercase tracking-[0.4em] shadow-[0_20px_50px_rgba(0,0,0,0.5)] active:scale-95 transition-all h-[60px]"
                 >
-                   Reboot Controller
+                   Reboot Controller (5 Coins)
                 </button>
              </div>
           )}
