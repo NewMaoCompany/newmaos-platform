@@ -387,8 +387,15 @@ export const PracticeHub = () => {
 
     // Resolve Full Title if available in Unit Content (Using dynamic topicContent)
     // recommendation.topic might be "Limits" but topicContent keys are "Both_Limits"
+    const extractedSubTopicIdMatch = recommendation.topic?.match(/^(\d+\.\d+)/);
+    const topLevelSubTopicId = extractedSubTopicIdMatch ? extractedSubTopicIdMatch[1] : undefined;
+
     const activeUnit = topicContent[recommendation.topic]
-        || Object.values(topicContent).find(u => u.id.includes(recommendation.topic));
+        || Object.values(topicContent).find(u => 
+            u.id.includes(recommendation.topic) || 
+            (topLevelSubTopicId && u.subTopics?.some((sub: any) => sub.id === topLevelSubTopicId)) ||
+            u.subTopics?.some((sub: any) => sub.title === recommendation.topic)
+        );
     const displayTitle = activeUnit ? activeUnit.title : (recommendation.topic || 'Select a Topic');
 
     // Find the single most recent algorithmic session for this topic AND the currently selected mode.
