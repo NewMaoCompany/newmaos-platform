@@ -112,7 +112,6 @@ export const Game2048 = () => {
           }
           return prevBest;
         });
-        });
         return newScore;
       });
       
