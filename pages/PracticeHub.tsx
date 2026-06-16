@@ -776,23 +776,30 @@ export const PracticeHub = () => {
                                                     if (isProcessing) return;
                                                     setIsProcessing(true);
                                                     markBadgeAsRead('practice');
+                                                    
+                                                    const extractedSubTopicIdMatch = recommendation.topic.match(/^(\d+\.\d+)/);
+                                                    const extractedSubTopicId = extractedSubTopicIdMatch ? extractedSubTopicIdMatch[1] : undefined;
+                                                    
                                                     navigate('/practice/session', {
-                                                    state: {
-                                                        topic: recommendation.topic,
-                                                        mode: mode,
-                                                        sessionId: mainProgress?.section_id,
-                                                        isResuming,
-                                                        forceStartNew
-                                                    }
-                                                });
-                                                setTimeout(() => setIsProcessing(false), 500);
-                                            };
+                                                        state: {
+                                                            topic: activeUnit ? activeUnit.id : recommendation.topic,
+                                                            subTopicId: extractedSubTopicId,
+                                                            mode: mode,
+                                                            sessionId: mainProgress?.section_id,
+                                                            isResuming,
+                                                            forceStartNew
+                                                        }
+                                                    });
+                                                    setTimeout(() => setIsProcessing(false), 500);
+                                                };
 
                                             const viewSummaryBtn = buttonState === 'COMPLETED' ? (
                                                 <button
                                                     onClick={(e) => {
                                                         e.preventDefault();
-                                                        navigate('/practice/session', { state: { topic: recommendation.topic, mode: 'Summary', sessionId: mainProgress?.section_id, showSummary: true } });
+                                                        const extractedSubTopicIdMatch = recommendation.topic.match(/^(\d+\.\d+)/);
+                                                        const extractedSubTopicId = extractedSubTopicIdMatch ? extractedSubTopicIdMatch[1] : undefined;
+                                                        navigate('/practice/session', { state: { topic: activeUnit ? activeUnit.id : recommendation.topic, subTopicId: extractedSubTopicId, mode: 'Summary', sessionId: mainProgress?.section_id, showSummary: true } });
                                                     }}
                                                     className="bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-text-main dark:text-gray-300 font-bold px-4 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shrink-0 shadow-sm h-full whitespace-nowrap"
                                                 >
