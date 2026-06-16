@@ -172,11 +172,11 @@ export const TextbookViewer = () => {
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 shrink-0">
                     <div>
                         <button
-                            onClick={() => navigate('/practice')}
+                            onClick={() => navigate(-1)}
                             className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors mb-6"
                         >
                             <span className="material-symbols-outlined">arrow_back</span>
-                            Back to Practice Hub
+                            Back to previous page
                         </button>
                         
                         <div className="flex items-center gap-3 mb-2">
@@ -206,7 +206,7 @@ export const TextbookViewer = () => {
                                     <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
                                 ) : (
                                     <span className="material-symbols-outlined text-[18px]">
-                                        {!isAuthenticated ? 'lock' : (isDownloaded ? 'open_in_new' : (isFirstBookFree ? 'redeem' : 'lock'))}
+                                        {!isAuthenticated ? 'lock' : (isDownloaded ? 'open_in_new' : (purchasedBookCount === null ? 'hourglass_empty' : (isFirstBookFree ? 'redeem' : 'lock')))}
                                     </span>
                                 )}
                                 <span>{!isAuthenticated ? 'Sign In to Unlock' : (isDownloaded ? 'Open in a new page' : (purchasedBookCount === null ? 'Loading...' : (isFirstBookFree ? 'Claim FREE' : `Unlock (${DOWNLOAD_COST} Coins)`)))}</span>

@@ -76,7 +76,7 @@ export const TopicDetail = () => {
     }, [unitId]);
 
 
-    const UNLOCK_COST = 19;
+    const UNLOCK_COST = 9;
 
     // 1. Fetch data logic (standardized)
     const [unitProgress, setUnitProgress] = useState<any>(null);
@@ -357,7 +357,7 @@ export const TopicDetail = () => {
                             
                             const isUnlocked = typeof window !== 'undefined' && !!localStorage.getItem(`book_downloaded_${user?.currentCourse || 'AB'}_${currentBook.unitNumber}`);
                             const isFirstBookFree = hasAnyPurchase === false;
-                            const UNLOCK_COST = 19;
+                            const UNLOCK_COST = 9;
                             
                             return (
                                 <div className="mb-6 w-full">
@@ -430,22 +430,26 @@ export const TopicDetail = () => {
                                                                 <span className="material-symbols-outlined text-[14px]">lock_open</span>
                                                                 Unlocked
                                                             </span>
-                                                        ) : (
-                                                            <>
-                                                                <div className="h-8 px-4 rounded-full bg-[#fce01a] flex items-center gap-2 transition-all shadow-md hover:bg-[#e6c818]">
-                                                                    <span className="text-[11px] font-black uppercase text-gray-900 tracking-widest pt-0.5">
-                                                                        {!isAuthenticated ? 'Sign In' : (isFirstBookFree ? 'Claim Free' : 'Go to Unlock')}
-                                                                    </span>
-                                                                    <span className="material-symbols-outlined text-[15px] text-gray-900">arrow_forward</span>
+                                                        ) : isAuthenticated && hasAnyPurchase === null ? (
+                                                                <div className="h-8 px-4 rounded-full bg-gray-200 dark:bg-gray-800 animate-pulse flex items-center justify-center">
+                                                                    <span className="text-[11px] font-black uppercase text-gray-500 dark:text-gray-400 tracking-widest pt-0.5">Checking</span>
                                                                 </div>
-                                                                {isAuthenticated && !isFirstBookFree && (
-                                                                    <span className="text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
-                                                                        <PointsCoin size="sm" />
-                                                                        {UNLOCK_COST} coins
-                                                                    </span>
-                                                                )}
-                                                            </>
-                                                        )}
+                                                            ) : (
+                                                                <>
+                                                                    <div className="h-8 px-4 rounded-full bg-[#fce01a] flex items-center gap-2 transition-all shadow-md hover:bg-[#e6c818]">
+                                                                        <span className="text-[11px] font-black uppercase text-gray-900 tracking-widest pt-0.5">
+                                                                            {!isAuthenticated ? 'Sign In' : (isFirstBookFree ? 'Claim Free' : 'Go to Unlock')}
+                                                                        </span>
+                                                                        <span className="material-symbols-outlined text-[15px] text-gray-900">arrow_forward</span>
+                                                                    </div>
+                                                                    {isAuthenticated && !isFirstBookFree && (
+                                                                        <span className="text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
+                                                                            <PointsCoin size="sm" />
+                                                                            {UNLOCK_COST} coins
+                                                                        </span>
+                                                                    )}
+                                                                </>
+                                                            )}
                                                     </div>
                                                 )}
 
