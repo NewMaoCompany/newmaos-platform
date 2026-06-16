@@ -102,7 +102,7 @@ export const Practice = () => {
     // If subTopicId exists AND it is NOT 'unit_test', we start in 'Lesson' view, otherwise 'Practice'
     // Exception: If Resuming or Force Start, skip lesson
     const [viewState, setViewState] = useState<'lesson' | 'practice'>(
-        sessionMode === 'Review' || effectiveState?.isResuming === true || effectiveState?.forceStartNew === true || !subTopicId
+        sessionMode === 'Review' || effectiveState?.isResuming === true || !subTopicId
             ? 'practice'
             : 'lesson'
     );
@@ -431,6 +431,7 @@ export const Practice = () => {
                             setSessionEarnedCoins(0);
                         } else {
                             setIsInitializing(false); // Fix: Ensure loading state is cleared
+                            setShowResumePrompt(true);
                             return; // Show prompt (since isResuming is false)
                         }
                     }
