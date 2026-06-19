@@ -1602,7 +1602,9 @@ export const Forum = () => {
                 scrollToBottom(true);
             }
             
-            return [...prev, enrichedMsg];
+            const next = [...prev, enrichedMsg];
+            // Safety limit: prevent unbounded growth that freezes the browser
+            return next.length > 50 ? next.slice(-50) : next;
         });
     };
 
@@ -1931,8 +1933,12 @@ export const Forum = () => {
             let hasCachedData = false;
             if (cached) {
                 try {
-                    const parsed = JSON.parse(cached);
+                    let parsed = JSON.parse(cached);
                     if (Array.isArray(parsed) && parsed.length > 0) {
+                        // Safety limit: if the cache was polluted by a spam attack, don't freeze the browser
+                        if (parsed.length > 50) {
+                            parsed = parsed.slice(-50);
+                        }
                         setMessages(parsed);
                         setIsLoadingMessages(false); // Instantly show cached messages
                         hasCachedData = true;
